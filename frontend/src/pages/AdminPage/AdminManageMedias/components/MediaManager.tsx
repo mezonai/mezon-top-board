@@ -1,6 +1,6 @@
 import { UploadOutlined } from '@ant-design/icons'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Modal, Spin, Tabs, Upload } from 'antd'
 import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
@@ -19,14 +19,13 @@ const MediaManagerModal = ({
   onClose
 }: {
   isVisible: boolean
-  onChoose: (path: string) => void
+  onChoose: (path: File | string) => void
   onClose: () => void
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
 
-  const [uploadImage, { isLoading: uploading }] = useMediaControllerCreateMediaMutation()
   const [getAllMedia, { isLoading: loadingMedia, isSuccess }] = useLazyMediaControllerGetAllMediaQuery()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
 
@@ -67,7 +66,7 @@ const MediaManagerModal = ({
       children: (
         <div className='flex flex-col items-center mt-4'>
           <Upload customRequest={handleUpload} showUploadList={false} accept='image/*'>
-            <Button icon={<UploadOutlined />} loading={uploading}>
+            <Button icon={<UploadOutlined />}>
               Click to Upload
             </Button>
           </Upload>
@@ -112,12 +111,13 @@ const MediaManagerModal = ({
       if (selectedFile) {
         const formData = new FormData()
         formData.append('file', selectedFile)
-        const response = await uploadImage(formData).unwrap()
+        onChoose(selectedFile)
+        // const response = await uploadImage(formData).unwrap()
 
-        if (response?.statusCode === 200) {
-          const imagePath = getUrlMedia(response.data.filePath)
-          onChoose(imagePath)
-        }
+        // if (response?.statusCode === 200) {
+        //   const imagePath = getUrlMedia(response.data.filePath)
+        //   onChoose(imagePath)
+        // }
       }
       else if (selectedImage) {
         onChoose(selectedImage)
