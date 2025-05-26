@@ -18,12 +18,8 @@ import { toast } from 'react-toastify'
 import { SLUG_RULE } from '@app/constants/common.constant'
 
 import MtbButton from '@app/mtb-ui/Button'
-import CreateTagModal from './components/CreateTagModel'
+import CreateTagModal, { TagFormValues } from './components/CreateTagModal'
 
-interface TagFormValues {
-  name: string,
-  slug: string
-}
 interface SearchFormValues {
   search: string
 }
