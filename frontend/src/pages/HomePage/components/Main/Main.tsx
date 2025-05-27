@@ -66,7 +66,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (isError && error) {
       const apiError = error as ApiError
       if (apiError?.status === 404 || apiError?.data?.statusCode === 404) {
-        navigate('/*')
+        navigate('/404')
       } else {
         toast.error(apiError?.data?.message)
       }
