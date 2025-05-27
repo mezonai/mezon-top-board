@@ -204,7 +204,7 @@ function Main({ isSearchPage = false }: IMainProps) {
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
               No result
-            </MtbTypography>
+            </MtbTypography> 
           )}
           <div className='flex flex-col items-center gap-5 pt-10'>
             <div className='flex flex-col items-center relative w-full'>

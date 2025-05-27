@@ -1,35 +1,48 @@
-import { EButtonColor } from '@app/enums/button.enum'
-import { IButtonProps } from '@app/types/Button.types'
 import { Button as AntdButton, ButtonProps as AntdButtonProps } from 'antd'
 import { useMemo } from 'react'
+import { IButtonProps } from '@app/types/Button.types'
+import { EButtonColor, EButtonVariant } from '@app/enums/button.enum'
 
-const Button = (props: IButtonProps & Omit<AntdButtonProps, 'color'>) => {
-  const { color = 'primary', children, customClassName } = props
+const Button = (
+  props: IButtonProps & Omit<AntdButtonProps, 'color' | 'type'>
+) => {
+  const {
+    color = EButtonColor.PRIMARY,
+    variant = EButtonVariant.SOLID,
+    customClassName,
+    children,
+    ...rest
+  } = props
 
-  const colorClassName: Record<string, string> = {
-    [EButtonColor.PRIMARY]: `
-      !bg-primary-default hover:!bg-primary-hover active:!bg-primary-active 
+  const customColorClass: Record<EButtonColor, string> = {
+    [EButtonColor.PRIMARY]: `!bg-primary-default hover:!bg-primary-hover active:!bg-primary-active 
       !text-white !border-primary-border hover:!border-primary-hover active:!border-primary-active 
-      disabled:!bg-gray-300 disabled:!border-gray-400 disabled:!text-gray-500 disabled:!cursor-not-allowed
-    `,
+      disabled:!bg-gray-300 disabled:!border-gray-400 disabled:!text-gray-500 disabled:!cursor-not-allowed`,
     [EButtonColor.SECONDARY]: `
-      !bg-secondary-default hover:!bg-secondary-hover active:!bg-secondary-active 
-      !text-white !border-secondary-border hover:!border-secondary-hover active:!border-secondary-active 
-      disabled:!bg-gray-300 disabled:!border-gray-400 disabled:!text-gray-500 disabled:!cursor-not-allowed
+      !bg-white !text-black !border-gray-300 
+      hover:!bg-gray-100 active:!bg-gray-200 
+      disabled:!bg-gray-100 disabled:!border-gray-200 disabled:!text-gray-400 disabled:!cursor-not-allowed
     `,
-    [EButtonColor.DEFAULT]: `
-      hover:!bg-default-hover active:!bg-default-active hover:!text-white 
-      !border-default-border hover:!border-default-hover active:!border-default-active 
-      disabled:!bg-gray-200 disabled:!border-gray-300 disabled:!text-gray-400 disabled:!cursor-not-allowed
-    `
+    [EButtonColor.DEFAULT]: '',
+    [EButtonColor.DANGER]: '',
+    [EButtonColor.PINK]: '',
+    [EButtonColor.PURPLE]: '',
+    [EButtonColor.CYAN]: '',
   }
 
+  const useCustomClassOnly = color === EButtonColor.PRIMARY || color === EButtonColor.DARK
+
   const _className = useMemo(() => {
-    return `${colorClassName[color]} ${customClassName || ''}`
+    const baseClass = useCustomClassOnly ? customColorClass[color] : ''
+    return `${baseClass} ${customClassName || ''}`.trim()
   }, [color, customClassName])
 
   return (
-    <AntdButton className={_className} {...props}>
+    <AntdButton
+      {...(useCustomClassOnly ? {} : { color, variant })}
+      className={_className}
+      {...rest}
+    >
       {children}
     </AntdButton>
   )
