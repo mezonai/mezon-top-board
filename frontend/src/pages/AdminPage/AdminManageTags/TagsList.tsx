@@ -205,7 +205,7 @@ function TagsList() {
           </div>
         ) : (
           <div className='flex gap-2'>
-            <MtbButton color='secondary'
+            <MtbButton color="secondary"
               icon={<EditOutlined />}
               onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug })}
             />

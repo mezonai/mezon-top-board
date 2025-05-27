@@ -483,7 +483,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
             })}
         </FormField>
         <div className='flex !justify-end pt-8 gap-4 items-center'>
-          <Button color='default' customClassName='w-[200px] !text-blue-500'>
+          <Button color='default' variant='outlined' customClassName='w-[200px]'>
             Preview
           </Button>
           <Button disabled={isUpdating || !!errors?.socialLinks} loading={isUpdating} htmlType='submit' customClassName='w-[200px]'>
