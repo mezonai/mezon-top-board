@@ -1,104 +1,130 @@
-import { Modal, message } from 'antd';
-import { useEffect, useState } from 'react';
-import MtbButton from '@app/mtb-ui/Button';
-import { EditOutlined } from '@ant-design/icons';
-import MediaManagerModal from '../../AdminManageMedias/components/MediaManager';
-import { useForm } from 'react-hook-form';
+import { Modal, Form, Input } from 'antd'
+import { useEffect, useState } from 'react'
+import { EditOutlined } from '@ant-design/icons'
+import MtbButton from '@app/mtb-ui/Button'
+import { FormProvider, useForm, Controller, useWatch } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import MediaManagerModal from '../../AdminManageMedias/components/MediaManager'
+import { LINK_TYPE_SCHEMA } from '@app/validations/linkType.validation'
 
 export interface LinkTypeFormValues {
-  name: string;
-  prefixUrl: string;
-  icon: string | File;
+  name: string
+  prefixUrl: string
+  icon: string | File
 }
 
-interface CreateTagModalProps {
-  open: boolean;
-  onClose: () => void;
-  onCreate: (values: LinkTypeFormValues) => void;
+interface CreateLinkTypeModalProps {
+  open: boolean
+  onClose: () => void
+  onCreate: (values: LinkTypeFormValues) => void
 }
 
-const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateTagModalProps) => {
-  const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm<LinkTypeFormValues>();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalProps) => {
+  const methods = useForm<LinkTypeFormValues>({
+    resolver: yupResolver(LINK_TYPE_SCHEMA),
+    mode: 'all',
+    defaultValues: {
+      name: '',
+      prefixUrl: '',
+      icon: ''
+    }
+  })
 
-  const icon = watch('icon');
-  const selectedImage = typeof icon === 'string'
-    ? icon
-    : icon instanceof File
-      ? URL.createObjectURL(icon)
-      : null;
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isValid }
+  } = methods
+  const icon = useWatch({ control, name: 'icon' })
+
+  const [isMediaModalVisible, setIsMediaModalVisible] = useState(false)
+
+  const selectedImage = typeof icon === 'string' ? icon : icon instanceof File ? URL.createObjectURL(icon) : null
 
   useEffect(() => {
-    if (!open) reset();
-  }, [open]);
+    if (!open) {
+      reset()
+    }
+  }, [open])
 
   const handleChooseImage = (image: File | string) => {
-    if (!image) {
-      message.error('Please select an image');
-      return;
-    }
-    setValue('icon', image, { shouldValidate: true });
-    setIsModalVisible(false);
-  };
+    if (!image) return
+    setValue('icon', image, { shouldValidate: true })
+    setIsMediaModalVisible(false)
+  }
 
-  const onSubmit = (values: LinkTypeFormValues) => {
+  const onSubmit = (data: LinkTypeFormValues) => {
     onCreate({
-      name: values.name.trim(),
-      prefixUrl: values.prefixUrl.trim(),
-      icon: values.icon
-    });
-    reset();
-  };
+      name: data.name.trim(),
+      prefixUrl: data.prefixUrl.trim(),
+      icon: data.icon
+    })
+    reset()
+  }
 
   return (
     <Modal
-      title="Create New Tag"
+      title='Create New Tag'
       open={open}
       onCancel={onClose}
-      footer={<MtbButton onClick={handleSubmit(onSubmit)}>Add</MtbButton>}
+      footer={
+        <MtbButton onClick={handleSubmit(onSubmit)} disabled={!isValid}>
+          Add
+        </MtbButton>
+      }
       width={600}
       centered
     >
-      <div className="flex flex-col gap-4 pt-2">
-        <div>
-          <label>Name</label>
-          <input {...register('name', { required: true })} className="mtb-input w-full" />
-          {errors.name && <span className="text-red-500 text-sm">This field is required</span>}
-        </div>
+      <FormProvider {...methods}>
+        <Form layout='vertical'>
+          <Form.Item label='Name' validateStatus={errors.name ? 'error' : ''} help={errors.name?.message}>
+            <Controller
+              name='name'
+              control={control}
+              render={({ field }) => <Input {...field} placeholder='Enter name' />}
+            />
+          </Form.Item>
 
-        <div>
-          <label>Prefix URL</label>
-          <input {...register('prefixUrl', { required: true })} className="mtb-input w-full" />
-          {errors.prefixUrl && <span className="text-red-500 text-sm">This field is required</span>}
-        </div>
+          <Form.Item
+            label='Prefix URL'
+            validateStatus={errors.prefixUrl ? 'error' : ''}
+            help={errors.prefixUrl?.message}
+          >
+            <Controller
+              name='prefixUrl'
+              control={control}
+              render={({ field }) => <Input {...field} placeholder='https://example.com' />}
+            />
+          </Form.Item>
 
-        <div>
-          <label>Icon</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {selectedImage ? (
-              <img
-                src={selectedImage}
-                alt="Selected Icon"
-                style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4, border: '1px solid #ccc' }}
-              />
-            ) : (
-              <div style={{ width: 60, height: 60, backgroundColor: '#f0f0f0', border: '1px dashed #ccc', borderRadius: 4 }} />
-            )}
-            <MtbButton icon={<EditOutlined />} onClick={() => setIsModalVisible(true)}>
-              Choose Image
-            </MtbButton>
-          </div>
-          {!icon && <span className="text-red-500 text-sm">This field is required</span>}
-        </div>
-      </div>
+          <Form.Item label='Icon' validateStatus={errors.icon ? 'error' : ''} help={errors.icon?.message}>
+            <div className='flex items-center gap-4'>
+              {selectedImage ? (
+                <img
+                  src={selectedImage}
+                  alt='Selected Icon'
+                  className='w-[60px] h-[60px] object-cover rounded border'
+                />
+              ) : (
+                <div className='w-[60px] h-[60px] bg-gray-100 border-dashed border rounded' />
+              )}
+              <MtbButton icon={<EditOutlined />} onClick={() => setIsMediaModalVisible(true)}>
+                Choose Image
+              </MtbButton>
+            </div>
+          </Form.Item>
+        </Form>
+      </FormProvider>
 
       <MediaManagerModal
-        isVisible={isModalVisible}
+        isVisible={isMediaModalVisible}
         onChoose={handleChooseImage}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => setIsMediaModalVisible(false)}
       />
     </Modal>
-  );
-};
+  )
+}
 
-export default CreateLinkTypeModal;
+export default CreateLinkTypeModal
