@@ -1,7 +1,7 @@
 import { UploadOutlined } from '@ant-design/icons'
 
 import { useEffect, useState } from 'react'
-import { Modal, Spin, Tabs, Upload } from 'antd'
+import { Modal, Spin, Tabs, Upload, Pagination } from 'antd'
 import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import {
@@ -25,21 +25,22 @@ const MediaManagerModal = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
+  const [page, setPage] = useState(1);
 
   const [getAllMedia, { isLoading: loadingMedia, isSuccess }] = useLazyMediaControllerGetAllMediaQuery()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
+  const pageSize = 24
 
   useEffect(() => {
     getMediasList()
-  }, [])
+  }, [page])
   const getMediasList = () => {
     getAllMedia({
-      pageNumber: 1,
-      pageSize: 20,
+      pageNumber: page,
+      pageSize: pageSize,
       sortField: 'createdAt',
       sortOrder: 'ASC'
     })
-    isSuccess && toast.success('Get media list success')
   }
 
   const handleUpload = async (options: any) => {
@@ -87,23 +88,36 @@ const MediaManagerModal = ({
       children: loadingMedia ? (
         <Spin />
       ) : (
-        <div className='flex flex-wrap gap-2 max-h-[350px] overflow-y-auto '>
-          {mediaList?.data?.map((item: any) => {
-            const url = getUrlMedia(item.filePath)
-            return (
-              <img
-                key={item.id}
-                src={url}
-                alt=''
-                className={'w-[6.5rem] h-[6.5rem] object-cover cursor-pointer'}
-                style={{border: selectedImage === url ? '2px solid blue' : '1px solid #ccc',}}
-                onClick={() => setSelectedImage(url)}
-              />
-            )
-          })}
+        <div className='flex flex-col gap-4'>
+          <div className='flex flex-wrap gap-2 max-h-[350px] overflow-y-auto'>
+            {mediaList?.data?.map((item: any) => {
+              const url = getUrlMedia(item.filePath);
+              return (
+                <img
+                  key={item.id}
+                  src={url}
+                  alt=''
+                  className='w-[6.5rem] h-[6.5rem] object-cover cursor-pointer'
+                  style={{
+                    border: selectedImage === url ? '2px solid blue' : '1px solid #ccc'
+                  }}
+                  onClick={() => setSelectedImage(url)}
+                />
+              );
+            })}
+          </div>
+          <Pagination
+            onChange={(p) => setPage(p)}
+            pageSize={pageSize}
+            current={page}
+            total={mediaList?.totalCount || 0}
+            showSizeChanger={false}
+            className="self-center"
+          />
         </div>
       )
     }
+
   ]
 
   const handleChoose = async () => {
@@ -112,12 +126,6 @@ const MediaManagerModal = ({
         const formData = new FormData()
         formData.append('file', selectedFile)
         onChoose(selectedFile)
-        // const response = await uploadImage(formData).unwrap()
-
-        // if (response?.statusCode === 200) {
-        //   const imagePath = getUrlMedia(response.data.filePath)
-        //   onChoose(imagePath)
-        // }
       }
       else if (selectedImage) {
         onChoose(selectedImage)
@@ -150,6 +158,22 @@ const MediaManagerModal = ({
       open={isVisible}
       onCancel={handleCancel}
       onOk={handleChoose}
+      footer={
+        <div className="flex justify-between items-center">
+          {activeTab === '2' && (
+            <div className="text-sm text-gray-500 pl-2">
+              Total {mediaList?.totalCount || 0} image(s)
+            </div>
+          )}
+
+          <div className="ml-auto flex gap-2">
+            <Button onClick={handleCancel} color="default">
+              Cancel
+            </Button>
+            <Button onClick={handleChoose}>OK</Button>
+          </div>
+        </div>
+      }
     >
       <Tabs className=''
         activeKey={activeTab}
