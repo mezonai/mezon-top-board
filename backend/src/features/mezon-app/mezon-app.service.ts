@@ -172,14 +172,16 @@ export class MezonAppService {
       });
     }
 
-    if (
-      Object.values(SortField).includes(query.sortField as SortField) &&
-      (query.sortOrder === SortOrder.ASC || query.sortOrder === SortOrder.DESC)
-    ) {
-      whereCondition.orderBy(`app.${query.sortField}`, query.sortOrder);
-    } else {
-      whereCondition.orderBy("app.name", "ASC");
-    }
+    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
+    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
+    const sortField = invalidSortField ? query.sortField : SortField.NAME;
+    const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
+
+    if (query.sortField === SortField.NAME) {
+      whereCondition
+        .addSelect('LOWER(app.name)', 'app_name_lower')
+        .orderBy('app_name_lower', sortOrder);
+    } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
 
     return whereCondition;
   }
