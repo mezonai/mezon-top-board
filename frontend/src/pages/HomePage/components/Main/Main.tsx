@@ -66,7 +66,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (isError && error) {
       const apiError = error as ApiError
       if (apiError?.status === 404 || apiError?.data?.statusCode === 404) {
-        navigate('/*')
+        navigate('/404')
       } else {
         toast.error(apiError?.data?.message)
       }
@@ -165,14 +165,14 @@ function Main({ isSearchPage = false }: IMainProps) {
         ></SearchBar>
       </div>
       <div className='pt-8'>
-        <Flex justify='space-between'>
-          <div>
+        <Flex justify="space-between" wrap="wrap">
+          <div className='flex-shrink-0'>
             <MtbTypography variant='h3'>Mezon Bots</MtbTypography>
             <MtbTypography variant='h5' weight='normal'>
               Showing 1 of {mezonApp.totalPages ?? 0} page
             </MtbTypography>
           </div>
-          <Flex gap={10} align='center'>
+          <Flex gap={10} align='center' wrap="wrap">
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
               options={sortOptions}
@@ -180,7 +180,8 @@ function Main({ isSearchPage = false }: IMainProps) {
               onChange={handleSortChange}
               size='large'
               placeholder="Sort bots by..."
-              className='w-[18rem]'
+              dropDownTitle='Sort by'
+              className='w-[12rem] lg:w-[18rem] '
               defaultValue={sortOptions[0]}
             />
             <SingleSelect
@@ -189,7 +190,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               options={options}
               placeholder='Select'
               size='large'
-              className='w-[13rem]'
+              className='w-[10rem] lg:w-[13rem]'
               dropDownTitle='Title'
               defaultValue={options[0]}
             />
@@ -203,7 +204,7 @@ function Main({ isSearchPage = false }: IMainProps) {
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
               No result
-            </MtbTypography>
+            </MtbTypography> 
           )}
           <div className='flex flex-col items-center gap-5 pt-10'>
             <div className='flex flex-col items-center relative w-full'>

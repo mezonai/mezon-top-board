@@ -61,7 +61,7 @@ function BotDetailPage() {
       getrelatedMezonApp({ id: botId });
       getRatingsByApp({ appId: botId });
     } else {
-      navigate('/*');
+      navigate('/404', { replace: true });
     }
   }, [botId]);
 
@@ -75,7 +75,7 @@ function BotDetailPage() {
     if (isError && error) {
       const apiError = error as ApiError
       if (mezonAppDetail.id === undefined && (apiError?.status === 500 || apiError?.status === 404)) {
-        navigate('/*');
+        navigate('/404', { replace: true });
       } else {
         toast.error(apiError?.data?.message);
       }

@@ -75,3 +75,13 @@ export const fillHbsFormat = (str: string, data: Record<string, any>) => {
     return data[trimmedKey] !== undefined ? data[trimmedKey] : `{{${trimmedKey}}}`
   })
 }
+
+export const generateSlug = (name: string): string => {
+  return name
+    .normalize('NFD') // decompose accented characters
+    .replace(/[\u0300-\u036f]/g, '') // remove accent marks
+    .replace(/[^a-zA-Z0-9\s]/g, '') // remove special characters
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+}

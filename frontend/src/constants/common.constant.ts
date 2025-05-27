@@ -11,3 +11,7 @@ export const ratings = [
 export const REQUIRED_ERROR_FIELD = () => `This field is required`
 export const errorStatus = (field: FieldError | undefined) => (field?.message ? 'error' : '')
 export const URL_REGEX = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/
+export const SLUG_RULE = {
+  pattern: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+  message: 'Slug must be lowercase, alphanumeric, and use hyphens (no spaces or special characters)'
+}
