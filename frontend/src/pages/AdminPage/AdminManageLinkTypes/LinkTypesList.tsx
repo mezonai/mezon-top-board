@@ -39,7 +39,7 @@ function LinkTypesList() {
     icon: string
   }>({ id: null, name: '', prefixUrl: '', icon: '' })
 
-  const editError = !editingLinkType.name.trim() || !editingLinkType.prefixUrl.trim()
+  const editError = !editingLinkType.name.trim() || !editingLinkType.prefixUrl.trim() || (!editingLinkType.icon.trim() && !selectedImage)
 
   useEffect(() => {
     getLinkTypeList()
@@ -97,7 +97,7 @@ function LinkTypesList() {
   const handleCreate = async (values: LinkTypeFormValues) => {
     const isDuplicate = linkTypeList?.data?.some(
       (linkType: UpdateLinkTypeRequest) =>
-        linkType.name === values.name.trim() || linkType.prefixUrl === values.prefixUrl
+        linkType.name === values.name.trim() || linkType.prefixUrl === values.prefixUrl.trim()
     )
 
     if (isDuplicate) {
@@ -128,18 +128,23 @@ function LinkTypesList() {
     }
   }
 
-  const handleUpdate = async (id: string) => {
+  const handleUpdate = async () => {
+    if (!editingLinkType.id) {
+      toast.error('Something went wrong, please try again')
+      return
+    }
     const isDuplicate = linkTypeList?.data?.some(
       (linkType: UpdateLinkTypeRequest) =>
-        (linkType.name === editingLinkType.name.trim() || linkType.prefixUrl === editingLinkType.prefixUrl) &&
-        linkType.id !== id
+        (linkType.name === editingLinkType.name.trim() || linkType.prefixUrl === editingLinkType.prefixUrl.trim()) &&
+        linkType.id !== editingLinkType.id?.trim()
     )
 
     if (isDuplicate) {
       toast.error('Link type name or Link type prefix already exists')
       return
     }
-    let updateIcon = ''
+
+    let updateIcon = editingLinkType.icon.trim()
     if (selectedImage) {
       try {
         updateIcon = await prepareImageUpload(selectedImage)
@@ -152,7 +157,7 @@ function LinkTypesList() {
     try {
       await updateLinkType({
         updateLinkTypeRequest: {
-          id,
+          id: editingLinkType.id,
           name: editingLinkType.name.trim(),
           prefixUrl: editingLinkType.prefixUrl.trim(),
           icon: updateIcon
@@ -192,20 +197,28 @@ function LinkTypesList() {
       width: '15%',
       render: (text: string, record: any) =>
         editingLinkType.id === record.id ? (
-          <Tooltip
-            open={!editingLinkType.icon.trim()}
+          <Tooltip zIndex={1}
+            getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
+            open={!editingLinkType.icon.trim() && !selectedImage}
             title='This field is required'
             placement='topLeft'
             color='rgba(255, 0, 0, 0.8)'
           >
-            <img
-              src={getDisplayedImage(record)}
+            <div
+              className="relative group w-[50px] h-[50px] cursor-pointer"
               onClick={() => setIsMediaModalVisible(true)}
-              style={{ cursor: 'pointer', width: 60, height: 60 }}
-            />
+            >
+              <img
+                src={getDisplayedImage(record)}
+                className="w-full h-full object-cover rounded group-hover:brightness-50 transition duration-200"
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+                <EditOutlined className="!text-white text-lg"/>
+              </div>
+            </div>
           </Tooltip>
         ) : (
-          <img src={getUrlMedia(text)} alt='icon' style={{ width: '50px', height: '50px' }} />
+          <img src={getUrlMedia(text)} alt='icon' className="w-[40px] h-[40px]" />
         )
     },
     {
@@ -214,7 +227,7 @@ function LinkTypesList() {
       key: 'name',
       render: (text: string, record: any) =>
         editingLinkType.id === record.id ? (
-          <Tooltip
+          <Tooltip zIndex={1}
             open={!editingLinkType.name.trim()}
             title='This field is required'
             placement='topLeft'
@@ -237,7 +250,7 @@ function LinkTypesList() {
       key: 'prefixUrl',
       render: (text: string, record: any) =>
         editingLinkType.id === record.id ? (
-          <Tooltip
+          <Tooltip zIndex={1}
             open={!editingLinkType.prefixUrl.trim()}
             title='This field is required'
             placement='topLeft'
@@ -261,7 +274,7 @@ function LinkTypesList() {
       render: (_: any, record: any) =>
         editingLinkType.id === record.id ? (
           <div className='flex gap-2'>
-            <Button disabled={editError} color='default' variant='outlined' onClick={() => handleUpdate(record.id)}>
+            <Button disabled={editError} color='default' variant='outlined' onClick={() => handleUpdate()}>
               Save
             </Button>
             <Button onClick={cancelUpdate}>Cancel</Button>

@@ -6,7 +6,6 @@ import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import {
   useLazyMediaControllerGetAllMediaQuery,
-  useMediaControllerCreateMediaMutation,
 } from '@app/services/api/media/media'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
@@ -27,13 +26,14 @@ const MediaManagerModal = ({
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
 
-  const [getAllMedia, { isLoading: loadingMedia, isSuccess }] = useLazyMediaControllerGetAllMediaQuery()
+  const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
   const pageSize = 24
 
   useEffect(() => {
     getMediasList()
   }, [page])
+
   const getMediasList = () => {
     getAllMedia({
       pageNumber: page,
@@ -117,7 +117,6 @@ const MediaManagerModal = ({
         </div>
       )
     }
-
   ]
 
   const handleChoose = async () => {
@@ -137,6 +136,7 @@ const MediaManagerModal = ({
       setSelectedImage(null)
       setSelectedFile(null)
       setActiveTab('1')
+      setPage(1)
       onClose()
     } catch (error) {
       toast.error('Upload failed!')
@@ -145,13 +145,14 @@ const MediaManagerModal = ({
 
   const handleCancel = () => {
     setActiveTab('1')
+    setPage(1)
     setSelectedFile(null)
     setSelectedImage(null)
     onClose()
   }
 
   return (
-    <Modal
+    <Modal zIndex={3}
       width={'59rem'}
       centered
       title='Choose Icon'

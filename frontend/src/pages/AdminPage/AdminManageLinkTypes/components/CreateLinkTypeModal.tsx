@@ -65,7 +65,7 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
   }
 
   return (
-    <Modal
+    <Modal zIndex={2}
       title='Create New Tag'
       open={open}
       onCancel={onClose}
