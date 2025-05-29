@@ -1,4 +1,4 @@
-import { HttpResponse } from '@app/types/API.types'
+import { HttpResponse, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
 import { Role } from '../mezonApp/mezonApp'
 const injectedRtkApi = api.injectEndpoints({
@@ -101,9 +101,7 @@ export type UpdateUserRequest = {
   bio?: string
   role?: Role
 }
-export type RequestWithId = {
-  id: string
-}
+
 export type GetUserDetailsResponse = {
   id: string
   name: string

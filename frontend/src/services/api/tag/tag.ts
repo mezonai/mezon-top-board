@@ -1,5 +1,6 @@
-import { HttpResponse } from '@app/types/API.types'
+import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import { App } from '../mezonApp/mezonApp'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     tagControllerGetTags: build.query<TagControllerGetTagsApiResponse, TagControllerGetTagsApiArg>({
@@ -58,12 +59,13 @@ export type TagControllerSearchTagsApiResponse = HttpResponse<TagResponse[]>
 export type TagControllerSearchTagsApiArg = {
   search?: string
   tags?: string[]
-  pageSize: number
-  pageNumber: number
-  sortField?: string
-  sortOrder?: string
-}
+} & PaginationParams
 
+export type Tag = {
+  name: string
+  slug: string
+  apps: App[]
+}
 export type TagResponse = {
   id: string
   name: string
@@ -80,10 +82,6 @@ export type UpdateTagRequest = {
   id: string
   name?: string
   slug?: string
-}
-
-export type RequestWithId = {
-  id: string
 }
 
 export const {

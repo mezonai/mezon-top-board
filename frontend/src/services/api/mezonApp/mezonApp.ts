@@ -1,4 +1,4 @@
-import { HttpResponse } from '@app/types/API.types'
+import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
 import { Rating } from '../rating/rating'
 import { LinkTypeResponse } from '../linkType/linkType'
@@ -99,11 +99,7 @@ export type MezonAppControllerListAdminMezonAppApiArg = {
   /** Keyword to search mezonApps by name or headline */
   search?: string
   tags?: string[]
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-}
+  } & PaginationParams
 export type MezonAppControllerGetMyAppApiResponse = unknown
 export type MezonAppControllerGetMyAppApiArg = {
   /** Keyword to search mezonApps by name or headline */
@@ -141,11 +137,7 @@ export type MezonAppControllerSearchMezonAppApiArg = {
   search?: string
   ownerId?: string
   tags?: string[]
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: string
-}
+} & PaginationParams
 export type OwnerInMezonAppDetailResponse = {
   id: string
   name: string
@@ -175,9 +167,6 @@ export type GetMezonAppDetailsResponse = {
   rateScore: number;
   installLink: string;
   supportUrl: string;
-}
-export type RequestWithId = {
-  id: string
 }
 export type Tag = {
   name: string

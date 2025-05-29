@@ -1,4 +1,4 @@
-import { HttpResponse } from '@app/types/API.types'
+import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -41,15 +41,11 @@ const injectedRtkApi = api.injectEndpoints({
 })
 export { injectedRtkApi as reviewHistoryService }
 export type ReviewHistoryControllerSearchAppReviewsApiResponse = HttpResponse<ReviewHistoryResponse[]>
+
 export type ReviewHistoryControllerSearchAppReviewsApiArg = {
   search?: string
   appId?: string
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-}
-
+} & PaginationParams
 
 type Reviewer = {
   id: string
@@ -97,9 +93,6 @@ export type CreateAppReviewRequest = {
 export type UpdateAppReviewRequest = {
   id: string
   remark: string
-}
-export type RequestWithId = {
-  id: string
 }
 export const {
   useReviewHistoryControllerSearchAppReviewsQuery,
