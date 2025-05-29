@@ -1,6 +1,6 @@
 import { RiseOutlined, StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { ICompactBotCardProps } from '@app/types/Botcard.types'
+import { ICompactBotCardProps } from '@app/components/BotCard/BotCard.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
 import OwnerActions from '../OwnerActions/OwnerActions'

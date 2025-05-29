@@ -1,6 +1,6 @@
 import { Button as AntdButton, ButtonProps as AntdButtonProps } from 'antd'
 import { useMemo } from 'react'
-import { IButtonProps } from '@app/types/Button.types'
+import { IButtonProps } from './Button.types'
 import { EButtonColor, EButtonVariant } from '@app/enums/button.enum'
 
 const Button = (

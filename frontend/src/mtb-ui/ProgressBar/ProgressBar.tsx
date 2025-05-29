@@ -1,7 +1,7 @@
 import { Progress } from 'antd'
 import { CSSProperties } from 'react'
 import styles from './ProgressBar.module.scss'
-import { IMtbProgressProps } from '@app/types/Progress.types'
+import { IMtbProgressProps } from './ProgressBar.types'
 
 function MtbProgress({ borderRadius, backgroundStrokeColor, customClassName, ...props }: IMtbProgressProps) {
   return (

@@ -12,8 +12,8 @@ import { IMezonAppStore } from '@app/store/mezonApp'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ApiError } from '@app/types/API.types'
-import { IMainProps } from '@app/types/Main.type'
 import { getPageFromParams } from '@app/utils/uri'
+import { IMainProps } from './Main.types'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
