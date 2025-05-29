@@ -78,7 +78,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}
-            <Button variant='solid' color='secondary' size='large' onClick={handleInvite}>
+            <Button variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
             <Popover
@@ -88,7 +88,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               arrow={false}
               overlayInnerStyle={{ marginTop: '8px', minWidth: '200px', maxWidth: '300px' }}
             >
-              <Button size='large' color='default' icon={<UploadOutlined />} onClick={handleShare} />
+              <Button size='large' color='dark' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
           <div
