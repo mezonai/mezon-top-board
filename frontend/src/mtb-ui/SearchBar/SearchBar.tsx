@@ -1,7 +1,7 @@
 import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
-import { ISearchBarProps } from '@app/types/Search.types'
+import { ISearchBarProps } from './Search.types'
 import { Input, Tag } from 'antd'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'

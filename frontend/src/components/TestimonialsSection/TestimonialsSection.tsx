@@ -1,4 +1,4 @@
-import { ITestimonialsSectionProps } from '@app/types/TestimonialsSection.types'
+import { ITestimonialsSectionProps } from './TestimonialsSection.types'
 
 function TestimonialsSection({ testimonials }: ITestimonialsSectionProps) {
   return (

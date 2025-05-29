@@ -4,7 +4,7 @@ import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { IBotCardProps } from '@app/types/Botcard.types'
+import { IBotCardProps } from './BotCard.types'
 import { randomColor } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
@@ -78,7 +78,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}
-            <Button variant='solid' color='secondary' size='large' onClick={handleInvite}>
+            <Button variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
             <Popover
@@ -88,7 +88,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               arrow={false}
               overlayInnerStyle={{ marginTop: '8px', minWidth: '200px', maxWidth: '300px' }}
             >
-              <Button size='large' color='default' icon={<UploadOutlined />} onClick={handleShare} />
+              <Button size='large' color='dark' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
           <div

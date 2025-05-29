@@ -18,7 +18,7 @@ import { IRatingStore } from '@app/store/rating'
 import { ITagStore } from '@app/store/tag'
 import { ApiError } from '@app/types/API.types'
 import { Carousel, Divider, Spin } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -29,6 +29,7 @@ import useOwnershipCheck from '@app/hook/useOwnershipCheck'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { debounce } from 'lodash'
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -54,6 +55,20 @@ function BotDetailPage() {
   const searchQuery = searchParams.get('q') || ''
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const [dragging, setDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 767);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (botId && botId !== 'undefined' && botId.trim() !== '') {
@@ -156,6 +171,14 @@ function BotDetailPage() {
     return doc.body.innerHTML;
   }
 
+  const handleAfterChange = useMemo(
+    () =>
+      debounce(() => {
+        setDragging(false);
+      }, 100),
+    []
+  );
+
   return (
     <div className='m-auto pt-10 pb-10 w-[75%]'>
       <MtbTypography>Explore milions of mezon bots</MtbTypography>
@@ -183,11 +206,13 @@ function BotDetailPage() {
             <MtbTypography variant='h3'>More like this</MtbTypography>
             <Divider className='bg-gray-200'></Divider>
             {relatedMezonApp?.length > 0 ? (
-              <Carousel arrows infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
-                slidesToShow={4}  responsive={responsive} className='text-center'>
+              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
+                slidesToShow={4}  responsive={responsive} className='text-center' 
+                beforeChange={() => setDragging(true)}
+                afterChange={handleAfterChange}>
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
-                    <CompactBotCard data={bot} />
+                    <CompactBotCard data={bot} isDragging={dragging} />
                   </div>
                 ))}
               </Carousel>

@@ -1,5 +1,5 @@
 import { TypographyVariant, TypographyWeight } from '@app/enums/typography.enum'
-import { AntdTypographyComponent, levelTitle, MtbTypographyProps } from '@app/types/Typography.types'
+import { AntdTypographyComponent, levelTitle, MtbTypographyProps } from './Typography.types'
 import { ConfigProvider, Typography } from 'antd'
 import { useMemo } from 'react'
 
