@@ -1,5 +1,6 @@
-import { Role } from '@app/services/api/mezonApp/mezonApp'
-import { UpdateUserRequest, useUserControllerUpdateUserMutation } from '@app/services/api/user/user'
+import { Role } from '@app/enums/Role.enum'
+import { useUserControllerUpdateUserMutation } from '@app/services/api/user/user'
+import { UpdateUserRequest } from '@app/services/api/user/user.types'
 import { handleMapOption } from '@app/utils/stringHelper'
 import { Button, Form, Input, Modal, Select } from 'antd'
 import { toast } from 'react-toastify'

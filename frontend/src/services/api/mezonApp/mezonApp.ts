@@ -1,7 +1,22 @@
-import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
+import {
+  MezonAppControllerListAdminMezonAppApiResponse,
+  MezonAppControllerListAdminMezonAppApiArg,
+  MezonAppControllerGetMyAppApiResponse,
+  MezonAppControllerGetMyAppApiArg,
+  MezonAppControllerGetMezonAppDetailApiResponse,
+  MezonAppControllerGetMezonAppDetailApiArg,
+  MezonAppControllerDeleteMezonAppApiResponse,
+  MezonAppControllerDeleteMezonAppApiArg,
+  MezonAppControllerCreateMezonAppApiArg,
+  MezonAppControllerUpdateMezonAppApiArg,
+  MezonAppControllerGetRelatedMezonAppApiResponse,
+  MezonAppControllerGetRelatedMezonAppApiArg,
+  MezonAppControllerSearchMezonAppApiResponse,
+  MezonAppControllerSearchMezonAppApiArg
+} from './mezonApp.types'
 import { api } from '../../apiInstance'
-import { Rating } from '../rating/rating'
-import { LinkTypeResponse } from '../linkType/linkType'
+import { App } from '@app/types/App.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mezonAppControllerListAdminMezonApp: build.query<
@@ -51,13 +66,13 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/api/mezon-app`, method: 'DELETE', body: queryArg.requestWithId }),
     }),
     mezonAppControllerCreateMezonApp: build.mutation<
-      MezonAppControllerCreateMezonAppApiResponse,
+      App,
       MezonAppControllerCreateMezonAppApiArg
     >({
       query: (queryArg) => ({ url: `/api/mezon-app`, method: 'POST', body: queryArg.createMezonAppRequest })
     }),
     mezonAppControllerUpdateMezonApp: build.mutation<
-      MezonAppControllerUpdateMezonAppApiResponse,
+      App,
       MezonAppControllerUpdateMezonAppApiArg
     >({
       query: (queryArg) => ({ url: `/api/mezon-app`, method: 'PUT', body: queryArg.updateMezonAppRequest })
@@ -94,196 +109,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as mezonAppService }
-export type MezonAppControllerListAdminMezonAppApiResponse = unknown
-export type MezonAppControllerListAdminMezonAppApiArg = {
-  /** Keyword to search mezonApps by name or headline */
-  search?: string
-  tags?: string[]
-  } & PaginationParams
-export type MezonAppControllerGetMyAppApiResponse = unknown
-export type MezonAppControllerGetMyAppApiArg = {
-  /** Keyword to search mezonApps by name or headline */
-  search?: string
-  tags?: string[]
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-}
-export type MezonAppControllerGetMezonAppDetailApiResponse = HttpResponse<GetMezonAppDetailsResponse>
-export type MezonAppControllerGetMezonAppDetailApiArg = {
-  id: string
-}
-export type MezonAppControllerDeleteMezonAppApiResponse = HttpResponse<any>
-export type MezonAppControllerDeleteMezonAppApiArg = {
-  requestWithId: RequestWithId
-}
-export type MezonAppControllerCreateMezonAppApiResponse = /** status 201  */ App
-export type MezonAppControllerCreateMezonAppApiArg = {
-  createMezonAppRequest: CreateMezonAppRequest
-}
-export type MezonAppControllerUpdateMezonAppApiResponse = /** status 200  */ App
-export type MezonAppControllerUpdateMezonAppApiArg = {
-  updateMezonAppRequest: UpdateMezonAppRequest
-}
-export type MezonAppControllerGetRelatedMezonAppApiResponse = HttpResponse<GetRelatedMezonAppResponse[]>
-export type MezonAppControllerGetRelatedMezonAppApiArg = {
-  id: string
-}
-export type MezonAppControllerSearchMezonAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>
 
-export type MezonAppControllerSearchMezonAppApiArg = {
-  /** Keyword to search mezonApps by name or headline */
-  search?: string
-  ownerId?: string
-  tags?: string[]
-} & PaginationParams
-export type OwnerInMezonAppDetailResponse = {
-  id: string
-  name: string
-  profileImage: string
-}
-export type TagInMezonAppDetailResponse = {
-  id: string
-  name: string
-}
-export type SocialLinkInMezonAppDetailResponse = {
-  id: string
-  url: string
-  linkTypeId: string
-  type: LinkTypeResponse;
-}
-export type GetMezonAppDetailsResponse = {
-  id: string
-  name: string
-  description: string
-  prefix: string
-  headline: string
-  featuredImage: string
-  status: number
-  owner: OwnerInMezonAppDetailResponse
-  tags: TagInMezonAppDetailResponse[]
-  socialLinks: SocialLinkInMezonAppDetailResponse[]
-  rateScore: number;
-  installLink: string;
-  supportUrl: string;
-}
-export type Tag = {
-  name: string
-  slug: string
-  apps: App[]
-}
-export type LinkType = {
-  name: string
-  icon: string
-  links: Link[]
-}
-export type Media = {
-  fileName: string
-  mimeType: string
-  filePath: string
-  ownerId: string
-  owner: User
-}
-export type User = {
-  id: string
-  name: string | null
-  email: string
-  password: string
-  role: Role
-  bio: string
-  ratings: Rating[]
-  apps: App[]
-  links: Link[]
-  medias: Media[]
-  profileImage: string
-}
-export type Link = {
-  url: string
-  ownerId: string
-  showOnProfile: boolean
-  linkTypeId: string
-  type: LinkType
-  apps: App[]
-  owner: User
-}
-export type AppReviewHistory = {
-  appId: string
-  isApproved: boolean
-  reviewerId: string
-  reviewedAt: string
-  remark: string
-  app: App
-  reviewer: User
-}
-export type App = {
-  id?: string
-  name: string
-  ownerId: string
-  status: Status
-  isAutoPublished: boolean
-  installLink: string
-  headline: string
-  description: string
-  prefix: string
-  featuredImage: string
-  supportUrl: string
-  remark: string
-  tags: Tag[]
-  socialLinks: Link[]
-  reviewHistories: AppReviewHistory[]
-  ratings: Rating[]
-  owner: User
-}
-export type SocialLinkDto = {
-  url?: string
-  linkTypeId: string
-  type?: LinkTypeResponse // For render only
-}
-export type CreateMezonAppRequest = {
-  name: string
-  isAutoPublished?: boolean
-  installLink: string
-  headline: string
-  description: string
-  prefix: string
-  featuredImage?: string
-  supportUrl: string
-  remark?: string
-  tagIds: string[]
-  socialLinks?: SocialLinkDto[]
-}
-export type UpdateMezonAppRequest = {
-  id: string
-  name?: string
-  isAutoPublished?: boolean
-  installLink?: string
-  headline?: string
-  description?: string
-  prefix?: string
-  featuredImage?: string
-  supportUrl?: string
-  remark?: string
-  tagIds: string[]
-  socialLinks?: SocialLinkDto[]
-}
-export type GetRelatedMezonAppResponse = {
-  id: string
-  name: string
-  status: number
-  featuredImage: string
-  rateScore: number
-}
-export enum Status {
-  $0 = 0,
-  $1 = 1,
-  $2 = 2,
-  $3 = 3
-}
-export enum Role {
-  Admin = 'ADMIN',
-  Developer = 'DEVELOPER'
-}
 export const {
   useMezonAppControllerListAdminMezonAppQuery,
   useLazyMezonAppControllerListAdminMezonAppQuery,

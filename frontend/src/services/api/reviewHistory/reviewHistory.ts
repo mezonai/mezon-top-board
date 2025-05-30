@@ -1,5 +1,15 @@
-import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import {
+  ReviewHistoryControllerSearchAppReviewsApiArg,
+  ReviewHistoryControllerSearchAppReviewsApiResponse,
+  ReviewHistoryControllerCreateAppReviewApiArg,
+  ReviewHistoryControllerCreateAppReviewApiResponse,
+  ReviewHistoryControllerUpdateAppReviewApiArg,
+  ReviewHistoryControllerUpdateAppReviewApiResponse,
+  ReviewHistoryControllerDeleteAppReviewApiArg,
+  ReviewHistoryControllerDeleteAppReviewApiResponse
+} from './reviewHistory.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     reviewHistoryControllerSearchAppReviews: build.query<
@@ -40,60 +50,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as reviewHistoryService }
-export type ReviewHistoryControllerSearchAppReviewsApiResponse = HttpResponse<ReviewHistoryResponse[]>
 
-export type ReviewHistoryControllerSearchAppReviewsApiArg = {
-  search?: string
-  appId?: string
-} & PaginationParams
-
-type Reviewer = {
-  id: string
-  name: string
-  email: string
-  role: string
-}
-
-type AppInfo = {
-  id: string
-  name: string
-  installLink: string | null
-  description: string | null
-  headline: string | null
-  featuredImage: string | null
-}
-
-type ReviewHistory = {
-  id: string
-  remark: string
-  reviewer: Reviewer
-  reviewedAt: string
-  app: AppInfo
-}
-
-export type ReviewHistoryResponse = ReviewHistory
-
-export type ReviewHistoryControllerCreateAppReviewApiResponse = unknown
-export type ReviewHistoryControllerCreateAppReviewApiArg = {
-  createAppReviewRequest: CreateAppReviewRequest
-}
-export type ReviewHistoryControllerUpdateAppReviewApiResponse = unknown
-export type ReviewHistoryControllerUpdateAppReviewApiArg = {
-  updateAppReviewRequest: UpdateAppReviewRequest
-}
-export type ReviewHistoryControllerDeleteAppReviewApiResponse = unknown
-export type ReviewHistoryControllerDeleteAppReviewApiArg = {
-  requestWithId: RequestWithId
-}
-export type CreateAppReviewRequest = {
-  appId: string
-  isApproved: boolean
-  remark: string
-}
-export type UpdateAppReviewRequest = {
-  id: string
-  remark: string
-}
 export const {
   useReviewHistoryControllerSearchAppReviewsQuery,
   useLazyReviewHistoryControllerSearchAppReviewsQuery,

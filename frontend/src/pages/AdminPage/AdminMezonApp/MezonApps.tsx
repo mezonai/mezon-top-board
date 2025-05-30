@@ -1,7 +1,8 @@
 import { CiOutlined, DeleteOutlined, EditOutlined, LockOutlined, SearchOutlined } from "@ant-design/icons";
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { AppStatus } from "@app/enums/AppStatus.enum";
-import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerDeleteMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
+import { useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerDeleteMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
+import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { useReviewHistoryControllerCreateAppReviewMutation } from "@app/services/api/reviewHistory/reviewHistory";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
