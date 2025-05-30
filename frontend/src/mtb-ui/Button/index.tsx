@@ -1,6 +1,6 @@
 import { Button as AntdButton, ButtonProps as AntdButtonProps } from 'antd'
 import { useMemo } from 'react'
-import { IButtonProps } from '@app/types/Button.types'
+import { IButtonProps } from './Button.types'
 import { EButtonColor, EButtonVariant } from '@app/enums/button.enum'
 
 const Button = (
@@ -19,8 +19,14 @@ const Button = (
       !text-white !border-primary-border hover:!border-primary-hover active:!border-primary-active 
       disabled:!bg-gray-300 disabled:!border-gray-400 disabled:!text-gray-500 disabled:!cursor-not-allowed`,
     [EButtonColor.SECONDARY]: `
-      !bg-white !text-black !border-gray-300 
-      hover:!bg-gray-100 active:!bg-gray-200 
+      !bg-[#1677ff] hover:!bg-[#4096ff] active:!bg-[#0958d9]
+      !text-white !border-[#1677ff] hover:!border-[#4096ff] active:!border-[#0958d9]
+      disabled:!bg-gray-300 disabled:!border-gray-400 disabled:!text-gray-500 disabled:!cursor-not-allowed
+    `,
+    [EButtonColor.DARK]: `
+      !bg-transparent !text-gray-800 !border-gray-300
+      hover:!bg-gray-900 hover:!text-white hover:!border-gray-900
+      active:!bg-black active:!border-black active:!text-white
       disabled:!bg-gray-100 disabled:!border-gray-200 disabled:!text-gray-400 disabled:!cursor-not-allowed
     `,
     [EButtonColor.DEFAULT]: '',
@@ -30,7 +36,7 @@ const Button = (
     [EButtonColor.CYAN]: '',
   }
 
-  const useCustomClassOnly = color === EButtonColor.PRIMARY || color === EButtonColor.DARK
+  const useCustomClassOnly = color === EButtonColor.PRIMARY || color === EButtonColor.SECONDARY || color === EButtonColor.DARK
 
   const _className = useMemo(() => {
     const baseClass = useCustomClassOnly ? customColorClass[color] : ''

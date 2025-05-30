@@ -1,13 +1,19 @@
 import { RiseOutlined, StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { ICompactBotCardProps } from '@app/types/Botcard.types'
+import { ICompactBotCardProps } from '@app/components/BotCard/BotCard.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
 import OwnerActions from '../OwnerActions/OwnerActions'
 
-function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
+function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardProps) {
   const navigate = useNavigate()
-  const handleNavigateDetail = () => {
+
+  const handleNavigateDetail = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (isDragging) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     if (data?.id) {
       navigate(`/bot/${data?.id}`)
     }

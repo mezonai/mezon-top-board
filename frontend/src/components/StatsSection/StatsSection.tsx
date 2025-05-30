@@ -1,4 +1,4 @@
-import { IStatsSectionProps } from '@app/types/StatsSection.types'
+import { IStatsSectionProps } from "./StatsSection.types"
 
 function StatsSection({ stats }: IStatsSectionProps) {
   return (

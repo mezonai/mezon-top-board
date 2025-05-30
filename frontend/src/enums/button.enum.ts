@@ -2,6 +2,7 @@ export enum EButtonColor {
   DEFAULT = 'default',
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
+  DARK = 'dark',
   DANGER = 'danger',
   PINK = 'pink',
   PURPLE = 'purple',
