@@ -3,8 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-import { SortOrder } from "../enum/sortOder";
 import { SortField } from "../enum/sortField";
+import { SortOrder } from "../enum/sortOder";
 
 export class RequestWithId {
   @IsNotEmpty()

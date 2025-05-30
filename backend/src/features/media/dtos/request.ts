@@ -1,5 +1,6 @@
-import { PaginationQuery, RequestWithId } from "@domain/common/dtos/request.dto";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
+
+import { PaginationQuery, RequestWithId } from '@domain/common/dtos/request.dto';
 
 export class GetMediaRequest extends PaginationQuery { }
 

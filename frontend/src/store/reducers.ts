@@ -6,6 +6,7 @@ import { linkTypeReducer } from './linkType'
 import { userReducer } from './user'
 import { authReducer } from './auth'
 import { ratingReducer } from './rating'
+import { mediaReducer } from './media'
 
 export const rootReducer = combineReducers({
   tag: tagReducer,
@@ -14,5 +15,6 @@ export const rootReducer = combineReducers({
   user: userReducer,
   auth: authReducer,
   rating: ratingReducer,
+  media: mediaReducer,
   [api.reducerPath]: api.reducer
 })
