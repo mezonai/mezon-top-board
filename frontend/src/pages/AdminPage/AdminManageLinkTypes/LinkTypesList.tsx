@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Button from '@app/mtb-ui/Button'
-import CreateLinkTypeModal, { LinkTypeFormValues } from './components/CreateLinkTypeModal'
-import { Input, Popconfirm, Table, Tooltip } from 'antd'
+import LinkTypeModal, { LinkTypeFormValues } from './components/LinkTypeModal'
+import { Popconfirm, Table } from 'antd'
 import { toast } from 'react-toastify'
 import {
   UpdateLinkTypeRequest,
@@ -12,12 +12,10 @@ import {
 } from '@app/services/api/linkType/linkType'
 import { useAppSelector } from '@app/store/hook'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { ApiError } from '@app/types/API.types'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import MediaManagerModal from '../AdminManageMedias/components/MediaManager'
 
 function LinkTypesList() {
   const [createLinkType] = useLinkTypeControllerCreateLinkTypeMutation()
@@ -28,18 +26,9 @@ function LinkTypesList() {
 
   const linkTypeList = useAppSelector((state: any) => state.link.linkTypeList)
 
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false)
-  const [isMediaModalVisible, setIsMediaModalVisible] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<string | File>('')
-
-  const [editingLinkType, setEditingLinkType] = useState<{
-    id: string | null
-    name: string
-    prefixUrl: string
-    icon: string
-  }>({ id: null, name: '', prefixUrl: '', icon: '' })
-
-  const editError = !editingLinkType.name.trim() || !editingLinkType.prefixUrl.trim() || (!editingLinkType.icon.trim() && !selectedImage)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [editingLinkType, setEditingLinkType] = useState<(LinkTypeFormValues & { id?: string }) | null>(null)
+  const [isUpdateModal, setIsUpdateModal] = useState(false)
 
   useEffect(() => {
     getLinkTypeList()
@@ -51,15 +40,6 @@ function LinkTypesList() {
       toast.error(apiError?.data?.message)
     }
   }, [isError, error])
-
-  const handleChooseImage = (image: File | string) => {
-    if (!image) {
-      toast.error('Please select an image')
-      return
-    }
-    setSelectedImage(image)
-    setIsMediaModalVisible(false)
-  }
 
   const prepareImageUpload = async (image: File | string): Promise<string> => {
     if (typeof image === 'string') return image
@@ -75,13 +55,6 @@ function LinkTypesList() {
     }
   }
 
-  const getDisplayedImage = (record: any) => {
-    if (editingLinkType.id === record.id && selectedImage) {
-      return typeof selectedImage === 'string' ? selectedImage : URL.createObjectURL(selectedImage)
-    }
-    return getUrlMedia(record.icon)
-  }
-
   const getLinkTypeList = async () => {
     try {
       await getAllLinkTypes()
@@ -90,15 +63,30 @@ function LinkTypesList() {
     }
   }
 
-  const handleCancel = () => {
-    setIsCreateModalVisible(false)
+  const handleOpen = () => {
+    setEditingLinkType(null)
+    setIsModalVisible(true)
+    setIsUpdateModal(false)
   }
 
-  const handleCreate = async (values: LinkTypeFormValues) => {
-    const isDuplicate = linkTypeList?.data?.some(
-      (linkType: UpdateLinkTypeRequest) =>
-        linkType.name === values.name.trim() || linkType.prefixUrl === values.prefixUrl.trim()
-    )
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setIsUpdateModal(false)
+    setEditingLinkType(null)
+  }
+
+  const handleModalSubmit = async (values: LinkTypeFormValues & { id?: string }) => {
+    const trimmedName = values.name.trim()
+    const trimmedPrefix = values.prefixUrl.trim()
+
+    const isDuplicate = linkTypeList?.data?.some((linkType: UpdateLinkTypeRequest) => {
+      const sameName = linkType.name === trimmedName
+      const samePrefix = linkType.prefixUrl === trimmedPrefix
+      if (isUpdateModal && values.id) {
+        return (sameName || samePrefix) && linkType.id !== values.id
+      }
+      return sameName || samePrefix
+    })
 
     if (isDuplicate) {
       toast.error('Link type name or Link type prefix already exists')
@@ -115,65 +103,35 @@ function LinkTypesList() {
     }
 
     try {
-      await createLinkType({
-        createLinkTypeRequest: {
-          ...values,
-          icon: finalIconUrl
-        }
-      }).unwrap()
-      setIsCreateModalVisible(false)
-      toast.success('Link type created')
-    } catch (err) {
-      toast.error('Failed to create link type')
-    }
-  }
+      if (isUpdateModal && values.id) {
+        await updateLinkType({
+          updateLinkTypeRequest: {
+            id: values.id,
+            name: trimmedName,
+            prefixUrl: trimmedPrefix,
+            icon: finalIconUrl
+          }
+        }).unwrap()
 
-  const handleUpdate = async () => {
-    if (!editingLinkType.id) {
-      toast.error('Something went wrong, please try again')
-      return
-    }
-    const isDuplicate = linkTypeList?.data?.some(
-      (linkType: UpdateLinkTypeRequest) =>
-        (linkType.name === editingLinkType.name.trim() || linkType.prefixUrl === editingLinkType.prefixUrl.trim()) &&
-        linkType.id !== editingLinkType.id?.trim()
-    )
+        toast.success('Link type updated')
+      } else {
+        await createLinkType({
+          createLinkTypeRequest: {
+            name: trimmedName,
+            prefixUrl: trimmedPrefix,
+            icon: finalIconUrl
+          }
+        }).unwrap()
 
-    if (isDuplicate) {
-      toast.error('Link type name or Link type prefix already exists')
-      return
-    }
-
-    let updateIcon = editingLinkType.icon.trim()
-    if (selectedImage) {
-      try {
-        updateIcon = await prepareImageUpload(selectedImage)
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Image upload failed')
-        return
+        toast.success('Link type created')
       }
-    }
 
-    try {
-      await updateLinkType({
-        updateLinkTypeRequest: {
-          id: editingLinkType.id,
-          name: editingLinkType.name.trim(),
-          prefixUrl: editingLinkType.prefixUrl.trim(),
-          icon: updateIcon
-        }
-      }).unwrap()
-      setEditingLinkType({ id: null, name: '', prefixUrl: '', icon: '' })
-      setSelectedImage('')
-      toast.success('Link type updated')
-    } catch {
-      toast.error('Failed to update link type')
+      setIsModalVisible(false)
+      setIsUpdateModal(false)
+      setEditingLinkType(null)
+    } catch (err) {
+      toast.error(isUpdateModal ? 'Failed to update link type' : 'Failed to create link type')
     }
-  }
-
-  const cancelUpdate = () => {
-    setEditingLinkType({ id: null, name: '', prefixUrl: '', icon: '' })
-    setSelectedImage('')
   }
 
   const handleDelete = async (id: string) => {
@@ -195,111 +153,60 @@ function LinkTypesList() {
       dataIndex: 'icon',
       key: 'icon',
       width: '15%',
-      render: (text: string, record: any) =>
-        editingLinkType.id === record.id ? (
-          <Tooltip zIndex={1}
-            getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
-            open={!editingLinkType.icon.trim() && !selectedImage}
-            title='This field is required'
-            placement='topLeft'
-            color='rgba(255, 0, 0, 0.8)'
-          >
-            <div
-              className="relative group w-[50px] h-[50px] cursor-pointer"
-              onClick={() => setIsMediaModalVisible(true)}
-            >
-              <img
-                src={getDisplayedImage(record)}
-                className="w-full h-full object-cover rounded group-hover:brightness-50 transition duration-200"
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
-                <EditOutlined className="!text-white text-lg"/>
-              </div>
-            </div>
-          </Tooltip>
-        ) : (
-          <img src={getUrlMedia(text)} alt='icon' className="w-[40px] h-[40px]" />
-        )
+      render: (text: string) => (
+        <img src={getUrlMedia(text)} alt='icon' className='w-[40px] h-[40px]' />
+      )
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string, record: any) =>
-        editingLinkType.id === record.id ? (
-          <Tooltip zIndex={1}
-            open={!editingLinkType.name.trim()}
-            title='This field is required'
-            placement='topLeft'
-            color='rgba(255, 0, 0, 0.8)'
-          >
-            <Input
-              required
-              status={!editingLinkType.name.trim() ? 'error' : ''}
-              value={editingLinkType.name}
-              onChange={(e) => setEditingLinkType((prev) => ({ ...prev, name: e.target.value }))}
-            />
-          </Tooltip>
-        ) : (
-          text
-        )
     },
     {
       title: 'Prefix',
       dataIndex: 'prefixUrl',
       key: 'prefixUrl',
-      render: (text: string, record: any) =>
-        editingLinkType.id === record.id ? (
-          <Tooltip zIndex={1}
-            open={!editingLinkType.prefixUrl.trim()}
-            title='This field is required'
-            placement='topLeft'
-            color='rgba(255, 0, 0, 0.8)'
-          >
-            <Input
-              required
-              status={!editingLinkType.prefixUrl.trim() ? 'error' : ''}
-              value={editingLinkType.prefixUrl}
-              onChange={(e) => setEditingLinkType((prev) => ({ ...prev, prefixUrl: e.target.value }))}
-            />
-          </Tooltip>
-        ) : (
-          text
-        )
     },
     {
       title: 'Actions',
       key: 'actions',
       width: '20%',
-      render: (_: any, record: any) =>
-        editingLinkType.id === record.id ? (
-          <div className='flex gap-2'>
-            <Button disabled={editError} color='default' variant='outlined' onClick={() => handleUpdate()}>
-              Save
-            </Button>
-            <Button onClick={cancelUpdate}>Cancel</Button>
-          </div>
-        ) : (
-          <div className='flex gap-2'>
-            <Button
-              color='secondary'
-              icon={<EditOutlined />}
-              onClick={() =>
-                setEditingLinkType({ id: record.id, name: record.name, prefixUrl: record.prefixUrl, icon: record.icon })
-              }
-            />
-            <Popconfirm title='Delete this tag?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
-              <Button icon={<DeleteOutlined />} />
-            </Popconfirm>
-          </div>
-        )
+      render: (_: any, record: any) => (
+        <div className='flex gap-2'>
+          <Button
+            color='secondary'
+            icon={<EditOutlined />}
+            onClick={() => {
+              setIsUpdateModal(true)
+              setEditingLinkType({
+                id: record.id,
+                name: record.name,
+                prefixUrl: record.prefixUrl,
+                icon: record.icon,
+              })
+              setIsModalVisible(true)
+            }}
+          />
+          <Popconfirm
+            title='Delete this tag?'
+            onConfirm={() => handleDelete(record.id)}
+            okText='Yes'
+            cancelText='No'
+          >
+            <Button icon={<DeleteOutlined />} />
+          </Popconfirm>
+        </div>
+      )
     }
   ]
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
-        <Button icon={<PlusOutlined />} onClick={() => setIsCreateModalVisible(true)}>
+      <div className='flex justify-end mb-2'>
+        <Button
+          icon={<PlusOutlined />}
+          onClick={handleOpen}
+        >
           Add Link Type
         </Button>
       </div>
@@ -311,11 +218,12 @@ function LinkTypesList() {
         </MtbTypography>
       )}
 
-      <CreateLinkTypeModal open={isCreateModalVisible} onClose={handleCancel} onCreate={handleCreate} />
-      <MediaManagerModal
-        isVisible={isMediaModalVisible}
-        onChoose={handleChooseImage}
-        onClose={() => setIsMediaModalVisible(false)}
+      <LinkTypeModal
+        open={isModalVisible}
+        onClose={handleCancel}
+        onSubmit={handleModalSubmit}
+        editingData={editingLinkType ?? undefined}
+        isUpdate={isUpdateModal}
       />
     </div>
   )

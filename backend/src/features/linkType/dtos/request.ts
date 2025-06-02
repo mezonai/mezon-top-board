@@ -1,6 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, IntersectionType, PartialType } from "@nestjs/swagger";
 
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
 import {
   RequestWithId,
@@ -20,19 +20,7 @@ export class CreateLinkTypeRequest {
   icon: string;
 }
 
-export class UpdateLinkTypeRequest extends RequestWithId {
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  name?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  prefixUrl?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  icon?: string;
-}
+export class UpdateLinkTypeRequest extends IntersectionType(
+  RequestWithId,
+  PartialType(CreateLinkTypeRequest),
+) {}

@@ -4,7 +4,6 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
 
-import { Public } from "@libs/decorator/authorization.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
 import { Logger } from "@libs/logger";
 
@@ -22,18 +21,18 @@ export class LinkTypeController {
     this.logger.setContext(LinkTypeController.name);
   }
 
-  @Public()
+  @ApiBearerAuth()
   @Get()
   @ApiResponse({ type: SocialLinkInMezonAppDetailResponse })
   async getAllLinks() {
     return await this.linkService.getAllSocialLinks();
   }
-  
+   
   @ApiBearerAuth()
   @RoleRequired([Role.ADMIN])
   @Post()
   @ApiBody({ type: CreateLinkTypeRequest })
-  createTag(@Body() body: CreateLinkTypeRequest) {
+  createLinkType(@Body() body: CreateLinkTypeRequest) {
     try {
       return this.linkService.createLinkType(body);
     } catch (error) {
@@ -46,7 +45,7 @@ export class LinkTypeController {
   @RoleRequired([Role.ADMIN])
   @Put()
   @ApiBody({ type: UpdateLinkTypeRequest })
-  updateTag(@Body() body: UpdateLinkTypeRequest) {
+  updateLinkType(@Body() body: UpdateLinkTypeRequest) {
     try {
       return this.linkService.updateLinkType(body);
     } catch (error) {

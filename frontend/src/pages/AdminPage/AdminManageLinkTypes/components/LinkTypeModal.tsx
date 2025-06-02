@@ -1,11 +1,12 @@
 import { Modal, Form, Input } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { EditOutlined } from '@ant-design/icons'
 import MtbButton from '@app/mtb-ui/Button'
 import { FormProvider, useForm, Controller, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import MediaManagerModal from '../../AdminManageMedias/components/MediaManager'
+import MediaManagerModal from '../../../../components/MediaManager/MediaManager'
 import { LINK_TYPE_SCHEMA } from '@app/validations/linkType.validation'
+import { getUrlMedia } from '@app/utils/stringHelper'
 
 export interface LinkTypeFormValues {
   name: string
@@ -16,10 +17,12 @@ export interface LinkTypeFormValues {
 interface CreateLinkTypeModalProps {
   open: boolean
   onClose: () => void
-  onCreate: (values: LinkTypeFormValues) => void
+  onSubmit: (values: LinkTypeFormValues) => void
+  editingData?: LinkTypeFormValues & { id?: string }
+  isUpdate: boolean
 }
 
-const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalProps) => {
+const LinkTypeModal = ({ open, onClose, onSubmit, editingData, isUpdate }: CreateLinkTypeModalProps) => {
   const methods = useForm<LinkTypeFormValues>({
     resolver: yupResolver(LINK_TYPE_SCHEMA),
     mode: 'all',
@@ -40,23 +43,38 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
   const icon = useWatch({ control, name: 'icon' })
 
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false)
-
-  const selectedImage = typeof icon === 'string' ? icon : icon instanceof File ? URL.createObjectURL(icon) : null
-
+  
   useEffect(() => {
-    if (!open) {
-      reset()
+    if (!open) return
+    if (isUpdate && editingData) {
+      reset({
+        name: editingData.name ?? '',
+        prefixUrl: editingData.prefixUrl ?? '',
+        icon: editingData.icon ?? ''
+      })
+    } else {
+      reset({
+        name: '',
+        prefixUrl: '',
+        icon: ''
+      })
     }
-  }, [open])
+  }, [open, isUpdate, editingData, reset])
 
   const handleChooseImage = (image: File | string) => {
     if (!image) return
     setValue('icon', image, { shouldValidate: true })
     setIsMediaModalVisible(false)
   }
+  const displayedImage = useMemo(() => {
+    if (icon instanceof File) return URL.createObjectURL(icon);
+    if (typeof icon === 'string' && icon.trim()) return getUrlMedia(icon);
+    return null;
+  }, [icon]);
 
-  const onSubmit = (data: LinkTypeFormValues) => {
-    onCreate({
+  const Submit = (data: LinkTypeFormValues) => {
+    onSubmit({
+      ...(editingData?.id ? { id: editingData.id } : {}),
       name: data.name.trim(),
       prefixUrl: data.prefixUrl.trim(),
       icon: data.icon
@@ -66,12 +84,12 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
 
   return (
     <Modal zIndex={2}
-      title='Create New Tag'
+      title={isUpdate ? 'Edit Link Type' : 'Create New Link Type'}
       open={open}
       onCancel={onClose}
       footer={
-        <MtbButton onClick={handleSubmit(onSubmit)} disabled={!isValid}>
-          Add
+        <MtbButton onClick={handleSubmit(Submit)} disabled={!isValid}>
+          {isUpdate ? 'Save' : 'Add'}
         </MtbButton>
       }
       width={600}
@@ -86,7 +104,6 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
               render={({ field }) => <Input {...field} placeholder='Enter name' />}
             />
           </Form.Item>
-
           <Form.Item
             label='Prefix URL'
             validateStatus={errors.prefixUrl ? 'error' : ''}
@@ -98,17 +115,16 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
               render={({ field }) => <Input {...field} placeholder='https://example.com' />}
             />
           </Form.Item>
-
           <Form.Item label='Icon' validateStatus={errors.icon ? 'error' : ''} help={errors.icon?.message}>
             <div className='flex items-center gap-4'>
-              {selectedImage ? (
+              {displayedImage ? (
                 <img
-                  src={selectedImage}
+                  src={displayedImage }
                   alt='Selected Icon'
                   className='w-[60px] h-[60px] object-cover rounded border'
                 />
               ) : (
-                <div className='w-[60px] h-[60px] bg-gray-100 border-dashed border rounded' />
+                <div className='w-[60px] h-[60px] bg-gray-100 border-dashed border rounded border-red-500' />
               )}
               <MtbButton icon={<EditOutlined />} onClick={() => setIsMediaModalVisible(true)}>
                 Choose Image
@@ -127,4 +143,4 @@ const CreateLinkTypeModal = ({ open, onClose, onCreate }: CreateLinkTypeModalPro
   )
 }
 
-export default CreateLinkTypeModal
+export default LinkTypeModal

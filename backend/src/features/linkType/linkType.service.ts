@@ -36,8 +36,9 @@ export class LinkTypeService {
         { prefixUrl: ILike(body.prefixUrl) }
       ]
     });
-    if (linkTypes)
+    if (linkTypes) {
       throw new BadRequestException(ErrorMessages.EXISTED_LINK_TYPE)
+    }
     const created = await this.linkTypeRepository.create(body);
     return new Result({ data: Mapper(LinkTypeResponse, created) });
   }
@@ -49,8 +50,9 @@ export class LinkTypeService {
         { prefixUrl: ILike(body.prefixUrl) }
       ]
     });
-    if (linkTypes && linkTypes.id !== body.id)
+    if (linkTypes && linkTypes.id !== body.id) {
       throw new BadRequestException(ErrorMessages.EXISTED_LINK_TYPE)
+    }
     await this.linkTypeRepository.update(body.id, body);
     return new Result({data: Mapper(LinkTypeResponse, body)});
   }

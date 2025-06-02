@@ -1,9 +1,9 @@
 import * as yup from 'yup'
-import { LinkTypeFormValues } from '@app/pages/AdminPage/AdminManageLinkTypes/components/CreateLinkTypeModal'
+import { LinkTypeFormValues } from '@app/pages/AdminPage/AdminManageLinkTypes/components/LinkTypeModal'
 
 export const LINK_TYPE_SCHEMA: yup.ObjectSchema<LinkTypeFormValues> = yup.object({
   name: yup.string().trim().required('Name is required'),
-  prefixUrl: yup.string().trim().required('Prefix URL is required').url('Must be a valid URL'),
+  prefixUrl: yup.string().trim().required('Prefix URL is required'),
   icon: yup
     .mixed<File | string>()
     .required('Icon is required')
