@@ -188,12 +188,12 @@ function LinkTypesList() {
             }}
           />
           <Popconfirm
-            title='Delete this tag?'
+            title='Delete this link type?'
             onConfirm={() => handleDelete(record.id)}
             okText='Yes'
             cancelText='No'
           >
-            <Button icon={<DeleteOutlined />} />
+            <Button icon={<DeleteOutlined />} color='danger'/>
           </Popconfirm>
         </div>
       )
