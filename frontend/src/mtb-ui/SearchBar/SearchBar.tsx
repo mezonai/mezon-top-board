@@ -74,6 +74,15 @@ const SearchBar = ({
   ) || [];
 
 
+const [isSelectVisible, setIsSelectVisible] = useState(false);
+
+const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || [];
+
+const selectedHiddenTagCount = selectedTagIds.filter(id =>
+  hiddenTags.some(tag => tag.id === id)
+).length;
+
+const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
@@ -116,28 +125,38 @@ const SearchBar = ({
             </Tag.CheckableTag>
           ))}
         {!showAllTags && totalTags > 10 && (
-          <Select
-            mode="multiple"
-            placeholder={`+${hiddenTagsCount} tags`}
-            value={selectedTagIds}
-            onChange={(newSelectedTags: string[]) => {
-              setSelectedTagIds(newSelectedTags)
-              handleSearch(newSelectedTags)
-            }}
-            style={{ width: '10%', marginTop: '8px' }}
-            dropdownStyle={{ width: '20%' }}
-            maxTagCount={0} 
-            maxTagPlaceholder={() => `+${hiddenTagsCount+MAX_VISIBLE_TAGS - visibleTags.length} tags`}
-            filterOption={(input, option) =>
-              (option?.label as string).toLowerCase().includes(input.toLowerCase())
-            }
-            options={
-              tagList?.data?.slice(showAllTags ? totalTags : MAX_VISIBLE_TAGS, totalTags).map(tag => ({
+          !isSelectVisible ? (
+            <Tag
+              className="!mb-2 cursor-pointer"
+              onClick={() => setIsSelectVisible(true)}
+            >
+              +{remainingHiddenTagCount} tags
+            </Tag>
+          ) : (
+            <Select
+              mode="multiple"
+              showSearch
+              autoFocus
+              open
+              value={selectedTagIds}
+              onChange={(newSelectedTagIds: string[]) => {
+                setSelectedTagIds(newSelectedTagIds);
+                handleSearch(newSelectedTagIds);
+              }}
+              onBlur={() => setIsSelectVisible(false)}
+              style={{ width: '120px', marginTop: '8px' }}
+              dropdownStyle={{ width: '200px' }}
+              maxTagCount={0}
+              maxTagPlaceholder={() => `+${remainingHiddenTagCount} tags`}
+              filterOption={(input, option) =>
+                (option?.label as string).toLowerCase().includes(input.toLowerCase())
+              }
+              options={hiddenTags.map(tag => ({
                 label: tag.name,
                 value: tag.id
-              })) || []
-            }
-          />
+              }))}
+            />
+          )
         )}
       </div>
     </>
