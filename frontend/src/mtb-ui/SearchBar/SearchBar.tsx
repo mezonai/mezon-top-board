@@ -67,6 +67,12 @@ const SearchBar = ({
 
   const totalTags = tagList?.data?.length || 0
   const hiddenTagsCount = totalTags - MAX_VISIBLE_TAGS
+  const visibleTags = tagList?.data?.filter((tag, index) =>
+    showAllTags ||
+    index < MAX_VISIBLE_TAGS ||
+    selectedTagIds.includes(tag.id)
+  ) || [];
+
 
   return (
     <>
@@ -99,20 +105,7 @@ const SearchBar = ({
         )}
       </div>
       <div className={`pt-5 cursor-pointer`}>
-        {tagList?.data?.slice(0, showAllTags ? totalTags : MAX_VISIBLE_TAGS).map((tag) => (
-          <Tag.CheckableTag
-            key={tag.id}
-            checked={selectedTagIds.includes(tag?.id)}
-            className='!border !border-gray-300'
-            // color={selectedTagIds.includes(tag?.id) ? tag.tagSelectedColor : tag.tagColor}
-            onClick={() => handleSearchTag(tag?.id)}
-          >
-            {tag.name}
-          </Tag.CheckableTag>
-        ))}
-        {tagList?.data?.slice(showAllTags ? totalTags : MAX_VISIBLE_TAGS, totalTags)
-          ?.filter((tag) => selectedTagIds.includes(tag.id))
-          .map((tag) => (
+        {visibleTags.map((tag) => (
             <Tag.CheckableTag
               key={tag.id}
               checked={selectedTagIds.includes(tag.id)}
@@ -123,7 +116,6 @@ const SearchBar = ({
             </Tag.CheckableTag>
           ))}
         {!showAllTags && totalTags > 10 && (
-          
           <Select
             mode="multiple"
             placeholder={`+${hiddenTagsCount} tags`}
@@ -135,7 +127,7 @@ const SearchBar = ({
             style={{ width: '10%', marginTop: '8px' }}
             dropdownStyle={{ width: '20%' }}
             maxTagCount={0} 
-            maxTagPlaceholder={() => `+${hiddenTagsCount - selectedTagIds.length} tags`}
+            maxTagPlaceholder={() => `+${hiddenTagsCount+MAX_VISIBLE_TAGS - visibleTags.length} tags`}
             filterOption={(input, option) =>
               (option?.label as string).toLowerCase().includes(input.toLowerCase())
             }
