@@ -2,7 +2,7 @@ import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
-import { Input, Tag } from 'antd'
+import { Input, Select, Tag } from 'antd'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -110,10 +110,42 @@ const SearchBar = ({
             {tag.name}
           </Tag.CheckableTag>
         ))}
+        {tagList?.data?.slice(showAllTags ? totalTags : MAX_VISIBLE_TAGS, totalTags)
+          ?.filter((tag) => selectedTagIds.includes(tag.id))
+          .map((tag) => (
+            <Tag.CheckableTag
+              key={tag.id}
+              checked={selectedTagIds.includes(tag.id)}
+              className='!border !border-gray-300'
+              onClick={() => handleSearchTag(tag.id)}
+            >
+              {tag.name}
+            </Tag.CheckableTag>
+          ))}
         {!showAllTags && totalTags > 10 && (
-          <Tag className='!mb-2' onClick={() => setShowAllTags(true)}>
-            +{hiddenTagsCount}
-          </Tag>
+          
+          <Select
+            mode="multiple"
+            placeholder={`+${hiddenTagsCount} tags`}
+            value={selectedTagIds}
+            onChange={(newSelectedTags: string[]) => {
+              setSelectedTagIds(newSelectedTags)
+              handleSearch(newSelectedTags)
+            }}
+            style={{ width: '10%', marginTop: '8px' }}
+            dropdownStyle={{ width: '20%' }}
+            maxTagCount={0} 
+            maxTagPlaceholder={() => `+${hiddenTagsCount - selectedTagIds.length} tags`}
+            filterOption={(input, option) =>
+              (option?.label as string).toLowerCase().includes(input.toLowerCase())
+            }
+            options={
+              tagList?.data?.slice(showAllTags ? totalTags : MAX_VISIBLE_TAGS, totalTags).map(tag => ({
+                label: tag.name,
+                value: tag.id
+              })) || []
+            }
+          />
         )}
       </div>
     </>
