@@ -1,7 +1,5 @@
 import { Column, Entity, ManyToOne } from "typeorm";
-
 import { BaseSoftDelete } from "../base";
-
 import { User } from "./user.entity";
 
 @Entity()
