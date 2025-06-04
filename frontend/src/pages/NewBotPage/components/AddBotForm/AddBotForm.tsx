@@ -168,7 +168,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
   }
 
   const optionsLink = useMemo(() => {
-    return linkTypeList?.map((item) => ({
+    return linkTypeList?.data?.map((item) => ({
       icon: item.icon,
       label: <SocialLinkIcon src={item?.icon} prefixUrl={item?.name} />,
       name: item.name,
@@ -427,7 +427,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
                   value={socialLinkUrl}
                   prefix={
                     selectedSocialLink
-                      ? linkTypeList.find(item => item.id === selectedSocialLink)?.prefixUrl || ''
+                      ? linkTypeList.data.find(item => item.id === selectedSocialLink)?.prefixUrl || ''
                       : ''
                   }
                   onChange={handleSocialLinkUrlChange}

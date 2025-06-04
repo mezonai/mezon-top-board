@@ -1,12 +1,15 @@
-import { RequestWithId } from "@domain/common/dtos/request.dto";
-import { Logger } from "@libs/logger";
 import { Body, Controller, Delete, Get, Post, Query, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
+
+import { RequestWithId } from "@domain/common/dtos/request.dto";
+import { User } from "@domain/entities";
+
+import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
+import { Logger } from "@libs/logger";
+
 import { CreateMediaRequest, DeleteMediaRequest, GetMediaRequest } from "./dtos/request";
 import { MediaService } from "./media.service";
-import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
-import { User } from "@domain/entities";
 
 @Controller("media")
 @ApiTags("Media")
