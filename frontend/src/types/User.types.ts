@@ -1,6 +1,8 @@
 import { Role } from "@app/enums/Role.enum"
-import { App, Link, Media } from "@app/services/api/mezonApp/mezonApp.types"
-import { Rating } from "@app/services/api/rating/rating.types"
+import { Link } from "@app/services/api/mezonApp/mezonApp.types"
+import { App } from "./App.types"
+import { Rating } from "./Rating.types"
+import { MediaFile } from "./Media.types"
 
 export type User = {
   id: string
@@ -12,6 +14,6 @@ export type User = {
   ratings: Rating[]
   apps: App[]
   links: Link[]
-  medias: Media[]
+  medias: MediaFile[]
   profileImage: string | null
 }

@@ -1,4 +1,4 @@
-import { App } from "@app/services/api/mezonApp/mezonApp.types"
+import { App } from "./App.types"
 import { User } from "./User.types"
 
 export type RatingBase = {

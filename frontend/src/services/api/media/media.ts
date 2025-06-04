@@ -1,8 +1,16 @@
-import { HttpResponse } from '@app/types/API.types'
+import { PaginationParams, RequestWithId } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import {
+  MediaControllerGetAllMediaApiResponse,
+  MediaControllerGetMediaApiResponse,
+  MediaControllerCreateMediaApiResponse,
+  MediaControllerDeleteMediaApiResponse,
+  MediaControllerDeleteMediaApiArg
+} from './media.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    mediaControllerGetAllMedia: build.query<MediaControllerGetAllMediaApiResponse, MediaControllerGetAllMediaApiArg>({
+    mediaControllerGetAllMedia: build.query<MediaControllerGetAllMediaApiResponse, PaginationParams>({
       query: (queryArg) => ({
         url: `/api/media/search`,
         params: {
@@ -13,7 +21,7 @@ const injectedRtkApi = api.injectEndpoints({
         }
       })
     }),
-    mediaControllerGetMedia: build.query<MediaControllerGetMediaApiResponse, MediaControllerGetMediaApiArg>({
+    mediaControllerGetMedia: build.query<MediaControllerGetMediaApiResponse, RequestWithId>({
       query: (queryArg) => ({
         url: `/api/media`,
         params: {
@@ -33,43 +41,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as mediaService }
-export type MediaControllerGetAllMediaApiResponse = HttpResponse<UploadedFile[]>
-export type MediaControllerGetAllMediaApiArg = {
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-}
-export type MediaControllerGetMediaApiResponse = unknown
-export type MediaControllerGetMediaApiArg = {
-  id: string
-}
-export type MediaControllerCreateMediaApiResponse = HttpResponse<UploadedFile>
-export type MediaControllerCreateMediaApiArg = {
-  createMediaRequest: CreateMediaRequest
-}
-export type MediaControllerDeleteMediaApiResponse = unknown
-export type MediaControllerDeleteMediaApiArg = {
-  deleteMediaRequest: DeleteMediaRequest
-}
-export type CreateMediaRequest = {
-  file: Blob
-}
 
-export type UploadedFile = {
-  fileName: string
-  mimeType: string
-  filePath: string
-  ownerId: string
-  id: string
-  createdAt: string
-  updatedAt: string
-  deletedAt: string | null
-}
-
-export type DeleteMediaRequest = {
-  id: string
-}
 export const {
   useMediaControllerGetAllMediaQuery,
   useLazyMediaControllerGetAllMediaQuery,

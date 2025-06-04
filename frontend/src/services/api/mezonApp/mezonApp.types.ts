@@ -1,21 +1,13 @@
 import { HttpResponse, PaginationParams, RequestWithId } from '@app/types/API.types'
-import { LinkTypeResponse } from '../linkType/linkType'
 import { User } from '@app/types/User.types'
 import { App } from '@app/types/App.types'
+import { TagBase } from '@app/types/Tag.types'
+import { LinkType, LinkTypeBase } from '@app/types/LinkType.types'
 
-export type MezonAppControllerListAdminMezonAppApiArg = {
+export type MezonAppControllerGetMezonAppApiArg = {
   search?: string
   tags?: string[]
 } & PaginationParams
-
-export type MezonAppControllerGetMyAppApiArg = {
-  search?: string
-  tags?: string[]
-} & PaginationParams
-
-export type MezonAppControllerGetMezonAppDetailApiArg = {
-  id: string
-}
 
 export type MezonAppControllerDeleteMezonAppApiArg = {
   requestWithId: RequestWithId
@@ -27,10 +19,6 @@ export type MezonAppControllerCreateMezonAppApiArg = {
 
 export type MezonAppControllerUpdateMezonAppApiArg = {
   updateMezonAppRequest: UpdateMezonAppRequest
-}
-
-export type MezonAppControllerGetRelatedMezonAppApiArg = {
-  id: string
 }
 
 export type MezonAppControllerSearchMezonAppApiArg = {
@@ -46,13 +34,13 @@ export type MezonAppControllerDeleteMezonAppApiResponse = HttpResponse<any>
 export type MezonAppControllerGetRelatedMezonAppApiResponse = HttpResponse<GetRelatedMezonAppResponse[]>
 export type MezonAppControllerSearchMezonAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>
 
-export type OwnerInMezonAppDetailResponse = { id: string; name: string; profileImage: string }
-export type TagInMezonAppDetailResponse = { id: string; name: string }
+export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage'>
+export type TagInMezonAppDetailResponse = Omit<TagBase, 'slug'>
 export type SocialLinkInMezonAppDetailResponse = {
   id: string
   url: string
   linkTypeId: string
-  type: LinkTypeResponse
+  type: LinkTypeBase
 }
 export type GetMezonAppDetailsResponse = {
   id: string
@@ -70,25 +58,12 @@ export type GetMezonAppDetailsResponse = {
   supportUrl: string
 }
 
-export type LinkType = { 
-  name: string; 
-  icon: string; 
-  links: Link[] 
-}
-export type Media = { 
-  fileName: string; 
-  mimeType: string; 
-  filePath: string; 
-  ownerId: string; 
-  owner: User
-}
-
 export type Link = {
   url: string
   ownerId: string
   showOnProfile: boolean
   linkTypeId: string
-  type: LinkType
+  type: Omit<LinkType, 'id' | 'prefixUrl'>
   apps: App[]
   owner: User
 }
@@ -96,7 +71,7 @@ export type Link = {
 export type SocialLink = {
   url?: string
   linkTypeId: string
-  type?: LinkTypeResponse
+  type?: LinkTypeBase
 }
 
 export type CreateMezonAppRequest = {
@@ -117,13 +92,10 @@ export type UpdateMezonAppRequest = {
   id: string
 } & Partial<Omit<CreateMezonAppRequest, 'id'>>
 
-export type GetRelatedMezonAppResponse = {
-  id: string
-  name: string
-  status: number
-  featuredImage: string
-  rateScore: number
-}
+export type GetRelatedMezonAppResponse = Pick<
+  GetMezonAppDetailsResponse,
+  'id' | 'name' | 'status' | 'featuredImage' | 'rateScore'
+>
 
 export enum Status {
   $0 = 0,

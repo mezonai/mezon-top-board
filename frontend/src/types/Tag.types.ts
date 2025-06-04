@@ -1,4 +1,4 @@
-import { App } from "@app/services/api/mezonApp/mezonApp.types";
+import { App } from "./App.types"
 
 export type TagBase = {
   id: string

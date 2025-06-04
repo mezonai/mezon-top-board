@@ -1,27 +1,25 @@
 import {
   MezonAppControllerListAdminMezonAppApiResponse,
-  MezonAppControllerListAdminMezonAppApiArg,
+  MezonAppControllerGetMezonAppApiArg,
   MezonAppControllerGetMyAppApiResponse,
-  MezonAppControllerGetMyAppApiArg,
   MezonAppControllerGetMezonAppDetailApiResponse,
-  MezonAppControllerGetMezonAppDetailApiArg,
   MezonAppControllerDeleteMezonAppApiResponse,
   MezonAppControllerDeleteMezonAppApiArg,
   MezonAppControllerCreateMezonAppApiArg,
   MezonAppControllerUpdateMezonAppApiArg,
   MezonAppControllerGetRelatedMezonAppApiResponse,
-  MezonAppControllerGetRelatedMezonAppApiArg,
   MezonAppControllerSearchMezonAppApiResponse,
   MezonAppControllerSearchMezonAppApiArg
 } from './mezonApp.types'
 import { api } from '../../apiInstance'
 import { App } from '@app/types/App.types'
+import { RequestWithId } from '@app/types/API.types'
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mezonAppControllerListAdminMezonApp: build.query<
       MezonAppControllerListAdminMezonAppApiResponse,
-      MezonAppControllerListAdminMezonAppApiArg
+      MezonAppControllerGetMezonAppApiArg
     >({
       query: (queryArg) => ({
         url: `/api/mezon-app/admin-all`,
@@ -35,7 +33,7 @@ const injectedRtkApi = api.injectEndpoints({
         }
       })
     }),
-    mezonAppControllerGetMyApp: build.query<MezonAppControllerGetMyAppApiResponse, MezonAppControllerGetMyAppApiArg>({
+    mezonAppControllerGetMyApp: build.query<MezonAppControllerGetMyAppApiResponse, MezonAppControllerGetMezonAppApiArg>({
       query: (queryArg) => ({
         url: `/api/mezon-app/my-app`,
         params: {
@@ -50,7 +48,7 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     mezonAppControllerGetMezonAppDetail: build.query<
       MezonAppControllerGetMezonAppDetailApiResponse,
-      MezonAppControllerGetMezonAppDetailApiArg
+      RequestWithId
     >({
       query: (queryArg) => ({
         url: `/api/mezon-app`,
@@ -79,7 +77,7 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     mezonAppControllerGetRelatedMezonApp: build.query<
       MezonAppControllerGetRelatedMezonAppApiResponse,
-      MezonAppControllerGetRelatedMezonAppApiArg
+      RequestWithId
     >({
       query: (queryArg) => ({
         url: `/api/mezon-app/related-app`,
