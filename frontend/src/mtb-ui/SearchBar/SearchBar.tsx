@@ -2,7 +2,7 @@ import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
-import { Input, Tag } from 'antd'
+import { Input, Select, Tag } from 'antd'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -67,7 +67,22 @@ const SearchBar = ({
 
   const totalTags = tagList?.data?.length || 0
   const hiddenTagsCount = totalTags - MAX_VISIBLE_TAGS
+  const visibleTags = tagList?.data?.filter((tag, index) =>
+    showAllTags ||
+    index < MAX_VISIBLE_TAGS ||
+    selectedTagIds.includes(tag.id)
+  ) || [];
 
+
+const [isSelectVisible, setIsSelectVisible] = useState(false);
+
+const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || [];
+
+const selectedHiddenTagCount = selectedTagIds.filter(id =>
+  hiddenTags.some(tag => tag.id === id)
+).length;
+
+const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
@@ -99,21 +114,49 @@ const SearchBar = ({
         )}
       </div>
       <div className={`pt-5 cursor-pointer`}>
-        {tagList?.data?.slice(0, showAllTags ? totalTags : MAX_VISIBLE_TAGS).map((tag) => (
-          <Tag.CheckableTag
-            key={tag.id}
-            checked={selectedTagIds.includes(tag?.id)}
-            className='!border !border-gray-300'
-            // color={selectedTagIds.includes(tag?.id) ? tag.tagSelectedColor : tag.tagColor}
-            onClick={() => handleSearchTag(tag?.id)}
-          >
-            {tag.name}
-          </Tag.CheckableTag>
-        ))}
+        {visibleTags.map((tag) => (
+            <Tag.CheckableTag
+              key={tag.id}
+              checked={selectedTagIds.includes(tag.id)}
+              className='!border !border-gray-300'
+              onClick={() => handleSearchTag(tag.id)}
+            >
+              {tag.name}
+            </Tag.CheckableTag>
+          ))}
         {!showAllTags && totalTags > 10 && (
-          <Tag className='!mb-2' onClick={() => setShowAllTags(true)}>
-            +{hiddenTagsCount}
-          </Tag>
+          !isSelectVisible ? (
+            <Tag
+              className="!mb-2 cursor-pointer"
+              onClick={() => setIsSelectVisible(true)}
+            >
+              +{remainingHiddenTagCount} tags
+            </Tag>
+          ) : (
+            <Select
+              mode="multiple"
+              showSearch
+              autoFocus
+              open
+              value={selectedTagIds}
+              onChange={(newSelectedTagIds: string[]) => {
+                setSelectedTagIds(newSelectedTagIds);
+                handleSearch(newSelectedTagIds);
+              }}
+              onBlur={() => setIsSelectVisible(false)}
+              style={{ width: '120px', marginTop: '8px' }}
+              dropdownStyle={{ width: '200px' }}
+              maxTagCount={0}
+              maxTagPlaceholder={() => `+${remainingHiddenTagCount} tags`}
+              filterOption={(input, option) =>
+                (option?.label as string).toLowerCase().includes(input.toLowerCase())
+              }
+              options={hiddenTags.map(tag => ({
+                label: tag.name,
+                value: tag.id
+              }))}
+            />
+          )
         )}
       </div>
     </>

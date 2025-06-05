@@ -17,7 +17,7 @@ const useOwnershipCheck = () => {
       return false
     }
 
-    if (ownerId && ownerId !== userInfo.id) {
+    if (ownerId && ownerId !== userInfo.id && userInfo.role !== 'ADMIN') {
       toast.error('You do not have permission to access this page.')
       navigate('/', { replace: shouldReplaceRoute })
       return false
