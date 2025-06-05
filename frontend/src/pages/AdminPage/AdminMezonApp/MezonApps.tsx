@@ -1,4 +1,4 @@
-import { CiOutlined, DeleteOutlined, EditOutlined, LockOutlined, SearchOutlined } from "@ant-design/icons";
+import { CiOutlined, DeleteOutlined, EditOutlined, LockOutlined, SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { AppStatus } from "@app/enums/AppStatus.enum";
 import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerDeleteMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
@@ -9,9 +9,11 @@ import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
 import { getUrlMedia } from "@app/utils/stringHelper";
 import { Button, Input, Modal, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => void }) => {
+  const navigate = useNavigate()
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -115,12 +117,21 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (text: string) => (
+        <div className="break-words max-w-[80px] 2xl:max-w-[120px]">
+          {text}
+        </div>
+      ),
     },
     {
       title: "Owner",
       dataIndex: "owner",
       key: "owner",
-      render: (owner: { name: string }) => owner.name,
+      render: (owner: { name: string }) => (
+        <div className="line-clamp-5 break-words max-w-[80px] 2xl:max-w-[120px]">
+          {owner.name}
+        </div>
+      ),
     },
     {
       title: "Try",
@@ -145,21 +156,25 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Headline",
       dataIndex: "headline",
       key: "headline",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true, // Truncate long text
-      render: (description: string) => (
-        <div dangerouslySetInnerHTML={{ __html: description }}></div>
-      )
+      render: (text: string) => (
+        <div className="line-clamp-5 overflow-hidden text-ellipsis max-w-[300px] 2xl:max-w-[400px]">
+          {text}
+        </div>
+      ),
     },
     {
       title: "Actions",
       key: "actions",
       render: (_: any, record: GetMezonAppDetailsResponse) => (
         <div className="flex gap-2">
+          <Tooltip title='View'>
+            <Button
+              color='cyan'
+              variant='outlined'
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/bot/${record.id}`)}
+            />
+          </Tooltip>
           <Tooltip title="Edit">
             <Button type="primary" icon={<EditOutlined />} onClick={() => onEdit(record)} />
           </Tooltip>
@@ -184,17 +199,17 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       ),
     },
   ];
+
   return (
     <>
       <div className='flex gap-4 mb-3'>
         <Input
-          placeholder='Search by name or email'
+          placeholder='Search by name or headline'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           prefix={<SearchOutlined style={{ color: '#bbb' }} />}
           onPressEnter={handleSearchSubmit}
-          className='w-full'
-          style={{ borderRadius: '8px', height: '40px' }}
+          className='w-full rounded-[8px] h-[40px]'
         />
         <Button className="w-50" size="large"
           type='primary' 

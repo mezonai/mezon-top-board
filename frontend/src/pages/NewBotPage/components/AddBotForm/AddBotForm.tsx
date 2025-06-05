@@ -14,10 +14,10 @@ import { RootState } from '@app/store'
 import { ILinkTypeStore } from '@app/store/linkType'
 import { ITagStore } from '@app/store/tag'
 import { ApiError } from '@app/types/API.types'
-import { IAddBotFormProps } from '@app/types/Botcard.types'
+import { IAddBotFormProps } from '@app/components/BotCard/BotCard.types'
 import { Checkbox, Form, Input, Select, TagProps } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -34,13 +34,15 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
 function AddBotForm({ isEdit }: IAddBotFormProps) {
   const {
     control,
+    setError,
     handleSubmit,
+    clearErrors,
     setValue,
     formState: { errors }
   } = useFormContext<CreateMezonAppRequest>()
   const [addBot] = useMezonAppControllerCreateMezonAppMutation()
   const navigate = useNavigate()
-  const [updateBot] = useMezonAppControllerUpdateMezonAppMutation()
+  const [updateBot, { isLoading: isUpdating }] = useMezonAppControllerUpdateMezonAppMutation()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { linkTypeList } = useSelector<RootState, ILinkTypeStore>((s) => s.link)
   const [selectedSocialLink, setSelectedSocialLink] = useState<string>('') // holds selected link type id
@@ -56,6 +58,8 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
   const [socialLinkUrl, setSocialLinkUrl] = useState<string>('')
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [uploadMedia] = useMediaControllerCreateMediaMutation()
+
+  const [addLinkError, setAddLinkError] = useState<string | null>(null);  
 
   const { botId } = useParams()
 
@@ -125,9 +129,9 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
 
       if (!botId) return
 
-      const updateResponse = await updateBot({ updateMezonAppRequest: { ...data, id: botId, socialLinks: formattedSocialLinks } });
-      if ( updateResponse.data?.id) {
-        navigate(`/bot/${ updateResponse.data?.id}`)
+      const updateResponse = await updateBot({ updateMezonAppRequest: { ...data, id: botId, socialLinks: formattedSocialLinks } }).unwrap();
+      if (updateResponse?.id) {
+        navigate(`/bot/${ updateResponse?.id}`)
       }
 
       toast.success('Edit bot success')
@@ -135,7 +139,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
       const err = error as ApiError
       const message =
         err?.data?.message && Array.isArray(err.data.message)
-          ? err.data.message.join(', ')
+          ? err.data.message.join('\n')
           : err?.data?.message || 'Something went wrong'
       toast.error(message)
     }
@@ -164,7 +168,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
   }
 
   const optionsLink = useMemo(() => {
-    return linkTypeList?.map((item) => ({
+    return linkTypeList?.data?.map((item) => ({
       icon: item.icon,
       label: <SocialLinkIcon src={item?.icon} prefixUrl={item?.name} />,
       name: item.name,
@@ -177,13 +181,27 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
     // if (not selectedSocialLink or socialLinkUrl not valid) then return
     const trimmedUrl = socialLinkUrl.trim()
     if (!selectedSocialLink || !trimmedUrl) return
+
+    const isDuplicate = socialLinksData.some(
+      (link) =>
+        link.url?.trim() === trimmedUrl &&
+        link.linkTypeId === selectedSocialLink
+    );
+
+    if (isDuplicate) {
+      setAddLinkError("This link already exists.");
+      return;
+    }
+
+    setAddLinkError(null);
+
     // get selectedLink in optionsLink
     const selectedLink = optionsLink?.find((item) => item.value === selectedSocialLink)
     if (!selectedLink) return
 
-    const defaultSocialLink = {
+    const newLink = {
       icon: selectedLink.icon,
-      url: `${trimmedUrl}`,
+      url: trimmedUrl,
       linkTypeId: selectedLink?.value,
       type: {
         id: selectedLink?.value,
@@ -193,7 +211,7 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
       }
     }
     // add new links to the links list
-    append(defaultSocialLink)
+    append(newLink)
     setSocialLinkUrl('')
     setSelectedSocialLink('')
   }
@@ -201,6 +219,36 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
   const handleSocialLinkUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSocialLinkUrl(e.target.value)
   }
+  
+  useEffect(() => {
+    const seen = new Map<string, number[]>();
+
+    socialLinksData.forEach((link, index) => {
+      const url = link.url?.trim();
+      const linkTypeId = link.linkTypeId;
+
+      if (!url || !linkTypeId) return;
+
+      const key = `${linkTypeId}_${url}`;
+      const indexes = seen.get(key) || [];
+      indexes.push(index);
+      seen.set(key, indexes);
+    });
+
+    seen.forEach((indexes) => {
+      if (indexes.length > 1) {
+        indexes.forEach((i) => {
+          setError(`socialLinks.${i}.url`, {
+            type: 'duplicate',
+            message: 'This link is duplicated.',
+          });
+        });
+      } else {
+        clearErrors(`socialLinks.${indexes[0]}.url`);
+      }
+    });
+  }, [socialLinksData, setError, clearErrors]);
+
 
   return (
     <div className='shadow-md p-6 sm:p-8 rounded-md bg-white'>
@@ -356,8 +404,8 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
             )}
           />
         </FormField>
-        <FormField label='Social Links' description='Link your social channels'>
-          <div className='flex flex-col sm:flex-row sm:items-center gap-4 w-full'>
+        <FormField label='Social Links' description='Link your social channels' >
+          <div className='flex flex-col sm:flex-row sm:items-top gap-4 w-full'>
             <div className='flex-1'>
               <Select
                 options={optionsLink}
@@ -369,10 +417,23 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
                 }}
               />
             </div>
-            <div className='flex flex-2 items-center gap-4'>
-              <div className='flex-1'>
-                <Input value={socialLinkUrl} prefix={selectedSocialLink ? (linkTypeList.find(item => item.id === selectedSocialLink)?.prefixUrl || '') : ''} onChange={handleSocialLinkUrlChange} disabled={!selectedSocialLink} />
-              </div>
+            <div className='flex flex-2 items-top gap-4'>
+              <Form.Item
+                validateStatus={addLinkError ? 'error' : ''}
+                help={addLinkError || ''}
+                className='flex-1 mb-0'
+              >
+                <Input
+                  value={socialLinkUrl}
+                  prefix={
+                    selectedSocialLink
+                      ? linkTypeList.data.find(item => item.id === selectedSocialLink)?.prefixUrl || ''
+                      : ''
+                  }
+                  onChange={handleSocialLinkUrlChange}
+                  disabled={!selectedSocialLink}
+                />
+              </Form.Item>
               <div className='flex justify-end'>
                 <Button onClick={addNewLink} customClassName='!w-[70px]'>
                   Add
@@ -388,16 +449,31 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
                   name={`socialLinks.${index}.url`}
                   control={control}
                   render={({ field }) => (
-                    <div className='mt-4 flex gap-4'>
-                      <Input
-                        {...field}
-                        className='flex-1 border p-2 rounded'
-                        placeholder='Enter link'
-                        onChange={(e) => field.onChange(e.target.value)}
-                        onBlur={() => update(index, { ...socialLinksData[index], url: field.value })}
-                        prefix={<SocialLinkIcon src={link?.type?.icon} prefixUrl={link?.type?.prefixUrl} />}
-                      />
-                      <Button onClick={() => remove(index)} customClassName='!w-[70px]'>
+                    <div className="flex gap-4 w-full">
+                      <Form.Item
+                        validateStatus={errors?.socialLinks?.[index]?.url ? 'error' : ''}
+                        help={errors?.socialLinks?.[index]?.url?.message}
+                        className="flex-1"
+                      >
+                        <Input
+                          {...field}
+                          placeholder="Enter link"
+                          prefix={
+                            <SocialLinkIcon
+                              src={link?.type?.icon}
+                              prefixUrl={link?.type?.prefixUrl}
+                            />
+                          }
+                          onChange={(e) => field.onChange(e.target.value)}
+                          onBlur={(event) =>
+                            update(index, {
+                              ...socialLinksData[index],
+                              url: event.target.value,
+                            })
+                          }
+                        />
+                      </Form.Item>
+                      <Button onClick={() => remove(index)} customClassName="!w-[70px] mt-[2px]">
                         Delete
                       </Button>
                     </div>
@@ -407,10 +483,10 @@ function AddBotForm({ isEdit }: IAddBotFormProps) {
             })}
         </FormField>
         <div className='flex !justify-end pt-8 gap-4 items-center'>
-          <Button color='default' customClassName='w-[200px] !text-blue-500'>
+          <Button color='default' variant='outlined' customClassName='w-[200px]'>
             Preview
           </Button>
-          <Button htmlType='submit' customClassName='w-[200px]'>
+          <Button disabled={isUpdating || !!errors?.socialLinks} loading={isUpdating} htmlType='submit' customClassName='w-[200px]'>
             Save
           </Button>
         </div>

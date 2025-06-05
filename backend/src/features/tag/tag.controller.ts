@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
@@ -8,7 +8,7 @@ import { Public } from "@libs/decorator/authorization.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
 import { Logger } from "@libs/logger";
 
-import { CreateTagRequest, UpdateTagRequest } from "./dtos/request";
+import { CreateTagRequest, SearchTagRequest, UpdateTagRequest } from "./dtos/request";
 import { TagResponse } from "./dtos/response";
 import { TagService } from "./tag.service";
 
@@ -27,6 +27,17 @@ export class TagController {
   @ApiResponse({ type: TagResponse })
   async getTags() {
     return this.tagService.getTagAll();
+  }
+
+  @Public()
+  @Get("search")
+  searchTag(@Query() query: SearchTagRequest) {
+    try {
+      return this.tagService.searchTag(query);
+    } catch (error) {
+      this.logger.error("An error occured", error);
+      throw error;
+    }
   }
 
   @ApiBearerAuth()
@@ -53,7 +64,7 @@ export class TagController {
       this.logger.error("An error occured", error);
       throw error;
     }
-  }
+  } 
 
   @ApiBearerAuth()
   @RoleRequired([Role.ADMIN])

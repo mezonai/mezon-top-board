@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
-import { RequestWithId } from "@domain/common/dtos/request.dto";
+import { PaginationQuery, RequestWithId } from "@domain/common/dtos/request.dto";
 export class CreateTagRequest {
     @ApiProperty()
     @IsString()
@@ -21,4 +21,10 @@ export class UpdateTagRequest extends RequestWithId {
     @ApiPropertyOptional()
     @IsString()
     slug: string;
+}
+
+export class SearchTagRequest extends PaginationQuery {
+    @ApiPropertyOptional({ description: "Keyword to search user by name or slug" })
+    @IsOptional()
+    search: string;
 }

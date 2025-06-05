@@ -33,7 +33,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as mediaService }
-export type MediaControllerGetAllMediaApiResponse = unknown
+export type MediaControllerGetAllMediaApiResponse = HttpResponse<UploadedFile[]>
 export type MediaControllerGetAllMediaApiArg = {
   pageSize: number
   pageNumber: number
