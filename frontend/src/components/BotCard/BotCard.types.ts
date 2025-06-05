@@ -1,4 +1,4 @@
-import { GetMezonAppDetailsResponse, GetRelatedMezonAppResponse } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse, GetRelatedMezonAppResponse } from "@app/services/api/mezonApp/mezonApp.types"
 
 export interface IBotCardProps {
   readonly?: boolean

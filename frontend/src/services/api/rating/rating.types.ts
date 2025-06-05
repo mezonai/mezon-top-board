@@ -4,7 +4,7 @@ import { Rating } from "@app/types/Rating.types"
 export type CreateRatingRequest = {
   appId: string
   score: number
-  comment?: string
+  comment: string
 }
 
 export type RatingControllerCreateRatingApiArg = {

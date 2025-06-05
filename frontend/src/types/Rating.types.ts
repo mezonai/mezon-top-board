@@ -4,7 +4,7 @@ import { User } from "./User.types"
 export type RatingBase = {
   id: string
   score: number
-  comment: string | null
+  comment: string
   updatedAt: string
 }
 

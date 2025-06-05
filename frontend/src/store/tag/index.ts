@@ -1,15 +1,15 @@
-import { TagControllerGetTagsApiResponse, TagControllerSearchTagsApiArg, TagControllerSearchTagsApiResponse, tagService } from '@app/services/api/tag/tag'
 import { createSlice } from '@reduxjs/toolkit'
 import { tagExtraReducers } from './extraReducer'
+import { TagListApiResponse } from '@app/services/api/tag/tag.types'
 
 export interface ITagStore {
-  tagList: TagControllerGetTagsApiResponse
-  searchTagList: TagControllerSearchTagsApiResponse
+  tagList: TagListApiResponse
+  searchTagList: TagListApiResponse
 }
 
 const initialState: ITagStore = {
-  tagList: {} as TagControllerGetTagsApiResponse,
-  searchTagList: {} as TagControllerSearchTagsApiResponse
+  tagList: {} as TagListApiResponse,
+  searchTagList: {} as TagListApiResponse
 } 
 
 const tagSlice = createSlice({

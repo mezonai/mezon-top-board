@@ -1,4 +1,5 @@
-import { GetUserDetailsResponse, UpdateUserRequest, userService } from "@app/services/api/user/user"
+import { userService } from "@app/services/api/user/user"
+import { GetUserDetailsResponse, UpdateUserRequest } from "@app/services/api/user/user.types"
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) => {

@@ -1,14 +1,14 @@
 import {
+  MezonAppControllerSearchMezonAppApiResponse,
   GetMezonAppDetailsResponse,
-  GetRelatedMezonAppResponse,
-  MezonAppControllerSearchMezonAppApiResponse
-} from '@app/services/api/mezonApp/mezonApp'
+  GetRelatedMezonAppResponse
+} from '@app/services/api/mezonApp/mezonApp.types'
 import { createSlice } from '@reduxjs/toolkit'
 import { mezonAppExtraReducers } from './extraReducer'
 
 export interface IMezonAppStore {
-  mezonApp: MezonAppControllerSearchMezonAppApiResponse;
-  mezonAppOfAdmin: MezonAppControllerSearchMezonAppApiResponse;
+  mezonApp: MezonAppControllerSearchMezonAppApiResponse
+  mezonAppOfAdmin: MezonAppControllerSearchMezonAppApiResponse
   mezonAppDetail: GetMezonAppDetailsResponse
   relatedMezonApp: GetRelatedMezonAppResponse[]
   mezonAppOfUser: MezonAppControllerSearchMezonAppApiResponse
