@@ -8,8 +8,8 @@ import {
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { generateSlug } from '@app/utils/stringHelper'
-import { Form, Input, InputRef, Popconfirm, Table, Tooltip } from 'antd'
-import { useEffect, useRef, useState } from 'react'
+import { Form, Input, InputRef, Popconfirm, Table, Tag, Tooltip } from 'antd'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SearchOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { useAppSelector } from '@app/store/hook'
@@ -23,13 +23,14 @@ import CreateTagModal, { TagFormValues } from './components/CreateTagModal'
 interface SearchFormValues {
   search: string
 }
+const pageOptions = [5, 10, 15]
 
 function TagsList() {
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [createTag] = useTagControllerCreateTagMutation()
   const [updateTag] = useTagControllerUpdateTagMutation()
   const [deleteTag] = useTagControllerDeleteTagMutation()
-  const [searchTag, { isLoading }] = useLazyTagControllerSearchTagsQuery()
+  const [searchTag] = useLazyTagControllerSearchTagsQuery()
   const searchTagList = useAppSelector((state: RootState) => state.tag.searchTagList)
 
   const [searchForm] = Form.useForm<SearchFormValues>()
@@ -38,8 +39,6 @@ function TagsList() {
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const searchRef = useRef<InputRef>(null)
 
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-
   const [editingTag, setEditingTag] = useState<{
     id: string | null
     name: string
@@ -47,18 +46,19 @@ function TagsList() {
   }>({ id: null, name: '', slug: '' })
 
   const [page, setPage] = useState<number>(1)
-
+  const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
 
-  const totalTags = searchTagList?.totalCount || 0
   const editError = !editingTag.name.trim() || !SLUG_RULE.pattern.test(editingTag.slug)
 
   useEffect(() => {
     searchTagsList()
-  }, [page])
+  }, [page, botPerPage])
   useEffect(() => {
     getTagList()
   }, [])
+  
+  const totals = useMemo(() => searchTagList?.totalCount || 0, [searchTagList])
 
   const handleCreate = async (values: TagFormValues) => {
     if (typeof values.slug !== 'string' || !values.slug.trim()) {
@@ -134,7 +134,7 @@ function TagsList() {
     searchTag({
       search: formValues.search || '',
       pageNumber: pageNumber ?? page,
-      pageSize: 7
+      pageSize: botPerPage
     })
   }
 
@@ -158,7 +158,7 @@ function TagsList() {
             />
           </Tooltip>
         ) : (
-          text
+          <Tag>{text}</Tag>
         )
     },
     {
@@ -196,7 +196,7 @@ function TagsList() {
       render: (_: any, record: any) =>
         editingTag.id === record.id ? (
           <div className='flex gap-2'>
-            <MtbButton disabled={editError} color="default" variant='outlined' onClick={() => handleUpdate(record.id)}>
+            <MtbButton disabled={editError} color="secondary" onClick={() => handleUpdate(record.id)}>
               Save
             </MtbButton>
             <MtbButton color='danger' onClick={() => setEditingTag({ id: null, name: '', slug: '' })}>
@@ -222,17 +222,20 @@ function TagsList() {
     tagForm.resetFields();
   }
 
-  const onLoadMore = async () => {
-    setIsLoadingMore(true)
-    setPage((prev) => prev + 1)
-    setIsLoadingMore(false)
+  const handlePageChange = (newPage: number, newPageSize?: number) => {
+    setPage(newPage);
+    if (newPage > Math.ceil(totals / botPerPage)) {
+      setPage(1)
+    }
+    if (newPageSize) {
+      setBotPerPage(newPageSize);
+    }
   }
 
   return (
     <div>
       <h2 className='font-bold text-lg mb-4'>Manage Tags</h2>
-
-      <div className='flex gap-2 mb-4'>
+      <div className='flex gap-2'>
         <Form form={searchForm} onFinish={handleSearch} initialValues={{ search: '' }} className='flex-grow'>
           <Form.Item name='search' className='w-full'>
             <Input
@@ -243,27 +246,28 @@ function TagsList() {
             />
           </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} onClick={() => searchForm.submit()}>
+        <MtbButton icon={<SearchOutlined />} color='secondary' onClick={() => searchForm.submit()}>
           Search
         </MtbButton>
-        <MtbButton color='default' variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)} />
+        <MtbButton color='primary' variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
+          Add New Tag
+        </MtbButton>
       </div>
 
       {searchTagList?.data?.length ? (
-        <Table dataSource={searchTagList.data} columns={columns} rowKey='id' pagination={false} />
+        <Table dataSource={searchTagList.data} columns={columns} rowKey='id' 
+          pagination={{
+            current: page,
+            pageSize: botPerPage,
+            total: totals,
+            onChange: handlePageChange,
+            showSizeChanger: true,
+            pageSizeOptions: pageOptions.map(String)
+          }}/>
       ) : (
         <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
           No result
         </MtbTypography>
-      )}
-      {totalTags > 7 && searchTagList.hasNextPage && (
-        <MtbButton block
-          customClassName="mt-4 !h-10"
-          loading={isLoading}
-          onClick={onLoadMore}
-        >
-          Load More
-        </MtbButton>
       )}
 
       <CreateTagModal
