@@ -1,6 +1,6 @@
 import AboutPage from '@app/pages/AboutPage/AboutPage'
 import BotDetailPage from '@app/pages/BotDetailPage/BotDetailPage'
-import HelpPage from '@app/pages/HelpPage/HelpPage'
+import ContactUsPage from '@app/pages/ContactUsPage/ContactUsPage'
 import HomePage from '@app/pages/HomePage/HomePage'
 import LoginPage from '@app/pages/LoginPage/LoginPage'
 import { LoginRedirectPage } from '@app/pages/LoginRedirectPage'
@@ -87,11 +87,24 @@ export const routePaths: RoutePath[] = [
   },
   {
     index: false,
-    path: '/help',
-    element: <HelpPage></HelpPage>,
+    path: '',
     strLabel: 'Help',
     isShowMenu: true,
     requireAuth: false,
+    children: [
+      {
+        strLabel:'How to use',
+        isExternal: true,
+        path: 'https://drive.google.com/file/d/14vd5T8JxT96bVG2ZRjO5Q8Ouo57ZF39F/view',
+        element: undefined,
+      },
+      {
+        strLabel: 'Contact Us',
+        element: <ContactUsPage />,
+        isExternal: false,
+        path: '/contact-us',
+      },
+    ]
   },
   {
     index: false,
