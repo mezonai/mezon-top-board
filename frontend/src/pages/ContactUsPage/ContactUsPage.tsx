@@ -14,7 +14,7 @@ function HelpPage() {
     setCaptcha(generateCaptcha()) // Generates a new captcha
   }
   return (
-    <main className='p-6'>
+    <main className='p-6'> 
       <div className="container m-auto mt-2 pb-3">
         <header className='relative mb-10 flex justify-center'>
           <MtbTypography variant='h2'>Contact Us</MtbTypography>
