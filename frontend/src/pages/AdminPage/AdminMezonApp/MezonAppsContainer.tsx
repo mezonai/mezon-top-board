@@ -1,4 +1,4 @@
-import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp";
+import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { useState } from "react";
 import CreateAppModal from "./CreateAppModal";
 import EditModal from "./EditAppModal";

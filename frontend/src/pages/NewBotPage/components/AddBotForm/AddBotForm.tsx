@@ -6,7 +6,6 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import {
-  CreateMezonAppRequest,
   useMezonAppControllerCreateMezonAppMutation,
   useMezonAppControllerUpdateMezonAppMutation
 } from '@app/services/api/mezonApp/mezonApp'
@@ -22,6 +21,7 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => {
   return (

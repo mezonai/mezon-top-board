@@ -1,10 +1,11 @@
 import avatar from '@app/assets/images/default-user.webp'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { Rating } from '@app/services/api/rating/rating'
+import { Rating } from '@app/types/Rating.types'
 import { formatAgo } from '@app/utils/date'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Link } from 'react-router-dom'
+
 function Comment({ rating }: { rating: Rating }) {
   return (
     <>

@@ -1,4 +1,4 @@
-import { GetPublicProfileResponse } from "@app/services/api/user/user";
+import { GetPublicProfileResponse } from "@app/services/api/user/user.types";
 
 export type CardInfoProps = {
     userInfo?: GetPublicProfileResponse;
