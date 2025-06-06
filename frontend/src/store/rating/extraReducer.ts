@@ -1,5 +1,5 @@
 import { ratingService } from "@app/services/api/rating/rating"
-import { RatingBase } from "@app/types/Rating.types"
+import { Rating } from "@app/types/Rating.types"
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const ratingExtraReducers = (builder: ActionReducerMapBuilder<any>) => {
@@ -14,7 +14,7 @@ export const ratingExtraReducers = (builder: ActionReducerMapBuilder<any>) => {
           : [
               ...existingRatings,
               ...payload.data.filter(
-                (newRating) => !existingRatings.some((existingRating: RatingBase) => existingRating.id === newRating.id)
+                (newRating) => !existingRatings.some((existingRating: Rating) => existingRating.id === newRating.id)
               )
             ]
       }

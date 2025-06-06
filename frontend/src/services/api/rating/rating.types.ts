@@ -7,15 +7,14 @@ export type CreateRatingRequest = {
   comment: string
 }
 
+export type RatingControllerCreateRatingApiResponse = unknown
 export type RatingControllerCreateRatingApiArg = {
   createRatingRequest: CreateRatingRequest
 }
 
-export type RatingControllerCreateRatingApiResponse = unknown
-
+export type RatingControllerGetRatingByAppApiResponse = HttpResponse<Rating[]>
 export type RatingControllerGetRatingByAppApiArg = {
   appId: string
   pageNumber?: number
 }
 
-export type RatingControllerGetRatingByAppApiResponse = HttpResponse<Rating[]>
