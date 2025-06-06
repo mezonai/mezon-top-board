@@ -96,6 +96,10 @@ export class GenericRepository<T extends ObjectLiteral> {
         await this.repository.softDelete(id)
     }
 
+    public async softDeleteBy(where: FindOptionsWhere<T>) {
+        await this.repository.softDelete(where);
+    }
+
     public getRepository(): Repository<T> {
         return this.repository; // Expose repository for custom queries
     }
