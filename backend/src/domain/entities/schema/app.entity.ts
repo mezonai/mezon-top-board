@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { Link, AppReviewHistory, Rating, Tag, User } from "@domain/entities";
@@ -7,6 +7,9 @@ import { BaseSoftDelete } from "../base";
 
 @Entity()
 export class App extends BaseSoftDelete {
+    @PrimaryColumn('uuid')
+    public id: string;
+
     @Column()
     public name: string;
 

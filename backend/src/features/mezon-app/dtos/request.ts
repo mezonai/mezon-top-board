@@ -54,6 +54,11 @@ class SocialLinkDto {
 }
 
 export class CreateMezonAppRequest {
+  @IsString()
+  @IsUUID()
+  @Transform(({ value }) => value?.trim())
+  id: string;
+
   @ApiProperty()
   @IsString()
   @MinLength(1, { message: "Name must be at least 1 characters" })
@@ -66,14 +71,16 @@ export class CreateMezonAppRequest {
   @IsOptional()
   isAutoPublished?: boolean;
 
-  @ApiPropertyOptional()
-  @IsOptional()
   @IsString()
-  @ValidateIf(o => o.installLink !== '' && o.installLink !== null)
-  @IsUrl(undefined, { message: "Install Link Invalid URL format" })
+  @IsOptional()
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  installLink?: string;
+  type: 'bot' | 'app';
 
+  @IsString()
+  @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  botId: string;
+ 
   @ApiPropertyOptional()
   @IsString()
   @MinLength(50, { message: "Headline must be at least 50 characters" })

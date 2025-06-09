@@ -1,6 +1,15 @@
 import * as yup from 'yup'
 
 export const ADD_BOT_SCHEMA = yup.object({
+  type: yup
+    .string()
+    .oneOf(['bot', 'app'], 'Invalid type')
+    .required('Type is required'),
+  botId: yup
+    .string()
+    .trim()
+    .required('Bot or App ID is required')
+    .max(2042, 'Bot or App ID is too long'),
   name: yup
     .string()
     .trim()
@@ -8,12 +17,12 @@ export const ADD_BOT_SCHEMA = yup.object({
     .min(1, "Minimum 1 characters")
     .max(64, "Maximum 64 characters"),
   isAutoPublished: yup.boolean().optional(),
-  installLink: yup
-    .string()
-    .trim()
-    .required("Install Link is required")
-    .url("Invalid URL")
-    .test("url-length", "URL is too long", (val) => val.length <= 2082),
+  // installLink: yup
+  //   .string()
+  //   .trim()
+  //   .required("Install Link is required")
+  //   .url("Invalid URL")
+  //   .test("url-length", "URL is too long", (val) => val.length <= 2082),
   headline: yup
     .string()
     .trim()

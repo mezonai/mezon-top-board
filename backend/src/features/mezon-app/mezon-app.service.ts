@@ -225,9 +225,13 @@ export class MezonAppService {
   }
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
-    const { tagIds, socialLinks, ...appData } = req;
+    const { tagIds, socialLinks, type, id, ...appData } = req;
     console.log("ownerId", ownerId);
 
+    const existingApp = await this.appRepository.findById(id);
+    if (existingApp) {
+      throw new BadRequestException('Bot ID đã được sử dụng.');
+    }
     // Fetch existing tags
     const existingTags = tagIds?.length
       ? await this.tagRepository.getRepository().findBy({ id: In(tagIds) })
@@ -237,6 +241,7 @@ export class MezonAppService {
     if (missingTagIds.length)
       throw new BadRequestException(ErrorMessages.INVALID_TAGS);
 
+    const installLink = `https://mezon.ai/developers/${type}/install/${id}`;
     let links: Link[] = [];
     if (socialLinks && socialLinks.length > 0) {
       links = await Promise.all(
@@ -272,6 +277,8 @@ export class MezonAppService {
 
     return await this.appRepository.create({
       ...appData,
+      id: id,
+      installLink,
       ownerId: ownerId,
       tags: existingTags,
       socialLinks: links,
@@ -294,6 +301,9 @@ export class MezonAppService {
 
     const { tagIds, socialLinks, description, ...updateData } = req;
 
+    if (req.type && req.botId) {
+      app.installLink = `https://mezon.ai/developers/${req.type}/install/${req.botId}`;
+    }
     let tags = app.tags;
     let links = app.socialLinks;
 
