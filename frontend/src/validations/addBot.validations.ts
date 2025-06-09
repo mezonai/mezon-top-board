@@ -5,7 +5,7 @@ export const ADD_BOT_SCHEMA = yup.object({
     .string()
     .oneOf(['bot', 'app'], 'Invalid type')
     .required('Type is required'),
-  botId: yup
+  id: yup
     .string()
     .trim()
     .required('Bot or App ID is required')

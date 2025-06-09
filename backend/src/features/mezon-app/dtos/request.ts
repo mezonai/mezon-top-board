@@ -54,7 +54,6 @@ class SocialLinkDto {
 }
 
 export class CreateMezonAppRequest {
-  @IsString()
   @IsUUID()
   @Transform(({ value }) => value?.trim())
   id: string;

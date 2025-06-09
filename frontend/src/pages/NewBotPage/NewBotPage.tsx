@@ -45,11 +45,10 @@ function NewBotPage() {
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: 'bot',
-      botId: '',
+      id: '',
       name: '',
       headline: '',
       description: '',
-      installLink: '',
       prefix: '',
       tagIds: [],
       supportUrl: '',
@@ -126,12 +125,12 @@ function NewBotPage() {
       onError(error)
     }
   }
-  const stepFieldMap: Record<number, (keyof AddBotFormValues)[]> = {
+  const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
     0: ['type'],
-    1: ['botId'],
-    2: ['name', 'headline', 'description', 'installLink', 'prefix', 'tagIds', 'supportUrl'],
-    3: [], // review step – không cần validate
-    4: []  // submit step – handled in submit logic
+    1: ['id'],
+    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'supportUrl'],
+    3: [],
+    4: []
   }
 
 

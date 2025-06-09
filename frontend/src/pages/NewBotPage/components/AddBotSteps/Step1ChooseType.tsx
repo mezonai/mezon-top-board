@@ -16,27 +16,21 @@ export const Step1ChooseType = ({ onNext }: { onNext: () => void }) => {
   }
 
   return (
-    <>
-      <FormField label="Select Type" errorText={errors.type?.message}>
-        <Controller
-          control={control}
-          name="type"
-          render={({ field }) => (
-            <Select
-              {...field}
-              placeholder="Choose Bot or App"
-              options={[
-                { label: 'Bot', value: 'bot' },
-                { label: 'App', value: 'app' }
-              ]}
-            />
-          )}
-        />
-      </FormField>
-
-      <div className="text-right mt-4">
-        <Button onClick={handleNext}>Next</Button>
-      </div>
-    </>
+    <FormField label="Select Type" errorText={errors.type?.message}>
+      <Controller
+        control={control}
+        name="type"
+        render={({ field }) => (
+          <Select
+            {...field}
+            placeholder="Choose Bot or App"
+            options={[
+              { label: 'Bot', value: 'bot' },
+              { label: 'App', value: 'app' }
+            ]}
+          />
+        )}
+      />
+    </FormField>
   )
 }

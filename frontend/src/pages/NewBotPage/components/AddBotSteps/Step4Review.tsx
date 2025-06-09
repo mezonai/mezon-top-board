@@ -9,7 +9,7 @@ const Step4Review = () => {
       <h3 className='text-xl font-semibold mb-4'>Review Your Information</h3>
       <ul className='space-y-2'>
         <li><strong>Type:</strong> {values.type}</li>
-        <li><strong>Bot/App ID:</strong> {values.botId}</li>
+        <li><strong>Bot/App ID:</strong> {values.id}</li>
         <li><strong>Name:</strong> {values.name}</li>
         <li><strong>Headline:</strong> {values.headline}</li>
         <li><strong>Prefix:</strong> {values.prefix}</li>

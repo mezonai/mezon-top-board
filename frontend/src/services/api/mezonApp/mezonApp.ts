@@ -252,9 +252,10 @@ export type SocialLinkDto = {
   type?: LinkTypeResponse // For render only
 }
 export type CreateMezonAppRequest = {
+  id: string
+  type: 'bot' | 'app'
   name: string
   isAutoPublished?: boolean
-  installLink: string
   headline: string
   description: string
   prefix: string
