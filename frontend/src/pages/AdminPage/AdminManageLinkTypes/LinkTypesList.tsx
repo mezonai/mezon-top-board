@@ -4,12 +4,12 @@ import LinkTypeModal, { LinkTypeFormValues } from './components/LinkTypeModal'
 import { Popconfirm, Table } from 'antd'
 import { toast } from 'react-toastify'
 import {
-  UpdateLinkTypeRequest,
   useLazyLinkTypeControllerGetAllLinksQuery,
   useLinkTypeControllerCreateLinkTypeMutation,
   useLinkTypeControllerDeleteLinkTypeMutation,
   useLinkTypeControllerUpdateLinkTypeMutation
 } from '@app/services/api/linkType/linkType'
+import { UpdateLinkTypeRequest } from '@app/services/api/linkType/linkType.types'
 import { useAppSelector } from '@app/store/hook'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'

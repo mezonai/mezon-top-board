@@ -1,4 +1,4 @@
-import { RatingControllerGetRatingByAppApiResponse } from '@app/services/api/rating/rating';
+import { RatingControllerGetRatingByAppApiResponse } from '@app/services/api/rating/rating.types';
 import { createSlice } from '@reduxjs/toolkit';
 import { ratingExtraReducers } from './extraReducer';
 

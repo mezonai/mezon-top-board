@@ -22,3 +22,14 @@ export type ApiError = {
   status: number
   data: HttpError
 }
+
+export type RequestWithId = {
+  id: string
+}
+
+export type PaginationParams = {
+  pageSize: number
+  pageNumber: number
+  sortField?: string
+  sortOrder?: 'ASC' | 'DESC'
+}

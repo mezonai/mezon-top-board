@@ -1,5 +1,6 @@
 import RichTextEditor from '@app/components/RichText/RichText'
-import { GetMezonAppDetailsResponse, useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
+import { useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { Button, Form, Input, Modal } from 'antd'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
