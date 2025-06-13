@@ -12,6 +12,7 @@ import { ILinkTypeStore } from '@app/store/linkType'
 import Button from '@app/mtb-ui/Button'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { getMezonInstallLink } from '@app/utils/mezonApp'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -42,11 +43,7 @@ const Step3FillDetails = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [addLinkError, setAddLinkError] = useState<string | null>(null)
 
-  const baseURL = type === 'app'
-    ? 'https://mezon.ai/developers/app/install/'
-    : 'https://mezon.ai/developers/bot/install/'
-
-  const inviteURL = mezonAppId ? `${baseURL}${mezonAppId}` : ''
+  const inviteURL = getMezonInstallLink(type, mezonAppId)
 
   const tagOptions = useMemo(() => {
     return tagList.data?.map(tag => ({ label: tag.name, value: tag.id })) || []

@@ -82,3 +82,12 @@ export function randomColor(type: string = 'normal', index?: number) {
 
   return colorSelection[Math.floor(Math.random() * colorSelection.length)];
 }
+
+export const getMezonInstallLink = (type: 'app' | 'bot' = 'bot', mezonAppId?: string): string => {
+  const baseURL =
+    type === 'app'
+      ? 'https://mezon.ai/developers/app/install/'
+      : 'https://mezon.ai/developers/bot/install/'
+
+  return (mezonAppId) ? `${baseURL}${mezonAppId}` : `${baseURL}`;
+}

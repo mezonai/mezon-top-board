@@ -1,3 +1,4 @@
+import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { useFormContext } from 'react-hook-form'
 
 const Step4Review = () => {
@@ -14,9 +15,7 @@ const Step4Review = () => {
         <li><strong>Headline:</strong> {values.headline}</li>
         <li><strong>Prefix:</strong> {values.prefix}</li>
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
-        <li><strong>Invite URL:</strong> 
-          {values.mezonAppId ? `https://mezon.ai/developers/${values.type}/install/${values.mezonAppId}` : ''}
-        </li>
+        <li><strong>Invite URL:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li><strong>Description:</strong></li>
         <div className='border p-2 rounded' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
       </ul>

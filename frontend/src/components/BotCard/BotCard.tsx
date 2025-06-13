@@ -5,7 +5,7 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotCardProps } from './BotCard.types'
-import { randomColor } from '@app/utils/mezonApp'
+import { randomColor, getMezonInstallLink  } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -18,20 +18,21 @@ import OwnerActions from '../OwnerActions/OwnerActions'
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
-  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    window.open(data?.installLink, '_blank')
-  }
-  const handleShare = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-  }
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(100%-150px)]' : 'md:max-w-[calc(100%-100px)]';
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
   // Share to social media
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
-
+  const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
+  
+  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    window.open(inviteUrl, '_blank')
+  } 
+  const handleShare = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
   
   return (
     <div
