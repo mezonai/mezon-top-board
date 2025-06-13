@@ -43,6 +43,10 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @IsOptional()
   @IsUUID()
   ownerId: string;
+
+  @ApiPropertyOptional({ enum: MezonAppType, description: 'Filter by bot or app type' })
+  @IsOptional()
+  type?: MezonAppType;
 }
 
 class SocialLinkDto {

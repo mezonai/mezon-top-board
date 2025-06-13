@@ -14,6 +14,7 @@ import { toast } from 'react-toastify'
 import { ApiError } from '@app/types/API.types'
 import { getPageFromParams } from '@app/utils/uri'
 import { IMainProps } from './Main.types'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
@@ -24,6 +25,12 @@ const sortOptions = [
   { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
   { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
 ];
+const typeFilterOptions = [
+  { label: 'All Types', value: '' },
+  { label: 'Bot', value: 'bot' },
+  { label: 'App', value: 'app' }
+];
+
 function Main({ isSearchPage = false }: IMainProps) {
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
@@ -44,6 +51,14 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [sortField, setSortField] = useState<string>('name')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
+
+  const defaultType = useMemo(() => {
+    const typeFromUrl = searchParams.get('type');
+    const matched = typeFilterOptions.find(opt => opt.value === typeFromUrl);
+    return matched || typeFilterOptions[0];
+  }, [searchParams]);
+  const [selectedType, setSelectedType] = useState<IOption>(defaultType);
+
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [page, setPage] = useState<number>(() => getPageFromParams(searchParams))
 
@@ -75,7 +90,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   useEffect(() => {
     searchMezonAppList(searchQuery, tagIds)
-  }, [page, botPerPage, isSearchPage, selectedSort])
+  }, [page, botPerPage, isSearchPage, selectedSort, selectedType])
 
   useEffect(() => {
     const newPage = getPageFromParams(searchParams)
@@ -94,6 +109,12 @@ function Main({ isSearchPage = false }: IMainProps) {
     getMezonApp({
       search: isSearchPage ? searchQuery : undefined,
       tags: tagIds && tagIds.length ? tagIds : undefined,
+      type:
+        selectedType.value === 'app'
+          ? MezonAppType.APP
+          : selectedType.value === 'bot'
+          ? MezonAppType.BOT
+          : undefined,
       pageNumber: page,
       pageSize: botPerPage,
       sortField: sortField,
@@ -139,6 +160,14 @@ function Main({ isSearchPage = false }: IMainProps) {
       setPage(1)
     }
   }
+  const handleChooseType = (option: IOption) => {
+    setSelectedType(option);
+
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('type', String(option.value));
+    newParams.set('page', '1');
+    setSearchParams(newParams, { replace: true });
+  }
 
   const onPressSearch = (text: string, tagIds?: string[]) => {
     setSearchQuery(text)
@@ -175,13 +204,26 @@ function Main({ isSearchPage = false }: IMainProps) {
           <Flex gap={10} align='center' wrap="wrap">
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
+              onChange={handleChooseType}
+              options={typeFilterOptions}
+              value={selectedType}
+              placeholder='Select type'
+              size='large'
+              className='w-[9rem]'
+              dropDownTitle='Filter by type'
+              defaultValue={typeFilterOptions[0]}
+            />
+
+            <SingleSelect
+              getPopupContainer={(trigger) => trigger.parentElement}
               options={sortOptions}
               value={selectedSort}
               onChange={handleSortChange}
               size='large'
               placeholder="Sort bots by..."
               dropDownTitle='Sort by'
-              className='w-[12rem] lg:w-[18rem] '
+              className='w-[13rem]'
+              dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
               defaultValue={sortOptions[0]}
             />
             <SingleSelect

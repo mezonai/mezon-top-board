@@ -48,7 +48,11 @@ const SearchBar = ({
     const searchTags = inpSearchTags || selectedTagIds;
 
     if (!isResultPage) {
-      navigate(`/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}`)
+      const type = searchParams.get('type') ?? '';
+
+      navigate(
+        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type)}`
+      );
       return;
     }
 

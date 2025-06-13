@@ -173,6 +173,12 @@ export class MezonAppService {
       });
     }
 
+    if (query?.type) {
+      whereCondition.andWhere("app.type = :type", {
+        type: query.type,
+      });
+    }
+
     const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
     const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
     const sortField = invalidSortField ? query.sortField : SortField.NAME;

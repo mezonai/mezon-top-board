@@ -84,6 +84,7 @@ const injectedRtkApi = api.injectEndpoints({
           ownerId: queryArg.ownerId,
           search: queryArg.search,
           tags: queryArg.tags,
+          type: queryArg.type,
           pageSize: queryArg.pageSize,
           pageNumber: queryArg.pageNumber,
           sortField: queryArg.sortField,
@@ -142,6 +143,7 @@ export type MezonAppControllerSearchMezonAppApiArg = {
   search?: string
   ownerId?: string
   tags?: string[]
+  type?: MezonAppType
   pageSize: number
   pageNumber: number
   sortField: string
