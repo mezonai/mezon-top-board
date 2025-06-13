@@ -22,7 +22,7 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
 const Step3FillDetails = () => {
   const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
-  const botId = useWatch({ control, name: 'id' })
+  const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { linkTypeList } = useSelector<RootState, ILinkTypeStore>((s) => s.link)
@@ -46,7 +46,7 @@ const Step3FillDetails = () => {
     ? 'https://mezon.ai/developers/app/install/'
     : 'https://mezon.ai/developers/bot/install/'
 
-  const inviteURL = botId ? `${baseURL}${botId}` : ''
+  const inviteURL = mezonAppId ? `${baseURL}${mezonAppId}` : ''
 
   const tagOptions = useMemo(() => {
     return tagList.data?.map(tag => ({ label: tag.name, value: tag.id })) || []

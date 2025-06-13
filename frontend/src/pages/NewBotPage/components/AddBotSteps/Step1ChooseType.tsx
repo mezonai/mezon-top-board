@@ -1,12 +1,13 @@
 import { useStepValidation } from '@app/hook/useStepValidation'
 import { Controller, useFormContext } from 'react-hook-form'
-import { AddBotFormValues } from '../../NewBotPage'
 import FormField from '@app/components/FormField/FormField'
 import { Button, Select } from 'antd'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 export const Step1ChooseType = ({ onNext }: { onNext: () => void }) => {
-  const { control, formState: { errors } } = useFormContext<AddBotFormValues>()
-  const { validateStep } = useStepValidation<AddBotFormValues>()
+  const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
+  const { validateStep } = useStepValidation<CreateMezonAppRequest>()
 
   const handleNext = async () => {
     const valid = await validateStep(['type']) // chỉ validate trường 'type'
@@ -25,8 +26,8 @@ export const Step1ChooseType = ({ onNext }: { onNext: () => void }) => {
             {...field}
             placeholder="Choose Bot or App"
             options={[
-              { label: 'Bot', value: 'bot' },
-              { label: 'App', value: 'app' }
+              { label: 'Bot', value: MezonAppType.BOT },
+              { label: 'App', value: MezonAppType.APP },
             ]}
           />
         )}

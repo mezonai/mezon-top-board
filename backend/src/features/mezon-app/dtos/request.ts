@@ -19,12 +19,14 @@ import {
   ArrayMinSize,
   IsUrl,
   ValidateIf,
+  IsEnum,
 } from "class-validator";
 
 import {
   PaginationQuery,
   RequestWithId,
 } from "@domain/common/dtos/request.dto";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
 
 export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({
@@ -54,10 +56,6 @@ class SocialLinkDto {
 }
 
 export class CreateMezonAppRequest {
-  @IsUUID()
-  @Transform(({ value }) => value?.trim())
-  id: string;
-
   @ApiProperty()
   @IsString()
   @MinLength(1, { message: "Name must be at least 1 characters" })
@@ -70,15 +68,14 @@ export class CreateMezonAppRequest {
   @IsOptional()
   isAutoPublished?: boolean;
 
-  @IsString()
-  @IsOptional()
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  type: 'bot' | 'app';
+  @ApiProperty({ enum: MezonAppType })
+  @IsEnum(MezonAppType, { message: "Type must be either 'app' or 'bot'" })
+  type: MezonAppType;
 
   @IsString()
   @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  botId: string;
+  mezonAppId: string;
  
   @ApiPropertyOptional()
   @IsString()

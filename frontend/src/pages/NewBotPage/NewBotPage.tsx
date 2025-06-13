@@ -45,7 +45,7 @@ function NewBotPage() {
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: 'bot',
-      id: '',
+      mezonAppId: '',
       name: '',
       headline: '',
       description: '',
@@ -127,7 +127,7 @@ function NewBotPage() {
   }
   const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
     0: ['type'],
-    1: ['id'],
+    1: ['mezonAppId'],
     2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'supportUrl'],
     3: [],
     4: []
@@ -151,8 +151,21 @@ function NewBotPage() {
     { title: 'Review', content: <Step4Review /> },
     { title: 'Submit', content: <Step5Submit isEdit={Boolean(botId)} /> }
   ]
+
+  const [isSmallSteps, setIsSmallSteps] = useState(false)
+  useEffect(() => {
+    const updateSize = () => {
+      const width = window.innerWidth
+      setIsSmallSteps(width >= 576 && width < 1024)
+    }
+
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
+
   return (
-    <div className='pt-8 pb-12 w-[85%] sm:w-[75%] m-auto'>
+    <div className='pt-8 pb-12 w-[85%] m-auto'>
       <div className='flex items-center justify-between'>
         <div className='flex gap-6'>
           <div className='w-[80px] object-cover flex-shrink-0'>
@@ -170,7 +183,7 @@ function NewBotPage() {
       <div className='pt-8'>
         <FormProvider {...methods}>
           <div className='bg-white p-6 rounded-md shadow-md'>
-            <Steps current={currentStep} items={steps.map(step => ({ title: step.title }))} />
+            <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
             <div className='pt-6'>{steps[currentStep].content}</div>
 
             <div className='flex justify-between pt-8'>

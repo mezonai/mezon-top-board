@@ -9,17 +9,17 @@ const Step2ProvideID = ({ onNext }: { onNext: () => void }) => {
   const { validateStep } = useStepValidation<CreateMezonAppRequest>()
 
   const handleNext = async () => {
-    const valid = await validateStep(['id'])
+    const valid = await validateStep(['mezonAppId'])
     if (valid) {
       onNext()
     }
   }
 
   return (
-    <FormField label="Bot or App ID" errorText={errors.id?.message}>
+    <FormField label="Bot or App ID" errorText={errors.mezonAppId?.message}>
       <Controller
         control={control}
-        name="id"
+        name="mezonAppId"
         render={({ field }) => (
           <Input {...field} placeholder="Enter your bot/app ID" />
         )}

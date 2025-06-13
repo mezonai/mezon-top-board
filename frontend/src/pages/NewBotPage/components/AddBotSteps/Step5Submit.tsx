@@ -22,7 +22,6 @@ const Step5Submit = ({ isEdit }: { isEdit: boolean }) => {
 
   const onSubmit = async (formData: any) => {
     try {
-      // 1. Parse & upload image from description
       const parser = new DOMParser()
       const doc = parser.parseFromString(formData.description || '', 'text/html')
       const imgs = doc.querySelectorAll('img')
@@ -53,7 +52,7 @@ const Step5Submit = ({ isEdit }: { isEdit: boolean }) => {
         ...formData,
         description: updatedDescription,
         socialLinks: formattedLinks,
-        id: formData.botId,
+        mezonAppId: formData.mezonAppId,
         type: formData.type,
       }
 
