@@ -15,7 +15,6 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import OwnerActions from '../OwnerActions/OwnerActions'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
-import { TinyColor } from '@ctrl/tinycolor'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -48,7 +47,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
-            <Tag color={new TinyColor('#F2385A').lighten(5).toString()}>{data?.type === MezonAppType.BOT ? 'BOT' : 'TOP'}</Tag>
+            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'TOP'}</Tag>
             <div className='truncate-title flex-1'>
               <style>
                 {`
