@@ -35,7 +35,7 @@ const Step4Review = ({
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
         <li><strong>Invite URL:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li><strong>Description:</strong></li>
-        <div className='border p-2 rounded description' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
+        <div className='border border-gray-300 p-3 rounded-md text-sm max-h-64 overflow-auto truncate description' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
       </ul>
     </div>
   )
