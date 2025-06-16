@@ -47,7 +47,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
-            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'TOP'}</Tag>
+            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'APP'}</Tag>
             <div className='truncate-title flex-1'>
               <style>
                 {`
