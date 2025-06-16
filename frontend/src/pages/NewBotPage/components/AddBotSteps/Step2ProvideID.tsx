@@ -1,27 +1,20 @@
-import { useStepValidation } from '@app/hook/useStepValidation'
 import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
-import { Button, Input } from 'antd'
+import { Input } from 'antd'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { capitalize } from 'lodash'
 
-const Step2ProvideID = ({ onNext }: { onNext: () => void }) => {
+const Step2ProvideID = ({ type }: { type: MezonAppType }) => {
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
-  const { validateStep } = useStepValidation<CreateMezonAppRequest>()
-
-  const handleNext = async () => {
-    const valid = await validateStep(['mezonAppId'])
-    if (valid) {
-      onNext()
-    }
-  }
-
+  const formattedType = capitalize(type)
   return (
-    <FormField label="Bot or App ID" errorText={errors.mezonAppId?.message}>
+    <FormField label={`${formattedType} ID`} errorText={errors.mezonAppId?.message}>
       <Controller
         control={control}
         name="mezonAppId"
         render={({ field }) => (
-          <Input {...field} placeholder="Enter your bot/app ID" />
+          <Input  {...field} placeholder={`Enter your ${type} ID`} />
         )}
       />
     </FormField>

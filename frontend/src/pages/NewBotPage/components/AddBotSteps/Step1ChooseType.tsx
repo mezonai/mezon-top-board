@@ -1,20 +1,11 @@
-import { useStepValidation } from '@app/hook/useStepValidation'
 import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
-import { Button, Select } from 'antd'
+import { Select } from 'antd'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-export const Step1ChooseType = ({ onNext }: { onNext: () => void }) => {
+export const Step1ChooseType = () => {
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
-  const { validateStep } = useStepValidation<CreateMezonAppRequest>()
-
-  const handleNext = async () => {
-    const valid = await validateStep(['type']) // chỉ validate trường 'type'
-    if (valid) {
-      onNext()
-    }
-  }
 
   return (
     <FormField label="Select Type" errorText={errors.type?.message}>

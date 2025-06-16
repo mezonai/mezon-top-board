@@ -1,13 +1,31 @@
 import { getMezonInstallLink } from '@app/utils/mezonApp'
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import useSubmitHandler from '../../hooks/useSubmitHandler'
 
-const Step4Review = () => {
+const Step4Review = ({
+  isEdit,
+  bindSubmit,
+  onSuccess,
+  onError
+}: {
+  isEdit: boolean,
+  bindSubmit: (submitFn: () => void) => void,
+  onSuccess: (id: string) => void,
+  onError: () => void
+}) => {
+  const submitHandler = useSubmitHandler(isEdit, { onSuccess, onError })
   const { getValues } = useFormContext()
+
+  useEffect(() => {
+    bindSubmit(() => submitHandler())
+  }, [bindSubmit, submitHandler])
+
   const values = getValues()
 
   return (
     <div>
-      <h3 className='text-xl font-semibold mb-4'>Review Your Information</h3>
+      <h3 className='text-xl font-semibold mb-4'>{isEdit ? 'Review Your Update Information' : 'Review Your Information'}</h3>
       <ul className='space-y-2'>
         <li><strong>Type:</strong> {values.type}</li>
         <li><strong>Bot/App ID:</strong> {values.mezonAppId}</li>
@@ -17,7 +35,7 @@ const Step4Review = () => {
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
         <li><strong>Invite URL:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li><strong>Description:</strong></li>
-        <div className='border p-2 rounded' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
+        <div className='border p-2 rounded description' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
       </ul>
     </div>
   )

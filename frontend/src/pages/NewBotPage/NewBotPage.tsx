@@ -1,4 +1,5 @@
-import { Steps, Button, Upload } from 'antd'
+import { Steps, Upload } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -29,6 +30,7 @@ import Step2ProvideID from './components/AddBotSteps/Step2ProvideID'
 import Step3FillDetails from './components/AddBotSteps/Step3FillDetails'
 import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -44,7 +46,7 @@ function NewBotPage() {
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
-      type: 'bot',
+      type: MezonAppType.BOT,
       mezonAppId: '',
       name: '',
       headline: '',
@@ -60,7 +62,7 @@ function NewBotPage() {
     mode: 'onChange'
   })
 
-  const { setValue, reset, watch, handleSubmit ,trigger  } = methods
+  const { setValue, reset, watch, trigger  } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
 
@@ -68,6 +70,11 @@ function NewBotPage() {
   const [getSocialLink] = useLazyLinkTypeControllerGetAllLinksQuery()
   const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
+  const [step4Submit, setStep4Submit] = useState<() => void>(() => () => {})
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submittedBotId, setSubmittedBotId] = useState<string>('')
+
+  const isEditMode = Boolean(botId)
 
   useAuthRedirect()
 
@@ -91,7 +98,12 @@ function NewBotPage() {
         return;
       }
 
-      reset({ ...rest, tagIds: tags?.map(tag => tag.id) })
+      reset({
+        ...rest,
+        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
+        mezonAppId: mezonAppDetail.mezonAppId,
+        type: mezonAppDetail.type
+      })
     }
     setAvatar(imgUrl)
   }, [mezonAppDetail])
@@ -133,7 +145,6 @@ function NewBotPage() {
     4: []
   }
 
-
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
     if (fieldsToValidate.length) {
@@ -144,13 +155,57 @@ function NewBotPage() {
   }
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
-  const steps = [
-    { title: 'Choose Type', content: <Step1ChooseType onNext={next} /> },
-    { title: 'Provide ID', content: <Step2ProvideID onNext={next} /> },
+  const createSteps = [
+    { title: 'Choose Type', content: <Step1ChooseType/> },
+    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')}/> },
     { title: 'Fill Details', content: <Step3FillDetails /> },
-    { title: 'Review', content: <Step4Review /> },
-    { title: 'Submit', content: <Step5Submit isEdit={Boolean(botId)} /> }
+    {
+      title: 'Review',
+      content: (
+        <Step4Review
+          isEdit={isEditMode}
+          bindSubmit={(fn) => setStep4Submit(() => fn)}
+          onSuccess={(id) => {
+            setSubmittedBotId(id)
+            setSubmitStatus('success')
+            setCurrentStep(4)
+          }}
+          onError={() => {
+            setSubmitStatus('error')
+            setCurrentStep(4)
+          }}
+        />
+      )
+    },
+    {
+      title: 'Result',
+      content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={false} />
+    }
   ]
+
+  const editSteps = [
+    { title: 'Edit Bot Info', content: <Step3FillDetails /> },
+    {
+      title: 'Review',
+      content: (
+        <Step4Review
+          isEdit={isEditMode}
+          bindSubmit={(fn) => setStep4Submit(() => fn)}
+          onSuccess={(id) => {
+            setSubmittedBotId(id)
+            setSubmitStatus('success')
+            setCurrentStep(2)
+          }}
+          onError={() => {
+            setSubmitStatus('error')
+            setCurrentStep(2)
+          }}
+        />
+      )
+    },
+    { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true}/> }
+  ]
+  const steps = isEditMode ? editSteps : createSteps
 
   const [isSmallSteps, setIsSmallSteps] = useState(false)
   useEffect(() => {
@@ -185,10 +240,48 @@ function NewBotPage() {
           <div className='bg-white p-6 rounded-md shadow-md'>
             <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
             <div className='pt-6'>{steps[currentStep].content}</div>
+            <div
+              className={`flex pt-8 ${
+                (!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
+                  ? 'justify-end'
+                  : 'justify-between'
+              }`}
+            >
+              {!isEditMode && (
+                <>
+                  {currentStep > 0 && currentStep !== 4 && 
+                    <Button color='default' variant='outlined' onClick={prev}>Back</Button>
+                  }
+                  {currentStep < 3 && (
+                    <Button color='default' variant='outlined' onClick={next}>
+                      Next
+                    </Button>
+                  )}
+                  {currentStep === 3 && (
+                    <Button onClick={step4Submit}>
+                      Submit for Review
+                    </Button>
+                  )}
+                </>
+              )}
 
-            <div className='flex justify-between pt-8'>
-              {currentStep > 0 && <Button onClick={prev}>Back</Button>}
-              {currentStep < steps.length - 1 && <Button type='primary' onClick={next}>Next</Button>}
+              {isEditMode && (
+                <>
+                  {currentStep === 0 && (
+                    <Button color='default' variant='outlined' onClick={next}>
+                      Next
+                    </Button>
+                  )}
+                  {currentStep === 1 && (
+                    <>
+                      <Button color='default' variant='outlined' onClick={prev}>Back</Button>
+                      <Button onClick={step4Submit}>
+                        Update
+                      </Button>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </FormProvider>

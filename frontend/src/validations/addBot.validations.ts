@@ -1,9 +1,10 @@
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import * as yup from 'yup'
 
 export const ADD_BOT_SCHEMA = yup.object({
   type: yup
-    .string()
-    .oneOf(['bot', 'app'], 'Invalid type')
+    .mixed<MezonAppType>()
+    .oneOf(Object.values(MezonAppType) as MezonAppType[], 'Invalid type')
     .required('Type is required'),
   mezonAppId: yup
     .string()
