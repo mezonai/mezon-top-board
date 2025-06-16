@@ -41,7 +41,7 @@ const Step4Review = ({
         <li className='break-words'><strong>Headline:</strong> {values.headline}</li>
         <li><strong>Prefix:</strong> {values.prefix}</li>
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
-        <li><strong>Install Link:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
+        <li className='break-words'><strong>Install Link:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li>
           <strong>Tags:</strong>
           <div className='gap-2'>
