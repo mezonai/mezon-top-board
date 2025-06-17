@@ -232,7 +232,7 @@ export class MezonAppService {
   }
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
-    const { tagIds, socialLinks, type, ...appData } = req;
+    const { tagIds, socialLinks, ...appData } = req;
     console.log("ownerId", ownerId);
 
     // Fetch existing tags
@@ -281,8 +281,7 @@ export class MezonAppService {
       ...appData,
       ownerId: ownerId,
       tags: existingTags,
-      socialLinks: links,
-      type: type as MezonAppType,
+      socialLinks: links
     });
   }
 
@@ -300,15 +299,8 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, type, mezonAppId, ...updateData } = req;
+    const { tagIds, socialLinks, description, ...updateData } = req;
 
-      if (type) {
-        app.type = type as MezonAppType;
-      }
-
-      if (mezonAppId) {
-        app.mezonAppId = mezonAppId;
-      }
     let tags = app.tags;
     let links = app.socialLinks;
 
