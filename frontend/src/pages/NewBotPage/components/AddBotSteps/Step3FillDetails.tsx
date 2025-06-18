@@ -277,7 +277,7 @@ const Step3FillDetails = () => {
               disabled={!selectedSocialLink}
             />
           </Form.Item>
-          <Button onClick={addNewLink}>Add</Button>
+          <Button variant='outlined' onClick={addNewLink}>Add</Button>
         </div>
 
         {socialLinksData.map((link, index) => (
@@ -298,7 +298,7 @@ const Step3FillDetails = () => {
                     onBlur={(e) => update(index, { ...link, url: e.target.value })}
                   />
                 </Form.Item>
-                <Button onClick={() => remove(index)}>Delete</Button>
+                <Button color='danger' onClick={() => remove(index)}>Delete</Button>
               </div>
             )}
           />

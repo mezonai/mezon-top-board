@@ -10,7 +10,8 @@ export const ADD_BOT_SCHEMA = yup.object({
     .string()
     .trim()
     .required('Bot or App ID is required')
-    .max(2042, 'Bot or App ID is too long'),
+    .max(2042, 'Bot or App ID is too long')
+    .matches(/^\d+$/, 'Must contain digits only'),
   name: yup
     .string()
     .trim()
@@ -18,12 +19,6 @@ export const ADD_BOT_SCHEMA = yup.object({
     .min(1, "Minimum 1 characters")
     .max(64, "Maximum 64 characters"),
   isAutoPublished: yup.boolean().optional(),
-  // installLink: yup
-  //   .string()
-  //   .trim()
-  //   .required("Install Link is required")
-  //   .url("Invalid URL")
-  //   .test("url-length", "URL is too long", (val) => val.length <= 2082),
   headline: yup
     .string()
     .trim()

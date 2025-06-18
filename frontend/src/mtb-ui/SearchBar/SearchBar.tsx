@@ -103,7 +103,7 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div className="flex flex-1 items-center !rounded-full my-select-container">
+        <div className="flex flex-1 w-full items-center !rounded-full my-select-container">
           <style>
             {`
               .my-select-container .ant-select .ant-select-selector {
@@ -132,7 +132,7 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder="All Types"
-            className="!h-[50px] min-w-1/5 "
+            className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
           />
         </div>
         {isShowButton && (

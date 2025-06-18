@@ -1,7 +1,7 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { useState, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, useFormContext } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -25,12 +25,13 @@ import { IMezonAppStore } from '@app/store/mezonApp'
 import { ITagStore } from '@app/store/tag'
 import { isEmpty } from 'lodash'
 
-import { Step1ChooseType } from './components/AddBotSteps/Step1ChooseType'
+import Step1ChooseType from './components/AddBotSteps/Step1ChooseType'
 import Step2ProvideID from './components/AddBotSteps/Step2ProvideID'
 import Step3FillDetails from './components/AddBotSteps/Step3FillDetails'
 import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -62,7 +63,7 @@ function NewBotPage() {
     mode: 'onChange'
   })
 
-  const { setValue, reset, watch, trigger  } = methods
+  const { setValue, reset, watch, trigger, handleSubmit  } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
 
@@ -70,7 +71,6 @@ function NewBotPage() {
   const [getSocialLink] = useLazyLinkTypeControllerGetAllLinksQuery()
   const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
-  const [step4Submit, setStep4Submit] = useState<() => void>(() => () => {})
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submittedBotId, setSubmittedBotId] = useState<string>('')
 
@@ -126,8 +126,8 @@ function NewBotPage() {
       const response = await uploadImage(formData).unwrap()
 
       if (response?.statusCode === 200) {
-        setAvatar(getUrlMedia(response.data.filePath))
-        setValue('featuredImage', response.data.filePath)
+        setAvatar(getUrlMedia(response.data?.filePath))
+        setValue('featuredImage', response.data?.filePath)
       }
 
       onSuccess(response, file)
@@ -152,6 +152,9 @@ function NewBotPage() {
       if (!valid) return
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 0)
   }
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
@@ -161,21 +164,7 @@ function NewBotPage() {
     { title: 'Fill Details', content: <Step3FillDetails /> },
     {
       title: 'Review',
-      content: (
-        <Step4Review
-          isEdit={isEditMode}
-          bindSubmit={(fn) => setStep4Submit(() => fn)}
-          onSuccess={(id) => {
-            setSubmittedBotId(id)
-            setSubmitStatus('success')
-            setCurrentStep(4)
-          }}
-          onError={() => {
-            setSubmitStatus('error')
-            setCurrentStep(4)
-          }}
-        />
-      )
+      content: (<Step4Review isEdit={isEditMode}/>)
     },
     {
       title: 'Result',
@@ -187,21 +176,7 @@ function NewBotPage() {
     { title: 'Edit Bot Info', content: <Step3FillDetails /> },
     {
       title: 'Review',
-      content: (
-        <Step4Review
-          isEdit={isEditMode}
-          bindSubmit={(fn) => setStep4Submit(() => fn)}
-          onSuccess={(id) => {
-            setSubmittedBotId(id)
-            setSubmitStatus('success')
-            setCurrentStep(2)
-          }}
-          onError={() => {
-            setSubmitStatus('error')
-            setCurrentStep(2)
-          }}
-        />
-      )
+      content: (<Step4Review isEdit={isEditMode}/>)
     },
     { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true}/> }
   ]
@@ -219,6 +194,23 @@ function NewBotPage() {
     return () => window.removeEventListener('resize', updateSize)
   }, [])
 
+  const onSubmit = useOnSubmitBotForm(
+    isEditMode,
+    (id) => {
+      setSubmittedBotId(id)
+      setSubmitStatus('success')
+      setCurrentStep(isEditMode ? 2 : 4)
+    },
+    () => {
+      setSubmitStatus('error')
+      setCurrentStep(isEditMode ? 2 : 4)
+    }
+  )
+
+  const SubmitForm = handleSubmit(onSubmit, (formErrors) => {
+    toast.error('Form validation failed!')
+  })
+  
   return (
     <div className='pt-8 pb-12 w-[85%] m-auto'>
       <div className='flex items-center justify-between'>
@@ -247,40 +239,28 @@ function NewBotPage() {
                   : 'justify-between'
               }`}
             >
-              {!isEditMode && (
-                <>
-                  {currentStep > 0 && currentStep !== 4 && 
-                    <Button color='default' variant='outlined' onClick={prev}>Back</Button>
-                  }
-                  {currentStep < 3 && (
-                    <Button color='default' variant='outlined' onClick={next}>
-                      Next
-                    </Button>
-                  )}
-                  {currentStep === 3 && (
-                    <Button onClick={step4Submit}>
-                      Submit for Review
-                    </Button>
-                  )}
-                </>
+              {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
+                <Button color="dark" onClick={prev} >
+                  Back
+                </Button>
+              )}
+              
+              {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
+                <Button color="primary" variant="outlined" onClick={next}>
+                  Next
+                </Button>
               )}
 
-              {isEditMode && (
-                <>
-                  {currentStep === 0 && (
-                    <Button color='default' variant='outlined' onClick={next}>
-                      Next
-                    </Button>
-                  )}
-                  {currentStep === 1 && (
-                    <>
-                      <Button color='default' variant='outlined' onClick={prev}>Back</Button>
-                      <Button onClick={step4Submit}>
-                        Update
-                      </Button>
-                    </>
-                  )}
-                </>
+              {(currentStep === 3 && !isEditMode) && (
+                <Button onClick={SubmitForm}>
+                  Submit for Review
+                </Button>
+              )}
+
+              {(currentStep === 1 && isEditMode) && (
+                <Button onClick={SubmitForm}>
+                  Update
+                </Button>
               )}
             </div>
           </div>

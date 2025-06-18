@@ -4,7 +4,7 @@ import { Select } from 'antd'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-export const Step1ChooseType = () => {
+const Step1ChooseType = () => {
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
 
   return (
@@ -26,3 +26,5 @@ export const Step1ChooseType = () => {
     </FormField>
   )
 }
+
+export default Step1ChooseType;

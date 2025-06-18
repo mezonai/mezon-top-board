@@ -1,4 +1,5 @@
 import { AppStatus } from "@app/enums/AppStatus.enum";
+import { MezonAppType } from "@app/enums/mezonAppType.enum";
 
 export function mapStatusToColor(status: number) {
   switch (status) {
@@ -83,9 +84,9 @@ export function randomColor(type: string = 'normal', index?: number) {
   return colorSelection[Math.floor(Math.random() * colorSelection.length)];
 }
 
-export const getMezonInstallLink = (type: 'app' | 'bot' = 'bot', mezonAppId?: string): string => {
+export const getMezonInstallLink = (type: MezonAppType = MezonAppType.BOT, mezonAppId?: string): string => {
   const baseURL =
-    type === 'app'
+    type === MezonAppType.APP
       ? 'https://mezon.ai/developers/app/install/'
       : 'https://mezon.ai/developers/bot/install/'
 

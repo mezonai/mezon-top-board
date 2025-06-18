@@ -1,33 +1,15 @@
 import { getMezonInstallLink } from '@app/utils/mezonApp'
-import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import useSubmitHandler from '../../hooks/useSubmitHandler'
 import { Tag } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 
-const Step4Review = ({
-  isEdit,
-  bindSubmit,
-  onSuccess,
-  onError
-}: {
-  isEdit: boolean,
-  bindSubmit: (submitFn: () => void) => void,
-  onSuccess: (id: string) => void,
-  onError: () => void
-}) => {
-  const submitHandler = useSubmitHandler(isEdit, { onSuccess, onError })
+const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
 
-  useEffect(() => {
-    bindSubmit(() => submitHandler())
-  }, [bindSubmit, submitHandler])
-
   const values = getValues()
-
   const tagIds = values.tagIds ?? []
   const selectedTags = tagList.data?.filter(tag => tagIds.includes(tag.id)) ?? []
 
