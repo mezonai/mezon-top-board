@@ -247,7 +247,10 @@ const Step3FillDetails = () => {
           control={control}
           name='remark'
           render={({ field }) => (
-            <TextArea {...field} rows={3} placeholder='Any notes for reviewer?' />
+            <TextArea {...field} rows={3} 
+              placeholder="Please share any important information or details about your bot that our reviewers should know" 
+              status={errorStatus(errors.remark)} 
+            />
           )}
         />
       </FormField>

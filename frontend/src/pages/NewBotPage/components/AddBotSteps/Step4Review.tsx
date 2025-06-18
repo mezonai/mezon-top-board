@@ -4,6 +4,7 @@ import { Tag } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
+import { transformMediaSrc } from '@app/utils/html'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
@@ -57,11 +58,13 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
             )}
           </div>
         </li>
+        <li><strong>Note: </strong>{values.remark ==='' ? 'None' : values.remark}</li>
         <li><strong>Description:</strong></li>
-        <div className='border border-gray-300 p-3 rounded-md text-sm description break-words' dangerouslySetInnerHTML={{ __html: values.description || '' }} />
+        <div className='border border-gray-300 p-3 rounded-md text-sm description break-words' 
+          dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />
       </ul>
     </div>
   )
 }
-
+ 
 export default Step4Review
