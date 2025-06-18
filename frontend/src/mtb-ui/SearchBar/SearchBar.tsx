@@ -3,11 +3,19 @@ import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { IOption } from '../SingleSelect'
+import { set } from 'lodash'
 
+const typeFilterOptions = [
+  { label: 'All Types', value: '' },
+  { label: 'Bot', value: MezonAppType.BOT },
+  { label: 'App', value: MezonAppType.APP },
+]
 const MAX_VISIBLE_TAGS = 10
 
 const SearchBar = ({
@@ -26,6 +34,7 @@ const SearchBar = ({
   const [showAllTags, setShowAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
+  const [selectedType, setSelectedType] = useState<MezonAppType | ''>(searchParams.get('type') as MezonAppType ?? '')
 
   useEffect(() => {
     setSelectedTagIds(selectedTagIds.filter(Boolean));
@@ -35,29 +44,28 @@ const SearchBar = ({
     setSearchText('')
     setSelectedTagIds([])
     setSearchParams({})
+    setSelectedType('')
     if (isResultPage) {
       onSearch('', [])
     }
   }
 
-  const updateSearchParams = (q: string, tags: string[]) => {
-    setSearchParams({ q, tags: tags.join(',') }, { replace: true })
+  const updateSearchParams = (q: string, tags: string[], type: string) => {
+    setSearchParams({ q, tags: tags.join(','), type }, { replace: true });
   }
 
-  const handleSearch = (inpSearchTags?: string[]) => {
+  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType | '') => {
     const searchTags = inpSearchTags || selectedTagIds;
-
+    const type = inpSearchType ?? selectedType;
     if (!isResultPage) {
-      const type = searchParams.get('type') ?? '';
-
       navigate(
         `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type)}`
       );
       return;
     }
 
-    updateSearchParams(searchText, searchTags)
-    onSearch(searchText.trim(), searchTags)
+    updateSearchParams(searchText, searchTags, String(type));
+    onSearch(searchText.trim(), searchTags, type)
   }
 
   const handleSearchTag = (tagId: string) => {
@@ -86,19 +94,27 @@ const selectedHiddenTagCount = selectedTagIds.filter(id =>
   hiddenTags.some(tag => tag.id === id)
 ).length;
 
+const handleTypeChange = (value: string) => {
+  setSelectedType(value as MezonAppType | '');
+  handleSearch(undefined, value as MezonAppType | ''); 
+}
+
 const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div style={{ width: '100%' }}>
+        <div className="flex flex-1 items-center !rounded-full my-select-container">
+          <style>
+            {`
+              .my-select-container .ant-select .ant-select-selector {
+                border-radius:0 100px 100px 0 !important;
+                border-left: none !important;
+              }
+            `}
+          </style>
           <Input
-            // {...props}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            style={{
-              borderRadius: '100px',
-              height: '50px'
-            }}
             placeholder={placeholder}
             prefix={<SearchOutlined style={{ color: '#bbb' }} />}
             suffix={
@@ -108,7 +124,15 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
                 </button>
               ) : null
             }
+            className="!rounded-l-full h-[50px] "
             onPressEnter={() => handleSearch()}
+          />
+          <Select
+            value={selectedType}
+            onChange={handleTypeChange}
+            options={typeFilterOptions}
+            placeholder="All Types"
+            className="!h-[50px] min-w-1/5 "
           />
         </div>
         {isShowButton && (
@@ -119,15 +143,15 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
       </div>
       <div className={`pt-5 cursor-pointer`}>
         {visibleTags.map((tag) => (
-            <Tag.CheckableTag
-              key={tag.id}
-              checked={selectedTagIds.includes(tag.id)}
-              className='!border !border-gray-300'
-              onClick={() => handleSearchTag(tag.id)}
-            >
-              {tag.name}
-            </Tag.CheckableTag>
-          ))}
+          <Tag.CheckableTag
+            key={tag.id}
+            checked={selectedTagIds.includes(tag.id)}
+            className='!border !border-gray-300'
+            onClick={() => handleSearchTag(tag.id)}
+          >
+            {tag.name}
+          </Tag.CheckableTag>
+        ))}
         {!showAllTags && totalTags > 10 && (
           !isSelectVisible ? (
             <Tag

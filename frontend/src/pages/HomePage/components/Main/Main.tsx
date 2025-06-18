@@ -25,15 +25,13 @@ const sortOptions = [
   { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
   { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
 ];
-const typeFilterOptions = [
-  { label: 'All Types', value: '' },
-  { label: 'Bot', value: 'bot' },
-  { label: 'App', value: 'app' }
-];
 
 function Main({ isSearchPage = false }: IMainProps) {
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
+  const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
+  const [getTagList] = useLazyTagControllerGetTagsQuery()
+  const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const defaultSearchQuery = useMemo(() => searchParams.get('q')?.trim() || '', [searchParams.get('q')?.trim()])
@@ -41,30 +39,19 @@ function Main({ isSearchPage = false }: IMainProps) {
     () => searchParams.get('tags')?.split(',').filter(Boolean) || [],
     [searchParams.get('tags')]
   )
-
-  const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-
-  const [getTagList] = useLazyTagControllerGetTagsQuery()
-  const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
+  const defaultType = useMemo(() => searchParams.get('type'), [searchParams.get('type')?.trim()]);
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [sortField, setSortField] = useState<string>('name')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
 
-  const defaultType = useMemo(() => {
-    const typeFromUrl = searchParams.get('type');
-    const matched = typeFilterOptions.find(opt => opt.value === typeFromUrl);
-    return matched || typeFilterOptions[0];
-  }, [searchParams]);
-  const [selectedType, setSelectedType] = useState<IOption>(defaultType);
-
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [page, setPage] = useState<number>(() => getPageFromParams(searchParams))
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-
+  const [type, setType] = useState<MezonAppType | ''>(searchParams.get('type')?.trim() as MezonAppType || '')
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -72,6 +59,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (!isInitialized && isSearchPage) {
       setSearchQuery(defaultSearchQuery)
       setTagIds(defaultTagIds)
+      setType((defaultType || '') as MezonAppType | '')
       searchMezonAppList(defaultSearchQuery, defaultTagIds)
       setIsInitialized(true)
     }
@@ -89,8 +77,8 @@ function Main({ isSearchPage = false }: IMainProps) {
   }, [isError, error])
 
   useEffect(() => {
-    searchMezonAppList(searchQuery, tagIds)
-  }, [page, botPerPage, isSearchPage, selectedSort, selectedType])
+    searchMezonAppList(searchQuery, tagIds, type as MezonAppType | '')
+  }, [page, botPerPage, isSearchPage, selectedSort])
 
   useEffect(() => {
     const newPage = getPageFromParams(searchParams)
@@ -105,16 +93,11 @@ function Main({ isSearchPage = false }: IMainProps) {
     setSortOrder('ASC')
   }, [searchQuery])
 
-  const searchMezonAppList = (searchQuery?: string, tagIds?: string[]) => {
+  const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType | '') => {
     getMezonApp({
       search: isSearchPage ? searchQuery : undefined,
       tags: tagIds && tagIds.length ? tagIds : undefined,
-      type:
-        selectedType.value === 'app'
-          ? MezonAppType.APP
-          : selectedType.value === 'bot'
-          ? MezonAppType.BOT
-          : undefined,
+      type: type || undefined,
       pageNumber: page,
       pageSize: botPerPage,
       sortField: sortField,
@@ -160,24 +143,20 @@ function Main({ isSearchPage = false }: IMainProps) {
       setPage(1)
     }
   }
-  const handleChooseType = (option: IOption) => {
-    setSelectedType(option);
 
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('type', String(option.value));
-    newParams.set('page', '1');
-    setSearchParams(newParams, { replace: true });
-  }
-
-  const onPressSearch = (text: string, tagIds?: string[]) => {
+  const onPressSearch = (text: string, tagIds?: string[], type?: MezonAppType | '') => {
     setSearchQuery(text)
     setTagIds(tagIds ?? [])
+    setType(type ?? '')
+
     if (page !== 1) {
       setPage(1)
       return
     }
-    searchMezonAppList(text, tagIds)
+
+    searchMezonAppList(text, tagIds, type as MezonAppType | '')
   }
+
 
   return (
     <div ref={mainRef} className={`flex flex-col justify-center pt-8 pb-12 w-[75%] m-auto relative z-1`}>
@@ -188,7 +167,7 @@ function Main({ isSearchPage = false }: IMainProps) {
       </Divider>
       <div className='pt-3'>
         <SearchBar
-          onSearch={(val, tagIds) => onPressSearch(val ?? '', tagIds)}
+          onSearch={(val, tagIds, type) => onPressSearch(val ?? '', tagIds, type)}
           defaultValue={searchQuery}
           isResultPage={isSearchPage}
         ></SearchBar>
@@ -202,18 +181,6 @@ function Main({ isSearchPage = false }: IMainProps) {
             </MtbTypography>
           </div>
           <Flex gap={10} align='center' wrap="wrap">
-            <SingleSelect
-              getPopupContainer={(trigger) => trigger.parentElement}
-              onChange={handleChooseType}
-              options={typeFilterOptions}
-              value={selectedType}
-              placeholder='Select type'
-              size='large'
-              className='w-[9rem]'
-              dropDownTitle='Filter by type'
-              defaultValue={typeFilterOptions[0]}
-            />
-
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
               options={sortOptions}
