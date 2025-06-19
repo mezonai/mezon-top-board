@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-const typeFilterOptions: { label: string; value?: MezonAppType |null }[] = [
+const typeFilterOptions: { label: string; value?: MezonAppType | null }[] = [
   { label: 'All Types', value: null  },
   { label: 'Bot', value: MezonAppType.BOT },
   { label: 'App', value: MezonAppType.APP },
@@ -52,17 +52,14 @@ const SearchBar = ({
   }
 
   const updateSearchParams = (q: string, tags: string[], type?: MezonAppType | null) => {
-    const params: Record<string, string> = {
-      q,
-      tags: tags.join(','),
-    }
+    const params: Record<string, string> = {q, tags: tags.join(','),}
     if (type) {
       params.type = type
     }
     setSearchParams(params, { replace: true })
   }
 
-  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType) => {
+  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType | null) => {
     const searchTags = inpSearchTags || selectedTagIds
     const type = inpSearchType !== undefined ? inpSearchType : selectedType
 
@@ -105,8 +102,8 @@ const SearchBar = ({
     hiddenTags.some((tag) => tag.id === id)
   ).length
 
-  const handleTypeChange = (value: MezonAppType | undefined) => {
-    setSelectedType(value ?? null)
+  const handleTypeChange = (value: MezonAppType | null) => {
+    setSelectedType(value)
     handleSearch(undefined, value)
   }
 
