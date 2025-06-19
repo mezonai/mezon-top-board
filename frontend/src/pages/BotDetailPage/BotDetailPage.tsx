@@ -29,7 +29,7 @@ import useOwnershipCheck from '@app/hook/useOwnershipCheck'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import { debounce } from 'lodash'
-import { transformMediaSrc } from '@app/utils/html'
+import { transformMediaSrc } from '@app/utils/stringHelper'
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()

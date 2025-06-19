@@ -3,19 +3,18 @@ import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
-import { IOption } from '../SingleSelect'
-import { set } from 'lodash'
 
-const typeFilterOptions = [
-  { label: 'All Types', value: '' },
+const typeFilterOptions: { label: string; value?: MezonAppType |null }[] = [
+  { label: 'All Types', value: null  },
   { label: 'Bot', value: MezonAppType.BOT },
   { label: 'App', value: MezonAppType.APP },
 ]
+
 const MAX_VISIBLE_TAGS = 10
 
 const SearchBar = ({
@@ -34,37 +33,50 @@ const SearchBar = ({
   const [showAllTags, setShowAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
-  const [selectedType, setSelectedType] = useState<MezonAppType | ''>(searchParams.get('type') as MezonAppType ?? '')
+  const [selectedType, setSelectedType] = useState<MezonAppType | null  >(
+    (searchParams.get('type') as MezonAppType) || null
+  )
 
   useEffect(() => {
-    setSelectedTagIds(selectedTagIds.filter(Boolean));
+    setSelectedTagIds(selectedTagIds.filter(Boolean))
   }, [])
 
   const handleClear = () => {
     setSearchText('')
     setSelectedTagIds([])
     setSearchParams({})
-    setSelectedType('')
+    setSelectedType(null)
     if (isResultPage) {
       onSearch('', [])
     }
   }
 
-  const updateSearchParams = (q: string, tags: string[], type: string) => {
-    setSearchParams({ q, tags: tags.join(','), type }, { replace: true });
+  const updateSearchParams = (q: string, tags: string[], type?: MezonAppType | null) => {
+    const params: Record<string, string> = {
+      q,
+      tags: tags.join(','),
+    }
+    if (type) {
+      params.type = type
+    }
+    setSearchParams(params, { replace: true })
   }
 
-  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType | '') => {
-    const searchTags = inpSearchTags || selectedTagIds;
-    const type = inpSearchType ?? selectedType;
+  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType) => {
+    const searchTags = inpSearchTags || selectedTagIds
+    const type = inpSearchType !== undefined ? inpSearchType : selectedType
+
     if (!isResultPage) {
-      navigate(
-        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type)}`
-      );
-      return;
+      const query = new URLSearchParams({
+        q: searchText,
+        tags: searchTags.join(','),
+        ...(type ? { type } : {}),
+      }).toString()
+      navigate(`/search?${query}`)
+      return
     }
 
-    updateSearchParams(searchText, searchTags, String(type));
+    updateSearchParams(searchText, searchTags, type)
     onSearch(searchText.trim(), searchTags, type)
   }
 
@@ -85,21 +97,21 @@ const SearchBar = ({
     selectedTagIds.includes(tag.id)
   ) || [];
 
+  const [isSelectVisible, setIsSelectVisible] = useState(false);
 
-const [isSelectVisible, setIsSelectVisible] = useState(false);
+  const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || []
 
-const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || [];
+  const selectedHiddenTagCount = selectedTagIds.filter((id) =>
+    hiddenTags.some((tag) => tag.id === id)
+  ).length
 
-const selectedHiddenTagCount = selectedTagIds.filter(id =>
-  hiddenTags.some(tag => tag.id === id)
-).length;
+  const handleTypeChange = (value: MezonAppType | undefined) => {
+    setSelectedType(value ?? null)
+    handleSearch(undefined, value)
+  }
 
-const handleTypeChange = (value: string) => {
-  setSelectedType(value as MezonAppType | '');
-  handleSearch(undefined, value as MezonAppType | ''); 
-}
+  const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount
 
-const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
@@ -133,6 +145,7 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
             options={typeFilterOptions}
             placeholder="All Types"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
+            
           />
         </div>
         {isShowButton && (

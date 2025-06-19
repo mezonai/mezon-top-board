@@ -4,7 +4,7 @@ import { Tag } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
-import { transformMediaSrc } from '@app/utils/html'
+import { transformMediaSrc } from '@app/utils/stringHelper'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()

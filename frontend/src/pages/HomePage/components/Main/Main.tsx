@@ -51,7 +51,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-  const [type, setType] = useState<MezonAppType | ''>(searchParams.get('type')?.trim() as MezonAppType || '')
+  const [type, setType] = useState<MezonAppType | undefined>((searchParams.get('type') as MezonAppType) || undefined)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (!isInitialized && isSearchPage) {
       setSearchQuery(defaultSearchQuery)
       setTagIds(defaultTagIds)
-      setType((defaultType || '') as MezonAppType | '')
+      setType((defaultType || undefined) as MezonAppType)
       searchMezonAppList(defaultSearchQuery, defaultTagIds)
       setIsInitialized(true)
     }
@@ -77,7 +77,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   }, [isError, error])
 
   useEffect(() => {
-    searchMezonAppList(searchQuery, tagIds, type as MezonAppType | '')
+    searchMezonAppList(searchQuery, tagIds, type)
   }, [page, botPerPage, isSearchPage, selectedSort])
 
   useEffect(() => {
@@ -93,11 +93,11 @@ function Main({ isSearchPage = false }: IMainProps) {
     setSortOrder('ASC')
   }, [searchQuery])
 
-  const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType | '') => {
+  const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType) => {
     getMezonApp({
       search: isSearchPage ? searchQuery : undefined,
       tags: tagIds && tagIds.length ? tagIds : undefined,
-      type: type || undefined,
+      type,
       pageNumber: page,
       pageSize: botPerPage,
       sortField: sortField,
@@ -144,17 +144,17 @@ function Main({ isSearchPage = false }: IMainProps) {
     }
   }
 
-  const onPressSearch = (text: string, tagIds?: string[], type?: MezonAppType | '') => {
+  const onPressSearch = (text: string, tagIds?: string[], type?: MezonAppType) => {
     setSearchQuery(text)
     setTagIds(tagIds ?? [])
-    setType(type ?? '')
+    setType(type)
 
     if (page !== 1) {
       setPage(1)
       return
     }
 
-    searchMezonAppList(text, tagIds, type as MezonAppType | '')
+    searchMezonAppList(text, tagIds, type)
   }
 
 

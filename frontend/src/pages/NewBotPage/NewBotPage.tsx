@@ -44,7 +44,7 @@ function NewBotPage() {
     ? getUrlMedia(mezonAppDetail.featuredImage)
     : avatarBotDefault
   const [avatar, setAvatar] = useState<string>(imgUrl)
-
+ 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
