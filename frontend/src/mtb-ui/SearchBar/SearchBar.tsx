@@ -37,9 +37,6 @@ const SearchBar = ({
 
   useEffect(() => {
     setSelectedTagIds(selectedTagIds.filter(Boolean))
-  }, [])
-
-  useEffect(() => {
     const typeParam = searchParams.get('type')
 
     if (typeParam === 'app' || typeParam === 'bot') {
