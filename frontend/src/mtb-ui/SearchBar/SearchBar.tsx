@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-const typeFilterOptions: { label: string; value?: MezonAppType | null }[] = [
+const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
   { label: 'All Types', value: null  },
   { label: 'Bot', value: MezonAppType.BOT },
   { label: 'App', value: MezonAppType.APP },
@@ -33,46 +33,51 @@ const SearchBar = ({
   const [showAllTags, setShowAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
-  const [selectedType, setSelectedType] = useState<MezonAppType | null  >(
-    (searchParams.get('type') as MezonAppType) || null
-  )
+  const [selectedType, setSelectedType] = useState<MezonAppType>()
 
   useEffect(() => {
     setSelectedTagIds(selectedTagIds.filter(Boolean))
+  }, [])
+
+  useEffect(() => {
+    const typeParam = searchParams.get('type')
+
+    if (typeParam === 'app' || typeParam === 'bot') {
+      setSelectedType(typeParam as MezonAppType)
+    } else {
+      setSelectedType(undefined)
+    }
   }, [])
 
   const handleClear = () => {
     setSearchText('')
     setSelectedTagIds([])
     setSearchParams({})
-    setSelectedType(null)
+    setSelectedType(undefined)
     if (isResultPage) {
       onSearch('', [])
     }
   }
 
-  const updateSearchParams = (q: string, tags: string[], type?: MezonAppType | null) => {
+  const updateSearchParams = (q: string, tags: string[], type?: MezonAppType) => {
     const params: Record<string, string> = {q, tags: tags.join(','),}
-    if (type) {
+    if (type !== undefined) {
       params.type = type
-    }
+    } else params.type = ''
     setSearchParams(params, { replace: true })
   }
 
-  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType | null) => {
+  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType) => {
     const searchTags = inpSearchTags || selectedTagIds
-    const type = inpSearchType !== undefined ? inpSearchType : selectedType
-
+    const type = inpSearchType
+    console.log(inpSearchType)
     if (!isResultPage) {
-      const query = new URLSearchParams({
-        q: searchText,
-        tags: searchTags.join(','),
-        ...(type ? { type } : {}),
-      }).toString()
-      navigate(`/search?${query}`)
+      navigate(
+        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type ??'')}`
+      );
       return
     }
-
+    
     updateSearchParams(searchText, searchTags, type)
     onSearch(searchText.trim(), searchTags, type)
   }
@@ -83,7 +88,7 @@ const SearchBar = ({
       : [...selectedTagIds, tagId]
 
     setSelectedTagIds(updatedTagIds);    
-    handleSearch(updatedTagIds);
+    handleSearch(updatedTagIds, selectedType);
   }
 
   const totalTags = tagList?.data?.length || 0
@@ -103,8 +108,9 @@ const SearchBar = ({
   ).length
 
   const handleTypeChange = (value: MezonAppType | null) => {
-    setSelectedType(value)
-    handleSearch(undefined, value)
+    const newType = value === null ? undefined : value
+    setSelectedType(newType)
+    handleSearch(undefined, newType)
   }
 
   const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount
@@ -134,7 +140,7 @@ const SearchBar = ({
               ) : null
             }
             className="!rounded-l-full h-[50px] "
-            onPressEnter={() => handleSearch()}
+            onPressEnter={() => handleSearch(undefined, selectedType)}
           />
           <Select
             value={selectedType}
@@ -146,7 +152,8 @@ const SearchBar = ({
           />
         </div>
         {isShowButton && (
-          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }} onClick={() => handleSearch()}>
+          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }} 
+            onClick={() => handleSearch(undefined, selectedType)}>
             Search
           </Button>
         )}
@@ -179,7 +186,7 @@ const SearchBar = ({
               value={selectedTagIds}
               onChange={(newSelectedTagIds: string[]) => {
                 setSelectedTagIds(newSelectedTagIds);
-                handleSearch(newSelectedTagIds);
+                handleSearch(newSelectedTagIds, selectedType);
               }}
               onBlur={() => setIsSelectVisible(false)}
               style={{ width: '120px', marginTop: '8px' }}

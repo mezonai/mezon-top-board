@@ -153,7 +153,6 @@ function Main({ isSearchPage = false }: IMainProps) {
       setPage(1)
       return
     }
-
     searchMezonAppList(text, tagIds, type)
   }
 
@@ -167,7 +166,7 @@ function Main({ isSearchPage = false }: IMainProps) {
       </Divider>
       <div className='pt-3'>
         <SearchBar
-          onSearch={(val, tagIds, type) => onPressSearch(val ?? '', tagIds, type && type !== null ? type : undefined)}
+          onSearch={(val, tagIds, type) => onPressSearch(val ?? '', tagIds, type)}
           defaultValue={searchQuery}
           isResultPage={isSearchPage}
         ></SearchBar>
