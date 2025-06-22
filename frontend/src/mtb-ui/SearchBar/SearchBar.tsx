@@ -9,8 +9,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
-  { label: 'All Types', value: null  },
+const typeFilterOptions: { label: string; value?: MezonAppType }[] = [
+  { label: 'All Types' },
   { label: 'Bot', value: MezonAppType.BOT },
   { label: 'App', value: MezonAppType.APP },
 ]
@@ -37,13 +37,9 @@ const SearchBar = ({
 
   useEffect(() => {
     setSelectedTagIds(selectedTagIds.filter(Boolean))
-    const typeParam = searchParams.get('type')
+    const typeParam: MezonAppType | undefined = searchParams.get('type') as MezonAppType | undefined
 
-    if (typeParam === 'app' || typeParam === 'bot') {
-      setSelectedType(typeParam as MezonAppType)
-    } else {
-      setSelectedType(undefined)
-    }
+    setSelectedType(typeParam)
   }, [])
 
   const handleClear = () => {
@@ -57,24 +53,21 @@ const SearchBar = ({
   }
 
   const updateSearchParams = (q: string, tags: string[], type?: MezonAppType) => {
-    const params: Record<string, string> = {q, tags: tags.join(','),}
-    if (type !== undefined) {
-      params.type = type
-    } else params.type = ''
+    const params: Record<string, string> = { q, tags: tags.join(','), }
+    params.type = type || ''
     setSearchParams(params, { replace: true })
   }
 
   const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType) => {
     const searchTags = inpSearchTags || selectedTagIds
     const type = inpSearchType
-    console.log(inpSearchType)
     if (!isResultPage) {
       navigate(
-        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type ??'')}`
+        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type ?? '')}`
       );
       return
     }
-    
+
     updateSearchParams(searchText, searchTags, type)
     onSearch(searchText.trim(), searchTags, type)
   }
@@ -84,7 +77,7 @@ const SearchBar = ({
       ? selectedTagIds.filter((id) => id !== tagId)
       : [...selectedTagIds, tagId]
 
-    setSelectedTagIds(updatedTagIds);    
+    setSelectedTagIds(updatedTagIds);
     handleSearch(updatedTagIds, selectedType);
   }
 
@@ -104,10 +97,9 @@ const SearchBar = ({
     hiddenTags.some((tag) => tag.id === id)
   ).length
 
-  const handleTypeChange = (value: MezonAppType | null) => {
-    const newType = value === null ? undefined : value
-    setSelectedType(newType)
-    handleSearch(undefined, newType)
+  const handleTypeChange = (value?: MezonAppType) => {
+    setSelectedType(value)
+    handleSearch(selectedTagIds, value)
   }
 
   const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount
@@ -137,7 +129,7 @@ const SearchBar = ({
               ) : null
             }
             className="!rounded-l-full h-[50px] "
-            onPressEnter={() => handleSearch(undefined, selectedType)}
+            onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
             value={selectedType}
@@ -145,12 +137,12 @@ const SearchBar = ({
             options={typeFilterOptions}
             placeholder="All Types"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
-            
+
           />
         </div>
         {isShowButton && (
-          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }} 
-            onClick={() => handleSearch(undefined, selectedType)}>
+          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }}
+            onClick={() => handleSearch(selectedTagIds, selectedType)}>
             Search
           </Button>
         )}

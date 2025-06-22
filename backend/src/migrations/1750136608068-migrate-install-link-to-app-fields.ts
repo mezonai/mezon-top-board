@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { getMezonInstallLink } from "@libs/utils/mezonApp";
 
 export class MigrateInstallLinkToAppFields1750136608068 implements MigrationInterface {
   name = "MigrateInstallLinkToAppFields1750136608068";
@@ -31,8 +32,20 @@ export class MigrateInstallLinkToAppFields1750136608068 implements MigrationInte
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `UPDATE app SET "mezonAppId" = NULL, "type" = 'bot'`,
+    // Update all apps to set installLink by getMezonInstallLink(type, mezonAppId)
+    const apps = await queryRunner.query(
+      `SELECT id, "mezonAppId", "type" FROM app WHERE "mezonAppId" IS NOT NULL`,
     );
+
+    for (const app of apps) {
+      const { id, mezonAppId, type } = app;
+
+      const installLink = getMezonInstallLink(type, mezonAppId);
+
+      await queryRunner.query(
+        `UPDATE app SET "installLink" = $1 WHERE id = $2`,
+        [installLink, id],
+      );
+    }
   }
 }
