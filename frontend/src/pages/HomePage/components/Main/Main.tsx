@@ -18,10 +18,10 @@ import { IMainProps } from './Main.types'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
-  { value: "name_ASC", label: "Name (A–Z)" },
-  { value: "name_DESC", label: "Name (Z–A)" },
   { value: "createdAt_DESC", label: "Date Created (Newest → Oldest)" },
   { value: "createdAt_ASC", label: "Date Created (Oldest → Newest)" },
+  { value: "name_ASC", label: "Name (A–Z)" },
+  { value: "name_DESC", label: "Name (Z–A)" },
   { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
   { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
 ];
@@ -42,8 +42,8 @@ function Main({ isSearchPage = false }: IMainProps) {
   const defaultType = searchParams?.get('type') as MezonAppType | undefined
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
-  const [sortField, setSortField] = useState<string>('name')
-  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC")
+  const [sortField, setSortField] = useState<string>('createdAt')
+  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
 
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
@@ -89,8 +89,8 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   useEffect(() => {
     setSelectedSort(sortOptions[0])
-    setSortField('name')
-    setSortOrder('ASC')
+    setSortField('createdAt')
+    setSortOrder('DESC')
   }, [searchQuery])
 
   const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType) => {

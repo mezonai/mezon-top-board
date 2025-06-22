@@ -9,8 +9,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-const typeFilterOptions: { label: string; value?: MezonAppType }[] = [
-  { label: 'All Types' },
+const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
+  { label: 'All Types', value: null },
   { label: 'Bot', value: MezonAppType.BOT },
   { label: 'App', value: MezonAppType.APP },
 ]
@@ -97,7 +97,8 @@ const SearchBar = ({
     hiddenTags.some((tag) => tag.id === id)
   ).length
 
-  const handleTypeChange = (value?: MezonAppType) => {
+  const handleTypeChange = (_value: MezonAppType | null) => {
+    const value = _value || undefined;
     setSelectedType(value)
     handleSearch(selectedTagIds, value)
   }
@@ -132,7 +133,7 @@ const SearchBar = ({
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
-            value={selectedType}
+            value={selectedType || null}
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder="All Types"
