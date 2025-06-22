@@ -1,18 +1,19 @@
-import { Divider, Flex, Pagination } from 'antd'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import BotCard from '@app/components/BotCard/BotCard'
-import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
-import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
-import { useSelector } from 'react-redux'
-import { RootState } from '@app/store'
+import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
+import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useLazyMezonAppControllerSearchMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
+import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
+import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { ApiError } from '@app/types/API.types'
 import { getPageFromParams } from '@app/utils/uri'
+import { Divider, Flex, Pagination } from 'antd'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
 
 const pageOptions = [5, 10, 15]
@@ -24,9 +25,13 @@ const sortOptions = [
   { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
   { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
 ];
+
 function Main({ isSearchPage = false }: IMainProps) {
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
+  const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
+  const [getTagList] = useLazyTagControllerGetTagsQuery()
+  const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const defaultSearchQuery = useMemo(() => searchParams.get('q')?.trim() || '', [searchParams.get('q')?.trim()])
@@ -34,22 +39,19 @@ function Main({ isSearchPage = false }: IMainProps) {
     () => searchParams.get('tags')?.split(',').filter(Boolean) || [],
     [searchParams.get('tags')]
   )
-
-  const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-
-  const [getTagList] = useLazyTagControllerGetTagsQuery()
-  const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
+  const defaultType = searchParams?.get('type') as MezonAppType | undefined
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [sortField, setSortField] = useState<string>('name')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
+
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [page, setPage] = useState<number>(() => getPageFromParams(searchParams))
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-
+  const [type, setType] = useState<MezonAppType>()
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -57,6 +59,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (!isInitialized && isSearchPage) {
       setSearchQuery(defaultSearchQuery)
       setTagIds(defaultTagIds)
+      setType(defaultType)
       searchMezonAppList(defaultSearchQuery, defaultTagIds)
       setIsInitialized(true)
     }
@@ -74,7 +77,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   }, [isError, error])
 
   useEffect(() => {
-    searchMezonAppList(searchQuery, tagIds)
+    searchMezonAppList(searchQuery, tagIds, type)
   }, [page, botPerPage, isSearchPage, selectedSort])
 
   useEffect(() => {
@@ -90,10 +93,11 @@ function Main({ isSearchPage = false }: IMainProps) {
     setSortOrder('ASC')
   }, [searchQuery])
 
-  const searchMezonAppList = (searchQuery?: string, tagIds?: string[]) => {
+  const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType) => {
     getMezonApp({
       search: isSearchPage ? searchQuery : undefined,
       tags: tagIds && tagIds.length ? tagIds : undefined,
+      type,
       pageNumber: page,
       pageSize: botPerPage,
       sortField: sortField,
@@ -113,7 +117,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   const handleSortChange = (option: IOption) => {
     setSelectedSort(option)
     if (typeof option.value === 'string') {
-    const [field, order] = option.value.split("_");
+      const [field, order] = option.value.split("_");
       setSortField(field);
       setSortOrder(order as "ASC" | "DESC");
       setPage(1);
@@ -140,15 +144,18 @@ function Main({ isSearchPage = false }: IMainProps) {
     }
   }
 
-  const onPressSearch = (text: string, tagIds?: string[]) => {
+  const onPressSearch = (text: string, tagIds?: string[], type?: MezonAppType) => {
     setSearchQuery(text)
     setTagIds(tagIds ?? [])
+    setType(type)
+
     if (page !== 1) {
       setPage(1)
       return
     }
-    searchMezonAppList(text, tagIds)
+    searchMezonAppList(text, tagIds, type)
   }
+
 
   return (
     <div ref={mainRef} className={`flex flex-col justify-center pt-8 pb-12 w-[75%] m-auto relative z-1`}>
@@ -159,7 +166,7 @@ function Main({ isSearchPage = false }: IMainProps) {
       </Divider>
       <div className='pt-3'>
         <SearchBar
-          onSearch={(val, tagIds) => onPressSearch(val ?? '', tagIds)}
+          onSearch={(val, tagIds, type) => onPressSearch(val ?? '', tagIds, type)}
           defaultValue={searchQuery}
           isResultPage={isSearchPage}
         ></SearchBar>
@@ -181,7 +188,8 @@ function Main({ isSearchPage = false }: IMainProps) {
               size='large'
               placeholder="Sort bots by..."
               dropDownTitle='Sort by'
-              className='w-[12rem] lg:w-[18rem] '
+              className='w-[13rem]'
+              dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
               defaultValue={sortOptions[0]}
             />
             <SingleSelect
@@ -204,7 +212,7 @@ function Main({ isSearchPage = false }: IMainProps) {
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
               No result
-            </MtbTypography> 
+            </MtbTypography>
           )}
           <div className='flex flex-col items-center gap-5 pt-10'>
             <div className='flex flex-col items-center relative w-full'>

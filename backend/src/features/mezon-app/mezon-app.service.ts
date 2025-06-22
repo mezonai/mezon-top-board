@@ -28,6 +28,7 @@ import {
   GetRelatedMezonAppResponse,
   SearchMezonAppResponse,
 } from "./dtos/response";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
 
 
 
@@ -172,6 +173,12 @@ export class MezonAppService {
       });
     }
 
+    if (query?.type) {
+      whereCondition.andWhere("app.type = :type", {
+        type: query.type,
+      });
+    }
+
     const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
     const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
@@ -274,7 +281,7 @@ export class MezonAppService {
       ...appData,
       ownerId: ownerId,
       tags: existingTags,
-      socialLinks: links,
+      socialLinks: links
     });
   }
 

@@ -6,13 +6,16 @@ body {
 }
 .description h1 {
   font-size: 2em;
+  line-height: 1.2;
   // font-weight: bold;
 }
 .description h2 {
   font-size: 1.5em;
+  line-height: 1.2;
 }
 .description h3 {
   font-size: 1.25em;
+  line-height: 1.2;
 }
 a {
   text-decoration: none;
@@ -81,12 +84,15 @@ pre {
 
 .ql-size-small {
   font-size: 0.75em;
+  line-height: 1.2;
 }
 .ql-size-large {
   font-size: 1.5em;
+  line-height: 1.2;
 }
 .ql-size-huge {
   font-size: 2.5em;
+  line-height: 1.2;
 }
 
 .ql-align-center {

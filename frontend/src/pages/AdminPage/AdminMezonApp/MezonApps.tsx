@@ -5,7 +5,7 @@ import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQ
 import { useReviewHistoryControllerCreateAppReviewMutation } from "@app/services/api/reviewHistory/reviewHistory";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
-import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
+import { getMezonInstallLink, mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
 import { getUrlMedia } from "@app/utils/stringHelper";
 import { Button, Input, Modal, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -137,14 +137,24 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Try",
       dataIndex: "installLink",
       key: "installLink",
-      render: (installLink: string) => (
-        <Tooltip title="Try Install">
-          <Button type="primary" color="cyan" variant="outlined" href={installLink} target="_blank" rel="noopener noreferrer">
-            <CiOutlined />
-          </Button>
-        </Tooltip>
-      )
-
+      render: (_: any, record: GetMezonAppDetailsResponse) => {
+       const installLink = getMezonInstallLink(record.type, record.mezonAppId);
+        return (
+          <Tooltip title="Try Install">
+            <Button
+              type="primary"
+              color="cyan"
+              variant="outlined"
+              href={installLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              disabled={!installLink}
+            >
+              <CiOutlined />
+            </Button>
+          </Tooltip>
+        );
+      }
     },
     {
       title: "Status",
