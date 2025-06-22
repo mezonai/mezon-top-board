@@ -7,6 +7,13 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
+
+const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
+  { label: 'All Types', value: null },
+  { label: 'Bot', value: MezonAppType.BOT },
+  { label: 'App', value: MezonAppType.APP },
+]
 
 const MAX_VISIBLE_TAGS = 10
 
@@ -26,34 +33,43 @@ const SearchBar = ({
   const [showAllTags, setShowAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
+  const [selectedType, setSelectedType] = useState<MezonAppType>()
 
   useEffect(() => {
-    setSelectedTagIds(selectedTagIds.filter(Boolean));
+    setSelectedTagIds(selectedTagIds.filter(Boolean))
+    const typeParam: MezonAppType | undefined = searchParams.get('type') as MezonAppType | undefined
+
+    setSelectedType(typeParam)
   }, [])
 
   const handleClear = () => {
     setSearchText('')
     setSelectedTagIds([])
     setSearchParams({})
+    setSelectedType(undefined)
     if (isResultPage) {
       onSearch('', [])
     }
   }
 
-  const updateSearchParams = (q: string, tags: string[]) => {
-    setSearchParams({ q, tags: tags.join(',') }, { replace: true })
+  const updateSearchParams = (q: string, tags: string[], type?: MezonAppType) => {
+    const params: Record<string, string> = { q, tags: tags.join(','), }
+    params.type = type || ''
+    setSearchParams(params, { replace: true })
   }
 
-  const handleSearch = (inpSearchTags?: string[]) => {
-    const searchTags = inpSearchTags || selectedTagIds;
-
+  const handleSearch = (inpSearchTags?: string[], inpSearchType?: MezonAppType) => {
+    const searchTags = inpSearchTags || selectedTagIds
+    const type = inpSearchType
     if (!isResultPage) {
-      navigate(`/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}`)
-      return;
+      navigate(
+        `/search?q=${encodeURIComponent(searchText)}&tags=${searchTags.join(',')}&type=${encodeURIComponent(type ?? '')}`
+      );
+      return
     }
 
-    updateSearchParams(searchText, searchTags)
-    onSearch(searchText.trim(), searchTags)
+    updateSearchParams(searchText, searchTags, type)
+    onSearch(searchText.trim(), searchTags, type)
   }
 
   const handleSearchTag = (tagId: string) => {
@@ -61,8 +77,8 @@ const SearchBar = ({
       ? selectedTagIds.filter((id) => id !== tagId)
       : [...selectedTagIds, tagId]
 
-    setSelectedTagIds(updatedTagIds);    
-    handleSearch(updatedTagIds);
+    setSelectedTagIds(updatedTagIds);
+    handleSearch(updatedTagIds, selectedType);
   }
 
   const totalTags = tagList?.data?.length || 0
@@ -73,28 +89,37 @@ const SearchBar = ({
     selectedTagIds.includes(tag.id)
   ) || [];
 
+  const [isSelectVisible, setIsSelectVisible] = useState(false);
 
-const [isSelectVisible, setIsSelectVisible] = useState(false);
+  const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || []
 
-const hiddenTags = tagList?.data?.slice(MAX_VISIBLE_TAGS) || [];
+  const selectedHiddenTagCount = selectedTagIds.filter((id) =>
+    hiddenTags.some((tag) => tag.id === id)
+  ).length
 
-const selectedHiddenTagCount = selectedTagIds.filter(id =>
-  hiddenTags.some(tag => tag.id === id)
-).length;
+  const handleTypeChange = (_value: MezonAppType | null) => {
+    const value = _value || undefined;
+    setSelectedType(value)
+    handleSearch(selectedTagIds, value)
+  }
 
-const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
+  const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount
+
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div style={{ width: '100%' }}>
+        <div className="flex flex-1 w-full items-center !rounded-full my-select-container">
+          <style>
+            {`
+              .my-select-container .ant-select .ant-select-selector {
+                border-radius:0 100px 100px 0 !important;
+                border-left: none !important;
+              }
+            `}
+          </style>
           <Input
-            // {...props}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            style={{
-              borderRadius: '100px',
-              height: '50px'
-            }}
             placeholder={placeholder}
             prefix={<SearchOutlined style={{ color: '#bbb' }} />}
             suffix={
@@ -104,26 +129,36 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
                 </button>
               ) : null
             }
-            onPressEnter={() => handleSearch()}
+            className="!rounded-l-full h-[50px] "
+            onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
+          />
+          <Select
+            value={selectedType || null}
+            onChange={handleTypeChange}
+            options={typeFilterOptions}
+            placeholder="All Types"
+            className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
+
           />
         </div>
         {isShowButton && (
-          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }} onClick={() => handleSearch()}>
+          <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }}
+            onClick={() => handleSearch(selectedTagIds, selectedType)}>
             Search
           </Button>
         )}
       </div>
       <div className={`pt-5 cursor-pointer`}>
         {visibleTags.map((tag) => (
-            <Tag.CheckableTag
-              key={tag.id}
-              checked={selectedTagIds.includes(tag.id)}
-              className='!border !border-gray-300'
-              onClick={() => handleSearchTag(tag.id)}
-            >
-              {tag.name}
-            </Tag.CheckableTag>
-          ))}
+          <Tag.CheckableTag
+            key={tag.id}
+            checked={selectedTagIds.includes(tag.id)}
+            className='!border !border-gray-300'
+            onClick={() => handleSearchTag(tag.id)}
+          >
+            {tag.name}
+          </Tag.CheckableTag>
+        ))}
         {!showAllTags && totalTags > 10 && (
           !isSelectVisible ? (
             <Tag
@@ -141,7 +176,7 @@ const remainingHiddenTagCount = hiddenTags.length - selectedHiddenTagCount;
               value={selectedTagIds}
               onChange={(newSelectedTagIds: string[]) => {
                 setSelectedTagIds(newSelectedTagIds);
-                handleSearch(newSelectedTagIds);
+                handleSearch(newSelectedTagIds, selectedType);
               }}
               onBlur={() => setIsSelectVisible(false)}
               style={{ width: '120px', marginTop: '8px' }}

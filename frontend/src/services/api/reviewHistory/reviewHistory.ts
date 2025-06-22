@@ -1,5 +1,6 @@
 import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     reviewHistoryControllerSearchAppReviews: build.query<
@@ -57,11 +58,12 @@ type Reviewer = {
   email: string
   role: string
 }
-
+ 
 type AppInfo = {
   id: string
   name: string
-  installLink: string | null
+  type: MezonAppType
+  mezonAppId?: string
   description: string | null
   headline: string | null
   featuredImage: string | null

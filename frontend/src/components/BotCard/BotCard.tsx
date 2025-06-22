@@ -5,7 +5,7 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotCardProps } from './BotCard.types'
-import { randomColor } from '@app/utils/mezonApp'
+import { randomColor, getMezonInstallLink  } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -14,24 +14,26 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import OwnerActions from '../OwnerActions/OwnerActions'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
-  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    window.open(data?.installLink, '_blank')
-  }
-  const handleShare = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-  }
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(100%-150px)]' : 'md:max-w-[calc(100%-100px)]';
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
   // Share to social media
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
-
+  const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
+  
+  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    window.open(inviteUrl, '_blank')
+  } 
+  const handleShare = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
   
   return (
     <div
@@ -44,24 +46,27 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
         </div>
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
-          <div className='truncate-title '>
-            <style>
-              {`
-                .truncate-title .ant-typography {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: -webkit-box;
-                  -webkit-box-orient: vertical;
-                  -webkit-line-clamp: 1;
-                }
-              `}
-            </style>
-            <MtbTypography
-              variant='h4'
-              customClassName={`${titleMaxWidth} max-w-full`}
-            >
-              {data?.name}
-            </MtbTypography>
+          <div className='flex flex-1 items-center'>
+            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'APP'}</Tag>
+            <div className='truncate-title flex-1'>
+              <style>
+                {`
+                  .truncate-title .ant-typography {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 1;
+                  }
+                `}
+              </style>
+              <MtbTypography
+                variant='h4'
+                customClassName={`${titleMaxWidth} !mb-0`}
+              >
+                {data?.name}
+              </MtbTypography>
+            </div>
           </div>
           <div className='flex gap-1'>
             {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}

@@ -19,12 +19,14 @@ import {
   ArrayMinSize,
   IsUrl,
   ValidateIf,
+  IsEnum,
 } from "class-validator";
 
 import {
   PaginationQuery,
   RequestWithId,
 } from "@domain/common/dtos/request.dto";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
 
 export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({
@@ -41,6 +43,10 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @IsOptional()
   @IsUUID()
   ownerId: string;
+
+  @ApiPropertyOptional({ enum: MezonAppType, description: 'Filter by bot or app type' })
+  @IsOptional()
+  type?: MezonAppType;
 }
 
 class SocialLinkDto {
@@ -66,14 +72,15 @@ export class CreateMezonAppRequest {
   @IsOptional()
   isAutoPublished?: boolean;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  @ValidateIf(o => o.installLink !== '' && o.installLink !== null)
-  @IsUrl(undefined, { message: "Install Link Invalid URL format" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  installLink?: string;
+  @ApiProperty({ enum: MezonAppType })
+  @IsEnum(MezonAppType, { message: "Type must be either 'app' or 'bot'" })
+  type: MezonAppType;
 
+  @IsString()
+  @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  mezonAppId: string;
+ 
   @ApiPropertyOptional()
   @IsString()
   @MinLength(50, { message: "Headline must be at least 50 characters" })

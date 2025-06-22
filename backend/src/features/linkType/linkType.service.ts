@@ -4,7 +4,7 @@ import { EntityManager, ILike } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
-import { LinkType } from "@domain/entities";
+import { Link, LinkType } from "@domain/entities";
 
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -16,9 +16,11 @@ import { LinkTypeResponse } from "./dtos/response";
 @Injectable()
 export class LinkTypeService {
   private readonly linkTypeRepository: GenericRepository<LinkType>;
+  private readonly linkRepository: GenericRepository<Link>;
 
   constructor(private manager: EntityManager) {
     this.linkTypeRepository = new GenericRepository(LinkType, manager);
+    this.linkRepository = new GenericRepository(Link, manager);
   }
 
   async getAllSocialLinks() {
@@ -65,6 +67,7 @@ export class LinkTypeService {
     if (!linkType) {
       throw new BadRequestException('Link type not found')
     }
+    await this.linkRepository.softDeleteBy({ linkTypeId: body.id });
     await this.linkTypeRepository.softDelete(body.id)
     return new Result({ message: "Delete link type successfully" });
   }
