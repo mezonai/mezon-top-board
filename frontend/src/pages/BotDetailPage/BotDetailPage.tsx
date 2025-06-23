@@ -103,6 +103,12 @@ function BotDetailPage() {
     }
   }, [getMezonAppDetailApiResponse])
 
+  useEffect(() => {
+    if (botId && botId !== 'undefined' && botId.trim() !== '') {
+      getMezonAppDetail({ id: botId });
+    }
+  },[ratings?.data])
+
   const onLoadMore = async () => {
     if (botId && botId !== 'undefined' && botId.trim() !== '') {
       try {
