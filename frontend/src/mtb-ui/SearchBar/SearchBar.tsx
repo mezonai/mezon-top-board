@@ -138,7 +138,7 @@ const SearchBar = ({
             options={typeFilterOptions}
             placeholder="All Types"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
-
+            data-e2e="selectType"
           />
         </div>
         {isShowButton && (
