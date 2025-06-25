@@ -8,7 +8,7 @@ import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { Logger } from "@libs/logger";
 
-import { CreateRatingRequest, GetAppRatingRequest, UpdateRatingRequest } from "./dtos/request";
+import { CreateRatingRequest, GetAllAppRatingRequest, GetAppRatingRequest, UpdateRatingRequest } from "./dtos/request";
 import { GetAppRatingResponse } from "./dtos/response";
 import { RatingService } from "./rating.service";
 
@@ -20,6 +20,13 @@ export class RatingController {
         private readonly logger: Logger,
     ) {
         this.logger.setContext(RatingController.name);
+    }
+
+    @Get("get-all-by-app")
+    @Public()
+    @ApiResponse({ type: GetAppRatingResponse, isArray: true })
+    async getAllAppRating(@Query() query: GetAllAppRatingRequest) {
+        return this.ratingService.getAllAppRating(query);
     }
 
     @Get("get-by-app")
