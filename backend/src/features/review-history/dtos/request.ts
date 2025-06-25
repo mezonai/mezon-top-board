@@ -30,3 +30,14 @@ export class GetAppReviewRequest extends PaginationQuery {
     @IsString()
     appId?: string;
 }
+export class SearchAppReviewRequest extends PaginationQuery {
+    @ApiPropertyOptional({ description: "Keyword to search app ReviewHistory by name or headline" })
+    @IsOptional()
+    @IsString()
+    search: string;
+    
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    appId?: string;
+}

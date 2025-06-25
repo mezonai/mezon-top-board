@@ -39,7 +39,8 @@ function ProfilePage() {
         pageNumber: 1,
         pageSize: 100,
         sortField: 'createdAt',
-        sortOrder: 'DESC'
+        sortOrder: 'DESC',
+        ownerId: userId
       })
       return;
     }

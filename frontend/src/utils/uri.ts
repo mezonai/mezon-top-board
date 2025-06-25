@@ -17,3 +17,8 @@ export function getRouteMatchPath(
     }
     return null;
 }
+
+export const getPageFromParams = (params: URLSearchParams) => {
+  const param = parseInt(params.get('page') || '1', 10);
+  return isNaN(param) || param < 1 ? 1 : param;
+};

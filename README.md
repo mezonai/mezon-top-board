@@ -1,6 +1,6 @@
 # Mezon Top Board project
 ## Description
-This project is for listing applications for the Mezon platform, similar to top.gg and Discord.
+This project is for listing applications for the Mezon platform, similar to top.mezon.ai and Mezon.
 
 ## Prerequisites
 - Docker installed

@@ -1,7 +1,7 @@
 import { Rate } from 'antd'
 import styles from './Rate.module.scss'
 import { CSSProperties } from 'react'
-import { IMtbRateProps } from '@app/types/Rate.types'
+import { IMtbRateProps } from './Rate.types'
 
 function MtbRate({ readonly = false, color, size, isShowTooltip = false, customClassName = '', ...props }: IMtbRateProps) {
   const isReadOnly = readonly ? (props?.value ?? undefined) : undefined

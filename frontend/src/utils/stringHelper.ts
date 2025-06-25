@@ -15,7 +15,7 @@ export const safeConcatUrl = (baseUrl: string, path: string, params?: { [key: st
     return url.toString()
   } catch (error) {
     console.error('Invalid URL:', error)
-    return null
+    return baseUrl
   }
 }
 
@@ -50,7 +50,11 @@ export const handleMapOption = (enums: Record<string, string>) => {
   }))
 }
 
-export const getUrlImage = (path: string) => {
+export const getUrlMedia= (path: string) => {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+
   return `${process.env.REACT_APP_BACKEND_URL}/api${path}`;
 }
 
@@ -70,4 +74,31 @@ export const fillHbsFormat = (str: string, data: Record<string, any>) => {
     const trimmedKey = key.trim()
     return data[trimmedKey] !== undefined ? data[trimmedKey] : `{{${trimmedKey}}}`
   })
+}
+
+export const generateSlug = (name: string): string => {
+  return name
+    .normalize('NFD') // decompose accented characters
+    .replace(/[\u0300-\u036f]/g, '') // remove accent marks
+    .replace(/[^a-zA-Z0-9\s]/g, '') // remove special characters
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+}
+
+export const transformMediaSrc = (html: string): string => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+
+  const images = doc.querySelectorAll('img')
+  images.forEach((img) => {
+    const rawSrc = img.getAttribute('src')
+    if (rawSrc && rawSrc.startsWith('/')) {
+      img.setAttribute('src', getUrlMedia(rawSrc))
+      const existingStyle = img.getAttribute('style') || ''
+      img.setAttribute('style', `${existingStyle}; max-width: 100%;`.trim())
+    }
+  })
+
+  return doc.body.innerHTML
 }

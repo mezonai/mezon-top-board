@@ -16,7 +16,8 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/rating/get-by-app`,
         params: {
-          appId: queryArg.appId
+          appId: queryArg.appId,
+          pageNumber: queryArg.pageNumber
         }
       })
     })
@@ -32,6 +33,7 @@ export type CreateRatingRequest = {
 export type RatingControllerGetRatingByAppApiResponse = HttpResponse<Rating[]>
 export type RatingControllerGetRatingByAppApiArg = {
   appId: string
+  pageNumber?: number
 }
 export type RatingControllerCreateRatingApiResponse = unknown
 export type RatingControllerCreateRatingApiArg = {
@@ -40,11 +42,10 @@ export type RatingControllerCreateRatingApiArg = {
 
 export type Rating = {
   id: string
-  userId: string
   score: number
   comment: string
   updatedAt: string
-  user: User
+  user: Pick<User, 'id' | 'name' | 'profileImage'>
   app: App
 }
 

@@ -106,9 +106,12 @@ export class MezonAppController {
   @ApiBearerAuth()
   @Delete()
   @ApiBody({ type: RequestWithId })
-  deleteMezonApp(@Body() body: RequestWithId) {
+  deleteMezonApp(
+    @GetUserFromHeader() user: User,
+    @Body() body: RequestWithId
+  ) {
     try {
-      return this.mezonAppService.deleteMezonApp(body);
+      return this.mezonAppService.deleteMezonApp(user, body);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;
@@ -133,9 +136,12 @@ export class MezonAppController {
   @ApiBearerAuth()
   @Put()
   @ApiBody({ type: UpdateMezonAppRequest })
-  updateMezonApp(@Body() body: UpdateMezonAppRequest) {
+  updateMezonApp(
+    @GetUserFromHeader() user: User,
+    @Body() body: UpdateMezonAppRequest
+  ) {
     try {
-      return this.mezonAppService.updateMezonApp(body);
+      return this.mezonAppService.updateMezonApp(user, body);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;

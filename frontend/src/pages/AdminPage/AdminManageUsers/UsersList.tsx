@@ -1,42 +1,72 @@
-import { EditOutlined } from '@ant-design/icons'
 import {
+  DeleteOutlined,
+  EditOutlined,
+  UnlockOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
+import {
+  GetUserDetailsResponse,
   UpdateUserRequest,
-  UserControllerSearchUserApiArg,
-  useUserControllerSearchUserQuery
+  useLazyUserControllerSearchUserQuery,
+  useUserControllerActivateUserMutation,
+  useUserControllerDeactivateUserMutation,
 } from '@app/services/api/user/user'
-import { useAppSelector } from '@app/store/hook'
+import { mapDataSourceTable } from '@app/utils/table'
 import { Alert, Breakpoint, Button, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
-import { mapDataSourceTable } from '@app/utils/table'
+import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
+import { RootState } from '@app/store'
 
 const { Option } = Select
+const pageOptions = [5, 10, 15]
+
+interface SearchFormValues {
+  search: string;    
+  pageSize: 5 | 10 | 15,
+  pageNumber: number,
+  sortField: string;
+  sortOrder: 'ASC' | 'DESC';
+}
 
 function UsersList() {
-  const searchRef = useRef<InputRef>(null)
+  const [form] = Form.useForm<SearchFormValues>();
+  const searchRef = useRef<InputRef>(null);
+  const [getUserControllerSearchUser, { error, isLoading }] = useLazyUserControllerSearchUserQuery()
+  const [deactivateUser] = useUserControllerDeactivateUserMutation()
+  const [activateUser] = useUserControllerActivateUserMutation()
+  const users = useSelector((state: RootState) => state.user.adminUserList);
+  const [selectedUser, setSelectedUser] = useState<UpdateUserRequest | null>(null)
+  const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
+  const [page, setPage] = useState<number>(1)
 
-  const [queryArgs, setQueryArgs] = useState<UserControllerSearchUserApiArg>({
+  const initialValues: SearchFormValues = {
     search: '',
     pageSize: 5,
     pageNumber: 1,
     sortField: 'createdAt',
     sortOrder: 'DESC'
-  })
+  };
 
-  const { data, error, isLoading } = useUserControllerSearchUserQuery(queryArgs)
-  const users = useAppSelector((state: any) => state.user.pages?.[queryArgs.pageNumber] || []) // Get users from Redux
-  const [selectedUser, setSelectedUser] = useState<UpdateUserRequest | null>(null)
+  const totals = useMemo(() => users?.totalCount || 0, [users])
 
-  const handlePageChange = (page: number, pageSize: number) => {
-    setQueryArgs((prev) => ({
-      ...prev,
+  useEffect(() => {
+    searchUserList();
+  }, [page, botPerPage])
+
+  const searchUserList = () => {
+    const formValues = form.getFieldsValue();
+    getUserControllerSearchUser({
+      search: formValues.search || '',
       pageNumber: page,
-      pageSize
-    }))
+      pageSize: botPerPage,
+      sortField: formValues.sortField,
+      sortOrder: formValues.sortOrder
+    })
   }
 
-  //   Error handling
   const errorMessage = useMemo(() => {
     if (error && 'data' in error) {
       const serverError = error.data as { message?: string[] }
@@ -47,24 +77,49 @@ function UsersList() {
     return 'There was an issue fetching user data.'
   }, [error])
 
-  // Handle form submission
-  const handleSubmit = (values: UserControllerSearchUserApiArg) => {
-    setQueryArgs((prev) => ({
-      ...prev,
-      search: values.search || '',
-      sortField: values.sortField,
-      sortOrder: values.sortOrder,
-      pageNumber: 1
-    }))
+  const handleSubmit = () => {
+    setPage(1);
+    searchUserList();
   }
+
+  const handlePageChange = (newPage: number, newPageSize?: number) => {
+    setPage(newPage);
+    if (newPage > Math.ceil(totals / botPerPage)) {
+      setPage(1)
+    }
+    if (newPageSize) {
+      setBotPerPage(newPageSize);
+    }
+  }
+
+  const handleDeactivate = async (userId: string) => {
+    try {
+      await deactivateUser({ requestWithId: { id: userId } }).unwrap()
+      toast.success('User deactivated successfully')
+      searchUserList(); // Refresh the list after deactivation
+    } catch (error) {
+      toast.error('Failed to deactivate user')
+    }
+  }
+
+  const handleActivate = async (userId: string) => {
+    try {
+      await activateUser({ requestWithId: { id: userId } }).unwrap()
+      toast.success('User activated successfully')
+      searchUserList(); // Refresh the list after activation
+    } catch (error) {
+      toast.error('Failed to activate user')
+    }
+  }
+
   const userTableColumns = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      ellipsis: true, // Prevents overflow
+      ellipsis: true,
       width: 100,
-      responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[], // Adjusts on small screens
+      responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[],
       render: (text: string) => text || <span className='text-gray-400'>No name</span>
     },
     {
@@ -78,7 +133,7 @@ function UsersList() {
       dataIndex: 'bio',
       key: 'bio',
       width: 100,
-      responsive: ['sm', 'md', 'lg'] as Breakpoint[], // Hides on extra-small screens
+      responsive: ['sm', 'md', 'lg'] as Breakpoint[],
       render: (text: string | null) => (text ? <Tag color='geekblue'>{text}</Tag> : <Tag color='gray'>No bio</Tag>)
     },
     {
@@ -92,44 +147,78 @@ function UsersList() {
       title: 'Actions',
       key: 'actions',
       width: 100,
-      fixed: 'right' as const, // Keeps actions fixed when scrolling
-      render: (_: any, record: UpdateUserRequest) => (
-        <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+      fixed: 'right' as const,
+      render: (_: any, record: GetUserDetailsResponse) => (
+        <div className='flex gap-2'>
+          <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          {
+            !record.deletedAt ? (
+              <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+            ) : (
+              <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
+            )
+          }
+        </div>
       )
     }
   ]
+  
   return (
     <div className='p-4 bg-white rounded-md shadow-md'>
       <h2 className='text-lg font-semibold mb-4'>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
-        <Form onFinish={handleSubmit} initialValues={queryArgs} layout='inline'>
-          <Form.Item name='search'>
-            <Input ref={searchRef} placeholder='Search by name or email' className='w-60' />
+        <Form 
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={initialValues}
+          layout='inline'
+          className='flex flex-wrap gap-2 items-end'
+        >
+          <Form.Item name='search' className='flex-grow w-full lg:max-w-lg '>
+            <Input
+              ref={searchRef}
+              placeholder='Search by name or email'
+              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              onPressEnter={() => form.submit()}
+              style={{ borderRadius: '8px', height: '40px' }}
+              className='w-full'
+            />
           </Form.Item>
-
-          <Form.Item name='sortField'>
-            <Select className='w-40'>
+          
+          <Form.Item name='sortField' className='mb-0 w-30'>
+            <Select 
+              className='w-30'
+              placeholder='Sort Field'
+            >
               <Option value='createdAt'>Created At</Option>
               <Option value='name'>Name</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name='sortOrder'>
-            <Select className='w-40'>
+          <Form.Item name='sortOrder' className='mb-0 w-30'>
+            <Select 
+              className='w-40'
+              placeholder='Sort Order'
+            >
               <Option value='ASC'>Ascending</Option>
               <Option value='DESC'>Descending</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button type='primary' htmlType='submit'>
+          <Form.Item className='mb-0'>
+            <Button 
+              type='primary' 
+              htmlType='submit'
+              icon={<SearchOutlined />}
+            >
               Search
             </Button>
           </Form.Item>
         </Form>
       </div>
+      
       {/* Loading Spinner */}
       {isLoading && (
         <div className='flex justify-center my-4'>
@@ -143,20 +232,29 @@ function UsersList() {
       )}
 
       {/* Render Table */}
-      {!isLoading && !error && (
+      {!isLoading && !error && users && users.totalCount !== 0 && (
         <Table
           columns={userTableColumns}
-          dataSource={mapDataSourceTable(users as UpdateUserRequest[])}
+          dataSource={mapDataSourceTable((users?.data || []) as GetUserDetailsResponse[])}
           pagination={{
-            current: data?.pageNumber || 1, //  Controlled by API
-            pageSize: data?.pageSize || 5, //  Controlled by API
-            total: data?.totalCount || 0, //  Controlled by API
-            onChange: handlePageChange //  Handles Page Change
+            current: page,
+            pageSize: botPerPage,
+            total: totals || 0,
+            onChange: handlePageChange,
+            showSizeChanger: true,
+            pageSizeOptions: pageOptions.map(String)
           }}
           bordered
-          scroll={{ x: 'max-content' }} // Enables horizontal scrolling on overflow
+          scroll={{ x: 'max-content' }}
         />
       )}
+
+      {!isLoading && !error && (!users || users.totalCount === 0) && (
+        <div className='text-center p-8 text-gray-500'>
+          <p>Không tìm thấy người dùng</p>
+        </div>
+      )}
+      
       {selectedUser && (
         <div className='bg-opacity-50'>
           <EditUserForm user={selectedUser} onClose={() => setSelectedUser(null)} />

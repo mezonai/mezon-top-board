@@ -31,13 +31,13 @@ export const mezonAppExtraReducers = (builder: ActionReducerMapBuilder<any>) => 
       }
     })
     .addMatcher(mezonAppService.endpoints.mezonAppControllerUpdateMezonApp.matchFulfilled, (state, { payload }) => {
-      // get the app you want to update
-      const index = state.mezonAppOfAdmin.data.findIndex((app: App) => app.id === payload.id);
-
-      if (index !== -1) {
-        state.mezonAppOfAdmin.data[index] = {
-          ...state.mezonAppOfAdmin.data[index], // Keep existing fields if not updated
-          ...payload // Overwrite with updated fields
+      if (state.mezonAppOfAdmin?.data) {
+        const index = state.mezonAppOfAdmin.data.findIndex((app: App) => app.id === payload.id);
+        if (index !== -1) {
+          state.mezonAppOfAdmin.data[index] = {
+            ...state.mezonAppOfAdmin.data[index],
+            ...payload
+          };
         }
       }
     })

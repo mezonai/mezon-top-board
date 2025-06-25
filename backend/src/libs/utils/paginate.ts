@@ -4,7 +4,7 @@ export const paginate = async <T, R>(
     repositoryQuery: (() => Promise<[T[], number]>) | [T[], number],
     pageSize: number = 10,
     pageNumber: number = 1,
-    mapper?: (entity: T) => R | Promise<R> ,
+    mapper?: (entity: T) => R | Promise<R>,
 ) => {
     const [data, totalCount] = Array.isArray(repositoryQuery)
         ? repositoryQuery // If data is already available, use it directly

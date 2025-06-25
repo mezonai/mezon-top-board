@@ -15,4 +15,8 @@ export class TagResponse extends TagInMezonAppDetailResponse {
     @Expose()
     @ApiProperty()
     public slug: string;
+
+    @Expose()
+    @ApiProperty()
+    public botCount: number;
 }

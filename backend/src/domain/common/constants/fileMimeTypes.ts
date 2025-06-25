@@ -21,8 +21,12 @@ const videoMimeTypes = [
   'video/x-flv',
   'video/x-ms-wmv'
 ];
+const maxImageFileSize = 4 * 1024 * 1024;
+const maxVideoFileSize = 25 * 1024 * 1024;
 
 export {
   imageMimeTypes,
   videoMimeTypes,
+  maxImageFileSize,
+  maxVideoFileSize
 }

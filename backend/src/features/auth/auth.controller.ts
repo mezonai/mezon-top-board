@@ -27,7 +27,7 @@ export class AuthController {
     const REDIRECT_URI = config().OAUTH2_REDIRECT_URI || ''
     const STATE = Math.random().toString(36).substring(2, 15)
 
-    const authUrl = `${OAUTH2_API_URL}/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid+offline&state=${STATE}`
+    const authUrl = `${OAUTH2_API_URL}/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid&state=${STATE}`
     return res.redirect(authUrl);
   }
 

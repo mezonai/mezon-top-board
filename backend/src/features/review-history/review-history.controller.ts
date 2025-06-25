@@ -7,7 +7,7 @@ import { RoleRequired } from "@libs/decorator/roles.decorator";
 import { Logger } from "@libs/logger";
 import { Body, Controller, Delete, Get, Post, Put, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiTags } from "@nestjs/swagger";
-import { CreateAppReviewRequest, GetAppReviewRequest, UpdateAppReviewRequest } from "./dtos/request";
+import { CreateAppReviewRequest, GetAppReviewRequest, SearchAppReviewRequest, UpdateAppReviewRequest } from "./dtos/request";
 import { ReviewHistoryService } from "./review-history.service";
 
 @Controller("review-history")
@@ -25,6 +25,17 @@ export class ReviewHistoryController {
     @ApiBearerAuth()
     async getAppReviews(@Query() query: GetAppReviewRequest) {
         return this.appReviewService.getAppReviews(query);
+    }
+
+    
+    @Get("search")
+    searchMezonApp(@Query() query: SearchAppReviewRequest) {
+    try {
+        return this.appReviewService.searchAppReviews(query);
+    } catch (error) {
+        this.logger.error("An error occured", error);
+        throw error;
+    }
     }
 
     @Post()

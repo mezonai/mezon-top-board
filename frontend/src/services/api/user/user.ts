@@ -21,6 +21,12 @@ const injectedRtkApi = api.injectEndpoints({
     userControllerDeleteUser: build.mutation<UserControllerDeleteUserApiResponse, UserControllerDeleteUserApiArg>({
       query: (queryArg) => ({ url: `/api/user`, method: 'DELETE', body: queryArg.requestWithId })
     }),
+    userControllerDeactivateUser: build.mutation<UserControllerDeactivateUserApiResponse, UserControllerDeactivateUserApiArg>({
+      query: (queryArg) => ({ url: `/api/user/deactivate`, method: 'DELETE', body: queryArg.requestWithId })
+    }),
+    userControllerActivateUser: build.mutation<UserControllerActivateUserApiResponse, UserControllerActivateUserApiArg>({
+      query: (queryArg) => ({ url: `/api/user/activate`, method: 'POST', body: queryArg.requestWithId })
+    }),
     userControllerGetUserDetails: build.query<
       UserControllerGetUserDetailsApiResponse,
       UserControllerGetUserDetailsApiArg
@@ -38,7 +44,10 @@ const injectedRtkApi = api.injectEndpoints({
       UserControllerSelfUpdateUserApiArg
     >({
       query: (queryArg) => ({ url: `/api/user/self-update`, method: 'PUT', body: queryArg.selfUpdateUserRequest })
-    })
+    }),
+    userControllerSyncMezon: build.mutation<UserControllerSyncMezonApiResponse, unknown>({
+      query: () => ({ url: `/api/user/sync-mezon`, method: 'POST' })
+    }),
   }),
   overrideExisting: false
 })
@@ -46,7 +55,7 @@ export { injectedRtkApi as userService }
 export type UserControllerSearchUserApiResponse = HttpResponse<SearchUserResponse[]>
 export type UserControllerSearchUserApiArg = {
   /** Keyword to search user by name or email */
-  search?: string
+  search: string
   pageSize: number
   pageNumber: number
   sortField: string
@@ -60,6 +69,15 @@ export type UserControllerDeleteUserApiResponse = unknown
 export type UserControllerDeleteUserApiArg = {
   requestWithId: RequestWithId
 }
+export type UserControllerDeactivateUserApiResponse = unknown
+export type UserControllerDeactivateUserApiArg = {
+  requestWithId: RequestWithId
+}
+export type UserControllerActivateUserApiResponse = unknown
+export type UserControllerActivateUserApiArg = {
+  requestWithId: RequestWithId
+}
+export type UserControllerSyncMezonApiResponse = unknown
 export type UserControllerGetUserDetailsApiResponse = HttpResponse<GetUserDetailsResponse>
 export type UserControllerGetUserDetailsApiArg = void
 export type UserControllerGetPublicProfileApiResponse = HttpResponse<GetPublicProfileResponse>
@@ -91,7 +109,9 @@ export type GetUserDetailsResponse = {
   name: string
   email: string
   bio: string
+  role: Role
   profileImage: string
+  deletedAt: Date | null
 }
 export type GetPublicProfileResponse = {
   id: string
@@ -105,13 +125,16 @@ export type SelfUpdateUserRequest = {
   profileImage?: string
 }
 export const {
-  useUserControllerSearchUserQuery,
+  useUserControllerSearchUserQuery, 
   useLazyUserControllerSearchUserQuery,
   useUserControllerUpdateUserMutation,
   useUserControllerDeleteUserMutation,
+  useUserControllerDeactivateUserMutation,
+  useUserControllerActivateUserMutation,
   useUserControllerGetUserDetailsQuery,
   useLazyUserControllerGetUserDetailsQuery,
   useUserControllerGetPublicProfileQuery,
   useLazyUserControllerGetPublicProfileQuery,
-  useUserControllerSelfUpdateUserMutation
+  useUserControllerSelfUpdateUserMutation,
+  useUserControllerSyncMezonMutation,
 } = injectedRtkApi

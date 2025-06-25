@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { Link, AppReviewHistory, Rating, Tag, User } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
 
 @Entity()
 export class App extends BaseSoftDelete {
@@ -24,7 +25,14 @@ export class App extends BaseSoftDelete {
     public isAutoPublished: boolean;
 
     @Column({ nullable: true })
-    public installLink: string;
+    public mezonAppId: string;
+
+    @Column({
+        type: "enum",
+        enum: MezonAppType,
+        default: MezonAppType.BOT,
+    })
+    public type: MezonAppType;
 
     @Column({ nullable: true })
     public headline: string;

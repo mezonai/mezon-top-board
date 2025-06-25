@@ -32,6 +32,7 @@ jobs:
       run: |
         cd frontend/
         echo '${{ secrets.ENV_PROD_FE }}' > .env
+        cp .env /var/www/top-mezon-ai/
 
     - name: Build FE & Deploy
       run: |

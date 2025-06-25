@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
@@ -73,5 +73,25 @@ export class UserController {
   @RoleRequired([Role.ADMIN])
   async deleteUser(@Body() body: RequestWithId) {
     return this.userService.deleteUser(body);
+  }
+
+  @Delete("/deactivate")
+  @ApiBearerAuth()
+  @RoleRequired([Role.ADMIN])
+  async deactivateUser(@Body() body: RequestWithId) {
+    return this.userService.deactivateUser(body);
+  }
+
+  @Post("/activate")
+  @ApiBearerAuth()
+  @RoleRequired([Role.ADMIN])
+  async activateUser(@Body() body: RequestWithId) {
+    return this.userService.activateUser(body);
+  }
+
+  @Post("/sync-mezon")
+  @ApiBearerAuth()
+  async markWaitingForSync(@GetUserFromHeader() user: User) {
+    return this.userService.markWillSyncFromMezon(user.id);
   }
 }

@@ -2,6 +2,21 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { Expose } from "class-transformer";
 
+export class LinkTypeResponse {
+  @Expose()
+  @ApiProperty()
+  public id: string;
+  @Expose()
+  @ApiProperty()
+  public icon: string;
+  @Expose()
+  @ApiProperty()
+  public name: string;
+  @Expose()
+  @ApiProperty()
+  public prefixUrl: string;
+}
+
 export class SocialLinkInMezonAppDetailResponse {
   @Expose()
   @ApiProperty()
@@ -11,11 +26,8 @@ export class SocialLinkInMezonAppDetailResponse {
   public url: string;
   @Expose()
   @ApiProperty()
-  public icon: string;
-}
-
-export class SocialLinkWithNameResponse extends SocialLinkInMezonAppDetailResponse {
+  public linkTypeId: string;
   @Expose()
-  @ApiProperty()
-  public name: string;
+  @ApiProperty({ type: () => LinkTypeResponse })
+  public type: LinkTypeResponse;
 }

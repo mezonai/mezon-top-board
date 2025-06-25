@@ -1,26 +1,24 @@
-import { UpdateUserRequest, userService } from "@app/services/api/user/user"
+import { GetUserDetailsResponse, UpdateUserRequest, userService } from "@app/services/api/user/user"
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) => {
   builder
     .addMatcher(userService.endpoints.userControllerSearchUser.matchFulfilled, (state, action) => {
-      const { pageNumber, data } = action.payload
-      if (pageNumber) state.pages = { ...state.pages, [pageNumber]: data } // Store each page’s data
+      state.adminUserList = action.payload
     })
     .addMatcher(userService.endpoints.userControllerUpdateUser.matchFulfilled, (state, action) => {
       const updatedUser = action.meta.arg.originalArgs.updateUserRequest
       // Loop through all pages and update the user if found
-      Object.keys(state.pages).forEach((pageNumber) => {
-        const page = state.pages[pageNumber]
-        const index = page.findIndex((user: UpdateUserRequest) => user.id === updatedUser.id)
-        if (index !== -1) {
-          // Update only `name`, `bio`, and `role` fields, keeping other properties intact
-          state.pages[pageNumber][index] = {
-            ...page[index], // Keep existing fields
-            ...updatedUser // Overwrite updated fields
-          }
+
+      const page = state.adminUserList;
+      const index = page.findIndex((user: UpdateUserRequest) => user.id === updatedUser.id)
+      if (index !== -1) {
+        // Update only `name`, `bio`, and `role` fields, keeping other properties intact
+        state.adminUserList[index] = {
+          ...page[index], // Keep existing fields
+          ...updatedUser // Overwrite updated fields
         }
-      })
+      }
     })
     .addMatcher(userService.endpoints.userControllerGetUserDetails.matchFulfilled, (state, { payload }) => {
       state.userInfo = payload.data
@@ -35,5 +33,25 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
     .addMatcher(userService.endpoints.userControllerGetPublicProfile.matchFulfilled, (state, { payload }) => {
       state.publicProfile = payload.data
       state.publicProfile.name = payload.data.name || "User"
+    })
+    .addMatcher(userService.endpoints.userControllerDeactivateUser.matchFulfilled, (state, action) => {
+      const deactiveId = action.meta.arg.originalArgs.requestWithId.id
+
+      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+        if (user.id === deactiveId) {
+          return { ...user, deletedAt: new Date() } // Set deletedAt to current date
+        }
+        return user
+      })
+    })
+    .addMatcher(userService.endpoints.userControllerActivateUser.matchFulfilled, (state, action) => {
+      const activeId = action.meta.arg.originalArgs.requestWithId.id
+
+      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+        if (user.id === activeId) {
+          return { ...user, deletedAt: null } // Set deletedAt to null
+        }
+        return user
+      })
     })
 }

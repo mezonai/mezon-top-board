@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
 import { IUserStore } from '@app/store/user'
-import { getUrlImage } from '@app/utils/stringHelper'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -39,9 +40,9 @@ function DetailCard() {
             </MtbTypography>
           )}
           {mezonAppDetail?.socialLinks?.map((link) => (
-            <MtbTypography key={link.id} variant='h5' weight='normal' label={link.icon}>
-              <a href={link.url} target='_blank' rel='noopener noreferrer' className='!text-black'>
-                {link.url}
+            <MtbTypography key={link.id} variant='h5' weight='normal' label={<ImgIcon src={link.type.icon} width={17} />}>
+              <a href={`${link.type.prefixUrl}${link.url}`} target='_blank' rel='noopener noreferrer' className='!text-black'>
+                {link.type.prefixUrl}{link.url}
               </a>
             </MtbTypography>
           ))}
@@ -69,7 +70,7 @@ function DetailCard() {
               <div className='flex gap-4 items-center'>
                 <div className='w-[40px] h-[40px] overflow-hidden rounded-xl flex-shrink-0'>
                   <img
-                    src={mezonAppDetail?.owner?.profileImage ? getUrlImage(mezonAppDetail?.owner.profileImage) : avatar}
+                    src={mezonAppDetail?.owner?.profileImage ? getUrlMedia(mezonAppDetail?.owner.profileImage) : avatar}
                     alt=''
                     className='w-full h-full object-cover'
                   />
@@ -82,7 +83,7 @@ function DetailCard() {
           </a>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

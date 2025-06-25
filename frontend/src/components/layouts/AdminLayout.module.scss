@@ -5,7 +5,7 @@
 .sider {
   background: #001529;
   color: white;
-  padding: 20px;
+  padding-top: 20px;
   min-height: 100vh;
 }
 
@@ -43,4 +43,10 @@
   background: #fff;
   padding: 20px 50px;
   border-top: 1px solid #ddd;
+}
+
+.sider-divider {
+  background: white;
+  padding: 1px 0px;
+  margin: 10px 0px;
 }

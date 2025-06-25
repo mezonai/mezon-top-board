@@ -1,9 +1,10 @@
 import { ApiPropertyOptional, OmitType } from "@nestjs/swagger";
 
-import { IsOptional, IsUUID, MaxLength, MinLength } from "class-validator";
+import { IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator";
 
 import { PaginationQuery, RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
+import { Transform } from "class-transformer";
 
 export class SearchUserRequest extends PaginationQuery {
     @ApiPropertyOptional({ description: "Keyword to search user by name or email" })
@@ -22,11 +23,15 @@ export class GetPublicProfileInfoRequest {
 export class UpdateUserRequest extends RequestWithId {
   @ApiPropertyOptional()
   @IsOptional()
-  @MinLength(1, { message: 'Name must be at least 1 character' })
+  @MinLength(3, { message: 'Name must be at least 3 character' })
   @MaxLength(50, { message: 'Name must not exceed 50 characters' })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  @IsString()
   name: string;
   @ApiPropertyOptional()
   @IsOptional()
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  @IsString()
   bio: string;
   @ApiPropertyOptional()
   @IsOptional()

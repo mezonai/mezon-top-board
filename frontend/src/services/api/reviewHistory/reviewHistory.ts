@@ -1,14 +1,16 @@
 import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    reviewHistoryControllerGetAppReviews: build.query<
-      ReviewHistoryControllerGetAppReviewsApiResponse,
-      ReviewHistoryControllerGetAppReviewsApiArg
+    reviewHistoryControllerSearchAppReviews: build.query<
+      ReviewHistoryControllerSearchAppReviewsApiResponse,
+      ReviewHistoryControllerSearchAppReviewsApiArg
     >({
       query: (queryArg) => ({
-        url: `/api/review-history`,
+        url: `/api/review-history/search`,
         params: {
+          search: queryArg.search,
           appId: queryArg.appId,
           pageSize: queryArg.pageSize,
           pageNumber: queryArg.pageNumber,
@@ -39,8 +41,9 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as reviewHistoryService }
-export type ReviewHistoryControllerGetAppReviewsApiResponse = HttpResponse<ReviewHistoryResponse[]>
-export type ReviewHistoryControllerGetAppReviewsApiArg = {
+export type ReviewHistoryControllerSearchAppReviewsApiResponse = HttpResponse<ReviewHistoryResponse[]>
+export type ReviewHistoryControllerSearchAppReviewsApiArg = {
+  search?: string
   appId?: string
   pageSize: number
   pageNumber: number
@@ -55,11 +58,12 @@ type Reviewer = {
   email: string
   role: string
 }
-
+ 
 type AppInfo = {
   id: string
   name: string
-  installLink: string | null
+  type: MezonAppType
+  mezonAppId?: string
   description: string | null
   headline: string | null
   featuredImage: string | null
@@ -100,8 +104,8 @@ export type RequestWithId = {
   id: string
 }
 export const {
-  useReviewHistoryControllerGetAppReviewsQuery,
-  useLazyReviewHistoryControllerGetAppReviewsQuery,
+  useReviewHistoryControllerSearchAppReviewsQuery,
+  useLazyReviewHistoryControllerSearchAppReviewsQuery,
   useReviewHistoryControllerCreateAppReviewMutation,
   useReviewHistoryControllerUpdateAppReviewMutation,
   useReviewHistoryControllerDeleteAppReviewMutation

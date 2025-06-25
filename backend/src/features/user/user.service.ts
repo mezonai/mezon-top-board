@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
-import { EntityManager } from "typeorm";
+import { EntityManager, IsNull, Not } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
@@ -64,6 +64,23 @@ export class UserService {
     return new Result();
   }
 
+  async deactivateUser(req: RequestWithId) {
+    // TODO: implement deactivate user logic
+    await this.userRepository.softDelete(req.id);
+    return new Result();
+  }
+
+  async activateUser(req: RequestWithId) {
+    // TODO: implement activate user logic
+    const user = await this.userRepository.getRepository().findOne({
+      where: { id: req.id, deletedAt: Not(IsNull()) },
+      withDeleted: true,
+    });
+    if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
+    await this.userRepository.getRepository().restore(req.id);
+    return new Result();
+  }
+
   async updateUser(req: UpdateUserRequest) {
     await this.userRepository.update(req.id, {
       name: req.name,
@@ -79,6 +96,17 @@ export class UserService {
       bio: req.bio,
       profileImage: req.profileImage,
     });
+    return new Result();
+  }
+
+  async markWillSyncFromMezon(userId: string) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) throw new NotFoundException(ErrorMessages.NOT_FOUND_MSG);
+
+    await this.userRepository.update(userId, {
+      willSyncFromMezon: true,
+    });
+
     return new Result();
   }
 }

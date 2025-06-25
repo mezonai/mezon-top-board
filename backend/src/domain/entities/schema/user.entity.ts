@@ -32,6 +32,9 @@ export class User extends BaseSoftDelete {
     @Column({ nullable: true })
     public profileImage: string;
 
+    @Column({ default: false })
+    public willSyncFromMezon: boolean;
+
     @OneToMany(() => Rating, (rating) => rating.user)
     public ratings: Rating[];
 

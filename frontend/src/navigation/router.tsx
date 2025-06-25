@@ -7,8 +7,21 @@ import { useSelector } from 'react-redux'
 import { Route, useLocation } from 'react-router'
 import { adminRoutePaths } from './adminRoutePaths'
 import { routePaths } from './routePaths'
+import { useEffect } from 'react'
+import { useLazyUserControllerGetUserDetailsQuery } from '@app/services/api/user/user'
+import { Dropdown, MenuProps } from 'antd'
 
 export const renderRoutes = () => {
+  const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
+  const { isLogin } = useSelector<RootState, IAuthStore>((s) => s.auth)
+
+  useEffect(() => {
+    if (isLogin) {
+      getUserInfo()
+    }
+  }, [isLogin])
+  
+
   const getRouteCompact = (route: RoutePath) => {
     const getRouteSingular = (route: RoutePath, key?: string) => <Route key={key || route.path} path={route.path} element={route.element} index={route.index} />
 
@@ -22,7 +35,7 @@ export const renderRoutes = () => {
       </Route>
     )
   }
-
+ 
   return (
     <>
       <Route path='/' element={<RootLayout />}>
@@ -46,11 +59,47 @@ export const renderMenu = (isHasActive: boolean) => {
     .map((route, index) => {
       const isActive = location.pathname === route.path && isHasActive
 
+      if (route.children && route.children.length > 0) {
+        const dropdownItems: MenuProps['items'] = route.children.map((child, childIndex) => {
+          const isExternal = !!child.isExternal
+          const key = `${route.path}-child-${childIndex}`
+
+          return {
+            key,
+            label: isExternal ? (
+              <a href={child.path} target="_blank" rel="noopener noreferrer">
+                {child.strLabel}
+              </a>
+            ) : (
+              <a href={child.path}>
+                {child.strLabel}
+              </a>
+            ),
+          }
+        })
+
+        return (
+          <li key={`${route.path}-${index}`}>
+            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']}>
+              <a
+                className={`!text-black pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
+                  isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
+                }`}
+              >
+                {route.label || route.strLabel} 
+              </a>
+            </Dropdown>
+          </li>
+        )
+      }
+
       return (
         <li key={`${route.path}-${index}`}>
           <a
             href={route.path}
-            className={`!text-black pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'}`}
+            className={`!text-black pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
+              isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
+            }`}
           >
             {route.label || route.strLabel}
           </a>

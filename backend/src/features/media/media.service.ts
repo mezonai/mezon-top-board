@@ -1,34 +1,37 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 
+import { existsSync, unlinkSync } from "fs";
 import { EntityManager } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
 import { Media } from "@domain/entities";
 
+import envConfig from "@config/env.config";
+import { uploadDir } from "@config/files.config";
+
+import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
+import { createUploadPath } from "@libs/utils/file";
 import { Mapper } from "@libs/utils/mapper";
 import { paginate } from "@libs/utils/paginate";
 
-import { uploadDir } from "@config/files.config";
-import { createUploadPath } from "@libs/utils/file";
-import { existsSync, unlinkSync } from "fs";
 import { CreateMediaRequest, DeleteMediaRequest, GetMediaRequest } from "./dtos/request";
 import { GetMediaResponse } from "./dtos/response";
-import { ErrorMessages } from "@libs/constant/messages";
-import envConfig from "@config/env.config";
 
 @Injectable()
 export class MediaService {
   private readonly mediaRepository: GenericRepository<Media>;
   constructor(private manager: EntityManager) {
     this.mediaRepository = new GenericRepository(Media, manager);
-  }
+  } 
 
   async getAll(query: GetMediaRequest) {
+    const inValidateSortField = query.sortField === 'name' ? 'fileName' : query.sortField;
+
     return paginate<Media, GetMediaResponse>(
       () =>
-        this.mediaRepository.findMany(query),
+        this.mediaRepository.findMany({ ...query, sortField: inValidateSortField }),
       query.pageSize,
       query.pageNumber,
       (entity) => Mapper(GetMediaResponse, entity),

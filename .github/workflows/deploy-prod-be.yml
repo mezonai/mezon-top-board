@@ -26,4 +26,5 @@ jobs:
         cd backend/
         yarn
         yarn build
+        cp -r . /var/www/top-mezon-ai-be/
         pm2 restart 0

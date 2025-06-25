@@ -4,6 +4,7 @@ import { Transform } from "class-transformer";
 import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 import { SortOrder } from "../enum/sortOder";
+import { SortField } from "../enum/sortField";
 
 export class RequestWithId {
   @IsNotEmpty()
@@ -25,7 +26,8 @@ export class PaginationQuery {
   pageNumber: number = 1;
 
   @IsOptional()
-  sortField: string = "createdAt";
+  @IsIn(Object.values(SortField))
+  sortField: SortField = SortField.CREATED_AT;
 
   @IsOptional()
   @IsIn([SortOrder.ASC, SortOrder.DESC])

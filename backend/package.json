@@ -19,10 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "yarn build && npx typeorm -d dist/config/data-source.config.js",
+    "db:create": "yarn build && npx typeorm migration:create",
     "db:generate": "sh scripts/migration.sh gen local",
     "db:run": "yarn typeorm migration:run",
     "db:revert": "yarn typeorm migration:revert",
     "db:seed": "yarn build && node dist/libs/repository/seed.js",
+    "db:create:prod": "cross-env ENV=prod yarn typeorm migration:create",
     "db:generate:prod": "sh scripts/migration.sh gen prod",
     "db:run:prod": "cross-env ENV=prod yarn typeorm migration:run",
     "db:revert:prod": "cross-env ENV=prod yarn typeorm migration:revert"

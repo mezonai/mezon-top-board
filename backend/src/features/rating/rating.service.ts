@@ -13,8 +13,7 @@ import { Mapper } from "@libs/utils/mapper";
 import { paginate } from "@libs/utils/paginate";
 
 import { CreateRatingRequest, GetAppRatingRequest, UpdateRatingRequest } from "./dtos/request";
-import { GetAppRatingResponse } from "./dtos/response";
-
+import { CreateAppRatingResponse, GetAppRatingResponse } from "./dtos/response";
 
 @Injectable()
 export class RatingService {
@@ -61,9 +60,11 @@ export class RatingService {
         if (rating)
             throw new BadRequestException(ErrorMessages.APP_RATING_LIMIT_REACHED)
 
-        await this.ratingRepository.create({ ...body, userId })
-        return new Result()
-    }
+    const newRating = await this.ratingRepository.create({ ...body, userId });
+    newRating.user = user
+
+    return Mapper(CreateAppRatingResponse, newRating);
+  }
 
     async updateRating(userId: string, body: UpdateRatingRequest) {
         const user = await this.userRepository.findById(userId)

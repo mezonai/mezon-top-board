@@ -19,6 +19,7 @@ import * as moment from "moment";
 import { EntityManager } from "typeorm";
 import { BasicAuthRequest, OAuth2Request } from "./dtos/request";
 import { OAuth2Service } from "./oauth2.service";
+import { OAuth2TokenResponse, OAuth2UserInfoResponse } from "./types/OAuth2.types";
 
 @Injectable()
 export class AuthService {
@@ -33,9 +34,9 @@ export class AuthService {
 
   async verifyOAuth2(payload: OAuth2Request): Promise<Result> {
     try {
-      const data = await this.oauth2Service.getOAuth2Token(payload);
+      const data: OAuth2TokenResponse = await this.oauth2Service.getOAuth2Token(payload);
 
-      const oryInfo = await this.oauth2Service.decodeORYTokenOAuth2(
+      const oryInfo: OAuth2UserInfoResponse = await this.oauth2Service.decodeORYTokenOAuth2(
         data.access_token,
       );
 
@@ -46,13 +47,22 @@ export class AuthService {
       const user = await this.findUserByEmail(oryInfo.sub);
 
       if (user) {
+        if (user.willSyncFromMezon) {
+          await this.userRepository.update(user.id, {
+            name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+            profileImage: oryInfo.avatar,
+            willSyncFromMezon: false,
+          });
+        }
+
         const tokens = await this.generateAccessAndRefreshTokens(user);
         return new Result({ data: tokens });
       }
 
       const newUser = await this.userRepository.create({
         email: oryInfo.sub,
-        name: oryInfo.sub.split('@')[0],
+        name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+        profileImage: oryInfo.avatar,
         role: Role.DEVELOPER,
       });
       const tokens = await this.generateAccessAndRefreshTokens(newUser);
@@ -71,8 +81,8 @@ export class AuthService {
       const user = await this.userRepository.findOne({
         where: {
           email: email,
-          deletedAt: null,
         },
+        withDeleted: false,
       });
       return user;
     } catch {
@@ -164,8 +174,8 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: {
         email,
-        deletedAt: null,
       },
+      withDeleted: false,
     });
 
     if (!user) {

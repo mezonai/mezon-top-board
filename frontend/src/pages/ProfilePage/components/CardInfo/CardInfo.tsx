@@ -1,26 +1,28 @@
 import {
   CreditCardOutlined,
-  EditOutlined,
   InfoCircleOutlined,
-  LoadingOutlined,
   SettingOutlined,
+  SyncOutlined,
   UserAddOutlined
 } from '@ant-design/icons'
 import avatar from '@app/assets/images/default-user.webp'
+import { AppEvent } from '@app/enums/AppEvent.enum'
 import { TypographyStyle } from '@app/enums/typography.enum'
+import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
-import { useUserControllerSelfUpdateUserMutation } from '@app/services/api/user/user'
-import { getUrlImage } from '@app/utils/stringHelper'
-import { Spin, Upload } from 'antd'
+import { useUserControllerSelfUpdateUserMutation, useUserControllerSyncMezonMutation } from '@app/services/api/user/user'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import { Button, Popconfirm, Upload } from 'antd'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
-import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
+import { imageMimeTypes } from '@app/constants/mimeTypes'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
-  const imgUrl = userInfo?.profileImage ? getUrlImage(userInfo.profileImage) : avatar
+  const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
+  const [syncMezon] = useUserControllerSyncMezonMutation()
 
   const cardInfoLink = [
     {
@@ -53,6 +55,17 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     if (isPublic) return
 
     const { file, onSuccess, onError } = options
+    const maxFileSize = 4 * 1024 * 1024
+    if (file.size > maxFileSize) {
+      toast.error(`${file.name} file upload failed (exceeds 4MB)`);
+      return ;
+    }
+    
+    if (!imageMimeTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file!');
+      onError(new Error('Invalid file type'));
+      return;
+    }
 
     try {
       const formData = new FormData()
@@ -71,11 +84,23 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   }
 
+  const handleSyncMezon = async () => {
+    if (isPublic) return
+
+    try {
+      await syncMezon(undefined).unwrap()
+      window.dispatchEvent(new Event(AppEvent.SYNC_MEZON));
+      toast.success('Sync Success')
+    } catch (error) {
+      toast.error('Sync failed!')
+    }
+  }
+
   return (
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
       <div className='flex items-center gap-4 w-full max-lg:flex-col max-2xl:flex-col'>
         <div className='flex-shrink-0'>
-          <Upload disabled={isPublic} listType='picture-circle' customRequest={handleUpload} showUploadList={false}>
+          <Upload accept={imageMimeTypes.join(',')} disabled={isPublic} listType='picture-circle' customRequest={handleUpload} showUploadList={false}>
             <MTBAvatar imgUrl={imgUrl} isAllowUpdate={!isPublic} isUpdatingAvatar={isUpdatingAvatar} />
           </Upload>
         </div>
@@ -102,6 +127,25 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             ))}
         </ul>
       </div>
+      {!isPublic &&
+        <Popconfirm
+          title='Confirm Sync from Mezon'
+          description='Are you sure to sync name and avatar for this user? This action cannot be undone!'
+          onConfirm={handleSyncMezon}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Button
+            className='mt-2'
+            color='danger'
+            size='large'
+            variant='outlined'
+            icon={<SyncOutlined />}
+          >
+            Sync from Mezon
+          </Button>
+        </Popconfirm>
+      }
     </div>
   )
 }

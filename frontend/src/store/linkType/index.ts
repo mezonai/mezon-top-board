@@ -1,24 +1,21 @@
-import { linkTypeService, SocialLinkInMezonAppDetailResponse } from '@app/services/api/linkType/linkType'
+import { LinkTypeControllerGetAllLinksApiResponse } from '@app/services/api/linkType/linkType'
 import { createSlice } from '@reduxjs/toolkit'
+import { linkTypeExtraReducers } from './extraReducer'
 
 export interface ILinkTypeStore {
-  linkTypeList: SocialLinkInMezonAppDetailResponse[]
+  linkTypeList: LinkTypeControllerGetAllLinksApiResponse
 }
 
 const initialState: ILinkTypeStore = {
-  linkTypeList: []
+  linkTypeList: {} as LinkTypeControllerGetAllLinksApiResponse
 }
 
 const linkTypeSlice = createSlice({
   name: 'link',
   initialState,
   reducers: {},
-  extraReducers(builder) {
-    builder.addMatcher(linkTypeService.endpoints.linkTypeControllerGetAllLinks.matchFulfilled, (state, { payload }) => {
-      state.linkTypeList = payload.data
-    })
-  }
+  extraReducers: linkTypeExtraReducers
 })
 
 export const linkTypeReducer = linkTypeSlice.reducer
-export const {} = linkTypeSlice.actions
+export const { } = linkTypeSlice.actions

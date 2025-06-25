@@ -22,3 +22,5 @@ export class GetAppRatingResponse {
   @Type(() => OwnerInAppRatingResponse)
   public user: OwnerInAppRatingResponse;
 }
+
+export class CreateAppRatingResponse extends GetAppRatingResponse {}

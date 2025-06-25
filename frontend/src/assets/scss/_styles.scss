@@ -1,48 +1,137 @@
 body {
-    font-family: "Open Sans", sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.description h1 {
+  font-size: 2em;
+  line-height: 1.2;
+  // font-weight: bold;
+}
+.description h2 {
+  font-size: 1.5em;
+  line-height: 1.2;
+}
+.description h3 {
+  font-size: 1.25em;
+  line-height: 1.2;
 }
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
+
+.description ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.description ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.description li {
+  margin-bottom: 0.5em;
+}
+
 .ant-divider .ant-divider-inner-text {
-    font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 5px;
+  background: #f1f1f1;
+  border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #b5b5b5;
-    border-radius: 5px;
+  background: #b5b5b5;
+  border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
 @media only screen and (max-width: 768px) {
-    .ant-divider-horizontal.ant-divider-with-text::before,
-    .ant-divider-horizontal.ant-divider-with-text::after {
-        width: 0 !important;
-    }
+  .ant-divider-horizontal.ant-divider-with-text::before,
+  .ant-divider-horizontal.ant-divider-with-text::after {
+    width: 0 !important;
+  }
 }
 
 .custom-editor .ql-editor {
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    min-height: 120px;
-    max-height: 240px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-height: 120px;
+  max-height: 240px;
+}
+
+pre {
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.ql-size-small {
+  font-size: 0.75em;
+  line-height: 1.2;
+}
+.ql-size-large {
+  font-size: 1.5em;
+  line-height: 1.2;
+}
+.ql-size-huge {
+  font-size: 2.5em;
+  line-height: 1.2;
+}
+
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-align-justify {
+  text-align: justify;
+}
+
+.ql-font-monospace {
+  font-family: monospace;
+}
+.ql-font-serif {
+  font-family: serif;
+}
+
+.ant-carousel {
+  cursor: grab;
+}
+.ant-carousel .slick-dots li button {
+  background: #d1006b !important;
+  width: 5px !important;
+  height: 5px !important;
+}
+.ant-carousel .slick-dots li {
+  width: 10px !important;
+  height: 10px !important;
+}
+.ant-carousel .slick-dots li.slick-active::after {
+  background: #d1006b !important;
+  width: 10px !important;
+  height: 5px !important;
+}
+.ant-carousel .slick-dots {
+  bottom: -1rem !important;
+}
+.ant-carousel .slick-arrow {
+  color: #d1006b !important;
 }

@@ -17,7 +17,7 @@ const ShareButton = ({ text, url }: ShareButtonProps) => {
             bgColor: "bg-blue-600",
             hoverColor: "hover:bg-blue-700",
             getUrl: () =>
-                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(text)}`,
         },
         {
             label: "Twitter",

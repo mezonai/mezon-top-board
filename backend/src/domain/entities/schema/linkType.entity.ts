@@ -9,6 +9,9 @@ export class LinkType extends BaseSoftDelete {
     @Column()
     public name: string;
 
+    @Column({ default: '' })
+    public prefixUrl: string;
+
     @Column()
     public icon: string;
 

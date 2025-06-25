@@ -22,7 +22,11 @@ export class GetMezonAppDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public installLink: string;
+  public type: string;
+
+  @Expose()
+  @ApiProperty()
+  public mezonAppId: string;
 
   @Expose()
   @ApiProperty()
@@ -61,54 +65,31 @@ export class GetMezonAppDetailsResponse {
   public rateScore: number;
 }
 
-export class SearchMezonAppResponse {
-    @Expose()
-    @ApiProperty()
-    public id: string;
-
-    @Expose()
-    @ApiProperty()
-    public name: string;
-
-    @Expose()
-    @ApiProperty()
-    public status: string;
-
-    @Expose()
-    @ApiProperty()
-    public installLink: string;
-
-    @Expose()
-    @ApiProperty()
-    public featuredImage: string;
-
-    @Expose()
-    @ApiProperty()
-    public rateScore: number;
-
-    @Expose()
-    @ApiProperty()
-    public description: string;
-
-    @Expose()
-    @ApiProperty()
-    public headline: string;
-
-    @Expose()
-    @ApiProperty({ type: () => [TagInMezonAppDetailResponse] })
-    public tags: TagInMezonAppDetailResponse[];
-}
+export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse, [
+  "id",
+  "name",
+  "type",
+  "mezonAppId",
+  "description",
+  "headline",
+  "status",
+  "featuredImage",
+  "tags",
+  "rateScore",
+  "owner"
+]) { }
 
 export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {
 }
 
 export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResponse, [
-    "id",
-    "name",
-    "description",
-    "installLink",
-    "headline",
-    "featuredImage",
-    "rateScore",
+  "id",
+  "name",
+  "description",
+  "type",
+  "mezonAppId",
+  "headline",
+  "featuredImage",
+  "rateScore",
 ]) {
 }

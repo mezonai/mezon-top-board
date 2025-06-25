@@ -14,7 +14,7 @@ function HelpPage() {
     setCaptcha(generateCaptcha()) // Generates a new captcha
   }
   return (
-    <main className='p-6'>
+    <main className='p-6'> 
       <div className="container m-auto mt-2 pb-3">
         <header className='relative mb-10 flex justify-center'>
           <MtbTypography variant='h2'>Contact Us</MtbTypography>
@@ -59,6 +59,9 @@ function HelpPage() {
               <span className='text-[#173C8D] font-bold'> sales@ncc.asia</span> Or call us
               directly (+84) 2466874606.
             </p>
+            <h5 className='mt-8 mb-1.5'>
+              You might also join our support clan on Mezon - <strong>TOP MEZON SUPPORT</strong> at: <a href="https://mezon.ai/invite/1840680946488053760" className='text-[#173C8D] font-bold' target='_blank'>https://mezon.ai/invite/1840680946488053760</a>
+            </h5>
             <p className='mt-8'>
               <div className='mb-1.5'>
                 <strong>Contact Information: </strong>
@@ -79,7 +82,7 @@ function HelpPage() {
         <section className="mt-10 xl:mx-12">
           <iframe
             className="w-full h-[300px]"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1647.5896225785345!2d106.73302339262241!3d10.838027852364212!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175271112acd217%3A0x910c2c261e2f5159!2zVG_DoCBOaMOgIFNUIE1vcml0eg!5e0!3m2!1sen!2sus!4v1741322133599!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10537.271707453767!2d105.75122421087973!3d20.97306114448466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313453005f0a4af7%3A0x79f302eac922779!2sCT3%20The%20Pride!5e0!3m2!1svi!2s!4v1744975282811!5m2!1svi!2s"
             allowFullScreen={false}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

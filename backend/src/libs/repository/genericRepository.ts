@@ -15,6 +15,7 @@ import {
 import { SortOrder } from "@domain/common/enum/sortOder";
 
 import { ErrorMessages } from "@libs/constant/messages";
+import { SortField } from "@domain/common/enum/sortField";
 
 export class GenericRepository<T extends ObjectLiteral> {
     private repository: Repository<T>;
@@ -37,8 +38,8 @@ export class GenericRepository<T extends ObjectLiteral> {
         const {
             pageNumber,
             pageSize,
-            sortField = "createdAt",
-            sortOrder = SortOrder.ASC,
+            sortField = SortField.NAME,
+            sortOrder = SortOrder.ASC, 
             where,
             relations
         } = req;
@@ -93,6 +94,10 @@ export class GenericRepository<T extends ObjectLiteral> {
         if (!entity)
             throw new NotFoundException(msg)
         await this.repository.softDelete(id)
+    }
+
+    public async softDeleteBy(where: FindOptionsWhere<T>) {
+        await this.repository.softDelete(where);
     }
 
     public getRepository(): Repository<T> {

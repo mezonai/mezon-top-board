@@ -33,6 +33,9 @@ export class SearchUserResponse {
     @Expose()
     @ApiProperty()
     public profileImage: string;
+    @Expose()
+    @ApiProperty()
+    public deletedAt: Date | null;
 }
 
 export class ReviewerResponse {
@@ -50,7 +53,7 @@ export class ReviewerResponse {
     public role: string;
 }
 
-export class GetUserDetailsResponse extends OmitType(SearchUserResponse, ["role"]) {
+export class GetUserDetailsResponse extends OmitType(SearchUserResponse, []) {
 }
 export class GetPublicProfileResponse extends OmitType(SearchUserResponse, ["role", "email"]) { }
 
