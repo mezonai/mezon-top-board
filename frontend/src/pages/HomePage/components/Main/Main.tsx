@@ -51,7 +51,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-  const [type, setType] = useState<MezonAppType>()
+  const [type, setType] = useState<MezonAppType| undefined>(defaultType)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -59,7 +59,6 @@ function Main({ isSearchPage = false }: IMainProps) {
     if (!isInitialized && isSearchPage) {
       setSearchQuery(defaultSearchQuery)
       setTagIds(defaultTagIds)
-      setType(defaultType)
       searchMezonAppList(defaultSearchQuery, defaultTagIds)
       setIsInitialized(true)
     }
