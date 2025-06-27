@@ -9,6 +9,11 @@ export class GetAppRatingRequest extends PaginationQuery {
     @IsUUID()
     appId: string;
 }
+export class GetAllAppRatingRequest {
+    @ApiProperty()
+    @IsUUID()
+    appId: string;
+}
 
 export class CreateRatingRequest {
     @ApiProperty()

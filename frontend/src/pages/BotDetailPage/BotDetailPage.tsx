@@ -10,7 +10,7 @@ import {
   useLazyMezonAppControllerGetMezonAppDetailQuery,
   useLazyMezonAppControllerGetRelatedMezonAppQuery
 } from '@app/services/api/mezonApp/mezonApp'
-import { useLazyRatingControllerGetRatingsByAppQuery } from '@app/services/api/rating/rating'
+import { useLazyRatingControllerGetAllRatingsByAppQuery, useLazyRatingControllerGetRatingsByAppQuery } from '@app/services/api/rating/rating'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
@@ -36,12 +36,13 @@ function BotDetailPage() {
   const [getrelatedMezonApp] = useLazyMezonAppControllerGetRelatedMezonAppQuery()
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getRatingsByApp, { isLoading: isLoadingReview }] = useLazyRatingControllerGetRatingsByAppQuery()
+  const [getAllRatingsByApp, { isLoading: isLoadingAllReview }] = useLazyRatingControllerGetAllRatingsByAppQuery()
 
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-  const { ratings } = useSelector<RootState, IRatingStore>((s) => s.rating)
+  const { ratings, allRatings } = useSelector<RootState, IRatingStore>((s) => s.rating)
   const { checkOwnership } = useOwnershipCheck();
-  const ratingCounts = ratings?.data?.reduce(
+  const ratingCounts = allRatings?.data?.reduce(
     (acc, rating) => {
       acc[rating.score] = (acc[rating.score] || 0) + 1
       return acc
@@ -75,6 +76,7 @@ function BotDetailPage() {
       getMezonAppDetail({ id: botId });
       getrelatedMezonApp({ id: botId });
       getRatingsByApp({ appId: botId });
+      getAllRatingsByApp({ appId: botId });
     } else {
       navigate('/404', { replace: true });
     }
