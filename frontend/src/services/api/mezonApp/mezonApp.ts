@@ -263,7 +263,7 @@ export type CreateMezonAppRequest = {
   isAutoPublished?: boolean
   headline: string
   description: string
-  prefix: string
+  prefix?: string
   featuredImage?: string
   supportUrl: string
   remark?: string

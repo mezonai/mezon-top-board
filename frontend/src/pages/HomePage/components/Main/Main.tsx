@@ -191,6 +191,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               className='w-[13rem]'
               dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
               defaultValue={sortOptions[0]}
+              data-e2e="selectSortOptions"
             />
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
@@ -201,6 +202,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               className='w-[10rem] lg:w-[13rem]'
               dropDownTitle='Title'
               defaultValue={options[0]}
+              data-e2e="selectPageOptions"
             />
           </Flex>
         </Flex>

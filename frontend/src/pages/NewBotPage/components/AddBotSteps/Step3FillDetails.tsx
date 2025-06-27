@@ -13,6 +13,7 @@ import Button from '@app/mtb-ui/Button'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -173,19 +174,21 @@ const Step3FillDetails = () => {
       <FormField label='Install Link' description='A place where users can install your bot on their Mezon server.'>
         <Input value={inviteURL} disabled />
       </FormField>
-
-      <FormField
-          label='Prefix'
-          description='What keyword or phrase does your bot react to?'
-          errorText={errors.prefix?.message}>
-        <Controller
-          control={control}
-          name='prefix'
-          render={({ field }) => (
-            <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
-          )}
-        />
-      </FormField>
+      {
+        type === MezonAppType.BOT &&
+          <FormField
+              label='Prefix'
+              description='What keyword or phrase does your bot react to?'
+              errorText={errors.prefix?.message}>
+            <Controller
+              control={control}
+              name='prefix'
+              render={({ field }) => (
+                <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
+              )}
+            />
+          </FormField>
+      }
 
       <FormField
           label='Tags'

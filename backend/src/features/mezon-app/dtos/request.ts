@@ -94,6 +94,7 @@ export class CreateMezonAppRequest {
   description?: string;
 
   @ApiPropertyOptional()
+  @ValidateIf(o => o.type === MezonAppType.BOT)
   @IsString()
   @MinLength(1, { message: "Prefix must be at least 1 character" })
   @MaxLength(10, { message: "Prefix must not exceed 10 characters" })

@@ -51,7 +51,7 @@ export const useOnSubmitBotForm = (
 
       if (!isEdit) {
         const result = await addBot({ createMezonAppRequest: payload }).unwrap()
-        toast.success('Bot created successfully!')
+        toast.success(`${formData.type} created successfully!`)
         result.id && onSuccess(result.id)
       } else if (botId) {
         const result = await updateBot({
@@ -61,7 +61,7 @@ export const useOnSubmitBotForm = (
             mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId
           }
         }).unwrap()
-        toast.success('Bot updated successfully!')
+        toast.success(`${formData.type} updated successfully!`)
         result.id && onSuccess(result.id)
       }
     } catch (err: unknown) {
