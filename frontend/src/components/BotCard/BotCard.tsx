@@ -47,7 +47,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
-            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'APP'}</Tag>
+            {data?.type === MezonAppType.BOT ?
+              <Tag className='!border-primary-hover !text-primary-hover !bg-white'>BOT</Tag>
+              : 
+              <Tag className='!border-sky-500 !text-sky-500 !bg-white'>APP</Tag>
+            }
             <div className='truncate-title flex-1'>
               <style>
                 {`
@@ -83,7 +87,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}
-            <Button variant='solid' size='large' onClick={handleInvite}>
+            <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
             <Popover
@@ -93,7 +97,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               arrow={false}
               overlayInnerStyle={{ marginTop: '8px', minWidth: '200px', maxWidth: '300px' }}
             >
-              <Button size='large' color='dark' icon={<UploadOutlined />} onClick={handleShare} />
+              <Button size='large' color='default' variant='outlined' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
           <div
