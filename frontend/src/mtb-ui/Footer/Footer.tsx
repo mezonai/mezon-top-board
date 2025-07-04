@@ -6,11 +6,11 @@ import { FacebookFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } fro
 const footerLink = [
   {
     icon: <FacebookFilled />,
-    link: 'https://www.facebook.com/'
+    link: 'https://www.facebook.com/mezonworld'
   },
   {
     icon: <TwitterOutlined />,
-    link: 'https://x.com/'
+    link: 'https://x.com/mezonworld'
   },
   {
     icon: <InstagramOutlined />,
