@@ -40,7 +40,7 @@ import { SubscriberController } from './features/subscriber/subscriber.controlle
     RatingModule,
     SubscriberModule
   ],
-  controllers: [SubscriberController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
