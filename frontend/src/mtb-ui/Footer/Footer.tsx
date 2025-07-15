@@ -1,8 +1,11 @@
-import { Divider, Input, Tag } from 'antd'
+import { Divider, Input, message, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
 import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons'
+import { useSubscriberControllerSubscribeMutation } from '@app/services/api/subscriber/subscriber'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -22,6 +25,19 @@ const footerLink = [
   }
 ]
 function Footer() {
+  const [email, setEmail] = useState('')
+  const [subscribe, { isLoading }] = useSubscriberControllerSubscribeMutation()
+  const handleSubscribe = async () => {
+    if (!email) return message.warning('Please enter your email')
+    try {
+      await subscribe({ email }).unwrap()
+      toast.success('Subscribed successfully')
+      setEmail('')
+    } catch (error: any) {
+      message.error(error?.data?.message || 'Subscribe failed')
+    }
+  }
+
   return (
     <div className='pt-10 pb-5 bg-gray-100'>
       <div className={`flex flex-col md:flex-row justify-around items-center gap-6 md:gap-0 pb-8 px-4`}>
@@ -40,12 +56,19 @@ function Footer() {
         <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
           <MtbTypography variant='h5' customClassName='!mb-0 !text-gray-600'>Get Newsletter</MtbTypography>
           <div className='flex w-full md:w-auto'>
-            <Input type='text' placeholder='Your email address' className="border border-gray-300 px-3 py-2 w-full md:w-auto"
+            <Input
+              type='email'
+              placeholder='Your email address'
+              className="border border-gray-300 px-3 py-2 w-full md:w-auto"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             ></Input>
             <Button
               color='default'
               variant='solid'
               customClassName='!bg-black !text-white !border-black !rounded-none opacity-100 hover:opacity-75 !py-5'
+              onClick={handleSubscribe}
+              disabled={isLoading}
             >
               Subscribe
             </Button>

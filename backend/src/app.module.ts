@@ -17,6 +17,9 @@ import { UserModule } from "@features/user/user.module";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 
+import { SubscriberModule } from './features/subscriber/subscriber.module';
+import { SubscriberController } from './features/subscriber/subscriber.controller';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,7 +37,8 @@ import { LoggerModule } from "@libs/logger";
     ReviewHistoryModule,
     UserModule,
     LinkTypeModule,
-    RatingModule
+    RatingModule,
+    SubscriberModule
   ],
   controllers: [],
   providers: [],
