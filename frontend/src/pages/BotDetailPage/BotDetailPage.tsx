@@ -30,6 +30,7 @@ import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
+import { useAuth } from '@app/hook/useAuth'
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -55,7 +56,7 @@ function BotDetailPage() {
   const searchQuery = searchParams.get('q') || ''
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
+  const { isLogin } = useAuth()
   const [dragging, setDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -243,7 +244,7 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-            <RatingForm />
+            {isLogin && <RatingForm />}
             <Divider className='bg-gray-200'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
