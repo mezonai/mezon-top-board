@@ -240,13 +240,13 @@ function NewBotPage() {
               }`}
             >
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
-                <Button color="dark" onClick={prev} >
+                <Button color="default" variant="outlined" onClick={prev} >
                   Back
                 </Button>
               )}
               
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
-                <Button color="primary" variant="outlined" onClick={next}>
+                <Button variant="outlined" onClick={next}>
                   Next
                 </Button>
               )}

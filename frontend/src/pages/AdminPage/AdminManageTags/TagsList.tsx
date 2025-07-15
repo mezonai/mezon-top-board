@@ -196,7 +196,7 @@ function TagsList() {
       render: (_: any, record: any) =>
         editingTag.id === record.id ? (
           <div className='flex gap-2'>
-            <MtbButton disabled={editError} color="secondary" onClick={() => handleUpdate(record.id)}>
+            <MtbButton disabled={editError} color="blue" onClick={() => handleUpdate(record.id)}>
               Save
             </MtbButton>
             <MtbButton color='danger' onClick={() => setEditingTag({ id: null, name: '', slug: '' })}>
@@ -205,7 +205,7 @@ function TagsList() {
           </div>
         ) : (
           <div className='flex gap-2'>
-            <MtbButton color="secondary"
+            <MtbButton color="blue" 
               icon={<EditOutlined />}
               onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug })}
             />
@@ -246,10 +246,10 @@ function TagsList() {
             />
           </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} color='secondary' onClick={() => searchForm.submit()}>
+        <MtbButton icon={<SearchOutlined />} color='default' variant='outlined' onClick={() => searchForm.submit()}>
           Search
         </MtbButton>
-        <MtbButton color='primary' variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
+        <MtbButton variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
           Add New Tag
         </MtbButton>
       </div>

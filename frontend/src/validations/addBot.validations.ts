@@ -29,9 +29,15 @@ export const ADD_BOT_SCHEMA = yup.object({
   prefix: yup
     .string()
     .trim()
-    .required("Prefix is required")
-    .min(1, "Minimum 1 characters")
-    .max(10, "Maximum 10 characters"),
+    .when('type', {
+      is: (val: MezonAppType) => val === MezonAppType.BOT,
+      then: (schema) =>
+        schema
+          .required('Prefix is required')
+          .min(1, 'Minimum 1 characters')
+          .max(10, 'Maximum 10 characters'),
+      otherwise: (schema) => schema.notRequired()
+    }),
   featuredImage: yup.string().optional(),
   supportUrl: yup
     .string()
