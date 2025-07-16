@@ -56,7 +56,7 @@ export class AuthService {
         }
 
         const tokens = await this.generateAccessAndRefreshTokens(user);
-        return new Result({ data: tokens });
+        return new Result({ data: {...tokens, isFirstLogin: false} });
       }
 
       const newUser = await this.userRepository.create({
@@ -66,7 +66,7 @@ export class AuthService {
         role: Role.DEVELOPER,
       });
       const tokens = await this.generateAccessAndRefreshTokens(newUser);
-      return new Result({ data: tokens });
+      return new Result({  data: {...tokens, isFirstLogin: true} });
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
