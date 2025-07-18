@@ -20,7 +20,7 @@ import { ApiError } from '@app/types/API.types'
 import { Carousel, Divider, Spin } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { data, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Comment from './components/Comment/Comment'
 import DetailCard from './components/DetailCard/DetailCard'
@@ -246,7 +246,7 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-              {isLogin && (
+              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
                 <RatingForm
                   onSubmitted={() => {
                     if (botId) {
