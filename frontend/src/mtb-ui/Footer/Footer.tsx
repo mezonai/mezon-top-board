@@ -2,14 +2,14 @@ import { Divider, Input, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
 import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
-import { FacebookFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons'
+import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
 const footerLink = [
   {
     icon: <FacebookFilled />,
     link: 'https://www.facebook.com/mezonworld'
   },
   {
-    icon: <TwitterOutlined />,
+    icon: <XOutlined />,
     link: 'https://x.com/mezonworld'
   },
   {
@@ -18,7 +18,7 @@ const footerLink = [
   },
   {
     icon: <YoutubeFilled />,
-    link: 'https://www.youtube.com/'
+    link: 'https://www.youtube.com/@nccplusvietnam7545'
   }
 ]
 function Footer() {
