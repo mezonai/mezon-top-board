@@ -40,22 +40,6 @@ export class SubscriberService {
     });
   }
 
-  async unsubscribe(body: UnsubscribeRequest) {
-    const existing = await this.subscriberRepository.getRepository().findOne({
-      where: { email: ILike(body.email) },
-    });
-
-    if (!existing) {
-      throw new BadRequestException('Email not found');
-    }
-
-    await this.subscriberRepository.softDelete(existing.id);
-
-    return new Result({
-      data: Mapper(UnsubscribeResponse, existing),
-    });
-  }
-
   async getAll(query: SearchSubscriberRequest) {
     let whereCondition = undefined;
     if (query.search) {

@@ -29,18 +29,6 @@ export class SubscriberController {
     }
   }
 
-  @Public()
-  @Post('unsubscribe')
-  @ApiBody({ type: UnsubscribeRequest })
-  @ApiResponse({ type: UnsubscribeResponse })
-  async unsubscribe(@Body() body: UnsubscribeRequest) {
-    try {
-      return await this.subscriberService.unsubscribe(body);
-    } catch (error) {
-      this.logger.error('Unsubscribe failed', error);
-      throw error;
-    }
-  }
 
   @ApiBearerAuth()
   @RoleRequired([Role.ADMIN])
