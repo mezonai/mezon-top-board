@@ -18,14 +18,21 @@ import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 
 import { SubscriberModule } from './features/subscriber/subscriber.module';
-import { SubscriberController } from './features/subscriber/subscriber.controller';
-
+import { BullModule } from "@nestjs/bull";
+import envConfig from "@config/env.config";
+const { REDIS_HOST, REDIS_PORT } = envConfig();
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [config],
       isGlobal: true,
       envFilePath: envFilePath,
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: REDIS_HOST,
+        port: REDIS_PORT,
+      },
     }),
     TypeOrmModule.forRoot(dataSourceOption),
     LoggerModule,

@@ -42,4 +42,9 @@ export class SubscriberController {
       throw error;
     }
   }
+  @Public()
+  @Post('confirm-email')
+  async confirmEmail(@Body() body: { token: string }) {
+    return this.subscriberService.confirmEmail(body.token);
+}
 }

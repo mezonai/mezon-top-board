@@ -5,4 +5,10 @@ import { BaseSoftDelete } from "../base";
 export class Subscriber extends BaseSoftDelete {
   @Column({ unique: true })
   public email: string;
+
+  @Column({ length: 64, nullable: true })
+  public confirmToken: string;
+
+  @Column({ default: false })
+  public isConfirmed: boolean;
 }

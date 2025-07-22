@@ -1,5 +1,6 @@
 import AboutPage from '@app/pages/AboutPage/AboutPage'
 import BotDetailPage from '@app/pages/BotDetailPage/BotDetailPage'
+import ConfirmEmailPage from '@app/pages/ConfirmMailPage/ConfirmMailPage'
 import ContactUsPage from '@app/pages/ContactUsPage/ContactUsPage'
 import HomePage from '@app/pages/HomePage/HomePage'
 import LoginPage from '@app/pages/LoginPage/LoginPage'
@@ -121,6 +122,14 @@ export const routePaths: RoutePath[] = [
     strLabel: '',
     isShowMenu: false,
     requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/confirm',
+    element: <ConfirmEmailPage />,
+    strLabel: 'confirm',
+    isShowMenu: false,
+    requireAuth: false,
   },
   {
     index: false,
