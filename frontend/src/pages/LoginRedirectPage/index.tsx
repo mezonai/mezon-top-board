@@ -1,5 +1,5 @@
 import { useAuth } from '@app/hook/useAuth'
-import { useAuthControllerVerifyOAuth2Mutation } from '@app/services/api/auth/auth'
+import { AuthControllerVerifyOAuth2ApiResponse, useAuthControllerVerifyOAuth2Mutation } from '@app/services/api/auth/auth'
 import { storeAccessTokens } from '@app/utils/storage'
 import { Flex, Spin } from 'antd'
 import { useEffect, useMemo } from 'react'
@@ -30,8 +30,10 @@ export const LoginRedirectPage = () => {
       return
     }
 
+    let data: AuthControllerVerifyOAuth2ApiResponse | undefined
     try {
-      const { data } = await verifyOauth2Service({ oAuth2Request: { code, scope: scope || 'openid' } })
+      const result = await verifyOauth2Service({ oAuth2Request: { code, scope: scope || 'openid' } })
+      data = result.data
       if (!data) {
         toast.error('Login failed!')
         return
@@ -42,7 +44,8 @@ export const LoginRedirectPage = () => {
     } catch (_) {
       toast.error('Login failed!')
     } finally {
-      navigate('/', { replace: true })
+      const isFirstLogin = data?.data?.isFirstLogin
+      navigate(isFirstLogin ? '/profile/setting' : '/', { replace: true })
     }
   }
 

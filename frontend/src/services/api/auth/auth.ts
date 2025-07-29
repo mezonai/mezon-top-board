@@ -14,6 +14,7 @@ export { injectedRtkApi as authService }
 export type AuthControllerVerifyOAuth2ApiResponse = HttpResponse<{
   accessToken: string
   refreshToken: string
+  isFirstLogin: boolean
 }>
 export type AuthControllerVerifyOAuth2ApiArg = {
   oAuth2Request: OAuth2Request
