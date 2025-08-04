@@ -29,6 +29,13 @@ const injectedRtkApi = api.injectEndpoints({
         body,
       }),
     }),
+    subscriberControllerConfirmEmail: build.mutation<HttpResponse<any>, { token: string }>({
+      query: (body) => ({
+        url: `/api/subscriber/confirm-email`,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -71,4 +78,5 @@ export const {
   useLazySubscriberControllerSearchQuery,
   useSubscriberControllerSubscribeMutation,
   useSubscriberControllerUnsubscribeMutation,
+  useSubscriberControllerConfirmEmailMutation
 } = injectedRtkApi;

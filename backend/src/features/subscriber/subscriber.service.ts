@@ -12,6 +12,7 @@ import { paginate } from '@libs/utils/paginate';
 import { ErrorMessages } from '@libs/constant/messages';
 import { randomUUID } from 'crypto';
 import { MailService } from '@features/mail/mail.service';
+import * as moment from "moment";
 
 @Injectable()
 export class SubscriberService {
@@ -23,17 +24,31 @@ export class SubscriberService {
     this.subscriberRepository = new GenericRepository(Subscriber, manager);
   }
 
-async subscribe(body: SubscribeRequest) {
-  const email = body.email.trim().toLowerCase();
-  const existing = await this.subscriberRepository.getRepository().findOne({
-    where: { email: ILike(email) },
-    withDeleted: true,
-  });
+  async subscribe(body: SubscribeRequest) {
+    const email = body.email.trim().toLowerCase();
+    const existing = await this.subscriberRepository.getRepository().findOne({
+      where: { email: ILike(email) },
+      withDeleted: true,
+    });
 
-  const now = new Date();
-  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    const now = moment();
+    console.log('Current time:', now);
+    const SEVEN_DAYS = 7;
 
-  if (existing) {
+    if (!existing) {
+      const confirmToken = randomUUID();
+      const created = await this.subscriberRepository.create({
+        email,
+        confirmToken,
+        isConfirmed: false,
+        subscribedAt: now.toDate(),
+      });
+      await this.mailService.sendConfirmationEmail(email, confirmToken);
+      return new Result({
+        data: Mapper(SubscribeResponse, created),
+        message: 'Confirmation email sent.',
+      });
+    }
     if (existing.deletedAt) {
       await this.subscriberRepository.getRepository().restore(existing.id);
       return new Result({
@@ -41,38 +56,25 @@ async subscribe(body: SubscribeRequest) {
         message: 'Email restored and already subscribed.',
       });
     }
-    
-    const createdAt = new Date(existing.createdAt);
-    const isOverdue = now.getTime() - createdAt.getTime() > SEVEN_DAYS;
 
-    if (!existing.isConfirmed && isOverdue) {
-      const confirmToken = randomUUID();
-      const message = 'Confirmation email re-sent.';
-      existing.confirmToken = confirmToken;
-      existing.createdAt = now; 
-      await this.subscriberRepository.update(existing.id, existing);
-      await this.mailService.sendConfirmationEmail(email, confirmToken,message);
-      return new Result({
-        data: Mapper(SubscribeResponse, existing),
-        message: message,
-      });
-    }
-    throw new BadRequestException(ErrorMessages.EXISTED_SUBSCRIBER);
+      const createdAt = moment(existing.subscribedAt);
+      const isOverdue = now.diff(createdAt, 'days') > SEVEN_DAYS;
+
+      if (!existing.isConfirmed && isOverdue) {
+        const confirmToken = randomUUID();
+        const message = 'Confirmation email re-sent.';
+        existing.confirmToken = confirmToken;
+        existing.subscribedAt = now.toDate(); 
+        await this.subscriberRepository.update(existing.id, existing);
+        await this.mailService.sendConfirmationEmail(email, confirmToken,message);
+        return new Result({
+          data: Mapper(SubscribeResponse, existing),
+          message: message,
+        });
+      }
+      throw new BadRequestException(ErrorMessages.EXISTED_SUBSCRIBER);
+
   }
-
-  const confirmToken = randomUUID();
-  const created = await this.subscriberRepository.create({
-    email,
-    confirmToken,
-    isConfirmed: false,
-  });
-  await this.mailService.sendConfirmationEmail(email, confirmToken);
-
-  return new Result({
-    data: Mapper(SubscribeResponse, created),
-    message: 'Confirmation email sent.',
-  });
-}
 
   async getAll(query: SearchSubscriberRequest) {
     let whereCondition = undefined;
@@ -92,39 +94,37 @@ async subscribe(body: SubscribeRequest) {
       query.pageSize,
       query.pageNumber,
     (entity) => Mapper(SubscriberResponse, entity),
-  );
+    );
 
-  if (!Array.isArray(result.data) || result.data.length === 0) {
-  throw new BadRequestException(ErrorMessages.NOT_FOUND_SUBSCRIBER);
-  }
-  return result;
+    if (!Array.isArray(result.data) || result.data.length === 0) {
+      throw new BadRequestException(ErrorMessages.NOT_FOUND_SUBSCRIBER);
+    }
+    return result;
   }
 
   async confirmEmail(token: string): Promise<Result<SubscribeResponse>> {
-  const subscriber = await this.subscriberRepository.getRepository().findOne({
-    where: { confirmToken: token },
-  });
+    const subscriber = await this.subscriberRepository.getRepository().findOne({
+      where: { confirmToken: token },
+    });
 
-  if (!subscriber) {
-    throw new BadRequestException('Invalid or expired confirmation token');
-  }
+    if (!subscriber) {
+      throw new BadRequestException('Invalid or expired confirmation token');
+    }
 
-  if (subscriber.isConfirmed) {
+    if (subscriber.isConfirmed) {
+      return new Result({
+        data: Mapper(SubscribeResponse, subscriber),
+        message: 'Email already confirmed',
+      });
+    }
+
+    subscriber.isConfirmed = true;
+    subscriber.confirmToken = null;
+    await this.subscriberRepository.update(subscriber.id, subscriber);
+
     return new Result({
       data: Mapper(SubscribeResponse, subscriber),
-      message: 'Email already confirmed',
+      message: 'Email confirmed successfully',
     });
   }
-
-  subscriber.isConfirmed = true;
-  subscriber.confirmToken = null;
-
-  await this.subscriberRepository.update(subscriber.id, subscriber);
-
-  return new Result({
-    data: Mapper(SubscribeResponse, subscriber),
-    message: 'Email confirmed successfully',
-  });
-}
-
 }

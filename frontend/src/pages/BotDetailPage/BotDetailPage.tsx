@@ -246,7 +246,7 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-              {isLogin && (
+              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
                 <RatingForm
                   onSubmitted={() => {
                     if (botId) {

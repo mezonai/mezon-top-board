@@ -22,7 +22,7 @@ export default () => ({
   JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES || 60,
   JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES || 10080,
   UPLOAD_RELATIVE_DIR: process.env.UPLOAD_RELATIVE_DIR || "uploads",
-  REACT_APP_FRONTEND_URL: process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000",
+  APP_URL: process.env.APP_URL || "http://localhost:3000",
   EMAIL_USER: process.env.EMAIL_USER || "",
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "", 
   EMAIL_HOST: process.env.EMAIL_HOST || "smtp.gmail.com",

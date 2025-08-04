@@ -1,35 +1,30 @@
 
+import { useSubscriberControllerConfirmEmailMutation } from '@app/services/api/subscriber/subscriber';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 export default function ConfirmEmailPage() {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+   const [confirmEmail] = useSubscriberControllerConfirmEmailMutation();
   const [searchParams] = useSearchParams();
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const navigate = useNavigate();
-
-  useEffect(() => {
+ useEffect(() => {
     const token = searchParams.get('token');
-    if (token) {
-      fetch('http://localhost:8123/api/subscriber/confirm-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          setStatus('success');
-          setTimeout(() => navigate('/'), 3000);
-        })
-        .catch(() => setStatus('error'));
-    } else {
+    if (!token) {
       setStatus('error');
+      return;
     }
-  }, []);
+
+    confirmEmail({ token })
+      .unwrap()
+      .then(() => {
+        setStatus('success');
+        setTimeout(() => navigate('/'), 1000);
+      })
+      .catch(() => {
+        setStatus('error');
+      });
+  }, [confirmEmail, searchParams, navigate]);
 
   return (
     <div style={{ textAlign: 'center', paddingTop: 100 }}>

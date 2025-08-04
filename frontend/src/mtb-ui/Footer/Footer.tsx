@@ -3,16 +3,13 @@ import { renderMenu } from '@app/navigation/router'
 import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons'
-import { useSubscriberControllerSubscribeMutation } from '@app/services/api/subscriber/subscriber'
-import { useState } from 'react'
-import { toast } from 'react-toastify'
 const footerLink = [
   {
     icon: <FacebookFilled />,
     link: 'https://www.facebook.com/mezonworld'
   },
   {
-    icon: <TwitterOutlined />,
+    icon: <XOutlined />,
     link: 'https://x.com/mezonworld'
   },
   {
@@ -21,7 +18,7 @@ const footerLink = [
   },
   {
     icon: <YoutubeFilled />,
-    link: 'https://www.youtube.com/'
+    link: 'https://www.youtube.com/@nccplusvietnam7545'
   }
 ]
 function Footer() {

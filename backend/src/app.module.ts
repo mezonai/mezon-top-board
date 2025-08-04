@@ -19,8 +19,8 @@ import { LoggerModule } from "@libs/logger";
 
 import { SubscriberModule } from './features/subscriber/subscriber.module';
 import { BullModule } from "@nestjs/bull";
-import envConfig from "@config/env.config";
-const { REDIS_HOST, REDIS_PORT } = envConfig();
+import { redisConfig } from './config/mail.config';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,10 +29,7 @@ const { REDIS_HOST, REDIS_PORT } = envConfig();
       envFilePath: envFilePath,
     }),
     BullModule.forRoot({
-      redis: {
-        host: REDIS_HOST,
-        port: REDIS_PORT,
-      },
+     redis:redisConfig
     }),
     TypeOrmModule.forRoot(dataSourceOption),
     LoggerModule,

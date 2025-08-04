@@ -2,15 +2,6 @@ version: '3.8'
 name: mezon-top-board
 
 services:
-  redis:
-    image: redis:alpine
-    container_name: redis
-    volumes:
-      - redis_data:/data
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - main_net
   postgres:
     image: postgres:14-alpine
     container_name: postgres
@@ -61,7 +52,6 @@ services:
       JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES}
       JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES: ${JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES}
       UPLOAD_RELATIVE_DIR: ${UPLOAD_RELATIVE_DIR}
-      REDIS_PORT: 6379
     networks:
       - main_net
 
@@ -79,7 +69,7 @@ services:
     image: nginx:alpine
     container_name: nginx
     volumes:
-      - ./nginx_dev.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/:/etc/letsencrypt/
     depends_on:
       - backend
@@ -93,7 +83,6 @@ services:
 
 volumes:
   postgres_data:
-  redis_data:
 
 networks:
   main_net:

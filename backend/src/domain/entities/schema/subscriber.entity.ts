@@ -1,7 +1,7 @@
 import { Entity, Column } from "typeorm";
 import { BaseSoftDelete } from "../base";
 
-@Entity('subscribers')
+@Entity("subscribers")
 export class Subscriber extends BaseSoftDelete {
   @Column({ unique: true })
   public email: string;
@@ -11,4 +11,7 @@ export class Subscriber extends BaseSoftDelete {
 
   @Column({ default: false })
   public isConfirmed: boolean;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  public subscribedAt: Date;
 }
