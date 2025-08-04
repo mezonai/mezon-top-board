@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Email Confirmation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      line-height: 1.6;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      background:linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .greeting {
+      font-size: 18px;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      font-size: 16px;
+      color: #666666;
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+
+    .confirm-button {
+      display: inline-block;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 20px 0;
+      transition: transform 0.2s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .confirm-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .security-note {
+      background-color: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 4px;
+    }
+
+    .security-note p {
+      margin: 0;
+      font-size: 14px;
+      color: #666666;
+    }
+
+    .footer {
+      background-color: #f8f9fa;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .footer p {
+      margin: 0;
+      font-size: 14px;
+      color: #999999;
+    }
+
+    .social-links {
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      display: inline-block;
+      margin: 0 10px;
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      .header {
+        padding: 30px 20px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .confirm-button {
+        padding: 14px 28px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="email-container">
+    <!-- Header -->
+    <div class="header">
+      {{#if message}}
+      <h1>{{message}}</h1>
+      {{else}}
+      <h1>✨ Confirm Your Subscription</h1>
+      {{/if}}
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="greeting">
+        <strong>Hello {{to}},</strong>
+      </div>
+
+      <div class="message">
+        <p>Thank you for subscribing! We're thrilled to have you with us.</p>
+        <p>To confirm your subscription and start receiving updates, please click the button below:</p>
+      </div>
+
+      <a href="{{confirmUrl}}" class="confirm-button">
+        🔐 Confirm Email Address
+      </a>
+
+      <div class="security-note">
+        <p><strong>Security Note:</strong> This link is valid until your subscription is confirmed. If you did not
+          request this, please ignore this message.</p>
+      </div>
+
+      <div class="message">
+        <p>If the button above doesn't work, you can copy and paste this link into your browser:</p>
+        <p style="word-break: break-all; color: #667eea; font-size: 14px;">{{confirmUrl}}</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="social-links">
+        <p>Follow us on:</p>
+        <a href="https://www.facebook.com/mezonworld" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/24/733/733547.png" width="24" alt="Facebook"
+            style="margin: 0 5px;" />
+        </a>
+        <a href="https://x.com/mezonworld" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/24/5968/5968958.png" width="24" alt="X" style="margin: 0 5px;" />
+        </a>
+        <a href="https://www.youtube.com/@nccplusvietnam7545" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/24/1384/1384060.png" width="24" alt="YouTube"
+            style="margin: 0 5px;" />
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
