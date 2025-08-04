@@ -15,7 +15,7 @@ const mailConfig = {
   transport: {
     host: EMAIL_HOST,
     port: EMAIL_PORT,
-    secure: EMAIL_PORT === 587,
+    secure: true,
     auth: {
       user: EMAIL_USER,
       pass: EMAIL_PASSWORD,

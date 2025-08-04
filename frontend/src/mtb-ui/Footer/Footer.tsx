@@ -2,7 +2,10 @@ import { Divider, Input, message, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
 import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
-import { FacebookFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons'
+import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
+import { toast } from 'react-toastify'
+import { useSubscriberControllerSubscribeMutation } from '@app/services/api/subscriber/subscriber'
+import { useState } from 'react'
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -25,13 +28,13 @@ function Footer() {
   const [email, setEmail] = useState('')
   const [subscribe, { isLoading }] = useSubscriberControllerSubscribeMutation()
   const handleSubscribe = async () => {
-    if (!email) return message.warning('Please enter your email')
+    if (!email) return toast.warning('Please enter your email')
     try {
       await subscribe({ email }).unwrap()
       toast.success('Subscribed successfully')
       setEmail('')
     } catch (error: any) {
-      message.error(error?.data?.message || 'Subscribe failed')
+      toast.error(error?.data?.message || 'Subscribe failed')
     }
   }
 
