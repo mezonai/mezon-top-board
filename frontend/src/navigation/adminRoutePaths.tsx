@@ -1,12 +1,13 @@
 // src/routes/adminRoutePaths.ts
 
-import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined } from '@ant-design/icons'
+import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, SendOutlined } from '@ant-design/icons'
 import MezonAppsContainer from '@app/pages/AdminPage/AdminMezonApp/MezonAppsContainer'
 import ReviewHistoryPage from '@app/pages/AdminPage/ReviewHistoryPage/ReviewHistoryPage'
 import UsersList from "@app/pages/AdminPage/AdminManageUsers/UsersList";
 import { RoutePath } from '@app/types/RoutePath.types'
 import LinkTypesList from '@app/pages/AdminPage/AdminManageLinkTypes/LinkTypesList';
 import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
+import NewsletterContainer from '@app/pages/AdminPage/NewsletterCampaigns/NewsletterContainer';
 
 export const adminRoutePaths: RoutePath[] = [
   {
@@ -15,6 +16,13 @@ export const adminRoutePaths: RoutePath[] = [
     element: <MezonAppsContainer />, // Default page when accessing /admin
     strLabel: 'Apps',
     icon: <AppstoreAddOutlined />,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/newsletter-campaigns',
+    element: <NewsletterContainer/>, // Default page when accessing /admin
+    strLabel: 'Newsletter Campaigns',
+    icon: <SendOutlined />,
     isShowMenu: true
   },
   {

@@ -17,12 +17,21 @@ import { UserModule } from "@features/user/user.module";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 
+import { SubscriberModule } from './features/subscriber/subscriber.module';
+import { BullModule } from "@nestjs/bull";
+import { redisConfig } from './config/mail.config';
+import { NewsletterCampaignModule } from './features/newsletter-campaign/newsletter-campaign.module';
+import { NewsletterCampaignController } from './features/newsletter-campaign/newsletter-campaign.controller';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [config],
       isGlobal: true,
       envFilePath: envFilePath,
+    }),
+    BullModule.forRoot({
+     redis:redisConfig
     }),
     TypeOrmModule.forRoot(dataSourceOption),
     LoggerModule,
@@ -34,7 +43,9 @@ import { LoggerModule } from "@libs/logger";
     ReviewHistoryModule,
     UserModule,
     LinkTypeModule,
-    RatingModule
+    RatingModule,
+    SubscriberModule,
+    NewsletterCampaignModule
   ],
   controllers: [],
   providers: [],

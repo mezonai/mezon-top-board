@@ -12,7 +12,10 @@ export enum ErrorMessages {
     PERMISSION_DENIED = 'You do not have permission.',
     APP_RATING_LIMIT_REACHED = 'You have already rated this app.',
     APP_RATING_EDIT_RESTRICTION = 'You can only edit your rating',
-    EXISTED_TAG = 'This tag is already existed '
+    EXISTED_TAG = 'This tag is already existed ',
+    EXISTED_SUBSCRIBER = 'This email is already subscribed',
+    NOT_FOUND_SUBSCRIBER = 'Subscriber not found',
+    NOT_FOUND_CAMPAIGN = 'Campaign not found',
 }
 
 export enum SuccessMessages {
