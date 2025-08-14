@@ -32,7 +32,6 @@ export class SubscriberService {
     });
 
     const now = moment();
-    console.log('Current time:', now);
     const SEVEN_DAYS = 7;
 
     if (!existing) {

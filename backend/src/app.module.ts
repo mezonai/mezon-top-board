@@ -20,6 +20,8 @@ import { LoggerModule } from "@libs/logger";
 import { SubscriberModule } from './features/subscriber/subscriber.module';
 import { BullModule } from "@nestjs/bull";
 import { redisConfig } from './config/mail.config';
+import { NewsletterCampaignModule } from './features/newsletter-campaign/newsletter-campaign.module';
+import { NewsletterCampaignController } from './features/newsletter-campaign/newsletter-campaign.controller';
 
 @Module({
   imports: [
@@ -42,7 +44,8 @@ import { redisConfig } from './config/mail.config';
     UserModule,
     LinkTypeModule,
     RatingModule,
-    SubscriberModule
+    SubscriberModule,
+    NewsletterCampaignModule
   ],
   controllers: [],
   providers: [],

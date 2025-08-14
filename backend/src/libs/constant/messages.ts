@@ -15,6 +15,7 @@ export enum ErrorMessages {
     EXISTED_TAG = 'This tag is already existed ',
     EXISTED_SUBSCRIBER = 'This email is already subscribed',
     NOT_FOUND_SUBSCRIBER = 'Subscriber not found',
+    NOT_FOUND_CAMPAIGN = 'Campaign not found',
 }
 
 export enum SuccessMessages {
