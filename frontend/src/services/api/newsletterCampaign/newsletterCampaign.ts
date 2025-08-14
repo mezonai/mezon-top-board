@@ -3,6 +3,13 @@ import { api } from '../../apiInstance';
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    newsletterScheduleControllerCreate: build.mutation<HttpResponse<any>,  CreateNewsletterScheduleRequest>({
+      query: (body) => ({
+        url: `/api/newsletter/schedule`,
+        method: 'POST',
+        body,
+      }),
+    }),
     newsletterCampaignControllerCreate: build.mutation<NewsletterCampaignCreateResponse, CreateNewsletterCampaignRequest>({
       query: (body) => ({
         url: `/api/newsletter-campaign`,
@@ -52,6 +59,11 @@ export type NewsletterCampaign = {
   updatedAt: string;
 };
 
+export type CreateNewsletterScheduleRequest = {
+  mode: 'fixed' | 'interval';
+  fixedHours?: number[];
+  interval?: { value: number; unit: 'minutes' | 'hours' };
+};
 // ---- Requests ----
 export type CreateNewsletterCampaignRequest = {
   title: string;
@@ -80,6 +92,7 @@ export type NewsletterCampaignSearchResponse = HttpResponse<NewsletterCampaign[]
 
 // ====== Hooks ======
 export const {
+  useNewsletterScheduleControllerCreateMutation,
   useNewsletterCampaignControllerCreateMutation,
   useNewsletterCampaignControllerSearchQuery,
   useLazyNewsletterCampaignControllerSearchQuery,
