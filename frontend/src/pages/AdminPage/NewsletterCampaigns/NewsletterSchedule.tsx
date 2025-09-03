@@ -31,7 +31,8 @@ export default function NewsletterSchedule() {
       await createSchedule({
         mode,
         fixedHours: mode === 'fixed' ? selectedHours : undefined,
-        interval: mode === 'interval' ? { value: intervalValue, unit: intervalUnit } : undefined
+        intervalValue: mode === 'interval' ? intervalValue : undefined,
+        intervalUnit: mode === 'interval' ? intervalUnit : undefined
       })
       toast.success('Schedule saved successfully!')
       setVisible(false)

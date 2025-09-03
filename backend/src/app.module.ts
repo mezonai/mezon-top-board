@@ -21,7 +21,9 @@ import { SubscriberModule } from './features/subscriber/subscriber.module';
 import { BullModule } from "@nestjs/bull";
 import { redisConfig } from './config/mail.config';
 import { NewsletterCampaignModule } from './features/newsletter-campaign/newsletter-campaign.module';
-import { NewsletterCampaignController } from './features/newsletter-campaign/newsletter-campaign.controller';
+import { NewsletterScheduleModule } from './features/newsletter-schedule/newsletter-schedule.module';
+import { ScheduleModule } from "@nestjs/schedule";
+
 
 @Module({
   imports: [
@@ -45,7 +47,9 @@ import { NewsletterCampaignController } from './features/newsletter-campaign/new
     LinkTypeModule,
     RatingModule,
     SubscriberModule,
-    NewsletterCampaignModule
+    NewsletterCampaignModule,
+    NewsletterScheduleModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [],

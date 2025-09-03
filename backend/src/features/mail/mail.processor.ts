@@ -7,11 +7,9 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailProcessor {
   constructor(private mailerService: MailerService) {}
 
-  @Process('sendConfirmEmail')
+  @Process('sendEmail')
   async handleConfirmationEmail(job: Job) {
     const { to, subject, template, context } = job.data;
-    console.log('📨 Processing job sendConfirmEmail for:', job.data.to);
-    console.log('Processing email job:', job.id, 'to:', to, 'subject:', subject);
     try {
       await this.mailerService.sendMail({
         to: to,

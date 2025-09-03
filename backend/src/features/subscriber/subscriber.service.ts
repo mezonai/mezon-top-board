@@ -42,7 +42,9 @@ export class SubscriberService {
         isConfirmed: false,
         subscribedAt: now.toDate(),
       });
-      await this.mailService.sendConfirmationEmail(email, confirmToken);
+      const subject= 'Please confirm your email';
+      const template = 'confirm';
+      await this.mailService.sendConfirmationEmail(email, confirmToken, subject, template);
       return new Result({
         data: Mapper(SubscribeResponse, created),
         message: 'Confirmation email sent.',
@@ -62,10 +64,12 @@ export class SubscriberService {
       if (!existing.isConfirmed && isOverdue) {
         const confirmToken = randomUUID();
         const message = 'Confirmation email re-sent.';
+        const subject= 'Please confirm your email againt';
+        const template= 'confirm';
         existing.confirmToken = confirmToken;
         existing.subscribedAt = now.toDate(); 
         await this.subscriberRepository.update(existing.id, existing);
-        await this.mailService.sendConfirmationEmail(email, confirmToken,message);
+        await this.mailService.sendConfirmationEmail(email, confirmToken, subject, template, message);
         return new Result({
           data: Mapper(SubscribeResponse, existing),
           message: message,
@@ -95,7 +99,7 @@ export class SubscriberService {
     (entity) => Mapper(SubscriberResponse, entity),
     );
 
-    if (!Array.isArray(result.data) || result.data.length === 0) {
+    if (!Array.isArray(result.data) ) {
       throw new BadRequestException(ErrorMessages.NOT_FOUND_SUBSCRIBER);
     }
     return result;

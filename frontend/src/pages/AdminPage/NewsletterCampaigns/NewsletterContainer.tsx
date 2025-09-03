@@ -69,7 +69,7 @@ const NewsletterCampaigns: React.FC = () => {
           onClick={handleCreate}
           style={{ fontSize: 16, height: 40}}
         >
-          Create App
+          Create Campaign
         </Button>
       </div>
       <EditSletter

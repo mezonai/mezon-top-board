@@ -82,7 +82,7 @@ export class NewsletterCampaignService {
       (entity) => Mapper(NewsletterCampaignResponse, entity),
     );
 
-    if (!Array.isArray(result.data) || result.data.length === 0) {
+    if (!Array.isArray(result.data) ) {
       throw new BadRequestException(ErrorMessages.NOT_FOUND_CAMPAIGN);
     }
 

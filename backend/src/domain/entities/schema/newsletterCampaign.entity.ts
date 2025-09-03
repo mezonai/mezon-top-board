@@ -9,6 +9,6 @@ export class NewsletterCampaign extends BaseSoftDelete {
   @Column({ length: 255, nullable: true })
   public headline: string;
 
-  @Column({ type: "text", nullable: true }) 
+  @Column({ type: "text", nullable: true })
   public description: string;
 }

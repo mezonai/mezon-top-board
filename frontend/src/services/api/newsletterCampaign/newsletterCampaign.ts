@@ -5,7 +5,7 @@ const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     newsletterScheduleControllerCreate: build.mutation<HttpResponse<any>,  CreateNewsletterScheduleRequest>({
       query: (body) => ({
-        url: `/api/newsletter/schedule`,
+        url: `/api/newsletter-schedule`,
         method: 'POST',
         body,
       }),
@@ -62,7 +62,8 @@ export type NewsletterCampaign = {
 export type CreateNewsletterScheduleRequest = {
   mode: 'fixed' | 'interval';
   fixedHours?: number[];
-  interval?: { value: number; unit: 'minutes' | 'hours' };
+  intervalValue?: number;
+  intervalUnit?: 'minutes' | 'hours';
 };
 // ---- Requests ----
 export type CreateNewsletterCampaignRequest = {
