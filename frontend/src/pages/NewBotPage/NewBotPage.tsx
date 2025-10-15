@@ -16,7 +16,10 @@ import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
-import { CreateMezonAppRequest, useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
+import {
+  CreateMezonAppRequest,
+  useLazyMezonAppControllerGetMezonAppDetailQuery
+} from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
@@ -40,11 +43,9 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
 
-  const imgUrl = botId && mezonAppDetail.featuredImage
-    ? getUrlMedia(mezonAppDetail.featuredImage)
-    : avatarBotDefault
+  const imgUrl = botId && mezonAppDetail.featuredImage ? getUrlMedia(mezonAppDetail.featuredImage) : avatarBotDefault
   const [avatar, setAvatar] = useState<string>(imgUrl)
- 
+
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
@@ -54,6 +55,8 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
+      pricingTag: 'FREE',
+      price: 0,
       supportUrl: '',
       remark: '',
       isAutoPublished: false,
@@ -63,7 +66,7 @@ function NewBotPage() {
     mode: 'onChange'
   })
 
-  const { setValue, reset, watch, trigger, handleSubmit  } = methods
+  const { setValue, reset, watch, trigger, handleSubmit } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
 
@@ -95,12 +98,12 @@ function NewBotPage() {
     const { owner, tags, rateScore, featuredImage, status, ...rest } = mezonAppDetail
     if (mezonAppDetail && botId) {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
-        return;
+        return
       }
 
       reset({
         ...rest,
-        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
+        tagIds: mezonAppDetail.tags?.map((tag) => tag.id),
         mezonAppId: mezonAppDetail.mezonAppId,
         type: mezonAppDetail.type
       })
@@ -111,14 +114,14 @@ function NewBotPage() {
   const handleUpload = async (options: any) => {
     const { file, onSuccess, onError } = options
     if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!');
-      onError(new Error('Invalid file type'));
-      return;
+      toast.error('Please upload a valid image file!')
+      onError(new Error('Invalid file type'))
+      return
     }
     const maxFileSize = 4 * 1024 * 1024
     if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`);
-      return ;
+      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
+      return
     }
     try {
       const formData = new FormData()
@@ -140,7 +143,7 @@ function NewBotPage() {
   const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
     0: ['type'],
     1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'supportUrl'],
+    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
     3: [],
     4: []
   }
@@ -159,12 +162,12 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-    { title: 'Choose Type', content: <Step1ChooseType/> },
-    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')}/> },
+    { title: 'Choose Type', content: <Step1ChooseType /> },
+    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
     { title: 'Fill Details', content: <Step3FillDetails /> },
     {
       title: 'Review',
-      content: (<Step4Review isEdit={isEditMode}/>)
+      content: <Step4Review isEdit={isEditMode} />
     },
     {
       title: 'Result',
@@ -176,9 +179,12 @@ function NewBotPage() {
     { title: 'Edit Bot Info', content: <Step3FillDetails /> },
     {
       title: 'Review',
-      content: (<Step4Review isEdit={isEditMode}/>)
+      content: <Step4Review isEdit={isEditMode} />
     },
-    { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true}/> }
+    {
+      title: 'Result',
+      content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true} />
+    }
   ]
   const steps = isEditMode ? editSteps : createSteps
 
@@ -210,7 +216,7 @@ function NewBotPage() {
   const SubmitForm = handleSubmit(onSubmit, (formErrors) => {
     toast.error('Form validation failed!')
   })
-  
+
   return (
     <div className='pt-8 pb-12 w-[85%] m-auto'>
       <div className='flex items-center justify-between'>
@@ -230,7 +236,11 @@ function NewBotPage() {
       <div className='pt-8'>
         <FormProvider {...methods}>
           <div className='bg-white p-6 rounded-md shadow-md'>
-            <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
+            <Steps
+              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'}
+              current={currentStep}
+              items={steps.map((step) => ({ title: step.title }))}
+            />
             <div className='pt-6'>{steps[currentStep].content}</div>
             <div
               className={`flex pt-8 ${
@@ -240,28 +250,20 @@ function NewBotPage() {
               }`}
             >
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
-                <Button color="default" variant="outlined" onClick={prev} >
+                <Button color='default' variant='outlined' onClick={prev}>
                   Back
                 </Button>
               )}
-              
+
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
-                <Button variant="outlined" onClick={next}>
+                <Button variant='outlined' onClick={next}>
                   Next
                 </Button>
               )}
 
-              {(currentStep === 3 && !isEditMode) && (
-                <Button onClick={SubmitForm}>
-                  Submit for Review
-                </Button>
-              )}
+              {currentStep === 3 && !isEditMode && <Button onClick={SubmitForm}>Submit for Review</Button>}
 
-              {(currentStep === 1 && isEditMode) && (
-                <Button onClick={SubmitForm}>
-                  Update
-                </Button>
-              )}
+              {currentStep === 1 && isEditMode && <Button onClick={SubmitForm}>Update</Button>}
             </div>
           </div>
         </FormProvider>

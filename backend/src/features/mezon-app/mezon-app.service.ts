@@ -1,5 +1,8 @@
-
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
 import * as sanitizeHtml from "sanitize-html";
 import { Brackets, EntityManager, In, Not, ObjectLiteral } from "typeorm";
@@ -7,9 +10,10 @@ import { Brackets, EntityManager, In, Not, ObjectLiteral } from "typeorm";
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
 import { Role } from "@domain/common/enum/role";
-import { SortField } from '@domain/common/enum/sortField';
-import { SortOrder } from '@domain/common/enum/sortOder';
+import { SortField } from "@domain/common/enum/sortField";
+import { SortOrder } from "@domain/common/enum/sortOder";
 import { App, Link, LinkType, Tag, User } from "@domain/entities";
 
 import { ErrorMessages } from "@libs/constant/messages";
@@ -28,9 +32,6 @@ import {
   GetRelatedMezonAppResponse,
   SearchMezonAppResponse,
 } from "./dtos/response";
-import { MezonAppType } from "@domain/common/enum/mezonAppType";
-
-
 
 @Injectable()
 export class MezonAppService {
@@ -74,7 +75,6 @@ export class MezonAppService {
     if (!mezonApp) {
       throw new NotFoundException("App not found");
     }
-
 
     const owner = await this.userRepository.findById(mezonApp.ownerId);
 
@@ -136,7 +136,12 @@ export class MezonAppService {
 
   private async buildSearchQuery(
     query: SearchMezonAppRequest,
-    initialWhereCondition?: string | Brackets | ((qb: this) => string) | ObjectLiteral | ObjectLiteral[],
+    initialWhereCondition?:
+      | string
+      | Brackets
+      | ((qb: this) => string)
+      | ObjectLiteral
+      | ObjectLiteral[],
     ititialWhereParams?: ObjectLiteral,
   ) {
     const whereCondition = this.appRepository
@@ -164,7 +169,9 @@ export class MezonAppService {
       );
 
     if (query.tags?.length) {
-      whereCondition.andWhere("filterTag.id IN (:...tagIds)", { tagIds: query.tags }).leftJoinAndSelect("app.tags", "tag");
+      whereCondition
+        .andWhere("filterTag.id IN (:...tagIds)", { tagIds: query.tags })
+        .leftJoinAndSelect("app.tags", "tag");
     }
 
     if (query?.ownerId) {
@@ -179,22 +186,30 @@ export class MezonAppService {
       });
     }
 
-    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
-    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
+    const invalidSortField = Object.values(SortField).includes(
+      query.sortField as SortField,
+    );
+    const invalidSortOrder = Object.values(SortOrder).includes(
+      query.sortOrder as SortOrder,
+    );
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
     const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
 
     if (query.sortField === SortField.NAME) {
       whereCondition
-        .addSelect('LOWER(app.name)', 'app_name_lower')
-        .orderBy('app_name_lower', sortOrder);
+        .addSelect("LOWER(app.name)", "app_name_lower")
+        .orderBy("app_name_lower", sortOrder);
     } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
 
     return whereCondition;
   }
 
   async searchMezonApp(query: SearchMezonAppRequest) {
-    const whereCondition = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
+    const whereCondition = await this.buildSearchQuery(
+      query,
+      "app.status = :status",
+      { status: AppStatus.PUBLISHED },
+    );
 
     return paginate<App, SearchMezonAppResponse>(
       () =>
@@ -217,7 +232,10 @@ export class MezonAppService {
   }
 
   async deleteMezonApp(userDeleting: User, req: RequestWithId) {
-    const app = await this.appRepository.findById(req.id, ["tags", "socialLinks"]);
+    const app = await this.appRepository.findById(req.id, [
+      "tags",
+      "socialLinks",
+    ]);
     if (!app) {
       throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
     }
@@ -281,7 +299,7 @@ export class MezonAppService {
       ...appData,
       ownerId: ownerId,
       tags: existingTags,
-      socialLinks: links
+      socialLinks: links,
     });
   }
 
@@ -320,7 +338,7 @@ export class MezonAppService {
     }
 
     if (socialLinks) {
-      const seen = new Set<string>()
+      const seen = new Set<string>();
       const filteredSocialLinks = socialLinks.filter((link) => {
         const key = `${link.linkTypeId}::${link.url}`;
         return seen.has(key) ? false : seen.add(key);
@@ -359,47 +377,72 @@ export class MezonAppService {
 
     const cleanedDescription = sanitizeHtml(description, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "span", "img", "video", "source", "h1", "h2", "h3", "h4", "h5", "h6",
-        "li", "ol", "ul", "p", "pre", "a", "em", "strong", "u"
+        "span",
+        "img",
+        "video",
+        "source",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "li",
+        "ol",
+        "ul",
+        "p",
+        "pre",
+        "a",
+        "em",
+        "strong",
+        "u",
       ]),
       allowedAttributes: {
         ...sanitizeHtml.defaults.allowedAttributes,
-        img: ['src', 'alt', 'width', 'height', 'style'],
-        video: ['src', 'controls', 'width', 'height'],
-        source: ['src', 'type'],
-        embed: ['src', 'width', 'height', 'allowfullscreen'],
-        span: ['style', 'class'],
-        p: ['style', 'class'],
-        em: ['style', 'class'],
-        strong: ['style', 'class'],
-        u: ['style', 'class'],
+        img: ["src", "alt", "width", "height", "style"],
+        video: ["src", "controls", "width", "height"],
+        source: ["src", "type"],
+        embed: ["src", "width", "height", "allowfullscreen"],
+        span: ["style", "class"],
+        p: ["style", "class"],
+        em: ["style", "class"],
+        strong: ["style", "class"],
+        u: ["style", "class"],
       },
       allowedClasses: {
-        '*': ['ql-size-small', 'ql-size-large', 'ql-size-huge',
-          'ql-align-center', 'ql-align-right', 'ql-align-justify',
-          'ql-font-monospace', 'ql-font-serif', 'fancy', 'simple']
+        "*": [
+          "ql-size-small",
+          "ql-size-large",
+          "ql-size-huge",
+          "ql-align-center",
+          "ql-align-right",
+          "ql-align-justify",
+          "ql-font-monospace",
+          "ql-font-serif",
+          "fancy",
+          "simple",
+        ],
       },
       allowedStyles: {
-        '*': {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'text-align': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
+        "*": {
+          color: [/^.*$/],
+          "background-color": [/^.*$/],
+          "text-align": [/^.*$/],
+          "font-size": [/^\d+(?:px|em|%)$/],
+          "font-family": [/^.*$/],
         },
         img: {
-          'width': [/^\d+(px|%)?$/],
-          'height': [/^\d+(px|%)?$/],
+          width: [/^\d+(px|%)?$/],
+          height: [/^\d+(px|%)?$/],
         },
         em: {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
+          color: [/^.*$/],
+          "background-color": [/^.*$/],
+          "font-size": [/^\d+(?:px|em|%)$/],
+          "font-family": [/^.*$/],
         },
-      }
+      },
     });
-
 
     this.appRepository.getRepository().merge(app, {
       ...updateData,
@@ -436,9 +479,13 @@ export class MezonAppService {
   }
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
-    const whereCondition = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
-      ownerId: userId,
-    });
+    const whereCondition = await this.buildSearchQuery(
+      query,
+      "app.ownerId = :ownerId",
+      {
+        ownerId: userId,
+      },
+    );
 
     return paginate<App, SearchMezonAppResponse>(
       () => whereCondition.getManyAndCount(),
