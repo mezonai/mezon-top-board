@@ -18,13 +18,15 @@ import { IMainProps } from './Main.types'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
-  { value: "createdAt_DESC", label: "Date Created (Newest → Oldest)" },
-  { value: "createdAt_ASC", label: "Date Created (Oldest → Newest)" },
-  { value: "name_ASC", label: "Name (A–Z)" },
-  { value: "name_DESC", label: "Name (Z–A)" },
-  { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
-  { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
-];
+  { value: 'createdAt_DESC', label: 'Date Created (Newest → Oldest)' },
+  { value: 'createdAt_ASC', label: 'Date Created (Oldest → Newest)' },
+  { value: 'name_ASC', label: 'Name (A–Z)' },
+  { value: 'name_DESC', label: 'Name (Z–A)' },
+  { value: 'updatedAt_DESC', label: 'Date Updated (Newest → Oldest)' },
+  { value: 'updatedAt_ASC', label: 'Date Updated (Oldest → Newest)' },
+  { value: 'price_DESC', label: 'Price (Highest → Lowest)' },
+  { value: 'price_ASC', label: 'Price (Lowest → Highest)' }
+]
 
 function Main({ isSearchPage = false }: IMainProps) {
   const navigate = useNavigate()
@@ -43,15 +45,15 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [sortField, setSortField] = useState<string>('createdAt')
-  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
-  const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC')
+  const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0])
 
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [page, setPage] = useState<number>(() => getPageFromParams(searchParams))
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-  const [type, setType] = useState<MezonAppType| undefined>(defaultType)
+  const [type, setType] = useState<MezonAppType | undefined>(defaultType)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -116,12 +118,12 @@ function Main({ isSearchPage = false }: IMainProps) {
   const handleSortChange = (option: IOption) => {
     setSelectedSort(option)
     if (typeof option.value === 'string') {
-      const [field, order] = option.value.split("_");
-      setSortField(field);
-      setSortOrder(order as "ASC" | "DESC");
-      setPage(1);
+      const [field, order] = option.value.split('_')
+      setSortField(field)
+      setSortOrder(order as 'ASC' | 'DESC')
+      setPage(1)
     }
-  };
+  }
 
   const handlePageSizeChange = (option: IOption) => {
     setBotPerPage(Number(option.value))
@@ -155,7 +157,6 @@ function Main({ isSearchPage = false }: IMainProps) {
     searchMezonAppList(text, tagIds, type)
   }
 
-
   return (
     <div ref={mainRef} className={`flex flex-col justify-center pt-8 pb-12 w-[75%] m-auto relative z-1`}>
       <Divider variant='solid' style={{ borderColor: 'gray' }}>
@@ -171,26 +172,26 @@ function Main({ isSearchPage = false }: IMainProps) {
         ></SearchBar>
       </div>
       <div className='pt-8'>
-        <Flex justify="space-between" wrap="wrap">
+        <Flex justify='space-between' wrap='wrap'>
           <div className='flex-shrink-0'>
             <MtbTypography variant='h3'>Mezon Bots</MtbTypography>
             <MtbTypography variant='h5' weight='normal'>
               Showing 1 of {mezonApp.totalPages ?? 0} page
             </MtbTypography>
           </div>
-          <Flex gap={10} align='center' wrap="wrap">
+          <Flex gap={10} align='center' wrap='wrap'>
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
               options={sortOptions}
               value={selectedSort}
               onChange={handleSortChange}
               size='large'
-              placeholder="Sort bots by..."
+              placeholder='Sort bots by...'
               dropDownTitle='Sort by'
               className='w-[13rem]'
               dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
               defaultValue={sortOptions[0]}
-              data-e2e="selectSortOptions"
+              data-e2e='selectSortOptions'
             />
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
@@ -201,7 +202,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               className='w-[10rem] lg:w-[13rem]'
               dropDownTitle='Title'
               defaultValue={options[0]}
-              data-e2e="selectPageOptions"
+              data-e2e='selectPageOptions'
             />
           </Flex>
         </Flex>

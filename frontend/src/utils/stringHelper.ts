@@ -50,23 +50,23 @@ export const handleMapOption = (enums: Record<string, string>) => {
   }))
 }
 
-export const getUrlMedia= (path: string) => {
+export const getUrlMedia = (path: string) => {
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
 
-  return `${process.env.REACT_APP_BACKEND_URL}/api${path}`;
+  return `${process.env.REACT_APP_BACKEND_URL}/api${path}`
 }
 
 export function uuidToNumber(uuid: string) {
   // Remove all dashes from the UUID string.
-  const cleanedUuid = uuid.replace(/-/g, '');
-  let total = 0;
+  const cleanedUuid = uuid.replace(/-/g, '')
+  let total = 0
   // Sum the ASCII values of each character.
   for (let i = 0; i < cleanedUuid.length; i++) {
-    total += cleanedUuid.charCodeAt(i);
+    total += cleanedUuid.charCodeAt(i)
   }
-  return total;
+  return total
 }
 
 export const fillHbsFormat = (str: string, data: Record<string, any>) => {
@@ -101,4 +101,26 @@ export const transformMediaSrc = (html: string): string => {
   })
 
   return doc.body.innerHTML
+}
+
+export const formatVND = (
+  value: number | string | undefined,
+  options: { decimals?: number; showUnit?: boolean; scale?: number } = {}
+): string => {
+  const { decimals = 0, showUnit = true, scale = 1 } = options
+
+  if (value === null || value === undefined || value === '') return ''
+
+  const num = Number(value)
+  if (!isFinite(num)) return String(value)
+
+  const scaled = num * scale
+  const rounded = Number(scaled.toFixed(decimals))
+
+  const str = rounded.toLocaleString('vi-VN', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  })
+
+  return showUnit ? `${str} VND` : str
 }

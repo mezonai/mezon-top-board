@@ -5,7 +5,10 @@ export enum EButtonColor {
   PINK = 'pink',
   PURPLE = 'purple',
   CYAN = 'cyan',
-  BLUE = 'blue'
+  BLUE = 'blue',
+  YELLOW = 'yellow',
+  GREEN = 'green',
+  ORANGE = 'orange'
 }
 
 export enum EButtonVariant {
