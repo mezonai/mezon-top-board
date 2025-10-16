@@ -49,7 +49,7 @@ const injectedRtkApi = api.injectEndpoints({
       MezonAppControllerDeleteMezonAppApiResponse,
       MezonAppControllerDeleteMezonAppApiArg
     >({
-      query: (queryArg) => ({ url: `/api/mezon-app`, method: 'DELETE', body: queryArg.requestWithId }),
+      query: (queryArg) => ({ url: `/api/mezon-app`, method: 'DELETE', body: queryArg.requestWithId })
     }),
     mezonAppControllerCreateMezonApp: build.mutation<
       MezonAppControllerCreateMezonAppApiResponse,
@@ -162,7 +162,7 @@ export type SocialLinkInMezonAppDetailResponse = {
   id: string
   url: string
   linkTypeId: string
-  type: LinkTypeResponse;
+  type: LinkTypeResponse
 }
 export type GetMezonAppDetailsResponse = {
   id: string
@@ -174,11 +174,13 @@ export type GetMezonAppDetailsResponse = {
   status: number
   owner: OwnerInMezonAppDetailResponse
   tags: TagInMezonAppDetailResponse[]
+  pricingTag: 'FREE' | 'PAID'
+  price: number
   socialLinks: SocialLinkInMezonAppDetailResponse[]
-  rateScore: number;
+  rateScore: number
   type: MezonAppType
   mezonAppId?: string
-  supportUrl: string;
+  supportUrl: string
 }
 export type RequestWithId = {
   id: string
@@ -268,6 +270,8 @@ export type CreateMezonAppRequest = {
   supportUrl: string
   remark?: string
   tagIds: string[]
+  pricingTag?: string
+  price?: number
   socialLinks?: SocialLinkDto[]
 }
 export type UpdateMezonAppRequest = {

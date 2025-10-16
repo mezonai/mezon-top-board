@@ -22,7 +22,13 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
 )
 
 const Step3FillDetails = () => {
-  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
+  const {
+    control,
+    setValue,
+    formState: { errors },
+    setError,
+    clearErrors
+  } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
@@ -47,26 +53,27 @@ const Step3FillDetails = () => {
   const inviteURL = getMezonInstallLink(type, mezonAppId)
 
   const tagOptions = useMemo(() => {
-    return tagList.data?.map(tag => ({ label: tag.name, value: tag.id })) || []
+    return tagList.data?.map((tag) => ({ label: tag.name, value: tag.id })) || []
   }, [tagList])
 
   const linkOptions = useMemo(() => {
-    return linkTypeList.data?.map(link => ({
-      icon: link.icon,
-      label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
-      name: link.name,
-      value: link.id,
-      siteName: link.prefixUrl
-    })) || []
+    return (
+      linkTypeList.data?.map((link) => ({
+        icon: link.icon,
+        label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
+        name: link.name,
+        value: link.id,
+        siteName: link.prefixUrl
+      })) || []
+    )
   }, [linkTypeList])
 
   const addNewLink = () => {
     const trimmedUrl = socialLinkUrl.trim()
     if (!selectedSocialLink || !trimmedUrl) return
 
-    const isDuplicate = socialLinksData.some(link =>
-      link.url?.trim() === trimmedUrl &&
-      link.linkTypeId === selectedSocialLink
+    const isDuplicate = socialLinksData.some(
+      (link) => link.url?.trim() === trimmedUrl && link.linkTypeId === selectedSocialLink
     )
 
     if (isDuplicate) {
@@ -76,9 +83,8 @@ const Step3FillDetails = () => {
 
     setAddLinkError(null)
 
-    const selected = linkOptions.find(opt => opt.value === selectedSocialLink)
+    const selected = linkOptions.find((opt) => opt.value === selectedSocialLink)
     if (!selected) return
-
 
     const newLink = {
       icon: selected.icon,
@@ -109,7 +115,7 @@ const Step3FillDetails = () => {
 
     seen.forEach((indexes) => {
       if (indexes.length > 1) {
-        indexes.forEach(i =>
+        indexes.forEach((i) =>
           setError(`socialLinks.${i}.url`, {
             type: 'duplicate',
             message: 'This link is duplicated.'
@@ -127,31 +133,33 @@ const Step3FillDetails = () => {
         <Controller
           control={control}
           name='name'
-          render={({ field }) => (
-            <Input {...field} placeholder='MezonBot' status={errorStatus(errors.name)} />
-          )}
+          render={({ field }) => <Input {...field} placeholder='MezonBot' status={errorStatus(errors.name)} />}
         />
       </FormField>
 
-      <FormField 
+      <FormField
         label='Headline'
-        description='Provide a short and catchy phrase that describes your bot.' 
+        description='Provide a short and catchy phrase that describes your bot.'
         errorText={errors.headline?.message}
       >
         <Controller
           control={control}
           name='headline'
           render={({ field }) => (
-            <TextArea {...field} placeholder='A powerful and multi-functional role bot' 
-              status={errorStatus(errors.headline)} />
+            <TextArea
+              {...field}
+              placeholder='A powerful and multi-functional role bot'
+              status={errorStatus(errors.headline)}
+            />
           )}
         />
       </FormField>
 
       <FormField
-          label='Full Description'
-          description='Tell us what your bot can do. We want to hear the whole story!'
-          errorText={errors.description?.message}>
+        label='Full Description'
+        description='Tell us what your bot can do. We want to hear the whole story!'
+        errorText={errors.description?.message}
+      >
         <Controller
           control={control}
           name='description'
@@ -162,38 +170,31 @@ const Step3FillDetails = () => {
       </FormField>
 
       <FormField label='Auto-Publish?' customClass='!items-center'>
-        <Controller
-          control={control}
-          name='isAutoPublished'
-          render={({ field }) => (
-            <Checkbox {...field} />
-          )}
-        />
+        <Controller control={control} name='isAutoPublished' render={({ field }) => <Checkbox {...field} />} />
       </FormField>
 
       <FormField label='Install Link' description='A place where users can install your bot on their Mezon server.'>
         <Input value={inviteURL} disabled />
       </FormField>
-      {
-        type === MezonAppType.BOT &&
-          <FormField
-              label='Prefix'
-              description='What keyword or phrase does your bot react to?'
-              errorText={errors.prefix?.message}>
-            <Controller
-              control={control}
-              name='prefix'
-              render={({ field }) => (
-                <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
-              )}
-            />
-          </FormField>
-      }
+      {type === MezonAppType.BOT && (
+        <FormField
+          label='Prefix'
+          description='What keyword or phrase does your bot react to?'
+          errorText={errors.prefix?.message}
+        >
+          <Controller
+            control={control}
+            name='prefix'
+            render={({ field }) => <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />}
+          />
+        </FormField>
+      )}
 
       <FormField
-          label='Tags'
-          description='Select the top 12 categories that best represent your community.'
-          errorText={errors.tagIds?.message}>
+        label='Tags'
+        description='Select the top 12 categories that best represent your community.'
+        errorText={errors.tagIds?.message}
+      >
         <Controller
           control={control}
           name='tagIds'
@@ -216,14 +217,12 @@ const Step3FillDetails = () => {
               />
               <div className='mt-2 flex flex-wrap'>
                 {(field.value ?? []).map((tagId) => {
-                  const tag = tagOptions.find(t => t.value === tagId)
+                  const tag = tagOptions.find((t) => t.value === tagId)
                   return (
                     <Tag
                       key={tagId}
                       closable
-                      onClose={() =>
-                        field.onChange(field.value.filter((id: string) => id !== tagId))
-                      }
+                      onClose={() => field.onChange(field.value.filter((id: string) => id !== tagId))}
                     >
                       {tag?.label}
                     </Tag>
@@ -235,7 +234,41 @@ const Step3FillDetails = () => {
         />
       </FormField>
 
-      <FormField label='Support URL' description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
+      {/* TAG PRICE */}
+      <FormField label='Tag Price' description='Select FREE or PAID tag' errorText={errors.pricingTag?.message}>
+        <Controller
+          control={control}
+          name='pricingTag'
+          render={({ field }) => (
+            <Select
+              {...field}
+              allowClear
+              placeholder='Select tag price'
+              status={errors?.pricingTag?.message ? 'error' : ''}
+              options={[
+                { label: 'FREE', value: 'FREE' },
+                { label: 'PAID', value: 'PAID' }
+              ]}
+              onChange={(value) => field.onChange(value)}
+            />
+          )}
+        />
+      </FormField>
+
+      {/* PRICE */}
+      <FormField label='Price' description='Set a price for your bot' errorText={errors.price?.message}>
+        <Controller
+          control={control}
+          name='price'
+          render={({ field }) => <Input {...field} placeholder='MezonBot' status={errorStatus(errors.price)} />}
+        />
+      </FormField>
+
+      <FormField
+        label='Support URL'
+        description='People might have many questions about your bot, make sure you can answer them!'
+        errorText={errors.supportUrl?.message}
+      >
         <Controller
           control={control}
           name='supportUrl'
@@ -245,14 +278,19 @@ const Step3FillDetails = () => {
         />
       </FormField>
 
-      <FormField label='Note' description='If you have any important information for the reviewer, you can share it here'>
+      <FormField
+        label='Note'
+        description='If you have any important information for the reviewer, you can share it here'
+      >
         <Controller
           control={control}
           name='remark'
           render={({ field }) => (
-            <TextArea {...field} rows={3} 
-              placeholder="Please share any important information or details about your bot that our reviewers should know" 
-              status={errorStatus(errors.remark)} 
+            <TextArea
+              {...field}
+              rows={3}
+              placeholder='Please share any important information or details about your bot that our reviewers should know'
+              status={errorStatus(errors.remark)}
             />
           )}
         />
@@ -267,23 +305,19 @@ const Step3FillDetails = () => {
             placeholder='Link Type'
             className='w-full sm:w-1/3'
           />
-          <Form.Item
-            validateStatus={addLinkError ? 'error' : ''}
-            help={addLinkError}
-            className='flex-1 mb-0'
-          >
+          <Form.Item validateStatus={addLinkError ? 'error' : ''} help={addLinkError} className='flex-1 mb-0'>
             <Input
               value={socialLinkUrl}
               onChange={(e) => setSocialLinkUrl(e.target.value)}
               prefix={
-                selectedSocialLink
-                  ? linkTypeList.data.find(l => l.id === selectedSocialLink)?.prefixUrl || ''
-                  : ''
+                selectedSocialLink ? linkTypeList.data.find((l) => l.id === selectedSocialLink)?.prefixUrl || '' : ''
               }
               disabled={!selectedSocialLink}
             />
           </Form.Item>
-          <Button variant='outlined' onClick={addNewLink}>Add</Button>
+          <Button variant='outlined' onClick={addNewLink}>
+            Add
+          </Button>
         </div>
 
         {socialLinksData.map((link, index) => (
@@ -304,7 +338,9 @@ const Step3FillDetails = () => {
                     onBlur={(e) => update(index, { ...link, url: e.target.value })}
                   />
                 </Form.Item>
-                <Button color='danger' onClick={() => remove(index)}>Delete</Button>
+                <Button color='danger' onClick={() => remove(index)}>
+                  Delete
+                </Button>
               </div>
             )}
           />
