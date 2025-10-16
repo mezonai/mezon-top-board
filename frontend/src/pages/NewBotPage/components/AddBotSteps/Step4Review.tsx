@@ -11,49 +11,33 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
-  const { control } = useFormContext<CreateMezonAppRequest>()
+  const { control} = useFormContext<CreateMezonAppRequest>()
 
   const type = useWatch({ control, name: 'type' })
   const values = getValues()
   const tagIds = values.tagIds ?? []
-  const selectedTags = tagList.data?.filter((tag) => tagIds.includes(tag.id)) ?? []
+  const selectedTags = tagList.data?.filter(tag => tagIds.includes(tag.id)) ?? []
 
   return (
     <div>
-      <h3 className='text-xl font-semibold mb-4'>
-        {isEdit ? 'Review Your Update Information' : 'Review Your Information'}
-      </h3>
+      <h3 className='text-xl font-semibold mb-4'>{isEdit ? 'Review Your Update Information' : 'Review Your Information'}</h3>
       <ul className='space-y-2'>
-        <li>
-          <strong>Type:</strong> {values.type}
-        </li>
-        <li>
-          <strong>Bot/App ID:</strong> {values.mezonAppId}
-        </li>
-        <li>
-          <strong>Name:</strong> {values.name}
-        </li>
-        <li className='break-words'>
-          <strong>Headline:</strong> {values.headline}
-        </li>
-        {type === MezonAppType.BOT && (
-          <li>
-            <strong>Prefix:</strong> {values.prefix}
-          </li>
-        )}
-        <li>
-          <strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}
-        </li>
-        <li className='break-words'>
-          <strong>Install Link:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}
-        </li>
+        <li><strong>Type:</strong> {values.type}</li>
+        <li><strong>Bot/App ID:</strong> {values.mezonAppId}</li>
+        <li><strong>Name:</strong> {values.name}</li>
+        <li className='break-words'><strong>Headline:</strong> {values.headline}</li>
+        {type === MezonAppType.BOT && <li><strong>Prefix:</strong> {values.prefix}</li>}
+        <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
+        <li className='break-words'><strong>Install Link:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li>
           <strong>Tags:</strong>
           <div className='gap-2'>
             {selectedTags.length > 0 ? (
-              selectedTags.map((tag) => <Tag key={tag.id}>{tag.name}</Tag>)
+              selectedTags.map((tag) => (
+                <Tag key={tag.id}>{tag.name}</Tag>
+              ))
             ) : (
-              <span className='text-gray-500 italic ml-2'>No tags selected</span>
+              <span className="text-gray-500 italic ml-2">No tags selected</span>
             )}
           </div>
         </li>
@@ -69,38 +53,28 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         </li>
         <li>
           <strong>Social Links:</strong>
-          <div className='mt-2 flex flex-col gap-2'>
+          <div className="mt-2 flex flex-col gap-2">
             {(values.socialLinks ?? []).length > 0 ? (
-              values.socialLinks.map((link: Record<string, any>, idx: number) => (
-                <div key={idx} className='flex items-center gap-2 text-sm'>
-                  {link.type?.icon && <img src={link.type.icon} alt={link.type.name} className='w-4 h-4' />}
-                  <span className='font-medium'>{link.type?.name || 'Link'}:</span>
-                  <a
-                    href={link.type?.prefixUrl + link.url}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='text-blue-600 hover:underline'
-                  >
+              values.socialLinks.map((link, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-sm">
+                  {link.type?.icon && (
+                    <img src={link.type.icon} alt={link.type.name} className="w-4 h-4" />
+                  )}
+                  <span className="font-medium">{link.type?.name || 'Link'}:</span>
+                  <a href={link.type?.prefixUrl + link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                     {link.url}
                   </a>
                 </div>
               ))
             ) : (
-              <span className='text-gray-500 italic ml-2'>No social links added</span>
+              <span className="text-gray-500 italic ml-2">No social links added</span>
             )}
           </div>
         </li>
-        <li>
-          <strong>Note: </strong>
-          {values.remark === '' ? 'None' : values.remark}
-        </li>
-        <li>
-          <strong>Description:</strong>
-        </li>
-        <div
-          className='border border-gray-300 p-3 rounded-md text-sm description break-words'
-          dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }}
-        />
+        <li><strong>Note: </strong>{values.remark ==='' ? 'None' : values.remark}</li>
+        <li><strong>Description:</strong></li>
+        <div className='border border-gray-300 p-3 rounded-md text-sm description break-words' 
+          dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />
       </ul>
     </div>
   )

@@ -2,11 +2,10 @@ import { ApiProperty, OmitType, PickType } from "@nestjs/swagger";
 
 import { Expose, Transform } from "class-transformer";
 
-import { AppStatus } from "@domain/common/enum/appStatus";
-
 import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
 import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
 import { OwnerInMezonAppDetailResponse } from "@features/user/dtos/response";
+import { AppStatus } from "@domain/common/enum/appStatus";
 
 export class GetMezonAppDetailsResponse {
   @Expose()
@@ -74,9 +73,7 @@ export class GetMezonAppDetailsResponse {
   public rateScore: number;
 }
 
-export class SearchMezonAppResponse extends PickType(
-  GetMezonAppDetailsResponse,
-  [
+export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse, [
     "id",
     "name",
     "type",
@@ -89,18 +86,13 @@ export class SearchMezonAppResponse extends PickType(
     "pricingTag",
     "price",
     "rateScore",
-    "owner",
-  ],
-) {}
+  "owner"
+]) { }
 
-export class GetRelatedMezonAppResponse extends OmitType(
-  SearchMezonAppResponse,
-  ["description", "tags", "headline"],
-) {}
+export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {
+}
 
-export class MezonAppInAppReviewResponse extends PickType(
-  GetMezonAppDetailsResponse,
-  [
+export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResponse, [
     "id",
     "name",
     "description",
@@ -109,5 +101,5 @@ export class MezonAppInAppReviewResponse extends PickType(
     "headline",
     "featuredImage",
     "rateScore",
-  ],
-) {}
+]) {
+}

@@ -56,10 +56,7 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @IsUUID()
   ownerId: string;
 
-  @ApiPropertyOptional({
-    enum: MezonAppType,
-    description: "Filter by bot or app type",
-  })
+  @ApiPropertyOptional({ enum: MezonAppType, description: 'Filter by bot or app type' })
   @IsOptional()
   type?: MezonAppType;
 }
@@ -92,7 +89,7 @@ export class CreateMezonAppRequest {
   type: MezonAppType;
 
   @IsString()
-  @MaxLength(2042, { message: "Bot ID must not exceed 2042 characters" })
+  @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   mezonAppId: string;
 
@@ -109,7 +106,7 @@ export class CreateMezonAppRequest {
   description?: string;
 
   @ApiPropertyOptional()
-  @ValidateIf((o) => o.type === MezonAppType.BOT)
+  @ValidateIf(o => o.type === MezonAppType.BOT)
   @IsString()
   @MinLength(1, { message: "Prefix must be at least 1 character" })
   @MaxLength(10, { message: "Prefix must not exceed 10 characters" })
@@ -124,7 +121,7 @@ export class CreateMezonAppRequest {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  @ValidateIf((o) => o.supportUrl !== "" && o.supportUrl !== null)
+  @ValidateIf(o => o.supportUrl !== '' && o.supportUrl !== null)
   @IsUrl(undefined, { message: "Support URL Invalid URL format" })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   supportUrl?: string;

@@ -1,16 +1,15 @@
 import { toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
-import {
-  useMezonAppControllerCreateMezonAppMutation,
-  useMezonAppControllerUpdateMezonAppMutation,
-  CreateMezonAppRequest,
-  SocialLinkDto
-} from '@app/services/api/mezonApp/mezonApp'
+import { useMezonAppControllerCreateMezonAppMutation, useMezonAppControllerUpdateMezonAppMutation, CreateMezonAppRequest, SocialLinkDto } from '@app/services/api/mezonApp/mezonApp'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import dataURLtoFile from '@app/utils/file'
 import { ApiError } from '@app/types/API.types'
 
-export const useOnSubmitBotForm = (isEdit: boolean, onSuccess: (id: string) => void, onError: () => void) => {
+export const useOnSubmitBotForm = (
+  isEdit: boolean,
+  onSuccess: (id: string) => void,
+  onError: () => void
+) => {
   const { botId } = useParams()
   const [uploadMedia] = useMediaControllerCreateMediaMutation()
   const [addBot] = useMezonAppControllerCreateMezonAppMutation()

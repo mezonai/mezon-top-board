@@ -177,10 +177,10 @@ export type GetMezonAppDetailsResponse = {
   pricingTag: 'FREE' | 'PAID'
   price: number
   socialLinks: SocialLinkInMezonAppDetailResponse[]
-  rateScore: number
+  rateScore: number;
   type: MezonAppType
   mezonAppId?: string
-  supportUrl: string
+  supportUrl: string;
 }
 export type RequestWithId = {
   id: string

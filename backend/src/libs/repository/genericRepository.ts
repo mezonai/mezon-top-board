@@ -16,6 +16,7 @@ import { SortField } from "@domain/common/enum/sortField";
 import { SortOrder } from "@domain/common/enum/sortOder";
 
 import { ErrorMessages } from "@libs/constant/messages";
+import { SortField } from "@domain/common/enum/sortField";
 
 export class GenericRepository<T extends ObjectLiteral> {
     private repository: Repository<T>;

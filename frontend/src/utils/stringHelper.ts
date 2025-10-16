@@ -50,23 +50,23 @@ export const handleMapOption = (enums: Record<string, string>) => {
   }))
 }
 
-export const getUrlMedia = (path: string) => {
+export const getUrlMedia= (path: string) => {
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
 
-  return `${process.env.REACT_APP_BACKEND_URL}/api${path}`
+  return `${process.env.REACT_APP_BACKEND_URL}/api${path}`;
 }
 
 export function uuidToNumber(uuid: string) {
   // Remove all dashes from the UUID string.
-  const cleanedUuid = uuid.replace(/-/g, '')
-  let total = 0
+  const cleanedUuid = uuid.replace(/-/g, '');
+  let total = 0;
   // Sum the ASCII values of each character.
   for (let i = 0; i < cleanedUuid.length; i++) {
-    total += cleanedUuid.charCodeAt(i)
+    total += cleanedUuid.charCodeAt(i);
   }
-  return total
+  return total;
 }
 
 export const fillHbsFormat = (str: string, data: Record<string, any>) => {
