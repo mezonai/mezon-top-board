@@ -6,7 +6,7 @@ import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotCardProps } from './BotCard.types'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
-import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
+import { formatVND, getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import ShareButton from './components/ShareButton'
@@ -86,8 +86,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
             {userInfo?.id && data?.owner?.id === userInfo?.id && <OwnerActions data={data} isBotCard={true} />}
-            <Button color='blue' variant='solid' size='large'>
-              {data?.pricingTag}
+            <Button color={data?.pricingTag === 'FREE' ? 'blue' : 'orange'} variant='solid' size='large'>
+              {data?.pricingTag === 'FREE' ? 'FREE' : formatVND(data?.price, { showUnit: true })}
             </Button>
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
