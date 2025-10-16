@@ -89,16 +89,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             ))}
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
-<<<<<<< HEAD
-            {userInfo?.id && data?.owner?.id === userInfo?.id && (
-              <OwnerActions data={data} isBotCard={true} />
-            )}
-=======
+
             {userInfo?.id && data?.owner?.id === userInfo?.id && <OwnerActions data={data} isBotCard={true} />}
             <Button color={data?.pricingTag === 'FREE' ? 'blue' : 'orange'} variant='solid' size='large'>
               {data?.pricingTag === 'FREE' ? 'FREE' : formatVND(data?.price, { showUnit: true })}
             </Button>
->>>>>>> b59927d (MTB-260-commit-update-price-tag&price-sort)
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
