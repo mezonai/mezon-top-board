@@ -14,6 +14,7 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { AppPricing } from '@app/enums/appPricing'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -232,6 +233,35 @@ const Step3FillDetails = () => {
               </div>
             </>
           )}
+        />
+      </FormField>
+      {/* TAG PRICE */}
+      <FormField label='Tag Price' description='Select FREE or PAID tag' errorText={errors.pricingTag?.message}>
+        <Controller
+          control={control}
+          name='pricingTag'
+          render={({ field }) => (
+            <Select
+              {...field}
+              allowClear
+              placeholder='Select tag price'
+              status={errors?.pricingTag?.message ? 'error' : ''}
+              options={ Object.values(AppPricing).map(value => ({
+                label: value,
+                value,
+              }))}
+              onChange={(value) => field.onChange(value)}
+            />
+          )}
+        />
+      </FormField>
+
+      {/* PRICE */}
+      <FormField label='Price' description='Set a price for your bot' errorText={errors.price?.message}>
+        <Controller
+          control={control}
+          name='price'
+          render={({ field }) => <Input {...field} placeholder='MezonBot' status={errorStatus(errors.price)} />}
         />
       </FormField>
 

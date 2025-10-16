@@ -54,6 +54,8 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
+      pricingTag: 'FREE',
+      price: 0,
       supportUrl: '',
       remark: '',
       isAutoPublished: false,
@@ -140,7 +142,7 @@ function NewBotPage() {
   const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
     0: ['type'],
     1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'supportUrl'],
+    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
     3: [],
     4: []
   }

@@ -57,6 +57,14 @@ export class GetMezonAppDetailsResponse {
   public tags: TagInMezonAppDetailResponse[];
 
   @Expose()
+  @ApiProperty()
+  public pricingTag: "FREE" | "PAID";
+
+  @Expose()
+  @ApiProperty()
+  public price: number;
+
+  @Expose()
   @ApiProperty({ type: () => [SocialLinkInMezonAppDetailResponse] })
   public socialLinks: SocialLinkInMezonAppDetailResponse[];
 
@@ -75,6 +83,8 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "status",
   "featuredImage",
   "tags",
+  "pricingTag",
+  "price",
   "rateScore",
   "owner"
 ]) { }

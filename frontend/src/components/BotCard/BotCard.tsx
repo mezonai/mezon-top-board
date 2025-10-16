@@ -87,6 +87,9 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}
+            <Button color={data?.pricingTag === 'FREE' ? 'blue' : 'primary'} variant='outlined' size='large'>
+              {data?.pricingTag === 'FREE' ? 'FREE' : Number(data?.price)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            </Button>
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>

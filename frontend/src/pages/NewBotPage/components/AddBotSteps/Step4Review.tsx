@@ -41,6 +41,12 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
             )}
           </div>
         </li>
+        <li>
+          <strong>Tag Price:</strong> {values.pricingTag}
+        </li>
+        <li>
+          <strong>Price: </strong> {values.price}
+        </li>
         <li className='break-words'><strong>Support URL: </strong>{values.supportUrl}</li>
         <li>
           <strong>Social Links:</strong>

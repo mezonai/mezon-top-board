@@ -43,6 +43,7 @@ export const useOnSubmitBotForm = (
 
       const payload: CreateMezonAppRequest = {
         ...formData,
+        price: Number(formData.price),
         description: updatedDescription,
         socialLinks: formattedLinks,
         mezonAppId: formData.mezonAppId,

@@ -3,6 +3,7 @@ import { api } from '../../apiInstance'
 import { Rating } from '../rating/rating'
 import { LinkTypeResponse } from '../linkType/linkType'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { AppPricing } from '@app/enums/appPricing'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mezonAppControllerListAdminMezonApp: build.query<
@@ -174,6 +175,8 @@ export type GetMezonAppDetailsResponse = {
   status: number
   owner: OwnerInMezonAppDetailResponse
   tags: TagInMezonAppDetailResponse[]
+  pricingTag: AppPricing
+  price: number
   socialLinks: SocialLinkInMezonAppDetailResponse[]
   rateScore: number;
   type: MezonAppType
@@ -246,6 +249,8 @@ export type App = {
   supportUrl: string
   remark: string
   tags: Tag[]
+  pricingTag: AppPricing
+  price: number
   socialLinks: Link[]
   reviewHistories: AppReviewHistory[]
   ratings: Rating[]
@@ -268,6 +273,8 @@ export type CreateMezonAppRequest = {
   supportUrl: string
   remark?: string
   tagIds: string[]
+  pricingTag?: AppPricing
+  price?: number
   socialLinks?: SocialLinkDto[]
 }
 export type UpdateMezonAppRequest = {
@@ -283,6 +290,8 @@ export type UpdateMezonAppRequest = {
   supportUrl?: string
   remark?: string
   tagIds: string[]
+  pricingTag?: AppPricing
+  price?: number
   socialLinks?: SocialLinkDto[]
 }
 export type GetRelatedMezonAppResponse = {
