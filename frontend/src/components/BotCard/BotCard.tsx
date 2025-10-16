@@ -5,7 +5,7 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotCardProps } from './BotCard.types'
-import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
+import { randomColor, getMezonInstallLink  } from '@app/utils/mezonApp'
 import { formatVND, getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -26,15 +26,15 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
   const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
-
+  
   const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     window.open(inviteUrl, '_blank')
-  }
+  } 
   const handleShare = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
   }
-
+  
   return (
     <div
       className='shadow-md pb-8 pt-8 px-8 border border-gray-300 relative rounded-xl cursor-pointer'
@@ -84,7 +84,9 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             ))}
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
-            {userInfo?.id && data?.owner?.id === userInfo?.id && <OwnerActions data={data} isBotCard={true} />}
+            {userInfo?.id && data?.owner?.id === userInfo?.id && (
+              <OwnerActions data={data} isBotCard={true} />
+            )}
             <Button color={data?.pricingTag === 'FREE' ? 'blue' : 'primary'} variant='solid' size='large'>
               {data?.pricingTag === 'FREE' ? 'FREE' : formatVND(data?.price, { showUnit: true })}
             </Button>

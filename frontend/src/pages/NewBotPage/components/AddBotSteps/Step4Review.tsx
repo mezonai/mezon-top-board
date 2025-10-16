@@ -12,7 +12,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { control} = useFormContext<CreateMezonAppRequest>()
-
+  
   const type = useWatch({ control, name: 'type' })
   const values = getValues()
   const tagIds = values.tagIds ?? []
@@ -47,10 +47,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         <li>
           <strong>Price: </strong> {values.price}
         </li>
-        <li className='break-words'>
-          <strong>Support URL: </strong>
-          {values.supportUrl}
-        </li>
+        <li className='break-words'><strong>Support URL: </strong>{values.supportUrl}</li>
         <li>
           <strong>Social Links:</strong>
           <div className="mt-2 flex flex-col gap-2">
@@ -79,5 +76,5 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
     </div>
   )
 }
-
+ 
 export default Step4Review

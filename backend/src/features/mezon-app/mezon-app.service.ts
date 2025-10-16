@@ -437,7 +437,7 @@ export class MezonAppService {
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
     const whereCondition = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
-        ownerId: userId,
+      ownerId: userId,
     });
 
     return paginate<App, SearchMezonAppResponse>(

@@ -52,12 +52,12 @@ const Step3FillDetails = () => {
 
   const linkOptions = useMemo(() => {
     return linkTypeList.data?.map(link => ({
-        icon: link.icon,
-        label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
-        name: link.name,
-        value: link.id,
-        siteName: link.prefixUrl
-      })) || []
+      icon: link.icon,
+      label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
+      name: link.name,
+      value: link.id,
+      siteName: link.prefixUrl
+    })) || []
   }, [linkTypeList])
 
   const addNewLink = () => {
@@ -133,9 +133,9 @@ const Step3FillDetails = () => {
         />
       </FormField>
 
-      <FormField
+      <FormField 
         label='Headline'
-        description='Provide a short and catchy phrase that describes your bot.'
+        description='Provide a short and catchy phrase that describes your bot.' 
         errorText={errors.headline?.message}
       >
         <Controller
@@ -149,8 +149,8 @@ const Step3FillDetails = () => {
       </FormField>
 
       <FormField
-        label='Full Description'
-        description='Tell us what your bot can do. We want to hear the whole story!'
+          label='Full Description'
+          description='Tell us what your bot can do. We want to hear the whole story!'
           errorText={errors.description?.message}>
         <Controller
           control={control}
@@ -176,23 +176,23 @@ const Step3FillDetails = () => {
       </FormField>
       {
         type === MezonAppType.BOT &&
-        <FormField
-          label='Prefix'
-          description='What keyword or phrase does your bot react to?'
+          <FormField
+              label='Prefix'
+              description='What keyword or phrase does your bot react to?'
               errorText={errors.prefix?.message}>
-          <Controller
-            control={control}
-            name='prefix'
+            <Controller
+              control={control}
+              name='prefix'
               render={({ field }) => (
                 <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
               )}
-          />
-        </FormField>
+            />
+          </FormField>
       }
 
       <FormField
-        label='Tags'
-        description='Select the top 12 categories that best represent your community.'
+          label='Tags'
+          description='Select the top 12 categories that best represent your community.'
           errorText={errors.tagIds?.message}>
         <Controller
           control={control}
@@ -234,7 +234,6 @@ const Step3FillDetails = () => {
           )}
         />
       </FormField>
-
       {/* TAG PRICE */}
       <FormField label='Tag Price' description='Select FREE or PAID tag' errorText={errors.pricingTag?.message}>
         <Controller
@@ -265,11 +264,7 @@ const Step3FillDetails = () => {
         />
       </FormField>
 
-      <FormField
-        label='Support URL'
-        description='People might have many questions about your bot, make sure you can answer them!'
-        errorText={errors.supportUrl?.message}
-      >
+      <FormField label='Support URL' description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
         <Controller
           control={control}
           name='supportUrl'
@@ -286,7 +281,7 @@ const Step3FillDetails = () => {
           render={({ field }) => (
             <TextArea {...field} rows={3} 
               placeholder="Please share any important information or details about your bot that our reviewers should know" 
-              status={errorStatus(errors.remark)}
+              status={errorStatus(errors.remark)} 
             />
           )}
         />

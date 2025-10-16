@@ -92,7 +92,7 @@ export class CreateMezonAppRequest {
   @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   mezonAppId: string;
-
+ 
   @ApiPropertyOptional()
   @IsString()
   @MinLength(50, { message: "Headline must be at least 50 characters" })
@@ -131,7 +131,7 @@ export class CreateMezonAppRequest {
   @IsOptional()
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   remark?: string;
-
+ 
   @ApiPropertyOptional()
   @IsArray()
   @ArrayMinSize(1, { message: "At least one tag is required" })

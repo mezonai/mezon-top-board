@@ -74,18 +74,18 @@ export class GetMezonAppDetailsResponse {
 }
 
 export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse, [
-    "id",
-    "name",
-    "type",
-    "mezonAppId",
-    "description",
-    "headline",
-    "status",
-    "featuredImage",
-    "tags",
-    "pricingTag",
-    "price",
-    "rateScore",
+  "id",
+  "name",
+  "type",
+  "mezonAppId",
+  "description",
+  "headline",
+  "status",
+  "featuredImage",
+  "tags",
+  "pricingTag",
+  "price",
+  "rateScore",
   "owner"
 ]) { }
 
@@ -93,13 +93,13 @@ export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse,
 }
 
 export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResponse, [
-    "id",
-    "name",
-    "description",
-    "type",
-    "mezonAppId",
-    "headline",
-    "featuredImage",
-    "rateScore",
+  "id",
+  "name",
+  "description",
+  "type",
+  "mezonAppId",
+  "headline",
+  "featuredImage",
+  "rateScore",
 ]) {
 }

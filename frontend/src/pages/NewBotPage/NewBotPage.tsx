@@ -44,7 +44,7 @@ function NewBotPage() {
     ? getUrlMedia(mezonAppDetail.featuredImage)
     : avatarBotDefault
   const [avatar, setAvatar] = useState<string>(imgUrl)
-
+ 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
@@ -212,7 +212,7 @@ function NewBotPage() {
   const SubmitForm = handleSubmit(onSubmit, (formErrors) => {
     toast.error('Form validation failed!')
   })
-
+  
   return (
     <div className='pt-8 pb-12 w-[85%] m-auto'>
       <div className='flex items-center justify-between'>
@@ -246,7 +246,7 @@ function NewBotPage() {
                   Back
                 </Button>
               )}
-
+              
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
                 <Button variant="outlined" onClick={next}>
                   Next
