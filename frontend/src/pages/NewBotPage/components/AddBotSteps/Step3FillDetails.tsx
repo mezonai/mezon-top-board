@@ -14,6 +14,7 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { AppPricing } from '@app/enums/appPricing'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -245,10 +246,10 @@ const Step3FillDetails = () => {
               allowClear
               placeholder='Select tag price'
               status={errors?.pricingTag?.message ? 'error' : ''}
-              options={[
-                { label: 'FREE', value: 'FREE' },
-                { label: 'PAID', value: 'PAID' }
-              ]}
+              options={ Object.values(AppPricing).map(value => ({
+                label: value,
+                value,
+              }))}
               onChange={(value) => field.onChange(value)}
             />
           )}

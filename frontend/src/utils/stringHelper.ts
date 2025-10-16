@@ -102,25 +102,3 @@ export const transformMediaSrc = (html: string): string => {
 
   return doc.body.innerHTML
 }
-
-export const formatVND = (
-  value: number | string | undefined,
-  options: { decimals?: number; showUnit?: boolean; scale?: number } = {}
-): string => {
-  const { decimals = 0, showUnit = true, scale = 1 } = options
-
-  if (value === null || value === undefined || value === '') return ''
-
-  const num = Number(value)
-  if (!isFinite(num)) return String(value)
-
-  const scaled = num * scale
-  const rounded = Number(scaled.toFixed(decimals))
-
-  const str = rounded.toLocaleString('vi-VN', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  })
-
-  return showUnit ? `${str} VND` : str
-}
