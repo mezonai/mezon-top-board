@@ -49,7 +49,7 @@ const injectedRtkApi = api.injectEndpoints({
       MezonAppControllerDeleteMezonAppApiResponse,
       MezonAppControllerDeleteMezonAppApiArg
     >({
-      query: (queryArg) => ({ url: `/api/mezon-app`, method: 'DELETE', body: queryArg.requestWithId })
+      query: (queryArg) => ({ url: `/api/mezon-app`, method: 'DELETE', body: queryArg.requestWithId }),
     }),
     mezonAppControllerCreateMezonApp: build.mutation<
       MezonAppControllerCreateMezonAppApiResponse,
@@ -162,7 +162,7 @@ export type SocialLinkInMezonAppDetailResponse = {
   id: string
   url: string
   linkTypeId: string
-  type: LinkTypeResponse
+  type: LinkTypeResponse;
 }
 export type GetMezonAppDetailsResponse = {
   id: string

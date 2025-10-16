@@ -12,7 +12,6 @@ import {
     FindManyOptions,
 } from "typeorm";
 
-import { SortField } from "@domain/common/enum/sortField";
 import { SortOrder } from "@domain/common/enum/sortOder";
 
 import { ErrorMessages } from "@libs/constant/messages";
