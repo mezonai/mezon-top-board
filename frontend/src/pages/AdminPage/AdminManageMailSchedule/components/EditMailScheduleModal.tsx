@@ -28,7 +28,6 @@ const EditMailModal = ({ open, onClose, selectMail }: EditMailModalProps) => {
   const [form] = Form.useForm<MailFormValues>()
   const [selectedSubscribers, setSelectedSubscribers] = useState<Subscriber[]>([])
 
-
   const handleRemoveSubscriber = (id: string) => {
      setSelectedSubscribers(prev => prev.filter(sub => sub.id !== id))
   }

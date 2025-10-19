@@ -1,13 +1,15 @@
-import { Button, Form, Input, InputNumber, Modal, TimePicker } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Tag, TimePicker } from 'antd'
 import RichTextEditor from '@app/components/RichText/RichText'
-import { useMailControllerCreateAndSendMailMutation, useMailControllerCreateMailMutation } from '@app/services/api/mail/mail'
+import { useMailControllerCreateAndSendMailMutation, useMailControllerCreateMailMutation, useMailControllerGetAllMailsQuery } from '@app/services/api/mail/mail'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
 import Checkbox from '@app/pages/AdminPage/AdminManageMailSchedule/components/Checkbox'
 import RepeatUnitSelect from '@app/pages/AdminPage/AdminManageMailSchedule/components/Select'
 import { RepeatUnit } from '@app/enums/subscribe'
-import { useSubscribeControllerGetAllActiveSubscriberQuery, useSubscribeControllerUpdateScheduleMutation } from '@app/services/api/subscribe/subscribe'
+import { Subscriber, useSubscribeControllerGetAllActiveSubscriberQuery, useSubscribeControllerUpdateScheduleMutation } from '@app/services/api/subscribe/subscribe'
+import { PlusOutlined } from '@ant-design/icons'
+import SubscriberPickerModal from '@app/pages/AdminPage/AdminManageMailSchedule/components/SubscriberPickerModal'
 
 export interface MailFormValues {
   title: string,
@@ -30,18 +32,21 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
   const [createAndSendMail] = useMailControllerCreateAndSendMailMutation()
   const [updatePreferences] = useSubscribeControllerUpdateScheduleMutation()
   const { data: subscriberData } = useSubscribeControllerGetAllActiveSubscriberQuery()
+  const { refetch } = useMailControllerGetAllMailsQuery()
   const [form] = Form.useForm<MailFormValues>()
-  const [subscriberIds, setSubscriberIds] = useState<string[]>([])
+  const [selectedSubscribers, setSelectedSubscribers] = useState<Subscriber[]>([])
   const [checked, setChecked] = useState(false);
   const [unit, setUnit] = useState<RepeatUnit | undefined>();
+  const [subscriberModalOpen, setSubscriberModalOpen] = useState(false)
 
   const handleRemoveSubscriber = (id: string) => {
-     setSubscriberIds(prev => prev.filter(subId => subId !== id))
-  }   
+     setSelectedSubscribers(prev => prev.filter(sub => sub.id !== id))
+  }
+  
 
   useEffect(() => {
     if (subscriberData) {
-      setSubscriberIds(subscriberData.data.map(s => s.id))
+      setSelectedSubscribers(subscriberData.data)
     }
   }, [subscriberData])
 
@@ -49,6 +54,7 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
     try {
       const mailValues = form.getFieldsValue(['title', 'subject', 'content']);
       const subValues = form.getFieldsValue(['isRepeatable', 'repeatEvery', 'repeatUnit', 'sendTime']);
+      const subscriberIds = selectedSubscribers.map(sub => sub.id)
       if(subValues.isRepeatable){
         for(const subId of subscriberIds){ 
           await updatePreferences({
@@ -63,6 +69,7 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
           createMailRequest: { ...mailValues , subscriberIds: subscriberIds  }
         })
         onClose()
+        refetch()
         form.resetFields()
         toast.success('Mail schedule set up successfully')
       }else{
@@ -74,6 +81,7 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
           toast.error('Send mail failed')
         }else{
           onClose()
+          refetch()
           form.resetFields()
           toast.success('Mail sent successfully')
         }
@@ -94,7 +102,7 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
           Cancel
         </Button>,
         <Button key="send" type="primary" onClick={handleSendMail} disabled={isLoading}>
-          {isLoading ? 'Sending...' : 'Send Newsletter'}
+          {form.getFieldValue('isRepeatable') ? 'Create Schedule' : 'Send Now'}
         </Button>,
       ]}
       width={700}
@@ -102,15 +110,22 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
       <div className="max-h-[60vh] overflow-y-auto">
         <Form form={form} layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="max-w-full">
            <Form.Item label="To">
-            <div className='flex gap-2 w-full flex-wrap'>
-              {subscriberData?.data?.filter((s) => subscriberIds.includes(s.id)).map((s) => (
-                <div key={s.id} className=' cursor-pointer flex items-center'>
-                  <span className='rounded-md bg-gray-200 px-2 hover:bg-blue-200'>{s.email}</span>
-                  <span className='rounded-full px-2 flex items-center justify-center bg-red-300' onClick={() => handleRemoveSubscriber(s.id)}>x</span>
+            <div className='flex items-center justify-between'>
+                <div className='flex gap-2 w-full flex-wrap'>
+                  {selectedSubscribers.map((s) => (
+                    <div key={s.id} className='cursor-pointer flex items-center'>
+                      <Tag>{s.email}</Tag>
+                      <span
+                        className='rounded-full px-2 flex items-center justify-center bg-red-300'
+                        onClick={() => handleRemoveSubscriber(s.id)}
+                      >
+                        x
+                      </span>
+                    </div>
+                  ))}
                 </div>
-
-              ))}
-            </div>
+                <span className='rounded-full bg-blue-200 cursor-pointer px-1' onClick={() => setSubscriberModalOpen(true)}><PlusOutlined/></span>
+              </div>
           </Form.Item>
            <Form.Item name="isRepeatable" label="Repeat">
               <Checkbox 
@@ -156,6 +171,12 @@ const CreateMailModal = ({ open, onClose }: CreateMailModalProps) => {
           </Form.Item>
         </Form>
       </div>
+      <SubscriberPickerModal
+        open={subscriberModalOpen}
+        onClose={() => setSubscriberModalOpen(false)}
+        selectedIds={selectedSubscribers.map((s) => s.id)}
+        onChange={(subs) => setSelectedSubscribers(subs)}
+      />
     </Modal>
   )
 }
