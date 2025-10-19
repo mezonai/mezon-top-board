@@ -1,5 +1,6 @@
 import AboutPage from '@app/pages/AboutPage/AboutPage'
 import BotDetailPage from '@app/pages/BotDetailPage/BotDetailPage'
+import ConfirmSubscribePage from '@app/pages/ConfirmSubscribePage/ConfirmSubscribePage'
 import ContactUsPage from '@app/pages/ContactUsPage/ContactUsPage'
 import HomePage from '@app/pages/HomePage/HomePage'
 import LoginPage from '@app/pages/LoginPage/LoginPage'
@@ -127,6 +128,14 @@ export const routePaths: RoutePath[] = [
     path: 'login',
     element: <LoginPage />,
     strLabel: 'Login',
+    isShowMenu: false,
+    requireAuth: false,
+  },
+  {
+    index: false,
+    path: 'confirm-subscribe/:status',
+    element: <ConfirmSubscribePage />,
+    strLabel: 'Confirm Subscription',
     isShowMenu: false,
     requireAuth: false,
   },

@@ -1,8 +1,10 @@
 import { Divider, Input, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
-import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
+import { useState } from 'react'
+import { useSubscribeControllerSendMailMutation } from '@app/services/api/subscribe/subscribe'
+import { toast } from 'react-toastify'
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -21,7 +23,23 @@ const footerLink = [
     link: 'https://www.youtube.com/@nccplusvietnam7545'
   }
 ]
+
 function Footer() {
+  const [email, setEmail] = useState('')
+  const [sendMail, { isLoading }] =
+    useSubscribeControllerSendMailMutation()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+    const res = await sendMail({ email }).unwrap().catch((err) => {
+      toast.error(err.data?.message || 'An error occurred while subscribing.')
+    })
+    if (res?.statusCode === 200) {
+      toast.success(res.message)
+      setEmail('')
+    }
+  }
   return (
     <div className='pt-10 pb-5 bg-gray-100'>
       <div className={`flex flex-col md:flex-row justify-around items-center gap-6 md:gap-0 pb-8 px-4`}>
@@ -39,17 +57,20 @@ function Footer() {
         {/* Newsletter section */}
         <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
           <MtbTypography variant='h5' customClassName='!mb-0 !text-gray-600'>Get Newsletter</MtbTypography>
-          <div className='flex w-full md:w-auto'>
-            <Input type='text' placeholder='Your email address' className="border border-gray-300 px-3 py-2 w-full md:w-auto"
-            ></Input>
-            <Button
-              color='default'
-              variant='solid'
-              customClassName='!bg-black !text-white !border-black !rounded-none opacity-100 hover:opacity-75 !py-5'
+          <form onSubmit={handleSubmit} className='flex gap-2 w-full md:w-auto'>
+            <Input 
+              type='text' 
+              placeholder='Your email address'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+              className="border border-gray-300 px-3 py-2 w-full md:w-auto"
+            />
+            <button
+              className='bg-black text-white border-black opacity-100 hover:opacity-75 cursor-pointer rounded-md px-4 py-2'
             >
-              Subscribe
-            </Button>
-          </div>
+              {isLoading ? 'Sending...' : 'Subscribe'}
+            </button>
+          </form>
         </div>
       </div>
       <Divider className='bg-gray-400' />

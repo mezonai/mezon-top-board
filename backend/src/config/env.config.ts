@@ -22,4 +22,12 @@ export default () => ({
   JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES || 60,
   JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES || 10080,
   UPLOAD_RELATIVE_DIR: process.env.UPLOAD_RELATIVE_DIR || "uploads",
+  EMAIL_APP_PASSWORD: process.env.EMAIL_APP_PASSWORD || "",
+  EMAIL_NAME: process.env.EMAIL_NAME || "",
+  REDIS_HOST: process.env.REDIS_HOST || "",
+  REDIS_PORT: process.env.REDIS_PORT || 6379,
+  REDIS_URL: process.env.REDIS_URL || "",
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
+  URL_SERVER: process.env.URL_SERVER || "",
+  URL_CLIENT: process.env.URL_CLIENT || "",
 });

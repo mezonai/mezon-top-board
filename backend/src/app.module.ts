@@ -7,6 +7,7 @@ import config, { envFilePath } from "@config/env.config";
 
 import { AuthModule } from "@features/auth/auth.module";
 import { LinkTypeModule } from "@features/linkType/linkType.module";
+import { MailModule } from "@features/mail/mail.module";
 import { MediaModule } from "@features/media/media.module";
 import { MezonAppModule } from "@features/mezon-app/mezon-app.module";
 import { RatingModule } from "@features/rating/rating.module";
@@ -16,6 +17,9 @@ import { UserModule } from "@features/user/user.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
+
+import { SubscribeModule } from './features/subscribe/subscribe.module';
+
 
 @Module({
   imports: [
@@ -34,7 +38,9 @@ import { LoggerModule } from "@libs/logger";
     ReviewHistoryModule,
     UserModule,
     LinkTypeModule,
-    RatingModule
+    RatingModule,
+    SubscribeModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],

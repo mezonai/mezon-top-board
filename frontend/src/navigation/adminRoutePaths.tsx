@@ -1,12 +1,14 @@
 // src/routes/adminRoutePaths.ts
 
-import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined } from '@ant-design/icons'
+import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, MailOutlined, TeamOutlined } from '@ant-design/icons'
 import MezonAppsContainer from '@app/pages/AdminPage/AdminMezonApp/MezonAppsContainer'
 import ReviewHistoryPage from '@app/pages/AdminPage/ReviewHistoryPage/ReviewHistoryPage'
 import UsersList from "@app/pages/AdminPage/AdminManageUsers/UsersList";
 import { RoutePath } from '@app/types/RoutePath.types'
 import LinkTypesList from '@app/pages/AdminPage/AdminManageLinkTypes/LinkTypesList';
 import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
+import MailSchedule from '@app/pages/AdminPage/AdminManageMailSchedule/MailSchedule';
+import SubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
 
 export const adminRoutePaths: RoutePath[] = [
   {
@@ -43,6 +45,20 @@ export const adminRoutePaths: RoutePath[] = [
     element: <UsersList/>,
     strLabel: "Users",
     icon: <UserOutlined/>,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/mail-schedule',
+    element: <MailSchedule />,
+    strLabel: 'Mail Schedule',
+    icon: <MailOutlined />,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/subscribers',
+    element: <SubscriberList />,
+    strLabel: 'Subscribers',
+    icon: <TeamOutlined />,
     isShowMenu: true
   },
   {
