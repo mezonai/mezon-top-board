@@ -7,14 +7,6 @@ import { MailService } from '@features/mail/mail.service'
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @Post()
-  create(
-    @Body()
-    body: CreateMailRequest,
-  ) {
-    return this.mailService.createMail(body)
-  }
-
   @Post('/send')
   createAndSendMail(
     @Body()

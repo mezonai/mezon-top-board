@@ -1,20 +1,10 @@
 import { HttpResponse } from "@app/types/API.types"
 import { api } from "../../apiInstance"
+import { RepeatUnit } from "@app/enums/subscribe"
 import { Subscriber } from "@app/services/api/subscribe/subscribe"
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    mailControllerCreateMail: build.mutation<
-      MailControllerCreateMailApiResponse,
-      MailControllerCreateMailApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/mail`,
-        method: "POST",
-        body: queryArg.createMailRequest
-      })
-    }),
-
     mailControllerCreateAndSendMail: build.mutation<
       MailControllerCreateMailApiResponse,
       MailControllerCreateMailApiArg
@@ -66,21 +56,11 @@ export type CreateMailRequest = {
   title: string
   subject: string
   content: string
+  isRepeatable?: boolean
+  repeatEvery?: number
+  repeatUnit?: RepeatUnit
+  sendTime?: string
   subscriberIds?: string[]
-}
-
-export type UpdateMailRequest = Partial<CreateMailRequest>
-
-export type MailControllerCreateMailApiResponse = HttpResponse<{
-  id: string
-  title: string
-  subject: string
-  content: string
-}>
-
-
-export type MailControllerCreateMailApiArg = {
-  createMailRequest: CreateMailRequest
 }
 
 export type Mail = {
@@ -88,10 +68,22 @@ export type Mail = {
   title: string
   subject: string
   content: string
+  isRepeatable?: boolean
+  repeatEvery?: number
+  repeatUnit?: RepeatUnit
+  sendTime?: string
   subscribers: Subscriber[]
 }
 
+export type MailControllerCreateMailApiResponse = HttpResponse<Mail>
+
+export type MailControllerCreateMailApiArg = {
+  createMailRequest: CreateMailRequest
+}
+
 export type MailControllerGetAllMailsApiResponse = HttpResponse<Mail[]>
+
+export type UpdateMailRequest = Partial<CreateMailRequest>
 
 export type MailControllerUpdateMailApiResponse = HttpResponse<Mail>
 export type MailControllerUpdateMailApiArg = {
@@ -103,7 +95,6 @@ export type MailControllerDeleteMailApiResponse = HttpResponse<null>
 export type MailControllerDeleteMailApiArg = string
 
 export const {
-  useMailControllerCreateMailMutation,
   useMailControllerCreateAndSendMailMutation,
   useMailControllerGetAllMailsQuery,
   useMailControllerUpdateMailMutation,

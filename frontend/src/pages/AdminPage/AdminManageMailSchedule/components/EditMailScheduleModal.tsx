@@ -1,17 +1,21 @@
-import { Button, Form, Input, Modal, Tag } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, TimePicker } from 'antd'
 import RichTextEditor from '@app/components/RichText/RichText'
 import { Mail, useMailControllerGetAllMailsQuery, useMailControllerUpdateMailMutation } from '@app/services/api/mail/mail'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { PlusOutlined } from '@ant-design/icons'
-import SubscriberPickerModal from '@app/pages/AdminPage/AdminManageMailSchedule/components/SubscriberPickerModal'
-import { Subscriber } from '@app/services/api/subscribe/subscribe'
+import Checkbox from '@app/pages/AdminPage/AdminManageMailSchedule/components/Checkbox'
+import RepeatUnitSelect from '@app/pages/AdminPage/AdminManageMailSchedule/components/Select'
+import { RepeatUnit } from '@app/enums/subscribe'
+import dayjs from 'dayjs'
 
 export interface MailFormValues {
   title: string,
   subject: string,
   content: string,
-  subscriberIds: string[]
+  isRepeatable: boolean
+  repeatEvery: number
+  repeatUnit: RepeatUnit
+  sendTime: string
 }
 
 interface EditMailModalProps {
@@ -23,31 +27,26 @@ interface EditMailModalProps {
 const EditMailModal = ({ open, onClose, selectMail }: EditMailModalProps) => {
 
   const [updateMail, {isLoading}] = useMailControllerUpdateMailMutation()
-  const [subscriberModalOpen, setSubscriberModalOpen] = useState(false)
 	const { refetch } = useMailControllerGetAllMailsQuery()
   const [form] = Form.useForm<MailFormValues>()
-  const [selectedSubscribers, setSelectedSubscribers] = useState<Subscriber[]>([])
-
-  const handleRemoveSubscriber = (id: string) => {
-     setSelectedSubscribers(prev => prev.filter(sub => sub.id !== id))
-  }
+  const [checked, setChecked] = useState(false);
+  const [unit, setUnit] = useState<RepeatUnit | undefined>();
 
   useEffect(() => {
     if (selectMail) {
-      setSelectedSubscribers(selectMail.subscribers)
 			form.setFieldsValue(selectMail);
     }
   }, [selectMail])
 
    const handleEditMail = async () => {
     try {
-      const mailValues = form.getFieldsValue(['title', 'subject', 'content']);
+      const mailValues = form.getFieldsValue();
       await updateMail({
 				id: selectMail?.id!,
 				updateMailRequest: {
-					...mailValues,
-					subscriberIds: selectedSubscribers.map(sub => sub.id)
-				},
+          ...mailValues,
+          sendTime: mailValues.isRepeatable ? dayjs(mailValues.sendTime).toISOString() : undefined,
+        },
 			});
 			onClose();
 			await refetch()
@@ -56,7 +55,6 @@ const EditMailModal = ({ open, onClose, selectMail }: EditMailModalProps) => {
       console.error('Send mail failed', e)
     }
   }
-
  
   return (
    <Modal
@@ -75,24 +73,6 @@ const EditMailModal = ({ open, onClose, selectMail }: EditMailModalProps) => {
     >
       <div className="max-h-[60vh] overflow-y-auto">
         <Form form={form} layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="max-w-full">
-           <Form.Item label="To">
-            <div className='flex items-center justify-between'>
-              <div className='flex gap-2 w-full flex-wrap'>
-                {selectedSubscribers.map((s) => (
-                  <div key={s.id} className='cursor-pointer flex items-center'>
-                    <Tag>{s.email}</Tag>
-                    <span
-                      className='rounded-full px-2 flex items-center justify-center bg-red-300'
-                      onClick={() => handleRemoveSubscriber(s.id)}
-                    >
-                      x
-                    </span>
-                  </div>
-                ))}
-              </div>
-            <span className='rounded-full bg-blue-200 cursor-pointer px-1' onClick={() => setSubscriberModalOpen(true)}><PlusOutlined/></span>
-            </div>
-            </Form.Item>
           <Form.Item name="title" label="Title" rules={[
             { required: true, message: "Title is required" },
             { min: 3, message: "Title must be at least 3 characters" },
@@ -111,17 +91,32 @@ const EditMailModal = ({ open, onClose, selectMail }: EditMailModalProps) => {
           ]}>
             <Input />
           </Form.Item>
+          <Form.Item name="isRepeatable" label="Repeat">
+            <Checkbox 
+              checked={checked}
+              onChange={setChecked} 
+            />
+          </Form.Item>
+          {checked && (
+            <Form.Item name="sendTime" label="Send time">
+              <TimePicker format="HH:mm:ss"/>
+            </Form.Item>
+          )}
+          {checked && (
+            <Form.Item name="repeatEvery" label="Repeat every">
+             <InputNumber min={1} />
+            </Form.Item>
+          )}
+          {checked && (
+            <Form.Item name="repeatUnit" label="Repeat unit">
+             <RepeatUnitSelect value={unit} onChange={setUnit} />
+          </Form.Item>
+          )}
           <Form.Item name="content" label="Content">
               <RichTextEditor customClass="custom-editor" />
           </Form.Item>
         </Form>
       </div>
-      <SubscriberPickerModal
-        open={subscriberModalOpen}
-        onClose={() => setSubscriberModalOpen(false)}
-        selectedIds={selectedSubscribers.map((s) => s.id)}
-        onChange={(subs) => setSelectedSubscribers(subs)}
-      />
     </Modal>
   )
 }

@@ -1,6 +1,6 @@
 import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
-import { RepeatUnit, SubscriptionStatus } from '@app/enums/subscribe'
+import { SubscriptionStatus } from '@app/enums/subscribe'
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -15,9 +15,9 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
 
-    SubscribeControllerUpdateSchedule: build.mutation<
-      SubscribeControllerUpdateScheduleResponse,
-      SubscribeControllerUpdateScheduleArg
+    SubscribeControllerUpdate: build.mutation<
+      SubscribeControllerUpdateResponse,
+      SubscribeControllerUpdateArg
     >({
       query: (body) => ({
         url: `/api/subscribe/update-preferences`,
@@ -66,12 +66,16 @@ const injectedRtkApi = api.injectEndpoints({
 
 export { injectedRtkApi as subscribeService }
 
+export type Subscriber = {
+  id: string
+  email: string
+  status: SubscriptionStatus
+  subscribedAt: Date
+  unsubscribedAt?: Date
+}
+
 export type SubscribeControllerCreateSubscriberArg = {
   email: string
-  isRepeatable?: boolean
-  repeatEvery?: number
-  repeatUnit?: RepeatUnit
-  sendTime?: string
 }
 
 export type SubscribeControllerCreateSubscriberResponse = HttpResponse<{
@@ -86,29 +90,14 @@ export type SubscribeControllerSendMailResponse = HttpResponse<{
   message: string
 }>
 
-export type SubscribeControllerUpdateScheduleArg = {
+export type SubscribeControllerUpdateArg = {
   id: string
-  isRepeatable: boolean
-  repeatEvery: number
-  repeatUnit: RepeatUnit
-  sendTime?: string
+  status: SubscriptionStatus
 }
 
-export type SubscribeControllerUpdateScheduleResponse = HttpResponse<{
+export type SubscribeControllerUpdateResponse = HttpResponse<{
   message: string
 }>
-
-export type Subscriber = {
-  id: string
-  email: string
-  status: SubscriptionStatus
-  subscribedAt: Date
-  isRepeatable: boolean
-  repeatEvery: number
-  repeatUnit: RepeatUnit
-  sendTime?: string
-  unsubscribedAt?: Date
-}
 
 export type SubscribeControllerGetAllSubscriberResponse = HttpResponse<Subscriber[]>
 
@@ -120,7 +109,7 @@ export type SubscribeControllerDeleteSubscriberResponse = HttpResponse<{
 
 export const {
   useSubscribeControllerSendMailMutation,
-  useSubscribeControllerUpdateScheduleMutation,
+  useSubscribeControllerUpdateMutation,
   useSubscribeControllerGetAllActiveSubscriberQuery,
   useSubscribeControllerGetAllSubscriberQuery,
   useSubscribeControllerCreateSubscriberMutation,

@@ -11,6 +11,7 @@ import ProfilePage from '@app/pages/ProfilePage/ProfilePage'
 import SettingPage from '@app/pages/ProfilePage/SettingPage'
 import SearchPage from '@app/pages/SearchPage/SearchPage'
 import TermsPage from '@app/pages/TermsPage/TermsPage'
+import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
 
 export const routePaths: RoutePath[] = [
@@ -136,6 +137,14 @@ export const routePaths: RoutePath[] = [
     path: 'confirm-subscribe/:status',
     element: <ConfirmSubscribePage />,
     strLabel: 'Confirm Subscription',
+    isShowMenu: false,
+    requireAuth: false,
+  },
+  {
+    index: false,
+    path: 'unsubscribe/:status',
+    element: <UnsubscribePage />,
+    strLabel: 'Unsubscription',
     isShowMenu: false,
     requireAuth: false,
   },

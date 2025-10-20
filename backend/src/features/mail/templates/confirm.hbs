@@ -1,106 +1,92 @@
-
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Xác nhận đăng ký</title>
-    <style>
-      body,table,td,a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
-      table { border-collapse:collapse !important; }
-      body { margin:0; padding:0; width:100% !important; height:100% !important; font-family: "Inter", "Helvetica Neue", Arial, sans-serif; background-color:#f4f6f8; color:#0f1724; }
-      a { color:inherit; text-decoration:none; }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Xác thực tài khoản</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #333333;
+      -webkit-text-size-adjust: none;
+    }
+    .email-wrapper { width: 100%; background-color: #f4f6f8; padding: 24px 0; }
+    .email-content { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.06); }
+    .header { padding: 24px; text-align: center; background: #ffffff; }
+    .logo { max-height: 48px; display: inline-block; }
+    .body { padding: 28px 32px; }
+    h1 { margin: 0 0 8px 0; font-size: 20px; color: #0f1724; }
+    p { margin: 0 0 16px 0; line-height: 1.5; font-size: 15px; color: #475569; }
+    .btn-wrap { text-align: center; margin: 20px 0; }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 12px 22px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .small { font-size: 12px; color: #94a3b8; }
+    .footer {
+      padding: 20px 32px;
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+      background: #fafafa;
+    }
 
-      .email-container { width:100%; max-width:680px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 6px 24px rgba(12,20,30,0.08); }
+    @media only screen and (max-width: 480px) {
+      .email-content { margin: 0 12px; }
+      .body { padding: 20px; }
+      .header { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="email-content" role="article" aria-roledescription="email" aria-label="Xác thực tài khoản">
+      <div class="header">
+        {{#if logoUrl}}
+          <img src="{{logoUrl}}" alt="Logo" class="logo" />
+        {{else}}
+          <div style="font-weight:700; font-size:18px; color:#111827;">Tên Ứng Dụng</div>
+        {{/if}}
+      </div>
 
-      .header { padding:22px 28px; display:flex; align-items:center; gap:16px; background:linear-gradient(90deg,#0ea5a4 0%, #06b6d4 100%); color:#fff; }
-      .logo { width:48px; height:48px; border-radius:8px; background:#fff; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
-      .brand { font-weight:700; font-size:18px; letter-spacing:0.2px; }
+      <div class="body">
+        <h1>Xác thực tài khoản</h1>
 
-      .content { padding:28px; }
-      .preheader { display:none !important; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; }
-      h1 { margin:0 0 10px 0; font-size:20px; color:#071133; }
-      p { margin:0 0 16px 0; line-height:1.5; color:#334155; }
+        {{#if userName}}
+          <p>Chào {{userName}},</p>
+        {{else}}
+          <p>Chào bạn,</p>
+        {{/if}}
 
-      .btn-wrap { text-align:center; margin:18px 0; }
-      .btn {
-        display:inline-block;
-        padding:12px 22px;
-        border-radius:10px;
-        font-weight:600;
-        background:linear-gradient(180deg,#0b6bff 0%, #0056d6 100%);
-        color:#fff;
-        box-shadow:0 6px 18px rgba(11,103,255,0.16);
-      }
+        <p>
+          Vui lòng nhấn nút bên dưới để xác thực tài khoản của bạn. Liên kết này chỉ có hiệu lực trong 
+          <strong>15</strong> phút.
+        </p>
 
-      .fallback { word-break:break-all; font-size:13px; color:#475569; background:#f8fafc; padding:12px; border-radius:8px; margin-top:8px; }
-      .muted { color:#64748b; font-size:13px; }
+        <div class="btn-wrap">
+          <a href="{{url}}" class="btn" rel="noopener noreferrer">Xác thực tài khoản</a>
+        </div>
 
-      .footer { padding:18px 28px; font-size:12px; color:#94a3b8; text-align:center; background:#fbfdff; }
+        <hr style="border:none; border-top:1px solid #eef2f7; margin:20px 0;" />
 
-      @media (max-width:480px) {
-        .header { padding:16px; }
-        .content { padding:18px; }
-        .brand { font-size:16px; }
-      }
-    </style>
-  </head>
-  <body>
-    <span class="preheader">Xác nhận đăng ký — Nhấn nút bên dưới để hoàn tất (link hết hạn sau {{expiryMinutes}} phút).</span>
-
-    <center style="width:100%; background:#f4f6f8; padding:28px 12px;">
-      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:680px;">
-        <tr>
-          <td>
-            <div class="email-container" role="article" aria-roledescription="email">
-              <div class="header">
-                <div class="logo" aria-hidden="true">
-                  {{#if logoUrl}}
-                    <img src="{{logoUrl}}" alt="{{brandName}}" style="width:100%; height:100%; object-fit:cover; display:block;" />
-                  {{else}}
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="24" height="24" rx="6" fill="#ffffff" />
-                      <path d="M6 12h12M12 6v12" stroke="#06b6d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  {{/if}}
-                </div>
-                <div>
-                  <div class="brand">{{brandName}}</div>
-                  <div style="font-size:12px; opacity:0.95;">Xác nhận đăng ký</div>
-                </div>
-              </div>
-
-              <div class="content">
-                <h1>Chào {{#if name}}{{name}}{{else}}bạn{{/if}} 👋</h1>
-                <p>Cảm ơn bạn đã đăng ký nhận thông tin từ <strong>{{brandName}}</strong>. Vui lòng nhấn nút bên dưới để xác nhận địa chỉ email và hoàn tất đăng ký.</p>
-
-                <div class="btn-wrap">
-                  <a href="{{url}}" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Xác nhận đăng ký">Xác nhận đăng ký</a>
-                </div>
-
-                <p class="muted">Lưu ý: liên kết trên sẽ tự động hết hạn sau <strong>{{expiryMinutes}}</strong> phút.</p>
-
-                <div style="margin-top:10px;">
-                  <div style="font-size:13px; margin-bottom:8px; color:#334155;">Nếu nút trên không hoạt động, bạn có thể sao chép và dán đường dẫn này vào trình duyệt:</div>
-                  <div class="fallback"><a href="{{url}}" target="_blank" rel="noopener noreferrer" style="color:#0b6bff;">{{url}}</a></div>
-                </div>
-
-                {{#if supportEmail}}
-                  <p style="margin-top:16px;">Cần trợ giúp? Liên hệ chúng tôi: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
-                {{/if}}
-              </div>
-
-              <div class="footer">
-                Nếu bạn không yêu cầu email này, bạn có thể bỏ qua. <br/>
-                © {{currentYear}} {{brandName}}. All rights reserved.
-                {{#if footerUnsubscribe}}
-                  <div style="margin-top:8px;"><a href="{{footerUnsubscribe}}" style="color:inherit; text-decoration:underline;">Hủy đăng ký</a></div>
-                {{/if}}
-              </div>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </center>
-  </body>
+        <p class="small">
+          Nếu bạn không yêu cầu xác thực này, hãy bỏ qua email này — không có hành động nào khác sẽ được thực hiện.
+        </p>
+      </div>
+      <div class="footer">
+        <div style="margin-bottom:6px;">NCCPLUS • © 2025</div>
+        <div class="small">Tòa ST.MORITZ, 1014 Phạm Văn Đồng  • Email hỗ trợ: <a href="mailto:support@example.com">support@example.com</a></div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

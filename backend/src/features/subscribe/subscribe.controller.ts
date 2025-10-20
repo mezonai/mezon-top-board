@@ -24,8 +24,8 @@ export class SubscribeController {
 
   @Public()
   @Get('unsubscribe/:email')
-  unsubscribe(@Param('email') email: string) {
-    return this.subscribeService.unsubscribe(email);
+  unsubscribe(@Param('email') email: string, @Res() res) {
+    return this.subscribeService.unsubscribe(email, res);
   }
 
   @Get('active-subscribers')

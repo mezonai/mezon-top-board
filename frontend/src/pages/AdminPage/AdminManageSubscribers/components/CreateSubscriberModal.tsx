@@ -1,19 +1,8 @@
-import { Button, Form, Input, InputNumber, Modal, TimePicker } from 'antd'
-import {  useState } from 'react'
+import { Button, Form, Input, Modal } from 'antd'
 import { toast } from 'react-toastify'
-import dayjs from 'dayjs'
-import Checkbox from '@app/pages/AdminPage/AdminManageMailSchedule/components/Checkbox'
-import RepeatUnitSelect from '@app/pages/AdminPage/AdminManageMailSchedule/components/Select'
-import { RepeatUnit } from '@app/enums/subscribe'
-import { useSubscribeControllerCreateSubscriberMutation } from '@app/services/api/subscribe/subscribe'
-import { useMailControllerGetAllMailsQuery } from '@app/services/api/mail/mail'
-
+import { useSubscribeControllerCreateSubscriberMutation, useSubscribeControllerGetAllSubscriberQuery } from '@app/services/api/subscribe/subscribe'
 export interface SubscriberFormValues {
   email: string
-  isRepeatable: boolean
-  repeatEvery: number
-  repeatUnit: RepeatUnit
-  sendTime: string
 }
 
 interface CreateSubscriberProps {
@@ -23,18 +12,13 @@ interface CreateSubscriberProps {
 
 const CreateSubscriberModal = ({ open, onClose }: CreateSubscriberProps) => {
   const [createSubscriber, { isLoading }] = useSubscribeControllerCreateSubscriberMutation()
-  const { refetch } = useMailControllerGetAllMailsQuery()
+  const { refetch } = useSubscribeControllerGetAllSubscriberQuery()
   const [form] = Form.useForm<SubscriberFormValues>()
-  const [checked, setChecked] = useState(false);
-  const [unit, setUnit] = useState<RepeatUnit | undefined>();
 
-   const handleSendMail = async () => {
+  const handleCreate = async () => {
     try {
       const subValues = form.getFieldsValue();
-      const res = await createSubscriber({
-        ...subValues,
-        sendTime: subValues.sendTime ? dayjs(subValues.sendTime).format('HH:mm:ss') : undefined,
-      }).unwrap()
+      const res = await createSubscriber(subValues).unwrap()
       if(res.statusCode === 200) {
         onClose()
         form.resetFields()
@@ -45,7 +29,6 @@ const CreateSubscriberModal = ({ open, onClose }: CreateSubscriberProps) => {
       toast.error('Send mail failed')
     }
   }
-
  
   return (
    <Modal
@@ -56,7 +39,7 @@ const CreateSubscriberModal = ({ open, onClose }: CreateSubscriberProps) => {
         <Button key="cancel" onClick={onClose}>
           Cancel
         </Button>,
-        <Button key="send" type="primary" onClick={handleSendMail} disabled={isLoading}>
+        <Button key="send" type="primary" onClick={handleCreate} disabled={isLoading}>
           {isLoading ? 'Creating...' : 'Create Subscriber'}
         </Button>,
       ]}
@@ -67,28 +50,6 @@ const CreateSubscriberModal = ({ open, onClose }: CreateSubscriberProps) => {
           <Form.Item name="email" label="Email" rules={[{ required: true, message: "Email is required" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="isRepeatable" label="Repeat">
-              <Checkbox 
-                checked={checked}
-                onChange={setChecked} 
-              />
-          </Form.Item>
-          {checked && (
-            <Form.Item name="sendTime" label="Send time">
-              <TimePicker format="HH:mm:ss"/>
-            </Form.Item>
-          )}
-          {checked && (
-            <Form.Item name="repeatEvery" label="Repeat every">
-             <InputNumber min={1} />
-            </Form.Item>
-          )}
-          {checked && (
-            <Form.Item name="repeatUnit" label="Repeat unit">
-             <RepeatUnitSelect value={unit} onChange={setUnit} />
-          </Form.Item>
-          )}
-          
         </Form>
       </div>
     </Modal>

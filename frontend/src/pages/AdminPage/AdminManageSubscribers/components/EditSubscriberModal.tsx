@@ -1,17 +1,11 @@
-import { Button, Form, InputNumber, Modal, TimePicker } from 'antd'
-import { useEffect, useState } from 'react'
+import { Button, Form, Modal, Select } from 'antd'
+import { useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { Subscriber, useSubscribeControllerGetAllSubscriberQuery, useSubscribeControllerUpdateScheduleMutation } from '@app/services/api/subscribe/subscribe'
-import { RepeatUnit } from '@app/enums/subscribe'
-import Checkbox from '@app/pages/AdminPage/AdminManageMailSchedule/components/Checkbox'
-import RepeatUnitSelect from '@app/pages/AdminPage/AdminManageMailSchedule/components/Select'
-import dayjs, { Dayjs } from 'dayjs'
+import { Subscriber, useSubscribeControllerGetAllSubscriberQuery, useSubscribeControllerUpdateMutation } from '@app/services/api/subscribe/subscribe'
+import { SubscriptionStatus } from '@app/enums/subscribe'
 
 export interface SubscriberFormValues {
-  isRepeatable: boolean
-  repeatEvery: number
-  repeatUnit: RepeatUnit
-  sendTime: Dayjs | null
+  status: SubscriptionStatus
 }
 
 interface EditSubscriberModalProps {
@@ -20,35 +14,52 @@ interface EditSubscriberModalProps {
   selectSubscriber?: Subscriber
 }
 
+enum ActiveStatus {
+  ACTIVE = 'ACTIVE',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
+enum PendingStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+}
+
+function getStatusEnum(currentStatus: string) {
+  switch (currentStatus) {
+    case PendingStatus.PENDING:
+      return PendingStatus;
+
+    case ActiveStatus.ACTIVE:
+      return ActiveStatus;
+
+    case ActiveStatus.UNSUBSCRIBED:
+      return ActiveStatus;
+
+    default:
+      return PendingStatus;
+  }
+}
+
 const EditSubscriberModal = ({ open, onClose, selectSubscriber }: EditSubscriberModalProps) => {
 
-  const [updateSubscriber, {isLoading}] = useSubscribeControllerUpdateScheduleMutation()
+  const [updateSubscriber, {isLoading}] = useSubscribeControllerUpdateMutation()
 	const { refetch } = useSubscribeControllerGetAllSubscriberQuery()
   const [form] = Form.useForm<SubscriberFormValues>()
-  const [checked, setChecked] = useState<boolean>();
-  const [unit, setUnit] = useState<RepeatUnit>();
 
 
   useEffect(() => {
     if (selectSubscriber) {
-			form.setFieldsValue({
-      ...selectSubscriber,
-      sendTime: selectSubscriber.sendTime ? dayjs(selectSubscriber.sendTime, 'HH:mm') : null,
-    })
-      setChecked(selectSubscriber.isRepeatable!)
-      setUnit(selectSubscriber.repeatUnit!)
+			form.setFieldsValue(selectSubscriber)
     }
   }, [selectSubscriber])
 
    const handleEditMail = async () => {
     try {
       const subscriberValues = form.getFieldsValue();
-      const { sendTime, ...rest } = subscriberValues;
 
       await updateSubscriber({
         id: selectSubscriber?.id!,
-        sendTime: sendTime ? sendTime.format('HH:mm:ss') : undefined,
-        ...rest,
+        status: subscriberValues.status,
       });
 
       onClose();
@@ -76,20 +87,16 @@ const EditSubscriberModal = ({ open, onClose, selectSubscriber }: EditSubscriber
     >
       <div className="max-h-[60vh] overflow-y-auto">
         <Form form={form} layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="max-w-full">
-          <Form.Item name="isRepeatable" label="Repeat">
-              <Checkbox 
-                checked={checked}
-                onChange={setChecked} 
-              />
-          </Form.Item>
-          <Form.Item name="sendTime" label="Send time">
-              <TimePicker format="HH:mm:ss"/>
-          </Form.Item>
-          <Form.Item name="repeatEvery" label="Repeat every">
-             <InputNumber min={1} />
-          </Form.Item>
-          <Form.Item name="repeatUnit" label="Repeat unit">
-             <RepeatUnitSelect value={unit} onChange={setUnit} />
+          <Form.Item name="status" label="Status">
+           <Select
+              placeholder="Select Status"
+              value={form.getFieldValue('status')}
+              onChange={(value) => form.setFieldsValue({ status: value })}
+              options={Object.values(getStatusEnum(form.getFieldValue('status'))).map((status) => ({
+                value: status,
+                label: status,
+              }))}
+            />
           </Form.Item>
         </Form>
       </div>

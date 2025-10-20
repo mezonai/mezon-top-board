@@ -1,9 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { IsBoolean, IsEnum, IsNumber, IsString } from "class-validator";
+import { IsEnum, IsString } from "class-validator";
 
-import { RepeatUnit } from "@domain/common/enum/subscribeTypes";
-
+import { SubscriptionStatus } from "@domain/common/enum/subscribeTypes";
 
 export class GetSubscriptionRequest {
     @ApiProperty()
@@ -11,18 +10,6 @@ export class GetSubscriptionRequest {
     email: string;
 
     @ApiPropertyOptional()
-    @IsBoolean()
-    isRepeatable?: boolean;
-
-    @ApiPropertyOptional()
-    @IsNumber()
-    repeatEvery?: number;
-
-    @ApiPropertyOptional()
-    @IsEnum(RepeatUnit)
-    repeatUnit?: RepeatUnit;
-
-    @ApiProperty()
-    @IsString()
-    sendTime?: string
+    @IsEnum(SubscriptionStatus)
+    status: SubscriptionStatus;
 }

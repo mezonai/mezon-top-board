@@ -1,13 +1,11 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 import * as crypto from 'crypto'
-import { differenceInDays, differenceInMonths, differenceInWeeks, differenceInYears } from 'date-fns';
 import { Response } from 'express';
 import { EntityManager } from 'typeorm';
 
 import { Result } from '@domain/common/dtos/result.dto';
-import { RepeatUnit, SubscriptionStatus } from '@domain/common/enum/subscribeTypes';
+import { SubscriptionStatus } from '@domain/common/enum/subscribeTypes';
 import { Mail } from '@domain/entities/schema/mail.entity';
 import { Subscribe } from '@domain/entities/schema/subscribe.entity';
 
@@ -47,6 +45,7 @@ export class SubscribeService {
       email,
       confirmationToken,
       confirmationTokenExpires,
+      subscribedAt: null,
     });
     await this.mailService.sendConfirmMail(email, token);
     return new Result({message: 'Please check your email to confirm subscription' });
@@ -79,40 +78,33 @@ export class SubscribeService {
       status: SubscriptionStatus.ACTIVE,
       confirmationToken: null,
       confirmationTokenExpires: null,
+      subscribedAt: new Date(),
     });
     return res.redirect(
         `${config().URL_CLIENT}/confirm-subscribe/success?message=Subscription confirmed successfully`,
     );
   }
 
-  async unsubscribe(email: string) {
+  async unsubscribe(email: string, res: Response) {
     const subscribe = await this.subscribeRepository.findOne({
-      where: {
-        email,
-        status: SubscriptionStatus.ACTIVE,
-      },
+      where: { email, status: SubscriptionStatus.ACTIVE },
     });
-    if (!subscribe) {
-      throw new Error('Subscription not found or already unsubscribed');
-    }
+    if (!subscribe) return res.redirect(
+        `${config().URL_CLIENT}/unsubscribe/failed?message=Invalid email or unsubscribed already`,
+      );
     await this.subscribeRepository.update(subscribe.id, {
       status: SubscriptionStatus.UNSUBSCRIBED,
       unsubscribedAt: new Date(),
-      isRepeatable: false,
-      repeatEvery: null,
     });
-    return new Result({message: 'Unsubscribed successfully' });
+    return res.redirect(
+        `${config().URL_CLIENT}/unsubscribe/success?message=Unsubscribed successfully`,
+      );
   }
 
   async updateSubscriptionPreferences(id: string, data: Partial<GetSubscriptionRequest>) {
-    const subscribe = await this.subscribeRepository.findOne({
-      where: {
-        id,
-        status: SubscriptionStatus.ACTIVE,
-      },
-    });
+    const subscribe = await this.subscribeRepository.findById(id);
     if (!subscribe) throw new BadGatewayException('Subscription not found or inactive');
-    await this.subscribeRepository.update(id, data);
+    await this.subscribeRepository.update(id, { ...data, subscribedAt: data.status === SubscriptionStatus.ACTIVE ? new Date() : subscribe.subscribedAt });
     return new Result({message: 'Subscription preferences updated successfully' });
   }
 
@@ -136,72 +128,30 @@ export class SubscribeService {
 
   async deleteSubscriber(id: string) {
     const subscriber = await this.subscribeRepository.findOne({
-      where: { id },
-    })
-    const mails = await this.mailRepository.findOne({
-      relations: ['subscribers'],
-      where: { subscribers: { id } },
+      where: { id, status: SubscriptionStatus.UNSUBSCRIBED },
     });
 
-    if (!subscriber) throw new BadGatewayException('Subscriber not found')
-    if (!mails) {
-      await this.subscribeRepository.delete(subscriber.id)
-      return new Result({ message: 'Subscriber deleted successfully' })
+    if (!subscriber)
+      throw new BadGatewayException('Subscriber not found or still active');
+
+    const mails = await this.mailRepository.getRepository()
+      .createQueryBuilder('mail')
+      .leftJoinAndSelect('mail.subscribers', 'subscriber')
+      .where('subscriber.id = :id', { id })
+      .andWhere('subscriber.status = :status', { status: SubscriptionStatus.UNSUBSCRIBED })
+      .getMany();
+
+    if (!mails.length) {
+      await this.subscribeRepository.delete(subscriber.id);
+      return new Result({ message: 'Subscriber deleted successfully' });
     }
 
-    await this.mailRepository.update(mails.id, {
-      subscribers: mails.subscribers.filter((s) => s.id !== id),
-    });
-
-    await this.subscribeRepository.delete(subscriber.id)
-
-    return new Result({ message: 'Subscriber deleted successfully' })
-  }
-
-  @Cron(CronExpression.EVERY_MINUTE)
-  async handleMailSchedule() {
-    const now = new Date()
-    const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000)
-
-    const mails = await this.mailRepository.getRepository().find({
-      relations: ['subscribers'],
-    });
-    if(!mails.length) console.log("No mails found for scheduling");
     for (const mail of mails) {
-      if(!mail.subscribers?.length) continue;
-      for (const sub of mail.subscribers) {
-        const shouldSend = this.shouldSendNow(sub, vnNow);
-        if(shouldSend){
-          const send = await this.mailService.sendNewsletter(sub.email, mail.subject, mail.content);
-          await this.subscribeRepository.update(sub.id, { lastSentAt: now });
-          if(!send) console.log(`Failed to send mail to ${sub.email}`);
-          console.log(`Sent mail to ${sub.email} at ${vnNow.toISOString()}`);
-        }
-      }
+      mail.subscribers = mail.subscribers.filter((s) => s.id !== id);
+      await this.mailRepository.getRepository().save(mail);
     }
-  }
+    await this.subscribeRepository.delete(subscriber.id);
 
-  private shouldSendNow(sub: Subscribe, now: Date): boolean {
-    if (sub.unsubscribedAt || !sub.isRepeatable || sub.status !== SubscriptionStatus.ACTIVE) return false;
-
-    if (sub.sendTime) {
-      const [hour, minute] = sub.sendTime.split(':').map(Number);
-      if (now.getHours() !== hour || now.getMinutes() !== minute) return false;
-      if (!sub.lastSentAt) return true;
-
-      const last = sub.lastSentAt;
-      switch (sub.repeatUnit) {
-        case RepeatUnit.DAY:
-          return differenceInDays(now, last) >= (sub.repeatEvery ?? 1);
-        case RepeatUnit.WEEK:
-          return differenceInWeeks(now, last) >= (sub.repeatEvery ?? 1);
-        case RepeatUnit.MONTH:
-          return differenceInMonths(now, last) >= (sub.repeatEvery ?? 1);
-        case RepeatUnit.YEAR:
-          return differenceInYears(now, last) >= (sub.repeatEvery ?? 1);
-        default:
-          return false;
-      }
-    }
+    return new Result({ message: 'Subscriber deleted successfully' });
   }
 }

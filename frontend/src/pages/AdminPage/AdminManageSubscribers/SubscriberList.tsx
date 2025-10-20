@@ -1,15 +1,15 @@
-import { Form, Input, Popconfirm, Table} from 'antd'
+import { Form, Input, Popconfirm, Table, Tag} from 'antd'
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 
 import MtbButton from '@app/mtb-ui/Button'
 import { useMemo, useState } from 'react'
-import { useMailControllerGetAllMailsQuery } from '@app/services/api/mail/mail'
 import { toast } from 'react-toastify'
 import CreateSubscriberModal from '@app/pages/AdminPage/AdminManageSubscribers/components/CreateSubscriberModal'
 import EditSubscriberModal from '@app/pages/AdminPage/AdminManageSubscribers/components/EditSubscriberModal'
 import { Subscriber, useSubscribeControllerDeleteSubscriberMutation, useSubscribeControllerGetAllSubscriberQuery } from '@app/services/api/subscribe/subscribe'
-import Checkbox from '@app/pages/AdminPage/AdminManageMailSchedule/components/Checkbox'
+import dayjs from 'dayjs'
+import { SubscriptionStatus } from '@app/enums/subscribe'
 
 const pageOptions = [5, 10, 15]
 
@@ -22,7 +22,7 @@ function SubscriberList() {
   const [currentSubscriber, setCurrentSubscriber] = useState<Subscriber>()
 
   const { data: subscriberData } = useSubscribeControllerGetAllSubscriberQuery()
-  const { refetch } = useMailControllerGetAllMailsQuery()
+  const { refetch } = useSubscribeControllerGetAllSubscriberQuery()
   const [deleteSubscriber] = useSubscribeControllerDeleteSubscriberMutation()
   const totals = useMemo(() => subscriberData?.totalCount || 0, [subscriberData])
 
@@ -51,34 +51,53 @@ function SubscriberList() {
     setIsOpenEditModal(true)
   }
 
+  const handleCancel = () => {
+    setIsOpenModal(false)
+    setIsOpenEditModal(false)
+  }
+
   const columns = [
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
       render: (text: string) =>
-        <span>{text}</span>
+        <Tag>{text}</Tag>
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (text: string) =>
-        <span>{text}</span>
+        <span
+          className={`${
+            text === SubscriptionStatus.ACTIVE
+              ? 'text-green-500'
+              : text === SubscriptionStatus.PENDING
+              ? 'text-yellow-500'
+              : 'text-red-500'
+          } font-semibold`}
+        >
+          {text}
+        </span>
     },
     {
-      title: 'Subscribed At',
+      title: 'Sub/Unsub',
       dataIndex: 'subscribedAt',
       key: 'subscribedAt',
-      render: (text: string) =>
-        <span>{text}</span>
-    },
-    {
-      title: 'Repeatable',
-      dataIndex: 'isRepeatable',
-      key: 'isRepeatable',
-      render: (isRepeatable: boolean) =>
-        <Checkbox checked={isRepeatable} disabled />
+      render: (_text: string, record: Subscriber) => {
+        const isActive = record?.status === SubscriptionStatus.ACTIVE
+        const isPending = record?.status === SubscriptionStatus.PENDING
+        if (isPending) {
+          return <span>-</span>
+        }
+        const date = isActive ? record?.subscribedAt : record?.unsubscribedAt
+        return (
+          <span>
+            {dayjs(date).format('DD/MM/YYYY')}
+          </span>
+        )
+      },
     },
     {
       title: 'Actions',
@@ -96,11 +115,6 @@ function SubscriberList() {
           </div>
     }
   ]
-
-  const handleCancel = () => {
-    setIsOpenModal(false)
-    setIsOpenEditModal(false)
-  }
 
   return (
     <div>

@@ -1,6 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 
-import { IsArray, IsString } from "class-validator"
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
+
+import { RepeatUnit } from "@domain/common/enum/subscribeTypes"
 
 export class CreateMailRequest {
     @ApiProperty()
@@ -15,7 +17,23 @@ export class CreateMailRequest {
     @IsString()
     content: string
 
-    @ApiProperty()
-    @IsArray()
-    subscriberIds: string[]
+    @ApiPropertyOptional()
+    @IsBoolean()
+    @IsOptional()
+    isRepeatable?: boolean;
+
+    @ApiPropertyOptional()
+    @IsNumber()
+    @IsOptional()
+    repeatEvery?: number;
+
+    @ApiPropertyOptional()
+    @IsEnum(RepeatUnit)
+    @IsOptional()
+    repeatUnit?: RepeatUnit;
+
+    @ApiPropertyOptional()
+    @IsString()
+    @IsOptional()
+    sendTime?: string
 }
