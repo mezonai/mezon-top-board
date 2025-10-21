@@ -131,25 +131,8 @@ export class SubscribeService {
       where: { id, status: SubscriptionStatus.UNSUBSCRIBED },
     });
 
-    if (!subscriber)
-      throw new BadGatewayException('Subscriber not found or still active');
+    if (!subscriber) throw new BadGatewayException('Subscriber not found or still active');
 
-    const mails = await this.mailRepository.getRepository()
-      .createQueryBuilder('mail')
-      .leftJoinAndSelect('mail.subscribers', 'subscriber')
-      .where('subscriber.id = :id', { id })
-      .andWhere('subscriber.status = :status', { status: SubscriptionStatus.UNSUBSCRIBED })
-      .getMany();
-
-    if (!mails.length) {
-      await this.subscribeRepository.delete(subscriber.id);
-      return new Result({ message: 'Subscriber deleted successfully' });
-    }
-
-    for (const mail of mails) {
-      mail.subscribers = mail.subscribers.filter((s) => s.id !== id);
-      await this.mailRepository.getRepository().save(mail);
-    }
     await this.subscribeRepository.delete(subscriber.id);
 
     return new Result({ message: 'Subscriber deleted successfully' });

@@ -72,10 +72,7 @@ export class MailService {
 
     if (subscribers.length === 0) throw new BadGatewayException('No valid subscribers found.')
 
-    await this.mailRepository.create({
-      ...data,
-      subscribers,
-    })
+    await this.mailRepository.create(data)
     if(!data.isRepeatable){
       for (const sub of subscribers) {
       await this.sendNewsletter(sub.email, data.subject, data.content)
@@ -115,13 +112,15 @@ export class MailService {
     const now = new Date()
     const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000)
 
-    const mails = await this.mailRepository.getRepository().find({
-      relations: ['subscribers'],
-    });
+    const mails = await this.mailRepository.getRepository().find({ where: { isRepeatable: true } });
+
+    const subscribers = await this.subscribeRepository.find({
+      where: { status: SubscriptionStatus.ACTIVE },
+    })
+
     for (const mail of mails) {
-      if(!mail.subscribers?.length) continue;
-      for (const sub of mail.subscribers) {
-        const shouldSend = this.shouldSendNow(mail, sub, vnNow);
+      for (const sub of subscribers) {
+        const shouldSend = this.shouldSendNow(mail, vnNow);
         if(shouldSend){
           const send = await this.sendNewsletter(sub.email, mail.subject, mail.content);
           await this.mailRepository.update(mail.id, { lastSentAt: now });
@@ -132,9 +131,7 @@ export class MailService {
     }
   }
 
-  private shouldSendNow(mail: Mail, sub: Subscribe, now: Date): boolean {
-    if (sub.status !== SubscriptionStatus.ACTIVE || !mail.isRepeatable) return false;
-
+  private shouldSendNow(mail: Mail, now: Date): boolean {
     if (mail.sendTime) {
       const [hour, minute] = mail.sendTime.split(':').map(Number);
       if (now.getHours() !== hour || now.getMinutes() !== minute) return false;
