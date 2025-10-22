@@ -29,6 +29,24 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
   const [checked, setChecked] = useState(false);
   const [intervalMode, setIntervalMode] = useState<RepeatInterval>();
 
+  const now = dayjs()
+
+  const disabledHours = () => {
+    if (selectMail !== undefined && checked) return []
+    const currentHour = now.hour()
+    return Array.from({ length: currentHour }, (_, i) => i)
+  }
+
+  const disabledMinutes = (selectedHour: number) => {
+    if (selectMail !== undefined && checked) return []
+    const currentHour = now.hour()
+    const currentMinute = now.minute()
+    if (selectedHour === currentHour) {
+      return Array.from({ length: currentMinute }, (_, i) => i)
+    }
+    return []
+  }
+
   const handleCreateMailSchedule = async () => {
     try {
       const mailValues = form.getFieldsValue();
@@ -74,6 +92,8 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
   const handleCancel = () => {
     onClose()
     form.resetFields()
+    setChecked(false);
+    setIntervalMode(undefined);
   }
 
   useEffect(() => {
@@ -122,6 +142,8 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
               format="HH:mm"
               //minuteStep={30}
               defaultValue={dayjs('08:00', 'HH:mm')}
+              disabledHours={!checked ? disabledHours : undefined}
+              disabledMinutes={!checked ? disabledMinutes : undefined}
             />
           </Form.Item>
           <Form.Item name="isRepeatable" label="Repeat">

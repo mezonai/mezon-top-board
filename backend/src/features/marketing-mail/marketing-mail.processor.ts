@@ -1,4 +1,4 @@
-import { Processor, OnWorkerEvent, WorkerHost } from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
 
 import { MailerService } from '@nestjs-modules/mailer';
 import { Job } from 'bullmq';
@@ -56,15 +56,5 @@ export class MailTemplateProcessor extends WorkerHost {
       }
     }
     return { success: true, total: emails.length };
-  }
-
-  @OnWorkerEvent('completed')
-  onCompleted(job: Job) {
-    console.log(`Job ${job.id} done`);
-  }
-
-  @OnWorkerEvent('failed')
-  onFailed(job: Job, err: Error) {
-    console.error(`Job ${job.id} failed:`, err.message);
   }
 }

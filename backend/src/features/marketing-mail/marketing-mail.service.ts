@@ -3,7 +3,7 @@ import { BadGatewayException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { Queue } from 'bullmq';
-import { differenceInDays, differenceInMinutes, differenceInMonths, differenceInWeeks, differenceInYears } from 'date-fns';
+import { differenceInMinutes } from 'date-fns';
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
 
 import { Result } from '@domain/common/dtos/result.dto';
@@ -152,23 +152,45 @@ export class MailTemplateService {
 
   private shouldSendNow(mail: MailTemplate, now: Date): boolean {
     if (!mail.isRepeatable) {
-      if (mail.scheduledAt.getHours() === now.getHours() && mail.scheduledAt.getMinutes() === now.getMinutes()) {
-        return true;
-      } else return false;
+      return (
+        mail.scheduledAt.getHours() === now.getHours() &&
+        mail.scheduledAt.getMinutes() === now.getMinutes() &&
+        mail.scheduledAt.getDate() === now.getDate() &&
+        mail.scheduledAt.getMonth() === now.getMonth() &&
+        mail.scheduledAt.getFullYear() === now.getFullYear()
+      );
     }
 
-    const diffMinutes = Math.abs(differenceInMinutes(now, mail.scheduledAt));
-    if (diffMinutes <= 1) return true;
+    const sameHourMinute =
+      mail.scheduledAt.getHours() === now.getHours() &&
+      mail.scheduledAt.getMinutes() === now.getMinutes();
+
+    const minutesDiff = Math.abs(differenceInMinutes(now, mail.scheduledAt));
+    const withinGracePeriod = minutesDiff <= 1 && sameHourMinute; // change to 30 for production
 
     switch (mail.repeatInterval) {
       case RepeatInterval.DAILY:
-        return differenceInDays(now, mail.scheduledAt) % 1 === 0 && now.getMinutes() === mail.scheduledAt.getMinutes();
+        return sameHourMinute || withinGracePeriod;
+
       case RepeatInterval.WEEKLY:
-        return differenceInWeeks(now, mail.scheduledAt) % 1 === 0 && now.getHours() === mail.scheduledAt.getHours();
+        return (
+          now.getDay() === mail.scheduledAt.getDay() &&
+          (sameHourMinute || withinGracePeriod)
+        );
+
       case RepeatInterval.MONTHLY:
-        return differenceInMonths(now, mail.scheduledAt) % 1 === 0 && now.getHours() === mail.scheduledAt.getHours();
+        return (
+          now.getDate() === mail.scheduledAt.getDate() &&
+          (sameHourMinute || withinGracePeriod)
+        );
+
       case RepeatInterval.ANNUALLY:
-        return differenceInYears(now, mail.scheduledAt) % 1 === 0 && now.getHours() === mail.scheduledAt.getHours();
+        return (
+          now.getMonth() === mail.scheduledAt.getMonth() &&
+          now.getDate() === mail.scheduledAt.getDate() &&
+          (sameHourMinute || withinGracePeriod)
+        );
+
       default:
         return false;
     }
