@@ -1,31 +1,106 @@
-import { Form, Input, Popconfirm, Table, Tag} from 'antd'
-import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { RootState } from '@app/store'
+import { Button, Form, Input, InputRef, Popconfirm, Select, Table, Tag } from 'antd'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { useAppDispatch, useAppSelector } from '@app/store/hook'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-
-import MtbButton from '@app/mtb-ui/Button'
-import { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
-import CreateSubscriberModal from '@app/pages/AdminPage/AdminManageSubscribers/components/CreateSubscriberModal'
-import EditSubscriberModal from '@app/pages/AdminPage/AdminManageSubscribers/components/EditSubscriberModal'
-import { Subscriber, useSubscribeControllerDeleteSubscriberMutation, useSubscribeControllerGetAllSubscriberQuery } from '@app/services/api/subscribe/subscribe'
-import dayjs from 'dayjs'
-import { SubscriptionStatus } from '@app/enums/subscribe'
+import MtbButton from '@app/mtb-ui/Button'
+import { EmailSubscriptionStatus } from '@app/enums/subscribe'
+import { useEmailSubscribeControllerDeleteSubscriberMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscriberQuery, useLazyEmailSubscriberControllerSearchEmailSubscribersQuery } from '@app/services/api/emailSubscriber/emailSubscriber'
+import { IEmailSubscriberStore, setSearchSubscriberList } from '@app/store/emailSubscriber'
 
 const pageOptions = [5, 10, 15]
 
-function SubscriberList() {
+interface SearchFormValues {
+  search: string,
+  pageSize: 5 | 10 | 15,
+  pageNumber: number,
+}
 
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
-  const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false)
+function EmailSubscriberList() {
+  const dispatch = useAppDispatch();
+  const [getEmailSubscribers] = useLazyEmailSubscribeControllerGetAllSubscriberQuery()
+  const [updateEmailSubscriber] = useEmailSubscribeControllerUpdateSubscriberMutation()
+  const [deleteEmailSubscriber] = useEmailSubscribeControllerDeleteSubscriberMutation()
+  const [searchEmailSubscriber] = useLazyEmailSubscriberControllerSearchEmailSubscribersQuery()
+  const searchEmailSubscriberList = useAppSelector((state: RootState) => state.emailSubscriber.searchSubscriberList)
+
+  const [searchForm] = Form.useForm<SearchFormValues>()
+
+  const initialValues: SearchFormValues = {
+    search: '',
+    pageSize: 5,
+    pageNumber: 1,
+  };
+
+  const { subscriberList } = useSelector<RootState, IEmailSubscriberStore>((s) => s.emailSubscriber)
+  const searchRef = useRef<InputRef>(null)
+
+  const [editingSubscriber, setEditingSubscriber] = useState<{
+    id: string | null
+    status?: EmailSubscriptionStatus
+  }>({ id: null })
+
   const [page, setPage] = useState<number>(1)
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
-  const [currentSubscriber, setCurrentSubscriber] = useState<Subscriber>()
 
-  const { data: subscriberData } = useSubscribeControllerGetAllSubscriberQuery()
-  const { refetch } = useSubscribeControllerGetAllSubscriberQuery()
-  const [deleteSubscriber] = useSubscribeControllerDeleteSubscriberMutation()
-  const totals = useMemo(() => subscriberData?.totalCount || 0, [subscriberData])
+  useEffect(() => {
+    searchSubscribersList()
+  }, [page, botPerPage])
+  useEffect(() => {
+    getEmailSubscribers()
+  }, [])
 
+  const totals = useMemo(() => searchEmailSubscriberList?.totalCount || 0, [searchEmailSubscriberList])
+
+  const handleUpdate = async (id: string) => {
+    try {
+      await updateEmailSubscriber({
+        id,
+        updateSubscriptionRequest: {
+          status: editingSubscriber.status
+        }
+      }).unwrap()
+      setEditingSubscriber({ id: null })
+      await searchSubscribersList(page)
+      toast.success('Subscriber updated')
+    } catch {
+      toast.error('Failed to update subscriber')
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (subscriberList?.data?.some((subscriber) => subscriber.id === id && subscriber.status === EmailSubscriptionStatus.ACTIVE)) {
+      toast.error('Subscriber is active and cannot be deleted')
+      return
+    }
+    try {
+      await deleteEmailSubscriber(id).unwrap()
+      await searchSubscribersList(page)
+      toast.success('Subscriber deleted')
+    } catch {
+      toast.error('Cannot delete subscriber. It might be in use.')
+    }
+  }
+
+  const handleSearch = () => {
+    setPage(1)
+    searchSubscribersList(1)
+  }
+
+  const searchSubscribersList = async (pageNumber?: number) => {
+    const formValues = searchForm.getFieldsValue()
+    const result = await searchEmailSubscriber({
+      search: formValues.search || '',
+      pageNumber: pageNumber ?? page,
+      pageSize: botPerPage,
+    }).unwrap()
+
+    dispatch(setSearchSubscriberList(result));
+  }
+  
   const handlePageChange = (newPage: number, newPageSize?: number) => {
     setPage(newPage);
     if (newPage > Math.ceil(totals / botPerPage)) {
@@ -34,26 +109,6 @@ function SubscriberList() {
     if (newPageSize) {
       setBotPerPage(newPageSize);
     }
-  }
-  
-  const handleDelete = async (id: string) => {
-      try {
-        await deleteSubscriber(id).unwrap()
-        await refetch()
-        toast.success('Subscriber deleted')
-      } catch {
-        toast.error('Cannot delete subscriber. It might be in use.')
-      }
-  }
-
-  const handleOpenEditModal = (subscriber: Subscriber) => {
-    setCurrentSubscriber(subscriber)
-    setIsOpenEditModal(true)
-  }
-
-  const handleCancel = () => {
-    setIsOpenModal(false)
-    setIsOpenEditModal(false)
   }
 
   const columns = [
@@ -68,76 +123,97 @@ function SubscriberList() {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text: string) =>
-        <span
-          className={`${
-            text === SubscriptionStatus.ACTIVE
-              ? 'text-green-500'
-              : text === SubscriptionStatus.PENDING
-              ? 'text-yellow-500'
-              : 'text-red-500'
-          } font-semibold`}
-        >
-          {text}
-        </span>
-    },
-    {
-      title: 'Sub/Unsub',
-      dataIndex: 'subscribedAt',
-      key: 'subscribedAt',
-      render: (_text: string, record: Subscriber) => {
-        const isActive = record?.status === SubscriptionStatus.ACTIVE
-        const isPending = record?.status === SubscriptionStatus.PENDING
-        if (isPending) {
-          return <span>-</span>
-        }
-        const date = isActive ? record?.subscribedAt : record?.unsubscribedAt
-        return (
-          <span>
-            {dayjs(date).format('DD/MM/YYYY')}
-          </span>
+      render: (text: string, record: any) =>
+        editingSubscriber.id === record.id ? (
+          <Select
+            value={editingSubscriber.status}
+            onChange={(value) => setEditingSubscriber((prev) => ({ ...prev, status: value }))}
+          >
+            {Object.values(EmailSubscriptionStatus).map((status) => (
+              <Select.Option key={status} value={status}>
+                {status}
+              </Select.Option>
+            ))}
+          </Select>
+        ) : (
+          text
         )
-      },
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: '10%',
-      render: (_: any, record: Subscriber) =>
-        <div className='flex gap-2'>
-            <MtbButton color="blue" 
+      width: '20%',
+      render: (_: any, record: any) =>
+        editingSubscriber.id === record.id ? (
+          <div className='flex gap-2'>
+            <MtbButton color="blue" onClick={() => handleUpdate(record.id)}>
+              Save
+            </MtbButton>
+            <MtbButton color='danger' onClick={() => setEditingSubscriber({ id: null, status: undefined })}>
+              Cancel
+            </MtbButton>
+          </div>
+        ) : (
+          <div className='flex gap-2'>
+            <MtbButton color="blue"
               icon={<EditOutlined />}
-              onClick={() => handleOpenEditModal(record)}
+              onClick={() => setEditingSubscriber({ id: record.id, status: record.status })}
             />
-            <Popconfirm title='Delete this mail?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
-              <MtbButton color='danger'  icon={<DeleteOutlined />} />
+            <Popconfirm title='Delete this subscriber?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
+              <MtbButton color='danger' icon={<DeleteOutlined />} />
             </Popconfirm>
           </div>
+        )
     }
   ]
 
   return (
     <div>
-      <h2 className='font-bold text-lg mb-4'>Manage Subscribers</h2>
-      <div className='flex gap-2'>
-        <Form initialValues={{ search: '' }} className='flex-grow'>
-          <Form.Item name='search' className='w-full'>
+      <h2 className='font-bold text-lg mb-4'>Manage Email Subscribers</h2>
+      <div className='mb-4'>
+        <Form 
+          form={searchForm} 
+          onFinish={handleSearch}           
+          initialValues={initialValues}
+          layout='inline'
+          className='flex flex-wrap gap-2 items-end'
+        >
+          <Form.Item name='search' className='flex-grow w-full lg:max-w-5xl '>
             <Input
-              placeholder='Search by Email'
+              ref={searchRef}
+              placeholder='Search by email'
               prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              onPressEnter={() => searchForm.submit()}
+              style={{ borderRadius: '8px', height: '40px' }}
+              className='w-full'
             />
           </Form.Item>
+          <Form.Item name='sortField' className='mb-0 w-30'>
+            <Select 
+              className='w-30 '
+              placeholder='Sort Field'
+            >
+              {Object.values(EmailSubscriptionStatus).map((status) => (
+                <Select.Option key={status} value={status}>
+                  {status}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item className='mb-0'>
+            <Button 
+              type='primary' 
+              htmlType='submit'
+              icon={<SearchOutlined />}
+            >
+              Search
+            </Button>
+          </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} color='default' variant='outlined'>
-          Search
-        </MtbButton>
-        <MtbButton variant='outlined' icon={<PlusOutlined /> } onClick={() => setIsOpenModal(true)}>
-          Add New Subscriber
-        </MtbButton>
       </div>
 
-       {subscriberData?.data?.length ? (
-        <Table dataSource={subscriberData.data} columns={columns} rowKey='id' 
+      {searchEmailSubscriberList?.data?.length ? (
+        <Table dataSource={searchEmailSubscriberList.data} columns={columns} rowKey='id'
           pagination={{
             current: page,
             pageSize: botPerPage,
@@ -145,26 +221,15 @@ function SubscriberList() {
             onChange: handlePageChange,
             showSizeChanger: true,
             pageSizeOptions: pageOptions.map(String)
-          }}
-          />
+          }} />
       ) : (
         <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
           No result
         </MtbTypography>
       )}
-      
-      <CreateSubscriberModal
-        open={isOpenModal}
-        onClose={handleCancel}
-      />
 
-      <EditSubscriberModal
-        selectSubscriber={currentSubscriber}
-        open={isOpenEditModal}
-        onClose={handleCancel}
-      />
     </div>
   )
 }
 
-export default SubscriberList
+export default EmailSubscriberList

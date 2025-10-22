@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{subject}}</title>
+
+    <style>
+      .preheader { display:none !important; visibility:hidden; opacity:0; color:transparent; height:0; width:0; }
+      body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+      table { border-collapse:collapse !important; }
+      img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; }
+      a { color: #1a82e2; text-decoration: none; }
+      .email-wrapper { width:100%; background-color:#f4f4f7; padding:20px 0; }
+      .email-content { max-width:600px; margin:0 auto; background:#ffffff; border-radius:6px; overflow:hidden; }
+      .email-header { padding:20px; text-align:center; }
+      .email-body { padding:20px; font-family:Arial, sans-serif; color:#333333; line-height:1.5; }
+      .email-footer { padding:20px; font-size:12px; color:#888888; text-align:center; }
+      .btn { display:inline-block; padding:12px 20px; border-radius:6px; text-decoration:none; font-weight:600; }
+      .logo { max-width:160px; height:auto; }
+      @media only screen and (max-width: 480px) {
+        .email-content { width: 100% !important; border-radius: 0; }
+        .email-header, .email-body, .email-footer { padding:16px !important; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <span class="preheader">{{preheaderText}}</span>
+
+    <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center">
+          <table class="email-content" width="600" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+              <td class="email-header" style="background:#ffffff;">
+                <img src="https://res.cloudinary.com/dh3q44nkl/image/upload/v1761020725/mezon_o2oa8p.webp" alt="{{brandName}}" class="logo" />
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-body">
+                {{{content}}}
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-footer" style="background:#fafafa;">
+                <p style="margin:0 0 8px 0;">
+                  Nếu bạn không muốn tiếp tục nhận email từ chúng tôi, bạn có thể hủy đăng ký tại đây:
+                </p>
+                <p style="margin:0 0 12px 0;">
+                  <a href="{{unsubscribeUrl}}" target="_blank" rel="noopener noreferrer">
+                    Hủy đăng ký / Unsubscribe
+                  </a>
+                </p>
+
+                <p style="margin:0;">{{brandName}} • © {{year}}</p>
+                <p style="margin:6px 0 0 0; font-size:11px; color:#aaa;">
+                  Bạn nhận email này vì đã đăng ký nhận thông tin từ chúng tôi.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <div class="footer">
+      <div style="margin-bottom:6px;">NCCPLUS • © 2025</div>
+      <div class="small">
+        <p>Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam</p>
+        <p>(+84) 2466874606</p>
+      </div>
+    </div>
+  </body>
+</html>

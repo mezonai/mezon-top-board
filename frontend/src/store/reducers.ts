@@ -7,6 +7,8 @@ import { userReducer } from './user'
 import { authReducer } from './auth'
 import { ratingReducer } from './rating'
 import { mediaReducer } from './media'
+import { emailSubscriberReducer } from '@app/store/emailSubscriber'
+import { mailTemplateReducer } from '@app/store/mailTemplate'
 
 export const rootReducer = combineReducers({
   tag: tagReducer,
@@ -16,5 +18,7 @@ export const rootReducer = combineReducers({
   auth: authReducer,
   rating: ratingReducer,
   media: mediaReducer,
+  emailSubscriber: emailSubscriberReducer,
+  mailTemplate: mailTemplateReducer,
   [api.reducerPath]: api.reducer
 })

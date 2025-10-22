@@ -1,12 +1,12 @@
-export enum SubscriptionStatus {
+export enum EmailSubscriptionStatus {
   PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
   UNSUBSCRIBED = 'UNSUBSCRIBED',
 }
 
-export enum RepeatUnit {
-  DAY = 'DAY',
-  WEEK = 'WEEK',
-  MONTH = 'MONTH',
-  YEAR = 'YEAR',
+export enum RepeatInterval {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  ANNUALLY = 'ANNUALLY',
 }

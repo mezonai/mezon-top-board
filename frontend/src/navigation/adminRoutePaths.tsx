@@ -7,8 +7,8 @@ import UsersList from "@app/pages/AdminPage/AdminManageUsers/UsersList";
 import { RoutePath } from '@app/types/RoutePath.types'
 import LinkTypesList from '@app/pages/AdminPage/AdminManageLinkTypes/LinkTypesList';
 import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
-import MailSchedule from '@app/pages/AdminPage/AdminManageMailSchedule/MailSchedule';
-import SubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
+import MailScheduleList from '@app/pages/AdminPage/AdminManageMailSchedule/MailScheduleList';
+import EmailSubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
 
 export const adminRoutePaths: RoutePath[] = [
   {
@@ -49,15 +49,15 @@ export const adminRoutePaths: RoutePath[] = [
   },
   {
     path: '/manage/mail-schedule',
-    element: <MailSchedule />,
+    element: <MailScheduleList />,
     strLabel: 'Mail Schedule',
     icon: <MailOutlined />,
     isShowMenu: true
   },
   {
-    path: '/manage/subscribers',
-    element: <SubscriberList />,
-    strLabel: 'Subscribers',
+    path: '/manage/email-subscribers',
+    element: <EmailSubscriberList />,
+    strLabel: 'Email Subscribers',
     icon: <TeamOutlined />,
     isShowMenu: true
   },

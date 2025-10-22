@@ -1,10 +1,9 @@
-import { Divider, Input, Tag } from 'antd'
+import { Button, Divider, Form, Input, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
-import { useState } from 'react'
-import { useSubscribeControllerSendMailMutation } from '@app/services/api/subscribe/subscribe'
 import { toast } from 'react-toastify'
+import { useEmailSubscribeControllerSendSubscribeMailMutation } from '@app/services/api/emailSubscriber/emailSubscriber'
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -25,19 +24,20 @@ const footerLink = [
 ]
 
 function Footer() {
-  const [email, setEmail] = useState('')
+  const [form] = Form.useForm<{ email: string }>()
   const [sendMail, { isLoading }] =
-    useSubscribeControllerSendMailMutation()
+    useEmailSubscribeControllerSendSubscribeMailMutation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const email = form.getFieldValue('email')
     if (!email) return
     const res = await sendMail({ email }).unwrap().catch((err) => {
       toast.error(err.data?.message || 'An error occurred while subscribing.')
     })
     if (res?.statusCode === 200) {
       toast.success(res.message)
-      setEmail('')
+      form.resetFields()
     }
   }
   return (
@@ -55,22 +55,27 @@ function Footer() {
           </div>
         </div>
         {/* Newsletter section */}
-        <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
-          <MtbTypography variant='h5' customClassName='!mb-0 !text-gray-600'>Get Newsletter</MtbTypography>
-          <form onSubmit={handleSubmit} className='flex gap-2 w-full md:w-auto'>
-            <Input 
-              type='text' 
-              placeholder='Your email address'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} 
-              className="border border-gray-300 px-3 py-2 w-full md:w-auto"
-            />
-            <button
-              className='bg-black text-white border-black opacity-100 hover:opacity-75 cursor-pointer rounded-md px-4 py-2'
+       <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-center md:text-left">
+          <MtbTypography
+            variant="h5"
+            customClassName="!mb-0 !text-gray-600"
+          >
+            Get Newsletter
+          </MtbTypography>
+          <div className="flex items-center justify-center gap-2 w-full md:w-auto">
+            <Form form={form} className="flex-grow max-w-xs">
+              <Form.Item name="email" className="!mb-0">
+                <Input className="text-center md:text-left" placeholder="Enter your email" />
+              </Form.Item>
+            </Form>
+            <Button
+              className="!bg-black !text-white !border-black hover:!bg-gray-800 hover:!border-gray-800 rounded-md px-4 py-2 transition-all"
+              onClick={handleSubmit}
+              disabled={isLoading}
             >
               {isLoading ? 'Sending...' : 'Subscribe'}
-            </button>
-          </form>
+            </Button>
+          </div>
         </div>
       </div>
       <Divider className='bg-gray-400' />

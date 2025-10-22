@@ -1,25 +1,28 @@
+import { useEmailSubscribeControllerConfirmQuery } from '@app/services/api/emailSubscriber/emailSubscriber';
 import { Flex, Spin } from 'antd';
 import { useEffect } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const ConfirmSubscribePage = () => {
-  const { status } = useParams();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const message = searchParams.get("message");
+
+  const { token } = useParams<{ token: string }>()
+
+  const { data } = useEmailSubscribeControllerConfirmQuery(token!, {
+    skip: !token,
+  })
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    if (status === "failed") {
-        toast.error(message ?? "Subscribe failed, please try again");
-        navigate(`/`);
-    } else if (status === "success") {
-        toast.success(message ?? "Subscribe successful");
-        navigate(`/`);
-      }
-  }, [navigate, status, message]);
+    console.log(data)
+    if(!data) {
+      toast.error("Subscription confirmation failed\nInvalid token or subscription already confirmed.");
+      navigate(`/`);
+    }else{
+      toast.success("Subscription confirmed successfully");
+      navigate(`/`);
+    }
+  }, [navigate, data]);
 
   return (
     <Flex align='center' justify='center' vertical flex={1} className='!bg-gray-300 fixed inset-0 z-[9999]'>
