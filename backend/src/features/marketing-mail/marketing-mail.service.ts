@@ -11,13 +11,10 @@ import { EmailSubscriptionStatus, RepeatInterval } from '@domain/common/enum/sub
 import { MailTemplate } from '@domain/entities/schema/mailTemplate.entity';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
-import config from "@config/env.config";
-
 import { CreateMailTemplateRequest, SearchMailTemplateRequest } from '@features/marketing-mail/dtos/request';
 import { SearchMailTemplateResponse } from '@features/marketing-mail/dtos/response';
 
 import { GenericRepository } from '@libs/repository/genericRepository';
-import { renderHbs } from '@libs/utils/hbs';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 
@@ -40,14 +37,7 @@ export class MailTemplateService {
       {
         emails,
         subject,
-        context: {
-          subject,
-          preheaderText: 'Đừng bỏ lỡ bản tin mới nhất từ Mezon Top Board',
-          content,
-          year: new Date().getFullYear(),
-          showUnsubscribe: true,
-          unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
-        },
+        content
       },
       { attempts: 3, backoff: 5000, removeOnComplete: true },
     );
@@ -57,14 +47,7 @@ export class MailTemplateService {
     return this.mailQueue.add(
       'send-confirmation-mail',
       {
-        email,
-        subject: 'Xác nhận đăng ký',
-        context: {
-          subject: 'Xác nhận đăng ký',
-          content: renderHbs('confirm-email-subscribe', { url: `${config().APP_CLIENT_URL}/confirm-subscribe` }),
-          year: new Date().getFullYear(),
-          showUnsubscribe: false,
-        },
+        email
       },
       { attempts: 3, backoff: 5000, removeOnComplete: true },
     );

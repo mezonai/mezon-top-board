@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 
 import { Role } from '@domain/common/enum/role'
 
@@ -8,12 +9,13 @@ import { MailTemplateService } from '@features/marketing-mail/marketing-mail.ser
 import { RoleRequired } from '@libs/decorator/roles.decorator'
 
 @Controller('mail-template')
+@ApiTags('Mail Template')
 export class MailTemplateController {
   constructor(private readonly mailService: MailTemplateService) { }
 
   @Post()
   @RoleRequired([Role.ADMIN])
-  createAndSendMail(
+  createMail(
     @Body()
     body: CreateMailTemplateRequest,
   ) {

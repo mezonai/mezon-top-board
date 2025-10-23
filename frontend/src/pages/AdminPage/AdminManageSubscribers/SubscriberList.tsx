@@ -8,8 +8,8 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { toast } from 'react-toastify'
 import MtbButton from '@app/mtb-ui/Button'
 import { EmailSubscriptionStatus } from '@app/enums/subscribe'
-import { useEmailSubscribeControllerDeleteSubscriberMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscriberQuery, useLazyEmailSubscriberControllerSearchEmailSubscribersQuery } from '@app/services/api/emailSubscriber/emailSubscriber'
 import { IEmailSubscriberStore, setSearchSubscriberList } from '@app/store/emailSubscriber'
+import { EmailSubscriber, useEmailSubscribeControllerDeleteMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscribersQuery, useLazyEmailSubscribeControllerSearchSubscriberQuery } from '@app/services/api/emailSubscribe/emailSubscribe'
 
 const pageOptions = [5, 10, 15]
 
@@ -21,10 +21,10 @@ interface SearchFormValues {
 
 function EmailSubscriberList() {
   const dispatch = useAppDispatch();
-  const [getEmailSubscribers] = useLazyEmailSubscribeControllerGetAllSubscriberQuery()
+  const [getEmailSubscribers] = useLazyEmailSubscribeControllerGetAllSubscribersQuery()
   const [updateEmailSubscriber] = useEmailSubscribeControllerUpdateSubscriberMutation()
-  const [deleteEmailSubscriber] = useEmailSubscribeControllerDeleteSubscriberMutation()
-  const [searchEmailSubscriber] = useLazyEmailSubscriberControllerSearchEmailSubscribersQuery()
+  const [deleteEmailSubscriber] = useEmailSubscribeControllerDeleteMutation()
+  const [searchEmailSubscriber] = useLazyEmailSubscribeControllerSearchSubscriberQuery()
   const searchEmailSubscriberList = useAppSelector((state: RootState) => state.emailSubscriber.searchSubscriberList)
 
   const [searchForm] = Form.useForm<SearchFormValues>()
@@ -60,7 +60,7 @@ function EmailSubscriberList() {
       await updateEmailSubscriber({
         id,
         updateSubscriptionRequest: {
-          status: editingSubscriber.status
+          status: editingSubscriber.status!
         }
       }).unwrap()
       setEditingSubscriber({ id: null })
@@ -72,12 +72,12 @@ function EmailSubscriberList() {
   }
 
   const handleDelete = async (id: string) => {
-    if (subscriberList?.data?.some((subscriber) => subscriber.id === id && subscriber.status === EmailSubscriptionStatus.ACTIVE)) {
+    if (subscriberList?.data?.some((subscriber: EmailSubscriber) => subscriber.id === id && subscriber.status === EmailSubscriptionStatus.ACTIVE)) {
       toast.error('Subscriber is active and cannot be deleted')
       return
     }
     try {
-      await deleteEmailSubscriber(id).unwrap()
+      await deleteEmailSubscriber({ id }).unwrap()
       await searchSubscribersList(page)
       toast.success('Subscriber deleted')
     } catch {

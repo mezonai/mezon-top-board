@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { RepeatInterval } from '@app/enums/subscribe'
 import Checkbox from 'antd/es/checkbox/Checkbox'
-import { MailTemplate, useMailTemplateControllerCreateAndSendMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/mailTemplate/mailTemplate'
 import TimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/TimePicker'
 import moment from 'moment'
+import { MailTemplate, useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
+
 
 export interface MailFormValues {
   subject: string,
@@ -24,7 +25,7 @@ interface MailModalProps {
 }
 
 const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProps) => {
-  const [createMailSchedule, { isLoading }] = useMailTemplateControllerCreateAndSendMailMutation()
+  const [createMailSchedule, { isLoading }] = useMailTemplateControllerCreateMailMutation()
   const [updateMailSchedule] = useMailTemplateControllerUpdateMailMutation()
   const [form] = Form.useForm<MailFormValues>()
   const [checked, setChecked] = useState(false);
@@ -52,7 +53,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
     try {
       const mailValues = form.getFieldsValue();
       const sendMailResponse = await createMailSchedule({
-        createMailRequest: { ...mailValues, isRepeatable: checked, repeatInterval: intervalMode }
+        createMailTemplateRequest: { ...mailValues, isRepeatable: checked, repeatInterval: intervalMode ? intervalMode : undefined }
       })
       if (sendMailResponse.data?.statusCode !== 200) {
         onClose()

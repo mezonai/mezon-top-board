@@ -6,10 +6,11 @@ import MtbButton from '@app/mtb-ui/Button'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import MailScheduleModal from '@app/pages/AdminPage/AdminManageMailSchedule/components/MailScheduleModal'
-import { MailTemplate , useLazyMailTemplateControllerGetAllMailsQuery, useLazyMailTemplateControllerSearchMailTemplatesQuery, useMailTemplateControllerDeleteMailMutation } from '@app/services/api/mailTemplate/mailTemplate'
+
 import { useAppDispatch, useAppSelector } from '@app/store/hook'
 import { setSearchMailTemplateList } from '@app/store/mailTemplate'
 import { RepeatInterval } from '@app/enums/subscribe'
+import { MailTemplate, useLazyMailTemplateControllerGetAllMailsQuery, useLazyMailTemplateControllerGetMailsSearchQuery, useMailTemplateControllerDeleteMailMutation } from '@app/services/api/marketingMail/marketingMail'
 
 const pageOptions = [5, 10, 15]
 
@@ -25,7 +26,7 @@ function MailScheduleList() {
   const [currentMail, setCurrentMail] = useState<MailTemplate>()
   const [getMailTemplateData] = useLazyMailTemplateControllerGetAllMailsQuery()
   const [deleteMail] = useMailTemplateControllerDeleteMailMutation()
-  const [searchMailTemplate] = useLazyMailTemplateControllerSearchMailTemplatesQuery()
+  const [searchMailTemplate] = useLazyMailTemplateControllerGetMailsSearchQuery()
   const searchMailsList = useAppSelector((state: RootState) => state.mailTemplate.searchMailTemplateList)
 
   const [searchForm] = Form.useForm<SearchFormValues>()
@@ -52,7 +53,7 @@ function MailScheduleList() {
   
   const handleDelete = async (id: string) => {
     try {
-      await deleteMail(id).unwrap()
+      await deleteMail({id}).unwrap()
       searchMailTemplateList()
       toast.success('Mail schedule deleted')
     } catch {

@@ -14,8 +14,6 @@ import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 
-
-
 @Injectable()
 export class EmailSubscribeService {
   private readonly subscribeRepository: GenericRepository<Subscriber>;
@@ -64,13 +62,6 @@ export class EmailSubscribeService {
     return new Result({ message: 'Unsubscribed successfully' });
   }
 
-  async updateSubscriptionPreferences(id: string, data: Partial<GetEmailSubscriptionRequest>) {
-    const subscribe = await this.subscribeRepository.findById(id);
-    if (!subscribe) throw new BadGatewayException('Subscription not found or inactive');
-    await this.subscribeRepository.update(id, data);
-    return new Result({ message: 'Subscription preferences updated successfully' });
-  }
-
   async getAllSubscribers() {
     const subscribers = await this.subscribeRepository.find({});
     return new Result({ data: subscribers });
@@ -89,12 +80,11 @@ export class EmailSubscribeService {
     );
   }
 
-  async createSubscriber(data: GetEmailSubscriptionRequest) {
-    const subscriber = this.subscribeRepository.create(data)
-    return new Result({
-      message: 'Subscriber created successfully.',
-      data: subscriber,
-    })
+  async updateSubscriber(id: string, data: Partial<GetEmailSubscriptionRequest>) {
+    const subscribe = await this.subscribeRepository.findById(id);
+    if (!subscribe) throw new BadGatewayException('Subscription not found or inactive');
+    const updatedSubscribe = await this.subscribeRepository.update(id, data);
+    return new Result({ message: 'Subscription preferences updated successfully', data: updatedSubscribe });
   }
 
   async deleteSubscriber(id: string) {

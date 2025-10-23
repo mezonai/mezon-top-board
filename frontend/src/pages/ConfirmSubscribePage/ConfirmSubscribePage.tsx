@@ -1,4 +1,4 @@
-import { useEmailSubscribeControllerConfirmQuery } from '@app/services/api/emailSubscriber/emailSubscriber';
+import { useEmailSubscribeControllerConfirmSubscribeQuery } from '@app/services/api/emailSubscribe/emailSubscribe';
 import { RootState } from '@app/store';
 import { useAppSelector } from '@app/store/hook';
 import { IUserStore } from '@app/store/user';
@@ -12,7 +12,7 @@ const ConfirmSubscribePage = () => {
 
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
 
-  const { data, refetch } = useEmailSubscribeControllerConfirmQuery(userInfo?.email!, {
+  const { data, refetch } = useEmailSubscribeControllerConfirmSubscribeQuery({ email: userInfo?.email! }, {
     skip: !userInfo?.email,
   });
 

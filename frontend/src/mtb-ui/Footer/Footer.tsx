@@ -3,10 +3,10 @@ import { renderMenu } from '@app/navigation/router'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
 import { toast } from 'react-toastify'
-import { useEmailSubscribeControllerSendSubscribeMailMutation } from '@app/services/api/emailSubscriber/emailSubscriber'
 import { useAppSelector } from '@app/store/hook'
 import { IUserStore } from '@app/store/user'
 import { RootState } from '@app/store'
+import { useEmailSubscribeControllerSendConfirmMailMutation } from '@app/services/api/emailSubscribe/emailSubscribe'
 
 const footerLink = [
   {
@@ -26,10 +26,9 @@ const footerLink = [
     link: 'https://www.youtube.com/@nccplusvietnam7545'
   }
 ]
-
 function Footer() {
   const [form] = Form.useForm<{ email: string }>()
-  const [sendMail, { isLoading }] = useEmailSubscribeControllerSendSubscribeMailMutation()
+  const [sendMail, { isLoading }] = useEmailSubscribeControllerSendConfirmMailMutation()
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)  
 
   const handleSubmit = async (e: React.FormEvent) => {

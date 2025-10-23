@@ -46,19 +46,18 @@ export class EmailSubscribeController {
     }
   }
 
+  @Patch('/:id')
+  @RoleRequired([Role.ADMIN])
+  updateSubscriber(
+    @Param('id') id: string,
+    @Body() data: Partial<GetEmailSubscriptionRequest>,
+  ) {
+    return this.subscribeService.updateSubscriber(id, data);
+  }
+
   @Delete('/:id')
   @RoleRequired([Role.ADMIN])
   async delete(@Param('id') id: string) {
     return this.subscribeService.deleteSubscriber(id)
   }
-
-  @Patch('/:id')
-  @RoleRequired([Role.ADMIN])
-  updatePreferences(
-    @Param('id') id: string,
-    @Body() data: Partial<GetEmailSubscriptionRequest>,
-  ) {
-    return this.subscribeService.updateSubscriptionPreferences(id, data);
-  }
-
 }

@@ -1,4 +1,5 @@
-import { useEmailSubscribeControllerUnsubscribeQuery } from '@app/services/api/emailSubscriber/emailSubscriber';
+
+import { useEmailSubscribeControllerUnsubscribeQuery } from '@app/services/api/emailSubscribe/emailSubscribe';
 import { RootState } from '@app/store';
 import { useAppSelector } from '@app/store/hook';
 import { IUserStore } from '@app/store/user';
@@ -10,7 +11,7 @@ import { toast } from 'react-toastify';
 const UnsubscribePage = () => {
   const navigate = useNavigate();
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
-  const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery(userInfo?.email!, {
+  const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery({email:userInfo?.email!}, {
     skip: !userInfo?.email,
   });
 
