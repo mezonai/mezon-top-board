@@ -36,8 +36,4 @@ export class SearchMailTemplateRequest extends PaginationQuery {
   })
   @IsOptional()
   search: string;
-
-  @ApiPropertyOptional({ enum: RepeatInterval, description: 'Filter by repeat interval' })
-  @IsOptional()
-  repeatInterval?: RepeatInterval;
 }

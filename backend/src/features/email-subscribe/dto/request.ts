@@ -21,8 +21,4 @@ export class SearchEmailSubscriberRequest extends PaginationQuery {
     })
     @IsOptional()
     search: string;
-
-    @ApiPropertyOptional({ enum: EmailSubscriptionStatus, description: 'Filter by email subscription status' })
-    @IsOptional()
-    status?: EmailSubscriptionStatus;
 }

@@ -16,10 +16,4 @@ export class Subscriber extends BaseSoftDelete {
     default: EmailSubscriptionStatus.PENDING,
   })
   public status: EmailSubscriptionStatus
-
-  @Column({ nullable: true })
-  public confirmationToken?: string
-
-  @Column({ type: 'timestamptz', nullable: true })
-  public confirmationTokenExpires?: Date
 }
