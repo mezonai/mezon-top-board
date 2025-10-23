@@ -1,11 +1,12 @@
-import { Button, Form, Input, Modal, Select, TimePicker } from 'antd'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import RichTextEditor from '@app/components/RichText/RichText'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { RepeatInterval } from '@app/enums/subscribe'
 import Checkbox from 'antd/es/checkbox/Checkbox'
-import dayjs from 'dayjs';
 import { MailTemplate, useMailTemplateControllerCreateAndSendMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/mailTemplate/mailTemplate'
+import TimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/TimePicker'
+import moment from 'moment'
 
 export interface MailFormValues {
   subject: string,
@@ -29,7 +30,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
   const [checked, setChecked] = useState(false);
   const [intervalMode, setIntervalMode] = useState<RepeatInterval>();
 
-  const now = dayjs()
+  const now = moment()
 
   const disabledHours = () => {
     if (selectMail !== undefined && checked) return []
@@ -100,7 +101,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
     if (selectMail) {
       form.setFieldsValue({
         ...selectMail,
-        scheduledAt: dayjs(selectMail.scheduledAt),
+        scheduledAt: moment(selectMail.scheduledAt),
       })
       setChecked(!!selectMail.isRepeatable);
       setIntervalMode(selectMail.repeatInterval);
@@ -140,8 +141,8 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
           <Form.Item name="scheduledAt" label="Schedule time">
             <TimePicker
               format="HH:mm"
-              //minuteStep={30}
-              defaultValue={dayjs('08:00', 'HH:mm')}
+              minuteStep={30}
+              defaultValue={moment('08:00', 'HH:mm')}
               disabledHours={!checked ? disabledHours : undefined}
               disabledMinutes={!checked ? disabledMinutes : undefined}
             />
