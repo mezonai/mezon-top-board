@@ -43,6 +43,7 @@ export class MailTemplateService {
     );
   }
 
+  //TODO: create controller
   async sendConfirmMail(email: string) {
     return this.mailQueue.add(
       'send-confirmation-mail',

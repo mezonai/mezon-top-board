@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
 
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
 
@@ -29,7 +29,16 @@ export class EmailSubscribeService {
     const exsistingSubscribe = await this.subscribeRepository.findOne({
       where: { email },
     });
-    if (exsistingSubscribe) throw new BadGatewayException('Email is already subscribed');
+    if (exsistingSubscribe) {
+      switch (exsistingSubscribe.status) {
+        case EmailSubscriptionStatus.PENDING:
+          throw new BadRequestException('Subscription is already pending confirmation, please checking your email.');
+        case EmailSubscriptionStatus.ACTIVE:
+          throw new BadRequestException('Email is already subscribed');
+        case EmailSubscriptionStatus.UNSUBSCRIBED:
+          throw new BadRequestException('You have unsubscribed. Do you want to subscribe again?');
+      }
+    }
     await this.subscribeRepository.create({ email });
     await this.mailService.sendConfirmMail(email);
     return new Result({ message: 'Please check your email to confirm subscription' });
@@ -84,6 +93,15 @@ export class EmailSubscribeService {
     const subscribe = await this.subscribeRepository.findById(id);
     if (!subscribe) throw new BadGatewayException('Subscription not found or inactive');
     const updatedSubscribe = await this.subscribeRepository.update(id, data);
+    return new Result({ message: 'Your subscription is active right now!', data: updatedSubscribe });
+  }
+
+  async reSubscribe(email: string, data: Partial<GetEmailSubscriptionRequest>) {
+    const subscribe = await this.subscribeRepository.findOne({
+      where: { email, status: EmailSubscriptionStatus.UNSUBSCRIBED },
+    });
+    if (!subscribe) throw new BadGatewayException('Subscriber not found or still active');
+    const updatedSubscribe = await this.subscribeRepository.update(subscribe.id, data);
     return new Result({ message: 'Subscription preferences updated successfully', data: updatedSubscribe });
   }
 

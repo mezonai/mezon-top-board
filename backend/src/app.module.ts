@@ -4,8 +4,8 @@ import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { MailerModule } from "@nestjs-modules/mailer";
-import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from "path";
 
 import { dataSourceOption } from "@config/data-source.config";
@@ -54,9 +54,15 @@ import { LoggerModule } from "@libs/logger";
         from: `Mezon-Top-Board`,
       },
       template: {
-        dir: join(__dirname, '/templates'),
+        dir: join(__dirname, 'templates'),
         adapter: new HandlebarsAdapter(),
-        options: { strict: true },
+        options: {
+          strict: true,
+          layoutsDir: join(__dirname, 'templates', 'layouts'),
+          partialsDir: join(__dirname, 'templates', 'partials'),
+          defaultLayout: 'master',
+          extName: '.hbs',
+        },
       },
     }),
     ScheduleModule.forRoot(),

@@ -20,13 +20,13 @@ const injectedRtkApi = api.injectEndpoints({
       EmailSubscribeControllerConfirmSubscribeApiResponse,
       EmailSubscribeControllerConfirmSubscribeApiArg
     >({
-      query: (queryArg) => ({ url: `/api/email-subscribe/confirm/${queryArg.email}` })
+      query: () => ({ url: `/api/email-subscribe/confirm` })
     }),
     emailSubscribeControllerUnsubscribe: build.query<
       EmailSubscribeControllerUnsubscribeApiResponse,
       EmailSubscribeControllerUnsubscribeApiArg
     >({
-      query: (queryArg) => ({ url: `/api/email-subscribe/unsubscribe/${queryArg.email}` })
+      query: () => ({ url: `/api/email-subscribe/unsubscribe` })
     }),
     emailSubscribeControllerSearchSubscriber: build.query<
       EmailSubscribeControllerSearchSubscriberApiResponse,
@@ -47,6 +47,12 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/api/email-subscribe/${queryArg.id}`, method: 'PATCH', body: queryArg.updateSubscriptionRequest })
     }),
+    emailSubscribeControllerReSubscribe: build.mutation<
+      EmailSubscribeControllerReSubscribeApiResponse,
+      EmailSubscribeControllerReSubscribeApiArg
+    >({
+      query: (queryArg) => ({ url: `/api/email-subscribe/resubscribe`, method: 'PATCH', body: queryArg.updateSubscriptionRequest })
+    }),
     emailSubscribeControllerDelete: build.mutation<
       EmailSubscribeControllerDeleteApiResponse,
       EmailSubscribeControllerDeleteApiArg
@@ -64,14 +70,10 @@ export type EmailSubscribeControllerGetAllSubscribersApiResponse = HttpResponse<
 export type EmailSubscribeControllerGetAllSubscribersApiArg = void
 
 export type EmailSubscribeControllerConfirmSubscribeApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerConfirmSubscribeApiArg = {
-  email: string
-}
+export type EmailSubscribeControllerConfirmSubscribeApiArg = void
 
 export type EmailSubscribeControllerUnsubscribeApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerUnsubscribeApiArg = {
-  email: string
-}
+export type EmailSubscribeControllerUnsubscribeApiArg = void
 
 export type EmailSubscribeControllerSearchSubscriberApiResponse = HttpResponse<EmailSubscriber[]>
 export type EmailSubscribeControllerSearchSubscriberApiArg = {
@@ -83,6 +85,13 @@ export type EmailSubscribeControllerSearchSubscriberApiArg = {
 export type EmailSubscribeControllerUpdateSubscriberApiResponse = HttpResponse<{ message: string, data: EmailSubscriber }>
 export type EmailSubscribeControllerUpdateSubscriberApiArg = {
   id: string
+  updateSubscriptionRequest: {
+    status: EmailSubscriptionStatus
+  }
+}
+
+export type EmailSubscribeControllerReSubscribeApiResponse = HttpResponse<{ message: string, data: EmailSubscriber }>
+export type EmailSubscribeControllerReSubscribeApiArg = {
   updateSubscriptionRequest: {
     status: EmailSubscriptionStatus
   }
@@ -109,5 +118,6 @@ export const {
   useEmailSubscribeControllerSearchSubscriberQuery,
   useLazyEmailSubscribeControllerSearchSubscriberQuery,
   useEmailSubscribeControllerUpdateSubscriberMutation,
+  useEmailSubscribeControllerReSubscribeMutation,
   useEmailSubscribeControllerDeleteMutation
 } = injectedRtkApi

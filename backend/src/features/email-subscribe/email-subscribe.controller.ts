@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Patch, Delete, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Role } from '@domain/common/enum/role';
@@ -19,14 +19,14 @@ export class EmailSubscribeController {
     return this.subscribeService.sendMailSubcribe(email);
   }
 
-  @Get('confirm/:email')
-  confirmSubscribe(@Param('email') email: string) {
-    return this.subscribeService.confirmSubscribe(email);
+  @Get('confirm')
+  confirmSubscribe(@Req() req) {
+    return this.subscribeService.confirmSubscribe(req.user.email);
   }
 
-  @Get('unsubscribe/:email')
-  unsubscribe(@Param('email') email: string) {
-    return this.subscribeService.unsubscribe(email);
+  @Get('unsubscribe')
+  unsubscribe(@Req() req) {
+    return this.subscribeService.unsubscribe(req.user.email);
   }
 
   @Get()
@@ -44,6 +44,14 @@ export class EmailSubscribeController {
       console.error("An error occured", error);
       throw error;
     }
+  }
+
+  @Patch('resubscribe')
+  reSubscribe(
+    @Req() req,
+    @Body() data: Partial<GetEmailSubscriptionRequest>,
+  ) {
+    return this.subscribeService.reSubscribe(req.user.email, data);
   }
 
   @Patch('/:id')

@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, Tag } from 'antd'
+import { Button, Divider, Form, Input, Modal, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
@@ -6,7 +6,8 @@ import { toast } from 'react-toastify'
 import { useAppSelector } from '@app/store/hook'
 import { IUserStore } from '@app/store/user'
 import { RootState } from '@app/store'
-import { useEmailSubscribeControllerSendConfirmMailMutation } from '@app/services/api/emailSubscribe/emailSubscribe'
+import { useEmailSubscribeControllerReSubscribeMutation, useEmailSubscribeControllerSendConfirmMailMutation } from '@app/services/api/emailSubscribe/emailSubscribe'
+import { EmailSubscriptionStatus } from '@app/enums/subscribe'
 
 const footerLink = [
   {
@@ -27,22 +28,43 @@ const footerLink = [
   }
 ]
 function Footer() {
-  const [form] = Form.useForm<{ email: string }>()
   const [sendMail, { isLoading }] = useEmailSubscribeControllerSendConfirmMailMutation()
-  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)  
+  const [updateStatus] = useEmailSubscribeControllerReSubscribeMutation()
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const email = userInfo?.email
     if (!email) {
       toast.error('Please log in to subscribe to the newsletter.')
+      return
     }
     const res = await sendMail({ email }).unwrap().catch((err) => {
-      toast.error(err.data?.message || 'An error occurred while subscribing.')
+      const message = err?.data?.message || 'An error occurred.';
+    
+      if (message.includes('unsubscribed')) {
+        Modal.confirm({
+          title: 'Resubscribe?',
+          content: 'You have unsubscribed from our newsletter. Would you like to subscribe again?',
+          okText: 'Yes',
+          cancelText: 'No',
+          onOk: async () => {
+            const resub = await updateStatus({
+                updateSubscriptionRequest: { status: EmailSubscriptionStatus.ACTIVE }
+              }).unwrap().catch((error) => {
+                const errMessage = error?.data?.message || 'Failed to resubscribe. Please try again later..';
+                toast.error(errMessage);
+                throw error;
+              });
+              toast.success(resub.message);
+          },
+        });
+      } else {
+        toast.info(message);
+      }
     })
     if (res?.statusCode === 200) {
       toast.success(res.message)
-      form.resetFields()
     }
   }
   return (
@@ -68,9 +90,9 @@ function Footer() {
             Get Newsletter
           </MtbTypography>
           <div className="flex items-center justify-center gap-2 w-full md:w-auto">
-            <Form form={form} className="flex-grow max-w-sm">
+            <Form className="flex-grow max-w-sm">
               <Form.Item className="!mb-0">
-                <Input className="text-center md:text-left" readOnly disabled defaultValue={userInfo?.email || ""} />
+                <Input className="text-center md:text-left" readOnly disabled value={userInfo?.email || ""} />
               </Form.Item>
             </Form>
             <Button

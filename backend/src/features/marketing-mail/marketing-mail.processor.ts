@@ -5,7 +5,6 @@ import { Job } from 'bullmq';
 
 import config from "@config/env.config";
 
-import { renderHbs } from '@libs/utils/hbs';
 
 export interface MailJobData<T> {
   email?: string
@@ -35,14 +34,14 @@ export class MailTemplateProcessor extends WorkerHost {
     const { email } = job.data;
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Xác nhận đăng ký',
-      template: 'master',
+      subject: 'Confirm your subscription to Mezon Top Board',
+      template: 'confirm-email-subscribe',
       context: {
-        subject: 'Xác nhận đăng ký',
-        content: renderHbs('confirm-email-subscribe', { url: `${config().APP_CLIENT_URL}/confirm-subscribe` }),
+        url: `${config().APP_CLIENT_URL}/confirm-subscribe`,
         year: new Date().getFullYear(),
         showUnsubscribe: false,
-      }
+        layout: 'master',
+      },
     });
   }
 
@@ -53,9 +52,8 @@ export class MailTemplateProcessor extends WorkerHost {
       subject,
       template: 'master',
       context: {
-        subject,
         preheaderText: 'Đừng bỏ lỡ bản tin mới nhất từ Mezon Top Board',
-        content,
+        body: content,
         year: new Date().getFullYear(),
         showUnsubscribe: true,
         unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
