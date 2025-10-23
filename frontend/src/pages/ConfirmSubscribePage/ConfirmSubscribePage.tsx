@@ -1,28 +1,45 @@
 import { useEmailSubscribeControllerConfirmQuery } from '@app/services/api/emailSubscriber/emailSubscriber';
+import { RootState } from '@app/store';
+import { useAppSelector } from '@app/store/hook';
+import { IUserStore } from '@app/store/user';
 import { Flex, Spin } from 'antd';
 import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const ConfirmSubscribePage = () => {
   const navigate = useNavigate();
 
-  const { token } = useParams<{ token: string }>()
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
 
-  const { data } = useEmailSubscribeControllerConfirmQuery(token!, {
-    skip: !token,
-  })
+  const { data, refetch } = useEmailSubscribeControllerConfirmQuery(userInfo?.email!, {
+    skip: !userInfo?.email,
+  });
 
   useEffect(() => {
-    console.log(data)
-    if(!data) {
-      toast.error("Subscription confirmation failed\nInvalid token or subscription already confirmed.");
-      navigate(`/`);
-    }else{
-      toast.success("Subscription confirmed successfully");
-      navigate(`/`);
+    if (userInfo?.email) {
+      refetch();
     }
-  }, [navigate, data]);
+  }, [userInfo?.email]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userInfo?.email) {
+        toast.error("Subscription confirmation failed\nEmail not found, please log in.");
+        navigate('/');
+      }
+
+      if (!data) {
+        toast.error("Subscription confirmation failed\nSubscription already confirmed.");
+        navigate('/');
+      } else {
+        toast.success(data.message);
+        navigate('/');
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [userInfo?.email, data]);
 
   return (
     <Flex align='center' justify='center' vertical flex={1} className='!bg-gray-300 fixed inset-0 z-[9999]'>

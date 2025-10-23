@@ -25,9 +25,6 @@ import { UserModule } from "@features/user/user.module";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 
-
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -57,7 +54,7 @@ import { LoggerModule } from "@libs/logger";
         from: `Mezon-Top-Board`,
       },
       template: {
-        dir: join(__dirname, 'features', 'marketing-mail', 'templates'),
+        dir: join(__dirname, '/templates'),
         adapter: new HandlebarsAdapter(),
         options: { strict: true },
       },

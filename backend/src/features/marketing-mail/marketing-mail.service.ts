@@ -7,8 +7,6 @@ import { differenceInMinutes } from 'date-fns';
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
 
 import { Result } from '@domain/common/dtos/result.dto';
-import { SortField } from '@domain/common/enum/sortField';
-import { SortOrder } from '@domain/common/enum/sortOder';
 import { EmailSubscriptionStatus, RepeatInterval } from '@domain/common/enum/subscribeTypes';
 import { MailTemplate } from '@domain/entities/schema/mailTemplate.entity';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
@@ -19,6 +17,7 @@ import { CreateMailTemplateRequest, SearchMailTemplateRequest } from '@features/
 import { SearchMailTemplateResponse } from '@features/marketing-mail/dtos/response';
 
 import { GenericRepository } from '@libs/repository/genericRepository';
+import { renderHbs } from '@libs/utils/hbs';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 
@@ -43,25 +42,28 @@ export class MailTemplateService {
         subject,
         context: {
           subject,
-          content,
-          unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
-          brandName: 'Mezon Top Board',
           preheaderText: 'Đừng bỏ lỡ bản tin mới nhất từ Mezon Top Board',
-          year: new Date().getFullYear()
+          content,
+          year: new Date().getFullYear(),
+          showUnsubscribe: true,
+          unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
         },
       },
       { attempts: 3, backoff: 5000, removeOnComplete: true },
-    )
+    );
   }
 
-  async sendConfirmMail(email: string, token: string) {
+  async sendConfirmMail(email: string) {
     return this.mailQueue.add(
       'send-confirmation-mail',
       {
         email,
         subject: 'Xác nhận đăng ký',
         context: {
-          url: `${config().APP_CLIENT_URL}/confirm-subscribe/${token}`,
+          subject: 'Xác nhận đăng ký',
+          content: renderHbs('confirm-email-subscribe', { url: `${config().APP_CLIENT_URL}/confirm-subscribe` }),
+          year: new Date().getFullYear(),
+          showUnsubscribe: false,
         },
       },
       { attempts: 3, backoff: 5000, removeOnComplete: true },
@@ -125,8 +127,7 @@ export class MailTemplateService {
     return new Result({ message: 'Mail deleted successfully.' });
   }
 
-  //@Cron(CronExpression.EVERY_30_MINUTES)
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async handleMailSchedule() {
     const now = new Date()
 
@@ -166,7 +167,7 @@ export class MailTemplateService {
       mail.scheduledAt.getMinutes() === now.getMinutes();
 
     const minutesDiff = Math.abs(differenceInMinutes(now, mail.scheduledAt));
-    const withinGracePeriod = minutesDiff <= 1 && sameHourMinute; // change to 30 for production
+    const withinGracePeriod = minutesDiff <= 30 && sameHourMinute;
 
     switch (mail.repeatInterval) {
       case RepeatInterval.DAILY:
@@ -218,17 +219,6 @@ export class MailTemplateService {
           });
         })
       );
-
-    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
-    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
-    const sortField = invalidSortField ? query.sortField : SortField.SUBJECT;
-    const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
-
-    if (query.sortField === SortField.SUBJECT) {
-      whereCondition
-        .addSelect('LOWER(mail_template.subject)', 'mail_template_subject_lower')
-        .orderBy('mail_template_subject_lower', sortOrder);
-    } else whereCondition.orderBy(`mail_template.${sortField}`, sortOrder);
 
     return whereCondition;
   }

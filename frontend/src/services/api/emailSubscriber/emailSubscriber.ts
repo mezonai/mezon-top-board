@@ -19,8 +19,18 @@ const injectedRtkApi = api.injectEndpoints({
       EmailSubscribeControllerConfirmResponse,
       EmailSubscribeControllerConfirmArg
     >({
-      query: (token) => ({
-        url: `/api/email-subscribe/confirm/${token}`,
+      query: (email) => ({
+        url: `/api/email-subscribe/confirm/${email}`,
+        method: 'GET',
+      }),
+    }),
+
+    emailSubscribeControllerUnsubscribe: build.query<
+      EmailSubscribeControllerUnsubscribeResponse,
+      EmailSubscribeControllerUnsubscribeArg
+    >({
+      query: (email) => ({
+        url: `/api/email-subscribe/unsubscribe/${email}`,
         method: 'GET',
       }),
     }),
@@ -81,6 +91,9 @@ export type EmailSubscribeControllerSendSubscribeMailResponse = HttpResponse<{ m
 export type EmailSubscribeControllerConfirmArg = string
 export type EmailSubscribeControllerConfirmResponse = HttpResponse<{ message: string }>
 
+export type EmailSubscribeControllerUnsubscribeArg = string
+export type EmailSubscribeControllerUnsubscribeResponse = HttpResponse<{ message: string }>
+
 export type EmailSubscribeControllerUpdateSubscriberArg = {
   id: string
   updateSubscriptionRequest: {
@@ -107,6 +120,7 @@ export type EmailSubscribeControllerGetAllSubscriberResponse = HttpResponse<Emai
 export const {
   useEmailSubscribeControllerSendSubscribeMailMutation,
   useEmailSubscribeControllerConfirmQuery,
+  useEmailSubscribeControllerUnsubscribeQuery,
   useEmailSubscribeControllerUpdateSubscriberMutation,
   useLazyEmailSubscribeControllerGetAllSubscriberQuery,
   useEmailSubscribeControllerGetAllSubscriberQuery,

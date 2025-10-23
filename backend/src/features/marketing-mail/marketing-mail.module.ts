@@ -10,7 +10,6 @@ import { MailTemplateProcessor } from '@features/marketing-mail/marketing-mail.p
 
 import { MailTemplateService } from './marketing-mail.service';
 
-
 @Module({
   providers: [MailTemplateService, MailTemplateProcessor],
   imports: [

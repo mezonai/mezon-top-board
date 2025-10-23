@@ -29,32 +29,23 @@ export class MailTemplateProcessor extends WorkerHost {
   }
 
   private async handleConfirmation(job: Job) {
-    const { email, subject } = job.data;
-
+    const { email, subject, context } = job.data;
     await this.mailerService.sendMail({
       to: email,
       subject,
-      template: 'confirm-email-subscribe',
-      context: {
-        url: job.data.context?.url,
-      }
+      template: 'master',
+      context
     });
   }
 
   private async handleBulkSend(job: Job) {
     const { emails, subject, context } = job.data;
-    for (const email of emails) {
-      try {
-        await this.mailerService.sendMail({
-          to: email,
-          subject,
-          template: 'master',
-          context: context,
-        });
-      } catch (error) {
-        console.error(`Failed to send mail to ${email}:`, error.message);
-      }
-    }
+    await this.mailerService.sendMail({
+      to: emails,
+      subject,
+      template: 'master',
+      context: context,
+    });
     return { success: true, total: emails.length };
   }
 }

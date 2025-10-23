@@ -9,8 +9,6 @@ import { MailTemplateModule } from '@features/marketing-mail/marketing-mail.modu
 import { EmailSubscribeController } from './email-subscribe.controller';
 import { EmailSubscribeService } from './email-subscribe.service';
 
-
-
 @Module({
   controllers: [EmailSubscribeController],
   providers: [EmailSubscribeService],

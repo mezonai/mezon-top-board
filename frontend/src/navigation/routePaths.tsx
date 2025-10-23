@@ -134,7 +134,7 @@ export const routePaths: RoutePath[] = [
   },
   {
     index: false,
-    path: 'confirm-subscribe/:token',
+    path: 'confirm-subscribe',
     element: <ConfirmSubscribePage />,
     strLabel: 'Confirm Subscription',
     isShowMenu: false,
@@ -142,7 +142,7 @@ export const routePaths: RoutePath[] = [
   },
   {
     index: false,
-    path: 'unsubscribe/:status',
+    path: 'unsubscribe',
     element: <UnsubscribePage />,
     strLabel: 'Unsubscription',
     isShowMenu: false,

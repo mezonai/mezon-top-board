@@ -1,15 +1,16 @@
-import { Controller, Get, Post, Param, Body, Res, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Patch, Delete, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Role } from '@domain/common/enum/role';
 
 import { GetEmailSubscriptionRequest, SearchEmailSubscriberRequest } from '@features/email-subscribe/dto/request';
 
-import { Public } from '@libs/decorator/authorization.decorator';
 import { RoleRequired } from '@libs/decorator/roles.decorator';
 
 import { EmailSubscribeService } from './email-subscribe.service';
 
 @Controller('email-subscribe')
+@ApiTags("Email Subscribe")
 export class EmailSubscribeController {
   constructor(private readonly subscribeService: EmailSubscribeService) { }
 
@@ -18,15 +19,14 @@ export class EmailSubscribeController {
     return this.subscribeService.sendMailSubcribe(email);
   }
 
-  @Get('confirm/:token')
-  confirmSubscribe(@Param('token') token: string, @Res() res) {
-    return this.subscribeService.confirmSubscribe(token, res);
+  @Get('confirm/:email')
+  confirmSubscribe(@Param('email') email: string) {
+    return this.subscribeService.confirmSubscribe(email);
   }
 
-  @Public()
   @Get('unsubscribe/:email')
-  unsubscribe(@Param('email') email: string, @Res() res) {
-    return this.subscribeService.unsubscribe(email, res);
+  unsubscribe(@Param('email') email: string) {
+    return this.subscribeService.unsubscribe(email);
   }
 
   @Get()

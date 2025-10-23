@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadGatewayException, Injectable } from '@nestjs/common';
 
-import * as crypto from 'crypto'
-import { Response } from 'express';
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
 
 import { Result } from '@domain/common/dtos/result.dto';
-import { SortField } from '@domain/common/enum/sortField';
-import { SortOrder } from '@domain/common/enum/sortOder';
 import { EmailSubscriptionStatus } from '@domain/common/enum/subscribeTypes';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
@@ -37,49 +32,28 @@ export class EmailSubscribeService {
       where: { email },
     });
     if (exsistingSubscribe) throw new BadGatewayException('Email is already subscribed');
-    const token = crypto.randomBytes(32).toString('hex');
-    const confirmationToken = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex');
-    const confirmationTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
-    await this.subscribeRepository.create({
-      email,
-      confirmationToken,
-      confirmationTokenExpires,
-    });
-    await this.mailService.sendConfirmMail(email, token);
+    await this.subscribeRepository.create({ email });
+    await this.mailService.sendConfirmMail(email);
     return new Result({ message: 'Please check your email to confirm subscription' });
   }
 
-  async confirmSubscribe(token: string, res: Response) {
-    const confirmationToken = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex');
+  async confirmSubscribe(email: string) {
     const subscribe = await this.subscribeRepository.findOne({
       where: {
-        confirmationToken,
+        email,
         status: EmailSubscriptionStatus.PENDING,
       },
     });
-
     if (!subscribe) {
-      throw new BadGatewayException('Invalid token or subscription already confirmed');
-    }
-    if (subscribe.confirmationTokenExpires < new Date()) {
-      await this.subscribeRepository.delete(subscribe.id);
-      throw new BadGatewayException('Token has expired, please subscribe again');
+      throw new BadGatewayException('Subscription already confirmed');
     }
     await this.subscribeRepository.update(subscribe.id, {
       status: EmailSubscriptionStatus.ACTIVE,
-      confirmationToken: null,
-      confirmationTokenExpires: null,
     });
     return new Result({ message: 'Subscription confirmed successfully' });
   }
 
-  async unsubscribe(email: string, res: Response) {
+  async unsubscribe(email: string) {
     const subscribe = await this.subscribeRepository.findOne({
       where: { email, status: EmailSubscriptionStatus.ACTIVE },
     });
@@ -157,17 +131,6 @@ export class EmailSubscribeService {
           });
         })
       );
-
-    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
-    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
-    const sortField = invalidSortField ? query.sortField : SortField.EMAIL;
-    const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
-
-    if (query.sortField === SortField.EMAIL) {
-      whereCondition
-        .addSelect('LOWER(subscriber.email)', 'subscriber_email_lower')
-        .orderBy('subscriber_email_lower', sortOrder);
-    } else whereCondition.orderBy(`subscriber.${sortField}`, sortOrder);
 
     return whereCondition;
   }

@@ -53,6 +53,10 @@ const config: ConfigFile = {
     //   filterEndpoints: filterByTag('Review History'),
     //   exportName: 'reviewHistoryService'
     // },
+    './api/emailSubscribe/emailSubscribe.ts': {
+      filterEndpoints: filterByTag('Email Subscribe'),
+      exportName: 'emailSubscribeService'
+    },
   },
 
   hooks: {

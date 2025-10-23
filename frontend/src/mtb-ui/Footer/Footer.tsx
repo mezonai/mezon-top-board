@@ -4,6 +4,10 @@ import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
 import { toast } from 'react-toastify'
 import { useEmailSubscribeControllerSendSubscribeMailMutation } from '@app/services/api/emailSubscriber/emailSubscriber'
+import { useAppSelector } from '@app/store/hook'
+import { IUserStore } from '@app/store/user'
+import { RootState } from '@app/store'
+
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -25,13 +29,15 @@ const footerLink = [
 
 function Footer() {
   const [form] = Form.useForm<{ email: string }>()
-  const [sendMail, { isLoading }] =
-    useEmailSubscribeControllerSendSubscribeMailMutation()
+  const [sendMail, { isLoading }] = useEmailSubscribeControllerSendSubscribeMailMutation()
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const email = form.getFieldValue('email')
-    if (!email) return
+    const email = userInfo?.email
+    if (!email) {
+      toast.error('Please log in to subscribe to the newsletter.')
+    }
     const res = await sendMail({ email }).unwrap().catch((err) => {
       toast.error(err.data?.message || 'An error occurred while subscribing.')
     })
@@ -63,9 +69,9 @@ function Footer() {
             Get Newsletter
           </MtbTypography>
           <div className="flex items-center justify-center gap-2 w-full md:w-auto">
-            <Form form={form} className="flex-grow max-w-xs">
-              <Form.Item name="email" className="!mb-0">
-                <Input className="text-center md:text-left" placeholder="Enter your email" />
+            <Form form={form} className="flex-grow max-w-sm">
+              <Form.Item className="!mb-0">
+                <Input className="text-center md:text-left" readOnly disabled defaultValue={userInfo?.email || ""} />
               </Form.Item>
             </Form>
             <Button

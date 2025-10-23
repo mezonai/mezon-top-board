@@ -1,25 +1,43 @@
+import { useEmailSubscribeControllerUnsubscribeQuery } from '@app/services/api/emailSubscriber/emailSubscriber';
+import { RootState } from '@app/store';
+import { useAppSelector } from '@app/store/hook';
+import { IUserStore } from '@app/store/user';
 import { Flex, Spin } from 'antd';
 import { useEffect } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const UnsubscribePage = () => {
-  const { status } = useParams();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const message = searchParams.get("message");
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
+  const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery(userInfo?.email!, {
+    skip: !userInfo?.email,
+  });
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (userInfo?.email) {
+      refetch();
+    }
+  }, [userInfo?.email]);
 
-    if (status === "failed") {
-        toast.error(message ?? "Unsubscribe failed, please try again");
-        navigate(`/`);
-    } else if (status === "success") {
-        toast.success(message ?? "Unsubscribe successful");
-        navigate(`/`);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userInfo?.email) {
+        toast.error("Unsubscribe failed\nEmail not found, please log in.");
+        navigate('/');
       }
-  }, [navigate, status, message]);
+
+      if (!data) {
+        toast.error("Unsubscribe failed\nUnsubscribed already.");
+        navigate('/');
+      } else {
+        toast.success(data.message);
+        navigate('/');
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [userInfo?.email, data]);
 
   return (
     <Flex align='center' justify='center' vertical flex={1} className='!bg-gray-300 fixed inset-0 z-[9999]'>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{subject}}</title>
+  <style>
+    body,
+    table,
+    td,
+    a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table {
+      border-collapse: collapse !important;
+    }
+
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .preheader {
+      display: none !important;
+      visibility: hidden;
+      opacity: 0;
+      color: transparent;
+      height: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .email-wrapper {
+      width: 100%;
+      background-color: #f4f4f7;
+      padding: 20px 0;
+    }
+
+    .email-content {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .email-header {
+      padding: 20px;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .email-body {
+      padding: 24px 32px;
+      font-family: Arial, sans-serif;
+      color: #333333;
+      line-height: 1.5;
+    }
+
+    .email-footer {
+      padding: 20px 32px;
+      font-size: 12px;
+      color: #888888;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    @media only screen and (max-width: 480px) {
+      .email-content {
+        width: 100% !important;
+        border-radius: 0;
+      }
+
+      .email-header,
+      .email-body,
+      .email-footer {
+        padding: 16px !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  {{#if preheaderText}}
+    <span class="preheader">{{preheaderText}}</span>
+  {{/if}}
+  <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+      <td align="center">
+        <table class="email-content" width="600" cellpadding="0" cellspacing="0" role="presentation">
+          <tr>
+            <td class="email-header">
+              <img src="https://res.cloudinary.com/dh3q44nkl/image/upload/v1761020725/mezon_o2oa8p.webp" alt="logo"
+                style="max-width:160px;" />
+              <h1 style="margin:0; font-size:24px; font-weight:normal;">Mezon Top Board</h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="email-body">
+              {{{content}}}
+            </td>
+          </tr>
+
+          <tr>
+            <td class="email-footer">
+              {{#if showUnsubscribe}}
+              <p style="margin:0 0 8px 0;">
+                If you no longer wish to receive emails from us, you can unsubscribe here:
+              </p>
+              <p style="margin:0 0 12px 0;">
+                <a href="{{unsubscribeUrl}}" target="_blank" rel="noopener noreferrer">Unsubscribe</a>
+              </p>
+              {{/if}}
+
+              <p style="margin:0;">Mezon Top Board • © {{year}}</p>
+              <p style="margin:6px 0 0 0; font-size:11px; color:#aaa;">
+                You are receiving this email because you subscribed to updates from us.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
