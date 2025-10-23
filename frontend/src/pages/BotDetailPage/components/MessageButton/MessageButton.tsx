@@ -21,7 +21,7 @@ const MessageButton = ({ data }: { data: GetMezonAppDetailsResponse }) => {
   return (
     <>
       <Link
-        to={`https://mezon.ai/chat/${data.name}?data=${dataBot}`}
+        to={`https://mezon.ai/chat/${data?.mezonAppId}?data=${dataBot}`}
         className='fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center z-50 cursor-pointer'
       >
         <MessageCircleMore size={26} />
