@@ -39,7 +39,7 @@ export class GenericRepository<T extends ObjectLiteral> {
             pageNumber,
             pageSize,
             sortField = SortField.NAME,
-            sortOrder = SortOrder.ASC, 
+            sortOrder = SortOrder.ASC,
             where,
             relations
         } = req;
