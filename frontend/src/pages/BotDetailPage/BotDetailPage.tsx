@@ -10,10 +10,7 @@ import {
   useLazyMezonAppControllerGetMezonAppDetailQuery,
   useLazyMezonAppControllerGetRelatedMezonAppQuery
 } from '@app/services/api/mezonApp/mezonApp'
-import {
-  useLazyRatingControllerGetAllRatingsByAppQuery,
-  useLazyRatingControllerGetRatingsByAppQuery
-} from '@app/services/api/rating/rating'
+import { useLazyRatingControllerGetAllRatingsByAppQuery, useLazyRatingControllerGetRatingsByAppQuery } from '@app/services/api/rating/rating'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
@@ -37,8 +34,7 @@ import { useAuth } from '@app/hook/useAuth'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 function BotDetailPage() {
   const navigate = useNavigate()
-  const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] =
-    useLazyMezonAppControllerGetMezonAppDetailQuery()
+  const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [getrelatedMezonApp] = useLazyMezonAppControllerGetRelatedMezonAppQuery()
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getRatingsByApp, { isLoading: isLoadingReview }] = useLazyRatingControllerGetRatingsByAppQuery()
@@ -47,7 +43,7 @@ function BotDetailPage() {
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { ratings, allRatings } = useSelector<RootState, IRatingStore>((s) => s.rating)
-  const { checkOwnership } = useOwnershipCheck()
+  const { checkOwnership } = useOwnershipCheck();
   const ratingCounts = allRatings?.data?.reduce(
     (acc, rating) => {
       acc[rating.score] = (acc[rating.score] || 0) + 1
@@ -61,32 +57,32 @@ function BotDetailPage() {
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
   const [page, setPage] = useState(1)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { isLogin } = useAuth()
-  const [dragging, setDragging] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [dragging, setDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 767)
-    }
+      setIsMobile(window.innerWidth < 767);
+    };
 
-    handleResize()
+    handleResize();
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (botId && botId !== 'undefined' && botId.trim() !== '') {
-      getMezonAppDetail({ id: botId })
-      getrelatedMezonApp({ id: botId })
-      getRatingsByApp({ appId: botId })
-      getAllRatingsByApp({ appId: botId })
+      getMezonAppDetail({ id: botId });
+      getrelatedMezonApp({ id: botId });
+      getRatingsByApp({ appId: botId });
+      getAllRatingsByApp({ appId: botId });
     } else {
-      navigate('/404', { replace: true })
+      navigate('/404', { replace: true });
     }
-  }, [botId])
+  }, [botId]);
 
   useEffect(() => {
     if (!tagList?.data?.length) {
@@ -98,16 +94,16 @@ function BotDetailPage() {
     if (isError && error) {
       const apiError = error as ApiError
       if (mezonAppDetail.id === undefined && (apiError?.status === 500 || apiError?.status === 404)) {
-        navigate('/404', { replace: true })
+        navigate('/404', { replace: true });
       } else {
-        toast.error(apiError?.data?.message)
+        toast.error(apiError?.data?.message);
       }
     }
-  }, [isError, error])
+  }, [isError, error]);
   useEffect(() => {
     // TODO: improve logic
     if (getMezonAppDetailApiResponse?.data && getMezonAppDetailApiResponse?.data?.status !== AppStatus.PUBLISHED) {
-      checkOwnership(getMezonAppDetailApiResponse.data?.owner?.id, true)
+      checkOwnership(getMezonAppDetailApiResponse.data?.owner?.id, true);
     }
   }, [getMezonAppDetailApiResponse])
 
@@ -166,10 +162,10 @@ function BotDetailPage() {
   const handleAfterChange = useMemo(
     () =>
       debounce(() => {
-        setDragging(false)
+        setDragging(false);
       }, 100),
     []
-  )
+  );
 
   return (
     <div className='m-auto pt-10 pb-10 w-[75%]'>
@@ -193,29 +189,17 @@ function BotDetailPage() {
             Overview
           </MtbTypography>
           <Divider className='bg-gray-200'></Divider>
-          <div
-            dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }}
-            className='break-words description'
-          ></div>
+          <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
           <div className='pt-5'>
             <MtbTypography variant='h3'>More like this</MtbTypography>
             <Divider className='bg-gray-200'></Divider>
             {relatedMezonApp?.length > 0 ? (
-              <Carousel
-                arrows={!isMobile}
-                infinite={true}
-                draggable
-                swipeToSlide={true}
-                touchThreshold={5}
-                variableWidth={false}
-                slidesToShow={4}
-                responsive={responsive}
-                className='text-center'
+              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
+                slidesToShow={4}  responsive={responsive} className='text-center' 
                 beforeChange={() => setDragging(true)}
-                afterChange={handleAfterChange}
-              >
+                afterChange={handleAfterChange}>
                 {relatedMezonApp.map((bot) => (
-                  <div className='p-1' key={bot.id}>
+                  <div className="p-1" key={bot.id}>
                     <CompactBotCard data={bot} isDragging={dragging} />
                   </div>
                 ))}
@@ -239,8 +223,8 @@ function BotDetailPage() {
                   </div>
                 </div>
                 <p className='pt-5 max-lg:pt-7 max-2xl:pt-7'>
-                  Reviews can be left only by registered users. All reviews are moderated by our moderators. Please make
-                  sure to check our guidelines before posting.
+                  Reviews can be left only by registered users. All reviews are moderated by our moderators. Please
+                  make sure to check our guidelines before posting.
                 </p>
               </div>
               <div className='flex-1 flex flex-col gap-1'>
@@ -263,16 +247,16 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-            {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
-              <RatingForm
-                onSubmitted={() => {
-                  if (botId) {
-                    getRatingsByApp({ appId: botId })
-                    getMezonAppDetail({ id: botId })
-                  }
-                }}
-              />
-            )}
+              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
+                <RatingForm
+                  onSubmitted={() => {
+                    if (botId) {
+                      getRatingsByApp({ appId: botId });
+                      getMezonAppDetail({ id: botId });
+                    }
+                  }}
+                />
+              )}
             <Divider className='bg-gray-200'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
@@ -280,11 +264,7 @@ function BotDetailPage() {
               ) : (
                 ratings?.data?.map((rating) => <Comment key={rating.id} rating={rating}></Comment>) || null
               )}
-              {ratings.hasNextPage && (
-                <Button size='large' disabled={isLoadingMore} loading={isLoadingMore} onClick={onLoadMore}>
-                  Load More
-                </Button>
-              )}
+              {ratings.hasNextPage && <Button size='large' disabled={isLoadingMore} loading={isLoadingMore} onClick={onLoadMore}>Load More</Button>}
             </div>
           </div>
         </div>
@@ -293,4 +273,5 @@ function BotDetailPage() {
     </div>
   )
 }
+
 export default BotDetailPage

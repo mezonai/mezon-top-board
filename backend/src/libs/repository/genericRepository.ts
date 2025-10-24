@@ -33,7 +33,7 @@ export class GenericRepository<T extends ObjectLiteral> {
     sortField: string;
     sortOrder: string;
     where?: () => FindOptionsWhere<T> | FindOptionsWhere<T>[]; // Accepts single or multiple conditions
-    relations?: string[];
+    relations?: string[]
   }): Promise<[T[], number]> {
     const {
       pageNumber,
@@ -41,7 +41,7 @@ export class GenericRepository<T extends ObjectLiteral> {
       sortField = SortField.NAME,
       sortOrder = SortOrder.ASC,
       where,
-      relations,
+      relations
     } = req;
 
     return await this.repository.findAndCount({
@@ -50,7 +50,7 @@ export class GenericRepository<T extends ObjectLiteral> {
       where: where ? where() : {},
       withDeleted: false,
       order: { [sortField]: sortOrder } as FindOptionsOrder<T>,
-      relations,
+      relations
     });
   }
 
@@ -58,7 +58,7 @@ export class GenericRepository<T extends ObjectLiteral> {
     return await this.repository.findOne({
       where: { id } as any,
       withDeleted: false,
-      relations,
+      relations
     });
   }
 
@@ -75,32 +75,25 @@ export class GenericRepository<T extends ObjectLiteral> {
     return await this.repository.save(entity);
   }
 
-  public async update(
-    id: string,
-    data: Partial<T>,
-    msg: string = ErrorMessages.NOT_FOUND_MSG,
-  ): Promise<void> {
+  public async update(id: string, data: Partial<T>, msg: string = ErrorMessages.NOT_FOUND_MSG): Promise<void> {
     const entity = await this.findById(id);
-    if (!entity) throw new NotFoundException(msg);
+    if (!entity)
+      throw new NotFoundException(msg)
     await this.repository.update(id, data);
   }
 
-  public async delete(
-    id: string,
-    msg: string = ErrorMessages.NOT_FOUND_MSG,
-  ): Promise<void> {
+  public async delete(id: string, msg: string = ErrorMessages.NOT_FOUND_MSG): Promise<void> {
     const entity = await this.findById(id);
-    if (!entity) throw new NotFoundException(msg);
+    if (!entity)
+      throw new NotFoundException(msg)
     await this.repository.delete(id);
   }
 
-  public async softDelete(
-    id: string,
-    msg: string = ErrorMessages.NOT_FOUND_MSG,
-  ): Promise<void> {
+  public async softDelete(id: string, msg: string = ErrorMessages.NOT_FOUND_MSG): Promise<void> {
     const entity = await this.findById(id);
-    if (!entity) throw new NotFoundException(msg);
-    await this.repository.softDelete(id);
+    if (!entity)
+      throw new NotFoundException(msg)
+    await this.repository.softDelete(id)
   }
 
   public async softDeleteBy(where: FindOptionsWhere<T>) {
