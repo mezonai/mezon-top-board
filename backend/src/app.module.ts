@@ -5,6 +5,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { join } from "path";
 
 import { dataSourceOption } from "@config/data-source.config";
@@ -21,9 +22,9 @@ import { ReviewHistoryModule } from "@features/review-history/review-history.mod
 import { TagModule } from "@features/tag/tag.module";
 import { UserModule } from "@features/user/user.module";
 
-import { HandlebarsPartialsAdapter } from "@libs/AdapterHandleBar/HandlebarsPartialsAdapter";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
+
 
 @Module({
   imports: [
@@ -55,7 +56,7 @@ import { LoggerModule } from "@libs/logger";
       },
       template: {
         dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsPartialsAdapter(),
+        adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
           extName: '.hbs',
