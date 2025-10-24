@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 30px; }
+    .container { background: #fff; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; }
+    .footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  {{> header}}
+  <div class="container">
+    {{> @partial-block }}
+  </div>
+  {{> footer}}
+</body>
+</html>

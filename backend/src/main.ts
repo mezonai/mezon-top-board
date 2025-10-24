@@ -5,9 +5,12 @@ import { json, urlencoded } from "express";
 
 import config from "@config/env.config";
 import { configStaticFiles } from "@config/files.config";
+import { configHbsPartials } from "@config/hbs";
 import { configSwagger } from "@config/swagger.config";
 
 import { AppModule } from "./app.module";
+
+configHbsPartials();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

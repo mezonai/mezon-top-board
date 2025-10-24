@@ -115,6 +115,7 @@ export type GetUserDetailsResponse = {
 }
 export type GetPublicProfileResponse = {
   id: string
+  email: string
   name: string
   bio: string
   profileImage: string
@@ -125,7 +126,7 @@ export type SelfUpdateUserRequest = {
   profileImage?: string
 }
 export const {
-  useUserControllerSearchUserQuery, 
+  useUserControllerSearchUserQuery,
   useLazyUserControllerSearchUserQuery,
   useUserControllerUpdateUserMutation,
   useUserControllerDeleteUserMutation,

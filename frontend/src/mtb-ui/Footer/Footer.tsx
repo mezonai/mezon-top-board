@@ -1,8 +1,14 @@
-import { Divider, Input, Tag } from 'antd'
+import { Button, Divider, Form, Input, Modal, Tag } from 'antd'
 import { renderMenu } from '@app/navigation/router'
-import Button from '@app/mtb-ui/Button'
 import MtbTypography from '../Typography/Typography'
 import { FacebookFilled, InstagramOutlined, XOutlined, YoutubeFilled } from '@ant-design/icons'
+import { toast } from 'react-toastify'
+import { useAppSelector } from '@app/store/hook'
+import { IUserStore } from '@app/store/user'
+import { RootState } from '@app/store'
+import { useEmailSubscribeControllerReSubscribeMutation, useEmailSubscribeControllerSendConfirmMailMutation } from '@app/services/api/emailSubscribe/emailSubscribe'
+import { EmailSubscriptionStatus } from '@app/enums/subscribe'
+
 const footerLink = [
   {
     icon: <FacebookFilled />,
@@ -22,6 +28,45 @@ const footerLink = [
   }
 ]
 function Footer() {
+  const [sendMail, { isLoading }] = useEmailSubscribeControllerSendConfirmMailMutation()
+  const [updateStatus] = useEmailSubscribeControllerReSubscribeMutation()
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const email = userInfo?.email
+    if (!email) {
+      toast.error('Please log in to subscribe to the newsletter.')
+      return
+    }
+    const res = await sendMail({ email }).unwrap().catch((err) => {
+      const message = err?.data?.message || 'An error occurred.';
+    
+      if (message.includes('unsubscribed')) {
+        Modal.confirm({
+          title: 'Resubscribe?',
+          content: 'You have unsubscribed from our newsletter. Would you like to subscribe again?',
+          okText: 'Yes',
+          cancelText: 'No',
+          onOk: async () => {
+            const resub = await updateStatus({
+                updateSubscriptionRequest: { status: EmailSubscriptionStatus.ACTIVE }
+              }).unwrap().catch((error) => {
+                const errMessage = error?.data?.message || 'Failed to resubscribe. Please try again later..';
+                toast.error(errMessage);
+                throw error;
+              });
+              toast.success(resub.message);
+          },
+        });
+      } else {
+        toast.info(message);
+      }
+    })
+    if (res?.statusCode === 200) {
+      toast.success(res.message)
+    }
+  }
   return (
     <div className='pt-10 pb-5 bg-gray-100'>
       <div className={`flex flex-col md:flex-row justify-around items-center gap-6 md:gap-0 pb-8 px-4`}>
@@ -37,17 +82,25 @@ function Footer() {
           </div>
         </div>
         {/* Newsletter section */}
-        <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
-          <MtbTypography variant='h5' customClassName='!mb-0 !text-gray-600'>Get Newsletter</MtbTypography>
-          <div className='flex w-full md:w-auto'>
-            <Input type='text' placeholder='Your email address' className="border border-gray-300 px-3 py-2 w-full md:w-auto"
-            ></Input>
+       <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-center md:text-left">
+          <MtbTypography
+            variant="h5"
+            customClassName="!mb-0 !text-gray-600"
+          >
+            Get Newsletter
+          </MtbTypography>
+          <div className="flex items-center justify-center gap-2 w-full md:w-auto">
+            <Form className="flex-grow max-w-sm">
+              <Form.Item className="!mb-0">
+                <Input className="text-center md:text-left" readOnly disabled value={userInfo?.email || ""} />
+              </Form.Item>
+            </Form>
             <Button
-              color='default'
-              variant='solid'
-              customClassName='!bg-black !text-white !border-black !rounded-none opacity-100 hover:opacity-75 !py-5'
+              className="!bg-black !text-white !border-black hover:!bg-gray-800 hover:!border-gray-800 rounded-md px-4 py-2 transition-all"
+              onClick={handleSubmit}
+              disabled={isLoading}
             >
-              Subscribe
+              {isLoading ? 'Sending...' : 'Subscribe'}
             </Button>
           </div>
         </div>
