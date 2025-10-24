@@ -5,10 +5,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import * as fs from 'fs';
-import * as Handlebars from 'handlebars';
-import { basename, join } from "path";
+import { join } from "path";
 
 import { dataSourceOption } from "@config/data-source.config";
 import config, { envFilePath } from "@config/env.config";
@@ -24,16 +21,9 @@ import { ReviewHistoryModule } from "@features/review-history/review-history.mod
 import { TagModule } from "@features/tag/tag.module";
 import { UserModule } from "@features/user/user.module";
 
+import { HandlebarsPartialsAdapter } from "@libs/AdapterHandleBar/HandlebarsPartialsAdapter";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
-
-const partialsDir = join(__dirname, 'templates', 'partials');
-fs.readdirSync(partialsDir).forEach((file) => {
-  const filePath = join(partialsDir, file);
-  const partialName = basename(file, '.hbs');
-  const template = fs.readFileSync(filePath, 'utf8');
-  Handlebars.registerPartial(partialName, template);
-});
 
 @Module({
   imports: [
@@ -65,21 +55,12 @@ fs.readdirSync(partialsDir).forEach((file) => {
       },
       template: {
         dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsAdapter(),
+        adapter: new HandlebarsPartialsAdapter(),
         options: {
           strict: true,
           extName: '.hbs',
         },
       },
-      options: {
-        partials: {
-          dir: join(__dirname, 'templates', 'partials', 'layout'),
-          options: {
-            strict: true,
-            extName: '.hbs',
-          },
-        }
-      }
     }),
     ScheduleModule.forRoot(),
     LoggerModule,
