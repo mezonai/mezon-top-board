@@ -40,7 +40,6 @@ export class MailTemplateProcessor extends WorkerHost {
         url: `${config().APP_CLIENT_URL}/confirm-subscribe`,
         year: new Date().getFullYear(),
         showUnsubscribe: false,
-        layout: 'master',
       },
     });
   }
@@ -50,10 +49,9 @@ export class MailTemplateProcessor extends WorkerHost {
     await this.mailerService.sendMail({
       to: emails,
       subject,
-      template: 'master',
+      template: 'marketing-mail',
       context: {
-        preheaderText: 'Đừng bỏ lỡ bản tin mới nhất từ Mezon Top Board',
-        body: content,
+        content,
         year: new Date().getFullYear(),
         showUnsubscribe: true,
         unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
