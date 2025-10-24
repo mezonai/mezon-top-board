@@ -34,7 +34,8 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const defaultSearchQuery = useMemo(() => searchParams.get('q')?.trim() || '', [searchParams.get('q')?.trim()])
+  const queryParam = searchParams.get('q');
+  const defaultSearchQuery = useMemo(() => queryParam?.trim() || '', [queryParam]);
   const defaultTagIds = useMemo(
     () => searchParams.get('tags')?.split(',').filter(Boolean) || [],
     [searchParams.get('tags')]
@@ -56,13 +57,21 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   useEffect(() => {
     getTagList()
-    if (!isInitialized && isSearchPage) {
-      setSearchQuery(defaultSearchQuery)
-      setTagIds(defaultTagIds)
-      searchMezonAppList(defaultSearchQuery, defaultTagIds)
-      setIsInitialized(true)
-    }
   }, [])
+
+  useEffect(() => {
+    if (!isSearchPage) return;
+
+    setSearchQuery(defaultSearchQuery);
+    setTagIds(defaultTagIds);
+    setType(defaultType);
+
+    if (isInitialized || defaultSearchQuery || defaultTagIds.length || defaultType) {
+      searchMezonAppList(defaultSearchQuery, defaultTagIds, defaultType);
+    }
+
+    setIsInitialized(true);
+  }, [searchParams, page, botPerPage, selectedSort]);
 
   useEffect(() => {
     if (isError && error) {
