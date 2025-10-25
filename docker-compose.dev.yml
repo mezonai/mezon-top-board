@@ -21,6 +21,24 @@ services:
     networks:
       - main_net
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - main_net
+
   backend:
     build: 
       context: ./backend
@@ -30,6 +48,8 @@ services:
       - ./backend/uploads:/uploads
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     links:
       - postgres
@@ -50,6 +70,9 @@ services:
       JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES}
       JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES: ${JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES}
       UPLOAD_RELATIVE_DIR: ${UPLOAD_RELATIVE_DIR}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
     networks:
       - main_net
 
@@ -81,6 +104,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   main_net:
