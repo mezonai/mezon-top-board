@@ -4,6 +4,7 @@ name: mezon-top-board
 services:
   postgres:
     image: postgres:14-alpine
+    platform: linux/amd64
     container_name: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USERNAME}
@@ -23,6 +24,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    platform: linux/amd64
     container_name: redis
     command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
     ports:
@@ -32,7 +34,7 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "123456", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
