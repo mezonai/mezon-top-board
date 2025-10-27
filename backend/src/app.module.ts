@@ -1,4 +1,3 @@
-import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
@@ -13,10 +12,13 @@ import config, { envFilePath } from "@config/env.config";
 
 import { AuthModule } from "@features/auth/auth.module";
 import { EmailSubscribeModule } from "@features/email-subscribe/email-subscribe.module";
+import { JobsModule } from "@features/job/jobs.module";
 import { LinkTypeModule } from "@features/linkType/linkType.module";
 import { MailTemplateModule } from "@features/marketing-mail/marketing-mail.module";
 import { MediaModule } from "@features/media/media.module";
 import { MezonAppModule } from "@features/mezon-app/mezon-app.module";
+import { PgBossModule } from "@features/pg-boss/pg-boss.module";
+import { PgBossService } from "@features/pg-boss/pg-boss.service";
 import { RatingModule } from "@features/rating/rating.module";
 import { ReviewHistoryModule } from "@features/review-history/review-history.module";
 import { TagModule } from "@features/tag/tag.module";
@@ -34,13 +36,6 @@ import { LoggerModule } from "@libs/logger";
       envFilePath: envFilePath,
     }),
     TypeOrmModule.forRoot(dataSourceOption),
-    BullModule.forRoot({
-      connection: {
-        host: config().REDIS_HOST,
-        port: Number(config().REDIS_PORT),
-        password: config().REDIS_PASSWORD,
-      },
-    }),
     MailerModule.forRoot({
       transport: {
         host: config().SMTP_HOST,
@@ -55,7 +50,7 @@ import { LoggerModule } from "@libs/logger";
         from: `Mezon-Top-Board`,
       },
       template: {
-        dir: join(__dirname, 'templates'),
+        dir: join(process.cwd(), 'dist', 'templates'),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
@@ -76,8 +71,11 @@ import { LoggerModule } from "@libs/logger";
     RatingModule,
     EmailSubscribeModule,
     MailTemplateModule,
+    PgBossModule,
+    JobsModule
   ],
   controllers: [],
-  providers: [],
+  providers: [PgBossService],
+  exports: [PgBossService],
 })
 export class AppModule { }
