@@ -67,6 +67,8 @@ services:
     build:
       context: ./docs
       dockerfile: Dockerfile
+      args:
+        URL: ${URL}
     container_name: docs
     networks:
       - main_net
@@ -80,6 +82,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - docs
     ports:
       - 80:80
       - 443:443

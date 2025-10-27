@@ -1,5 +1,6 @@
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+require('dotenv').config()
 
 const config: Config = {
   title: 'Mezon Top Board', 
@@ -10,7 +11,7 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://top.mezon.ai/', 
+  url: process.env.URL || 'https://top.mezon.ai/', 
   baseUrl: '/how-to-use/', 
   organizationName: 'mezonai', 
   projectName: 'mezon-top-board', 

@@ -9,6 +9,10 @@ RUN yarn
 
 COPY . ./
 
+ARG URL
+
+ENV URL $URL
+
 RUN yarn build
 
 # Stage 2: Serve the app with Nginx
