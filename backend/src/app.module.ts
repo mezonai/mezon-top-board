@@ -34,13 +34,13 @@ import { LoggerModule } from "@libs/logger";
       envFilePath: envFilePath,
     }),
     TypeOrmModule.forRoot(dataSourceOption),
-    // BullModule.forRoot({
-    //   connection: {
-    //     host: config().REDIS_HOST,
-    //     port: Number(config().REDIS_PORT),
-    //     password: config().REDIS_PASSWORD,
-    //   },
-    // }),
+    BullModule.forRoot({
+      connection: {
+        host: config().REDIS_HOST,
+        port: Number(config().REDIS_PORT),
+        password: config().REDIS_PASSWORD,
+      },
+    }),
     MailerModule.forRoot({
       transport: {
         host: config().SMTP_HOST,
@@ -74,8 +74,8 @@ import { LoggerModule } from "@libs/logger";
     UserModule,
     LinkTypeModule,
     RatingModule,
-    //EmailSubscribeModule,
-    //MailTemplateModule,
+    EmailSubscribeModule,
+    MailTemplateModule,
   ],
   controllers: [],
   providers: [],
