@@ -97,7 +97,7 @@ export const routePaths: RoutePath[] = [
       {
         strLabel:'How to use',
         isExternal: true,
-        path: 'https://drive.google.com/file/d/14vd5T8JxT96bVG2ZRjO5Q8Ouo57ZF39F/view',
+        path: '/how-to-use',
         element: undefined,
       },
       {

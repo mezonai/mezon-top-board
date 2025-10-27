@@ -63,6 +63,14 @@ services:
     networks:
       - main_net
   
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    container_name: docs
+    networks:
+      - main_net
+  
   nginx:
     image: nginx:alpine
     container_name: nginx
