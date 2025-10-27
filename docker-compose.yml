@@ -67,8 +67,9 @@ services:
     build:
       context: ./docs
       dockerfile: Dockerfile
-      args:
-        URL: ${URL}
+    environment:
+      - DOCUSAURUS_DOMAIN=${DOCUSAURUS_DOMAIN}
+      - URL=${URL}
     container_name: docs
     networks:
       - main_net

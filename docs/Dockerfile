@@ -1,24 +1,29 @@
-# Stage 1: Build the React app
-FROM node:22 AS build
+# syntax=docker/dockerfile:1
 
-WORKDIR /app
+# Stage 1: Base image.
+## Start with a base image containing NodeJS so we can build Docusaurus.
+FROM node:lts AS base
+## Disable colour output from yarn to make logs easier to read.
+ENV FORCE_COLOR=0
+## Enable corepack.
+RUN corepack enable
+## Set the working directory to `/opt/docusaurus`.
+WORKDIR /opt/docusaurus
 
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn
-
-COPY . ./
-
-ARG URL
-
-ENV URL $URL
-
+# Stage 2b: Production build mode.
+FROM base AS prod
+## Set the working directory to `/opt/docusaurus`.
+WORKDIR /opt/docusaurus
+## Copy over the source code.
+COPY . /opt/docusaurus/
+## Install dependencies with `--immutable` to ensure reproducibility.
+RUN yarn install --immutable
+## Build the static site.
 RUN yarn build
 
-# Stage 2: Serve the app with Nginx
-FROM nginx:alpine
-
+# Stage 3b: Serve with Nginx.
+FROM nginx:alpine AS nginx
+## Copy the Nginx configuration file.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/build /usr/share/nginx/html
-
-CMD ["nginx", "-g", "daemon off;"]
+## Copy the Docusaurus build output.
+COPY --from=prod /opt/docusaurus/build /usr/share/nginx/html
