@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailTemplate } from '@domain/entities/schema/mailTemplate.entity';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
-import { JobsModule } from '@features/job/jobs.module';
+import { JobModule } from '@features/job/job.module';
 import { MailTemplateController } from '@features/marketing-mail/marketing-mail.controller';
 
 import { MailTemplateService } from './marketing-mail.service';
@@ -13,7 +13,7 @@ import { MailTemplateService } from './marketing-mail.service';
   providers: [MailTemplateService],
   imports: [
     TypeOrmModule.forFeature([MailTemplate, Subscriber]),
-    JobsModule,
+    JobModule,
   ],
   controllers: [MailTemplateController],
   exports: [MailTemplateService],
