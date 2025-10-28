@@ -40,7 +40,7 @@ const CropImageModal: React.FC<Props> = ({
     const { naturalWidth: width, naturalHeight: height } = imgRef.current;
 
     if (!width || !height || width === 0 || height === 0) {
-      setTimeout(onImageLoad, 100); 
+      setTimeout(onImageLoad, 100);
       return;
     }
 
@@ -59,18 +59,18 @@ const CropImageModal: React.FC<Props> = ({
         height
       );
     }
-    
+
     const centeredCrop = centerCrop(initialCrop, width, height);
     setCrop(centeredCrop);
 
     const completedPixelCrop: PixelCrop = {
-        unit: 'px',
-        x: (centeredCrop.x / 100) * width,
-        y: (centeredCrop.y / 100) * height,
-        width: (centeredCrop.width / 100) * width,
-        height: (centeredCrop.height / 100) * height,
+      unit: 'px',
+      x: (centeredCrop.x / 100) * width,
+      y: (centeredCrop.y / 100) * height,
+      width: (centeredCrop.width / 100) * width,
+      height: (centeredCrop.height / 100) * height,
     };
-    
+
     setCompletedCrop(completedPixelCrop);
   }
 
@@ -124,36 +124,36 @@ const CropImageModal: React.FC<Props> = ({
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-1 min-w-[200px] items-center gap-2">
-          <MtbTypography 
-            variant='p' 
+          <MtbTypography
+            variant='p'
             customClassName='!text-xs !whitespace-nowrap'
           >
             Zoom:
           </MtbTypography>
-          <MtbSlider 
-            min={1} 
-            max={3} 
-            step={0.1} 
-            value={zoom} 
-            onChange={setZoom} 
-            className="flex-1" 
+          <MtbSlider
+            min={1}
+            max={3}
+            step={0.1}
+            value={zoom}
+            onChange={setZoom}
+            className="flex-1"
           />
         </div>
 
         <div className="flex flex-1 min-w-[200px] justify-end items-center gap-2">
-          <MtbTypography 
-            variant='p' 
+          <MtbTypography
+            variant='p'
             customClassName='!text-xs mr-2'
           >
             Rotate:
           </MtbTypography>
-          <MtbButton 
-            icon={<RotateLeftOutlined />} 
-            onClick={() => handleRotate(-45)} 
+          <MtbButton
+            icon={<RotateLeftOutlined />}
+            onClick={() => handleRotate(-45)}
           />
-          <MtbButton 
-            icon={<RotateRightOutlined />} 
-            onClick={() => handleRotate(45)} 
+          <MtbButton
+            icon={<RotateRightOutlined />}
+            onClick={() => handleRotate(45)}
           />
         </div>
       </div>

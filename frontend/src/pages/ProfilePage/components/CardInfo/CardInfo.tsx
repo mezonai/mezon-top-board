@@ -11,8 +11,8 @@ import { TypographyStyle } from '@app/enums/typography.enum'
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
-import { 
-  useUserControllerSelfUpdateUserMutation, 
+import {
+  useUserControllerSelfUpdateUserMutation,
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
@@ -69,9 +69,11 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       const response = await uploadImage(formData).unwrap()
 
       if (response?.statusCode === 200) {
-        await selfUpdate({ selfUpdateUserRequest: { 
-          profileImage: response?.data?.filePath 
-        } }).unwrap()
+        await selfUpdate({
+          selfUpdateUserRequest: {
+            profileImage: response?.data?.filePath
+          }
+        }).unwrap()
       }
 
       toast.success('Upload Success')
@@ -81,7 +83,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleBeforeUpload = (file: File) => {
-  if (isPublic) return false
+    if (isPublic) return false
 
     const maxFileSize = 4 * 1024 * 1024
     if (file.size > maxFileSize) {
@@ -94,10 +96,10 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       return false
     }
 
-  fileRef.current = file
+    fileRef.current = file
     setImgSrc(URL.createObjectURL(file))
     setIsModalVisible(true)
-    return false 
+    return false
   }
 
   const handleCancel = () => {
@@ -135,13 +137,13 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             accept={imageMimeTypes.join(',')}
             disabled={isPublic}
             listType='picture-circle'
-            beforeUpload={handleBeforeUpload} 
+            beforeUpload={handleBeforeUpload}
             showUploadList={false}
           >
-            <MTBAvatar 
-              imgUrl={imgUrl} 
-              isAllowUpdate={!isPublic} 
-              isUpdatingAvatar={isUpdatingAvatar} 
+            <MTBAvatar
+              imgUrl={imgUrl}
+              isAllowUpdate={!isPublic}
+              isUpdatingAvatar={isUpdatingAvatar}
             />
           </Upload>
         </div>

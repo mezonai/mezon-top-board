@@ -4,15 +4,15 @@ export async function getCroppedImg(
   image: HTMLImageElement,
   crop: PixelCrop,
   fileName: string,
-  rotation = 0, 
-  scale = 1, 
+  rotation = 0,
+  scale = 1,
   circular = false,
   mimeType = 'image/png',
   quality = 0.95
 ): Promise<File | null> {
   if (!image || !crop || crop.width === 0 || crop.height === 0) {
-     console.error("Invalid crop dimensions or image element provided.");
-     return null;
+    console.error("Invalid crop dimensions or image element provided.");
+    return null;
   }
 
   const canvas = document.createElement('canvas')
@@ -34,8 +34,8 @@ export async function getCroppedImg(
   canvas.width = Math.ceil(outputWidth * pixelRatio)
   canvas.height = Math.ceil(outputHeight * pixelRatio)
 
-  ctx.scale(pixelRatio, pixelRatio) 
-  ctx.imageSmoothingQuality = 'high' 
+  ctx.scale(pixelRatio, pixelRatio)
+  ctx.imageSmoothingQuality = 'high'
   const rotationRads = rotation * (Math.PI / 180)
   const centerX = outputWidth / 2
   const centerY = outputHeight / 2
@@ -47,21 +47,21 @@ export async function getCroppedImg(
   ctx.translate(-centerX, -centerY)
 
   try {
-     if (image.naturalWidth === 0 || image.naturalHeight === 0) {
-        console.error("Image natural dimensions are zero.");
-        return null;
-     }
+    if (image.naturalWidth === 0 || image.naturalHeight === 0) {
+      console.error("Image natural dimensions are zero.");
+      return null;
+    }
 
     ctx.drawImage(
       image,
-      crop.x * scaleX, 
-      crop.y * scaleY, 
-      cropWidthNatural, 
-      cropHeightNatural, 
-      0, 
-      0, 
-      outputWidth, 
-      outputHeight 
+      crop.x * scaleX,
+      crop.y * scaleY,
+      cropWidthNatural,
+      cropHeightNatural,
+      0,
+      0,
+      outputWidth,
+      outputHeight
     )
   } catch (err) {
     console.error('drawImage failed', err)
@@ -70,7 +70,7 @@ export async function getCroppedImg(
 
   if (circular) {
     ctx.translate(centerX, centerY)
-    ctx.rotate(-rotationRads) 
+    ctx.rotate(-rotationRads)
     ctx.translate(-centerX, -centerY)
 
     ctx.globalCompositeOperation = 'destination-in'
@@ -86,7 +86,7 @@ export async function getCroppedImg(
     canvas.toBlob(
       (blob) => {
         if (!blob) {
-          reject(new Error('Canvas to Blob conversion failed')) 
+          reject(new Error('Canvas to Blob conversion failed'))
           return
         }
         const croppedFile = new File([blob], fileName, { type: mimeType })
