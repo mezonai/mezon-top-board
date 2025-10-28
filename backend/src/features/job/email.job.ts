@@ -17,7 +17,7 @@ export class EmailJob implements OnModuleInit {
 
   async onModuleInit() {
     await this.boss.create(this.queueName);
-    await this.boss.work(this.queueName, async (jobs) => {
+    await this.boss.work<JobData>(this.queueName, async (jobs) => {
       const jobList = Array.isArray(jobs) ? jobs : [jobs];
       for (const job of jobList) {
         await this.handleJob(job);

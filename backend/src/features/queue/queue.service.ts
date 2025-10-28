@@ -16,11 +16,11 @@ export class QueueService {
     return this.boss.send(queue, data);
   }
 
-  async work(queue: string, handler: (job: Job<unknown>[]) => Promise<void>) {
-    await this.boss.work(queue, async (job) => {
-      if (!job) return;
+  async work<T>(queue: string, handler: (jobs: Job<T>[]) => Promise<void>) {
+    await this.boss.work(queue, async (jobs: Job<T>[]) => {
+      if (!jobs || jobs.length === 0) return;
       try {
-        await handler(job);
+        await handler(jobs);
       } catch (err) {
         console.error(`[${queue}] Job failed:`, err);
         throw err;
