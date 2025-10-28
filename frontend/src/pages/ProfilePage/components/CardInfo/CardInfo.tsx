@@ -32,7 +32,6 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const fileRef = useRef<File | null>(null)
-  
 
   const cardInfoLink = [
     {
