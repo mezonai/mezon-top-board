@@ -7,7 +7,7 @@ import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
 import { EmailJob } from '@features/job/email.job';
 import { MailTemplateController } from '@features/marketing-mail/marketing-mail.controller';
-import { PgBossService } from '@features/pg-boss/pg-boss.service';
+import { PgBossService } from '@features/queue/queue.service';
 
 import { MailTemplateService } from './marketing-mail.service';
 

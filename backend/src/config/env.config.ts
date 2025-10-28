@@ -31,5 +31,4 @@ export default () => ({
   REDIS_URL: process.env.REDIS_URL || "",
   REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
   APP_CLIENT_URL: process.env.APP_CLIENT_URL || "",
-  DATABASE_URI: process.env.DATABASE_URI || "",
 });

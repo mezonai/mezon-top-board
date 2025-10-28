@@ -11,7 +11,7 @@ import config from "@config/env.config";
       provide: 'PG_BOSS',
       useFactory: async () => {
         const boss = new PgBoss({
-          connectionString: config().DATABASE_URI
+          connectionString: `postgres://${config().DB_USERNAME}:${config().DB_PASSWORD}@${config().DB_HOST}:${config().DB_PORT}/${config().DB_NAME}`,
         });
 
         boss.on('error', (err) => console.error('PgBoss error:', err));

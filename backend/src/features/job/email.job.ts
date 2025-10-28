@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import { MailerService } from '@nestjs-modules/mailer';
 
-import { PgBossService } from '../pg-boss/pg-boss.service';
+import { PgBossService } from '../queue/queue.service';
 
 @Injectable()
 export class EmailJob implements OnModuleInit {

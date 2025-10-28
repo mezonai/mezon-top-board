@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { PgBossService } from '../pg-boss/pg-boss.service';
+import { PgBossService } from '../queue/queue.service';
 
 import { EmailJob } from './email.job';
 

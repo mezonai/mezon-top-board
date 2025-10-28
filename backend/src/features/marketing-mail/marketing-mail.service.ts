@@ -116,8 +116,7 @@ export class MailTemplateService {
     return new Result({ message: 'Mail deleted successfully.' });
   }
 
-  //@Cron(CronExpression.EVERY_30_MINUTES)
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async handleMailSchedule() {
     const now = new Date()
 
@@ -151,7 +150,7 @@ export class MailTemplateService {
       mail.scheduledAt.getMinutes() === now.getMinutes();
 
     const minutesDiff = Math.abs(differenceInMinutes(now, mail.scheduledAt));
-    const withinGracePeriod = minutesDiff <= 1 && sameHourMinute;
+    const withinGracePeriod = minutesDiff <= 30 && sameHourMinute;
 
     switch (mail.repeatInterval) {
       case RepeatInterval.DAILY:
