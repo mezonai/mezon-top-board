@@ -2,14 +2,14 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import { MailerService } from '@nestjs-modules/mailer';
 
-import { PgBossService } from '../queue/queue.service';
+import { QueueService } from '../queue/queue.service';
 
 @Injectable()
 export class EmailJob implements OnModuleInit {
   private readonly queueName = 'send-email';
 
   constructor(
-    private readonly boss: PgBossService,
+    private readonly boss: QueueService,
     private readonly mailerService: MailerService
   ) { }
 

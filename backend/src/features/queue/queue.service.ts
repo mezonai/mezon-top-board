@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import PgBoss from 'pg-boss';
 
 @Injectable()
-export class PgBossService {
+export class QueueService {
   constructor(@Inject('PG_BOSS') private readonly boss: PgBoss) { }
 
   async create(queue: string) {

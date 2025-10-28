@@ -4,6 +4,8 @@ import * as PgBoss from 'pg-boss';
 
 import config from "@config/env.config";
 
+import { QueueService } from '@features/queue/queue.service';
+
 @Global()
 @Module({
   providers: [
@@ -20,10 +22,11 @@ import config from "@config/env.config";
         return boss;
       },
     },
+    QueueService,
   ],
-  exports: ['PG_BOSS'],
+  exports: ['PG_BOSS', QueueService],
 })
-export class PgBossModule implements OnModuleDestroy {
+export class QueueModule implements OnModuleDestroy {
   constructor() { }
 
   async onModuleDestroy() { }
