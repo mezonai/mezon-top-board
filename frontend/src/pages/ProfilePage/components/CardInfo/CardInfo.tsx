@@ -11,7 +11,10 @@ import { TypographyStyle } from '@app/enums/typography.enum'
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
-import { useUserControllerSelfUpdateUserMutation, useUserControllerSyncMezonMutation } from '@app/services/api/user/user'
+import { 
+  useUserControllerSelfUpdateUserMutation, 
+  useUserControllerSyncMezonMutation,
+} from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Button, Popconfirm, Upload } from 'antd'
 import { toast } from 'react-toastify'
@@ -67,7 +70,9 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       const response = await uploadImage(formData).unwrap()
 
       if (response?.statusCode === 200) {
-        await selfUpdate({ selfUpdateUserRequest: { profileImage: response?.data?.filePath } }).unwrap()
+        await selfUpdate({ selfUpdateUserRequest: { 
+          profileImage: response?.data?.filePath 
+        } }).unwrap()
       }
 
       toast.success('Upload Success')
@@ -75,8 +80,6 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       toast.error('Upload failed!')
     }
   }
-
-  
 
   const handleBeforeUpload = (file: File) => {
   if (isPublic) return false
@@ -95,7 +98,6 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   fileRef.current = file
     setImgSrc(URL.createObjectURL(file))
     setIsModalVisible(true)
-
     return false 
   }
 
@@ -137,7 +139,11 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             beforeUpload={handleBeforeUpload} 
             showUploadList={false}
           >
-            <MTBAvatar imgUrl={imgUrl} isAllowUpdate={!isPublic} isUpdatingAvatar={isUpdatingAvatar} />
+            <MTBAvatar 
+              imgUrl={imgUrl} 
+              isAllowUpdate={!isPublic} 
+              isUpdatingAvatar={isUpdatingAvatar} 
+            />
           </Upload>
         </div>
         <div className='text-lg font-semibold break-words max-w-full flex-1 min-w-0'>{userInfo?.name}</div>

@@ -1,4 +1,5 @@
 import { PixelCrop } from 'react-image-crop'
+
 export async function getCroppedImg(
   image: HTMLImageElement,
   crop: PixelCrop,

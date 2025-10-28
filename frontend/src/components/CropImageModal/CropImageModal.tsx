@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { Button, Modal, Slider } from 'antd'
+import { Modal } from 'antd'
+import MtbButton from '@app/mtb-ui/Button'
 import { RotateLeftOutlined, RotateRightOutlined } from '@ant-design/icons'
+import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { getCroppedImg } from '@app/utils/cropImage'
+import MtbSlider from '@app/mtb-ui/Slider/Slider'
 
 type Props = {
   open: boolean
@@ -31,14 +34,44 @@ const CropImageModal: React.FC<Props> = ({
   const [zoom, setZoom] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
 
-  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    const { width, height } = e.currentTarget
-    const c = centerCrop(
-      makeAspectCrop({ unit: '%', width: 100 }, 1, width, height),
+  function onImageLoad() {
+    if (!imgRef.current) return;
+
+    const { naturalWidth: width, naturalHeight: height } = imgRef.current;
+
+    if (!width || !height || width === 0 || height === 0) {
+      setTimeout(onImageLoad, 100); 
+      return;
+    }
+
+    let initialCrop = makeAspectCrop(
+      { unit: '%', width: 90 },
+      aspect,
       width,
       height
-    )
-    setCrop(c)
+    );
+
+    if (initialCrop.height > 100) {
+      initialCrop = makeAspectCrop(
+        { unit: '%', height: 90 },
+        aspect,
+        width,
+        height
+      );
+    }
+    
+    const centeredCrop = centerCrop(initialCrop, width, height);
+    setCrop(centeredCrop);
+
+    const completedPixelCrop: PixelCrop = {
+        unit: 'px',
+        x: (centeredCrop.x / 100) * width,
+        y: (centeredCrop.y / 100) * height,
+        width: (centeredCrop.width / 100) * width,
+        height: (centeredCrop.height / 100) * height,
+    };
+    
+    setCompletedCrop(completedPixelCrop);
   }
 
   const handleRotate = (degrees: number) => {
@@ -55,7 +88,7 @@ const CropImageModal: React.FC<Props> = ({
         originalFileName || 'cropped-image.png',
         rotation,
         zoom,
-        true,
+        false,
         'image/png',
         0.95
       )
@@ -79,25 +112,49 @@ const CropImageModal: React.FC<Props> = ({
       open={open}
       onOk={handleSubmit}
       onCancel={handleCancel}
-      okText="Crop & Upload"
+      okText="Upload"
       cancelText="Cancel"
       confirmLoading={isProcessing || parentLoading}
       cancelButtonProps={{ disabled: parentLoading }}
+      okButtonProps={{ style: { backgroundColor: '#F2385A' } }}
       maskClosable={false}
       centered
       width={600}
-      bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+      bodyStyle={{ maxHeight: '70vh' }}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-1 min-w-[200px] items-center gap-2">
-          <label className="text-xs whitespace-nowrap">Zoom:</label>
-          <Slider min={1} max={3} step={0.1} value={zoom} onChange={setZoom} className="flex-1" />
+          <MtbTypography 
+            variant='p' 
+            customClassName='!text-xs !whitespace-nowrap'
+          >
+            Zoom:
+          </MtbTypography>
+          <MtbSlider 
+            min={1} 
+            max={3} 
+            step={0.1} 
+            value={zoom} 
+            onChange={setZoom} 
+            className="flex-1" 
+          />
         </div>
 
         <div className="flex flex-1 min-w-[200px] justify-end items-center gap-2">
-          <label className="text-xs mr-2">Rotate:</label>
-          <Button icon={<RotateLeftOutlined />} onClick={() => handleRotate(-45)} />
-          <Button icon={<RotateRightOutlined />} onClick={() => handleRotate(45)} />
+          <MtbTypography 
+            variant='p' 
+            customClassName='!text-xs mr-2'
+          >
+            Rotate:
+          </MtbTypography>
+          <MtbButton 
+            icon={<RotateLeftOutlined />} 
+            onClick={() => handleRotate(-45)} 
+          />
+          <MtbButton 
+            icon={<RotateRightOutlined />} 
+            onClick={() => handleRotate(45)} 
+          />
         </div>
       </div>
 
@@ -112,9 +169,12 @@ const CropImageModal: React.FC<Props> = ({
           >
             <img
               ref={imgRef}
-              alt="to crop"
               src={imgSrc}
-              onLoad={onImageLoad}
+              alt="to crop"
+              onLoad={(e) => {
+                imgRef.current = e.currentTarget
+                onImageLoad()
+              }}
               style={{
                 display: 'block',
                 maxHeight: '60vh',
@@ -122,6 +182,7 @@ const CropImageModal: React.FC<Props> = ({
                 transform: `scale(${zoom}) rotate(${rotation}deg)`,
                 transformOrigin: 'center center'
               }}
+              draggable={false}
             />
           </ReactCrop>
         </div>
