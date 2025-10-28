@@ -1,8 +1,6 @@
-import { InjectQueue } from '@nestjs/bullmq';
 import { BadGatewayException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { Queue } from 'bullmq';
 import { differenceInMinutes } from 'date-fns';
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
 
@@ -11,6 +9,9 @@ import { EmailSubscriptionStatus, RepeatInterval } from '@domain/common/enum/sub
 import { MailTemplate } from '@domain/entities/schema/mailTemplate.entity';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
+import config from "@config/env.config";
+
+import { EmailJob } from '@features/job/email.job';
 import { CreateMailTemplateRequest, SearchMailTemplateRequest } from '@features/marketing-mail/dtos/request';
 import { SearchMailTemplateResponse } from '@features/marketing-mail/dtos/response';
 
@@ -25,33 +26,37 @@ export class MailTemplateService {
 
   constructor(
     private manager: EntityManager,
-    @InjectQueue('mail-queue') private readonly mailQueue: Queue,
+    private readonly emailJob: EmailJob
   ) {
     this.subscribeRepository = new GenericRepository(Subscriber, manager);
     this.mailRepository = new GenericRepository(MailTemplate, manager);
   }
 
   async sendNewsletter(emails: string[], subject: string, content: string) {
-    return this.mailQueue.add(
-      'bulk-send-mail',
-      {
-        emails,
-        subject,
-        content
+    await this.emailJob.addToQueue({
+      to: emails,
+      subject,
+      template: 'marketing-mail',
+      context: {
+        content,
+        showUnsubscribe: true,
+        unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
+        year: new Date().getFullYear(),
       },
-      { attempts: 3, backoff: 5000, removeOnComplete: true },
-    );
+    });
   }
 
-  //TODO: create controller
   async sendConfirmMail(email: string) {
-    return this.mailQueue.add(
-      'send-confirmation-mail',
-      {
-        email
+    await this.emailJob.addToQueue({
+      to: email,
+      subject: 'Confirm your subscription to Mezon Top Board',
+      template: 'confirm-email-subscribe',
+      context: {
+        url: `${config().APP_CLIENT_URL}/confirm-subscribe`,
+        showUnsubscribe: false,
+        year: new Date().getFullYear(),
       },
-      { attempts: 3, backoff: 5000, removeOnComplete: true },
-    );
+    });
   }
 
   async createMail(data: CreateMailTemplateRequest) {
@@ -124,13 +129,7 @@ export class MailTemplateService {
     for (const mail of mails) {
       if (this.shouldSendNow(mail, now)) {
         const emails = subscribers.map(sub => sub.email);
-        const send = await this.sendNewsletter(emails, mail.subject, mail.content);
-
-        if (!send) {
-          console.error(`Failed to send mail to ${emails}`);
-        } else {
-          console.log(`Sent mail "${mail.subject}" to ${emails.length} subscribers.`);
-        }
+        await this.sendNewsletter(emails, mail.subject, mail.content);
       }
     }
   }

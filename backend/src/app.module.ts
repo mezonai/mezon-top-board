@@ -1,10 +1,9 @@
-import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { join } from "path";
 
@@ -13,6 +12,7 @@ import config, { envFilePath } from "@config/env.config";
 
 import { AuthModule } from "@features/auth/auth.module";
 import { EmailSubscribeModule } from "@features/email-subscribe/email-subscribe.module";
+import { JobModule } from "@features/job/job.module";
 import { LinkTypeModule } from "@features/linkType/linkType.module";
 import { MailTemplateModule } from "@features/marketing-mail/marketing-mail.module";
 import { MediaModule } from "@features/media/media.module";
@@ -25,7 +25,6 @@ import { UserModule } from "@features/user/user.module";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,13 +33,6 @@ import { LoggerModule } from "@libs/logger";
       envFilePath: envFilePath,
     }),
     TypeOrmModule.forRoot(dataSourceOption),
-    BullModule.forRoot({
-      connection: {
-        host: config().REDIS_HOST,
-        port: Number(config().REDIS_PORT),
-        password: config().REDIS_PASSWORD,
-      },
-    }),
     MailerModule.forRoot({
       transport: {
         host: config().SMTP_HOST,
@@ -55,11 +47,11 @@ import { LoggerModule } from "@libs/logger";
         from: `Mezon-Top-Board`,
       },
       template: {
-        dir: join(__dirname, 'templates'),
+        dir: join(process.cwd(), "dist", "templates"),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
-          extName: '.hbs',
+          extName: ".hbs",
         },
       },
     }),
@@ -76,8 +68,9 @@ import { LoggerModule } from "@libs/logger";
     RatingModule,
     EmailSubscribeModule,
     MailTemplateModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
