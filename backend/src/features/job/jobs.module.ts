@@ -7,6 +7,6 @@ import { EmailJob } from './email.job';
 @Module({
     providers: [EmailJob],
     imports: [QueueModule],
-    exports: [EmailJob],
+    exports: [EmailJob, QueueModule],
 })
 export class JobsModule { }

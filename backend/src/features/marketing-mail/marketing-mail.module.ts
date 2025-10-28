@@ -7,7 +7,6 @@ import { Subscriber } from '@domain/entities/schema/subscriber.entity';
 
 import { JobsModule } from '@features/job/jobs.module';
 import { MailTemplateController } from '@features/marketing-mail/marketing-mail.controller';
-import { QueueModule } from '@features/queue/queue.module';
 
 import { MailTemplateService } from './marketing-mail.service';
 
@@ -17,7 +16,6 @@ import { MailTemplateService } from './marketing-mail.service';
   imports: [
     TypeOrmModule.forFeature([MailTemplate, Subscriber]),
     JobsModule,
-    QueueModule,
   ],
   controllers: [MailTemplateController],
   exports: [MailTemplateService],

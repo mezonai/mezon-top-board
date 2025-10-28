@@ -17,7 +17,6 @@ import { LinkTypeModule } from "@features/linkType/linkType.module";
 import { MailTemplateModule } from "@features/marketing-mail/marketing-mail.module";
 import { MediaModule } from "@features/media/media.module";
 import { MezonAppModule } from "@features/mezon-app/mezon-app.module";
-import { QueueModule } from "@features/queue/queue.module";
 import { RatingModule } from "@features/rating/rating.module";
 import { ReviewHistoryModule } from "@features/review-history/review-history.module";
 import { TagModule } from "@features/tag/tag.module";
@@ -70,7 +69,6 @@ import { LoggerModule } from "@libs/logger";
     RatingModule,
     EmailSubscribeModule,
     MailTemplateModule,
-    QueueModule,
     JobsModule
   ],
   controllers: [],
