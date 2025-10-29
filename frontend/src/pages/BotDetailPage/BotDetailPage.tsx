@@ -31,7 +31,6 @@ import Button from '@app/mtb-ui/Button'
 import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
-import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -269,7 +268,6 @@ function BotDetailPage() {
           </div>
         </div>
       </div>
-      {mezonAppDetail && <MessageButton data={mezonAppDetail}></MessageButton>}
     </div>
   )
 }

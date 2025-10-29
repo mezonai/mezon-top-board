@@ -15,6 +15,8 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import OwnerActions from '../OwnerActions/OwnerActions'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { AppPricing } from '@app/enums/appPricing'
+import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -52,6 +54,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               : 
               <Tag className='!border-sky-500 !text-sky-500 !bg-white'>APP</Tag>
             }
+            {data?.pricingTag === AppPricing.FREE ?
+              <Tag className='!border-green-500 !text-green-500 !bg-white'>FREE</Tag>
+              :
+              <Tag className='!border-purple-500 !text-purple-500 !bg-white'>PAID</Tag>
+            }
             <div className='truncate-title flex-1'>
               <style>
                 {`
@@ -87,9 +94,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}
-            <Button color={data?.pricingTag === 'FREE' ? 'blue' : 'primary'} variant='outlined' size='large'>
-              {data?.pricingTag === 'FREE' ? 'FREE' : Number(data?.price)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-            </Button>
+            <MessageButton data={data!} />
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
