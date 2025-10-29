@@ -6,6 +6,8 @@ import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/resp
 import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
 import { OwnerInMezonAppDetailResponse } from "@features/user/dtos/response";
 import { AppStatus } from "@domain/common/enum/appStatus";
+import { GetAppVersionDetailsResponse } from "@features/app-version/dtos/response";
+import { AppPricing } from "@domain/common/enum/appPricing";
 
 export class GetMezonAppDetailsResponse {
   @Expose()
@@ -58,7 +60,7 @@ export class GetMezonAppDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public pricingTag: "FREE" | "PAID";
+  public pricingTag: AppPricing;
 
   @Expose()
   @ApiProperty()
@@ -71,6 +73,10 @@ export class GetMezonAppDetailsResponse {
   @Expose()
   @ApiProperty()
   public rateScore: number;
+
+  @Expose()
+  @ApiProperty({ type: () => [GetAppVersionDetailsResponse] })
+  public versions: GetAppVersionDetailsResponse[];
 }
 
 export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse, [
@@ -86,7 +92,8 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "pricingTag",
   "price",
   "rateScore",
-  "owner"
+  "owner",
+  "versions",
 ]) { }
 
 export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {

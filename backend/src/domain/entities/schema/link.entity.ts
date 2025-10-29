@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, ManyToMany, JoinColumn } from "typeorm";
 
-import { App, LinkType, User } from "@domain/entities";
+import { App, AppVersion, LinkType, User } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 
@@ -24,6 +24,9 @@ export class Link extends BaseSoftDelete {
 
     @ManyToMany(() => App, (app) => app.socialLinks)
     public apps: App[];
+
+    @ManyToMany(() => AppVersion, (appVersion) => appVersion.socialLinks)
+    public appVersions: AppVersion[];
 
     @ManyToOne(() => User, (user) => user.links)
     public owner: User;

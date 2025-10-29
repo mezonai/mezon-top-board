@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToMany } from "typeorm";
 
-import { App } from "@domain/entities";
+import { App, AppVersion } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 
@@ -14,4 +14,7 @@ export class Tag extends BaseSoftDelete {
 
     @ManyToMany(() => App, (app) => app.tags)
     public apps: App[];
+
+    @ManyToMany(() => AppVersion, (appVersion) => appVersion.tags)
+    public appVersions: AppVersion[];
 }

@@ -76,13 +76,13 @@ export class App extends BaseSoftDelete {
     @JoinTable()
     public socialLinks: Link[];
 
-    @OneToMany(() => AppReviewHistory, (review) => review.app)
-    reviewHistories: AppReviewHistory[];
-
     @OneToMany(() => Rating, (rating) => rating.app)
     ratings: Rating[];
 
     @ManyToOne(() => User, (user) => user.apps, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     owner: User;
+
+    @OneToMany(() => AppVersion, (version) => version.app)
+    public versions: AppVersion[];
 }

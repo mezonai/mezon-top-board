@@ -145,7 +145,8 @@ export class MezonAppService {
       .leftJoinAndSelect("app.tags", "filterTag")
       .leftJoinAndSelect("app.ratings", "rating")
       .leftJoinAndSelect("app.socialLinks", "socialLink")
-      .leftJoinAndSelect("app.owner", "owner");
+      .leftJoinAndSelect("app.owner", "owner")
+      .leftJoinAndSelect("app.versions", "version");
 
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
@@ -430,6 +431,7 @@ export class MezonAppService {
           name: tag.name,
         }));
         mappedMezonApp.owner = entity.owner;
+        mappedMezonApp.versions = entity.versions;
         return mappedMezonApp;
       },
     );

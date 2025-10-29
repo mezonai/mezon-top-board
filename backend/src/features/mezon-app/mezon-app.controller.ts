@@ -3,15 +3,20 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
+  Req,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
+
+import { AppVersionService } from "@features/app-version/app-version.service";
+import { CreateAppVersionRequest } from "@features/app-version/dtos/request";
 
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
@@ -37,9 +42,39 @@ import { MezonAppService } from "./mezon-app.service";
 export class MezonAppController {
   constructor(
     private readonly mezonAppService: MezonAppService,
+    private readonly appVersionService: AppVersionService,
     private readonly logger: Logger,
   ) {
     this.logger.setContext(MezonAppController.name);
+  }
+
+  @Post("version")
+  async createVersion(
+    @Body() data: CreateAppVersionRequest,
+  ) {
+    return await this.appVersionService.createVersion(data);
+  }
+
+  @Get('version/:appId')
+  async getVersionsByApp(@Param('appId') appId: string) {
+    return await this.appVersionService.getVersionsByApp(appId);
+  }
+
+  @Post('version/approve/:versionId')
+  async approveVersion(
+    @Param('versionId') versionId: string,
+    @Req() req: any,
+  ) {
+    const approverId = req.user?.id ?? 'system';
+    return await this.appVersionService.approveVersion(versionId, approverId);
+  }
+
+  @Post('version/reject/:versionId')
+  async rejectVersion(
+    @Param('versionId') versionId: string,
+    @Query('remark') remark?: string,
+  ) {
+    return await this.appVersionService.rejectVersion(versionId, remark);
   }
 
   @Get("admin-all")
