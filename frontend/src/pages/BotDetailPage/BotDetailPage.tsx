@@ -31,7 +31,6 @@ import Button from '@app/mtb-ui/Button'
 import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
-import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -194,8 +193,8 @@ function BotDetailPage() {
             <MtbTypography variant='h3'>More like this</MtbTypography>
             <Divider className='bg-gray-200'></Divider>
             {relatedMezonApp?.length > 0 ? (
-              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
-                slidesToShow={4}  responsive={responsive} className='text-center' 
+              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false}
+                slidesToShow={4} responsive={responsive} className='text-center'
                 beforeChange={() => setDragging(true)}
                 afterChange={handleAfterChange}>
                 {relatedMezonApp.map((bot) => (
@@ -247,16 +246,16 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
-                <RatingForm
-                  onSubmitted={() => {
-                    if (botId) {
-                      getRatingsByApp({ appId: botId });
-                      getMezonAppDetail({ id: botId });
-                    }
-                  }}
-                />
-              )}
+            {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
+              <RatingForm
+                onSubmitted={() => {
+                  if (botId) {
+                    getRatingsByApp({ appId: botId });
+                    getMezonAppDetail({ id: botId });
+                  }
+                }}
+              />
+            )}
             <Divider className='bg-gray-200'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
@@ -269,7 +268,6 @@ function BotDetailPage() {
           </div>
         </div>
       </div>
-      {mezonAppDetail && <MessageButton data={mezonAppDetail}></MessageButton>}
     </div>
   )
 }
