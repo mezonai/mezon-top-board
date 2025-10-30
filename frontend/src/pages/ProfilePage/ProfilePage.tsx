@@ -3,7 +3,7 @@ import useAuthRedirect from '@app/hook/useAuthRedirect'
 import Button from '@app/mtb-ui/Button'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { useLazyMezonAppControllerSearchMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
+import { useLazyMezonAppControllerSearchMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { GetPublicProfileResponse, useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
 import { RootState } from '@app/store'
@@ -17,28 +17,32 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CardInfo } from './components'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
+import { useAuth } from '@app/hook/useAuth'
 
 const pageOptions = [
-  { value: 9, label: "9 bots/page" },
+  { value: 6, label: "6 bots/page" },
   { value: 12, label: "12 bots/page" },
-  { value: 15, label: "15 bots/page" },
+  { value: 18, label: "18 bots/page" },
 ];
 
 function ProfilePage() {
   const navigate = useNavigate()
+  const { isLogin } = useAuth()
   const { userInfo: myInfo, publicProfile: publicUserInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { userId } = useParams()
   const [getTagList] = useLazyTagControllerGetTagsQuery()
+  const [getMyApp] = useLazyMezonAppControllerGetMyAppQuery()
   const [getMezonApp] = useLazyMezonAppControllerSearchMezonAppQuery()
   const [queryGetPublicProfile] = useLazyUserControllerGetPublicProfileQuery()
   const { mezonApp: userMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
+  const { mezonAppOfUser: myMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const [userInfo, setUserInfo] = useState<GetPublicProfileResponse>()
   const [searchText, setSearchText] = useState<string>('')
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [selectedType, setSelectedType] = useState<MezonAppType | undefined>()
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(pageOptions[0].value);
-  const mezonApp = userMezonApp
+  const mezonApp = userId ? userMezonApp : myMezonApp;
   const totals = useMemo(() => mezonApp?.totalCount || 0, [mezonApp]);
   const totalPages = useMemo(() => mezonApp?.totalPages || 0, [mezonApp]);
   const ownerId = userId ? userId : myInfo?.id;
@@ -49,18 +53,30 @@ function ProfilePage() {
     type: MezonAppType | undefined = selectedType,
     pageNumber: number = page
   ) => {
-    if (!ownerId) return;
+    if (userId) {
+      getMezonApp({
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortField: 'createdAt',
+        sortOrder: 'DESC',
+        ownerId: userId,
+        search: query,
+        tags: tags,
+        type: type,
+      });
+      return;
+    }
 
-    getMezonApp({
-      pageNumber: pageNumber,
-      pageSize: pageSize,
-      sortField: 'createdAt',
-      sortOrder: 'DESC',
-      ownerId: ownerId,
-      search: query,
-      tags: tags,
-      type: type,
-    });
+    if (isLogin) {
+      getMyApp({
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortField: 'createdAt',
+        sortOrder: 'DESC',
+        search: query,
+        tags: tags,
+      });
+    }
   }
 
   useEffect(() => {
@@ -134,7 +150,7 @@ function ProfilePage() {
 
         <div className='flex-2'>
           <div className='flex justify-between items-center pb-4'>
-            <MtbTypography variant='h2'>My Mezon Bots</MtbTypography>
+            <MtbTypography variant='h2'>Welcome to {userId ? `${userInfo?.name}'s` : 'your'} profile</MtbTypography>
             {!userId && (
               <Button color='primary' size='large' onClick={() => navigate('/new-bot')}>
                 Add new bot
