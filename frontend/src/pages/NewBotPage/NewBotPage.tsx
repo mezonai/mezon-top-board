@@ -1,7 +1,6 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect } from 'react'
-import { useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
@@ -59,7 +58,7 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
-      pricingTag: 'FREE' as any,
+      pricingTag: 'FREE',
       price: 0,
       supportUrl: '',
       remark: '',
