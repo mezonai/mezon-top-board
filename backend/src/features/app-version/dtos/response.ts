@@ -19,4 +19,3 @@ export class GetAppVersionDetailsResponse extends GetAppInfoDetailsResponse {
   @ApiPropertyOptional()
   public changelog?: string;
 }
-

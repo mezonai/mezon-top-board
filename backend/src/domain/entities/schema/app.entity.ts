@@ -1,7 +1,11 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
-import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { AppStatus } from "@domain/common/enum/appStatus";
 import { Link, AppReviewHistory, Rating, Tag, User, AppVersion } from "@domain/entities";
+
+import { BaseSoftDelete } from "../base";
+import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { AppPricing } from "@domain/common/enum/appPricing";
 import { BaseApp } from "@domain/entities/base/baseApp.entity";
 
 @Entity()
