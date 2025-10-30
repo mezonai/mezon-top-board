@@ -21,13 +21,12 @@ export class AppVersionService {
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
   }
 
-  async createVersion(versionData: CreateAppVersionRequest ) {
+  async createVersion(versionData: CreateAppVersionRequest) {
     const app = await this.appRepository.findOne({ where: { id: versionData.appId } });
     if (!app) throw new NotFoundException('App not found for creating version');
-    return await this.appVersionRepository.create({
-      ...versionData,
-      featuredImage: versionData?.featuredImage ? versionData.featuredImage : app.featuredImage
-    });
+
+    const mergedData = Object.assign({}, versionData, app);
+    return await this.appVersionRepository.create(mergedData);
   }
 
   async getVersionsByApp(appId: string) {
@@ -43,7 +42,7 @@ export class AppVersionService {
     });
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
-    const newApp = await this.appRepository.update(appVersion.appId, {
+    return await this.appRepository.update(appVersion.appId, {
       tags: appVersion.tags,
       socialLinks: appVersion.socialLinks,
       name: appVersion.name,
@@ -59,8 +58,6 @@ export class AppVersionService {
       price: appVersion.price,
       currentVersion: appVersion.version,
     });
-
-    return new Result({message: 'Version approved successfully', data: newApp});
   }
 
   async rejectVersion(versionId: string) {

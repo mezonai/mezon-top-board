@@ -2,16 +2,14 @@ import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany
 
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
 import { Link, AppReviewHistory, Rating, Tag, User, AppVersion } from "@domain/entities";
-
-import { BaseApp } from "../base";
-
+import { BaseApp } from "@domain/entities/base/baseApp.entity";
 
 @Entity()
 export class App extends BaseApp {
     @Column()
     public ownerId: string;
 
-    @Column({ type: "integer", nullable: true })
+    @Column({ type: "integer", default: 1 })
     public currentVersion: number;
 
     @Column({ default: false })

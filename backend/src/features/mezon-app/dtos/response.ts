@@ -1,27 +1,13 @@
 import { ApiProperty, OmitType, PickType } from "@nestjs/swagger";
 
-import { Expose, Transform } from "class-transformer";
+import { Expose } from "class-transformer";
 
-import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
-import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
-import { OwnerInMezonAppDetailResponse } from "@features/user/dtos/response";
-import { AppStatus } from "@domain/common/enum/appStatus";
+import { GetAppInfoDetailsResponse } from "@domain/common/dtos/appInfo.dto";
+
 import { GetAppVersionDetailsResponse } from "@features/app-version/dtos/response";
-import { AppPricing } from "@domain/common/enum/appPricing";
+import { OwnerInMezonAppDetailResponse } from "@features/user/dtos/response";
 
-export class GetMezonAppDetailsResponse {
-  @Expose()
-  @ApiProperty()
-  public id: string;
-
-  @Expose()
-  @ApiProperty()
-  public name: string;
-
-  @Expose()
-  @ApiProperty()
-  public prefix: string;
-
+export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public type: string;
@@ -32,43 +18,15 @@ export class GetMezonAppDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public supportUrl: string;
+  public currentVersion: number;
 
   @Expose()
   @ApiProperty()
-  public description: string;
-
-  @Expose()
-  @ApiProperty()
-  public headline: string;
-
-  @Expose()
-  @ApiProperty()
-  public status: string;
-
-  @Expose()
-  @ApiProperty()
-  public featuredImage: string;
+  public isHasUpdated: boolean;
 
   @Expose()
   @ApiProperty({ type: () => OwnerInMezonAppDetailResponse })
   public owner: OwnerInMezonAppDetailResponse;
-
-  @Expose()
-  @ApiProperty({ type: () => [TagInMezonAppDetailResponse] })
-  public tags: TagInMezonAppDetailResponse[];
-
-  @Expose()
-  @ApiProperty()
-  public pricingTag: AppPricing;
-
-  @Expose()
-  @ApiProperty()
-  public price: number;
-
-  @Expose()
-  @ApiProperty({ type: () => [SocialLinkInMezonAppDetailResponse] })
-  public socialLinks: SocialLinkInMezonAppDetailResponse[];
 
   @Expose()
   @ApiProperty()

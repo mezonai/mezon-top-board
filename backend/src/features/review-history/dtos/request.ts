@@ -10,10 +10,6 @@ export class CreateAppReviewRequest {
     appId: string;
 
     @ApiProperty()
-    @IsString()
-    appVersionId: string;
-
-    @ApiProperty()
     @IsBoolean()
     isApproved: boolean;
 
@@ -33,11 +29,6 @@ export class GetAppReviewRequest extends PaginationQuery {
     @IsOptional()
     @IsString()
     appId?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    appVersionId?: string;
 }
 export class SearchAppReviewRequest extends PaginationQuery {
     @ApiPropertyOptional({ description: "Keyword to search app ReviewHistory by name or headline" })
@@ -49,9 +40,4 @@ export class SearchAppReviewRequest extends PaginationQuery {
     @IsOptional()
     @IsString()
     appId?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    appVersionId?: string;
 }

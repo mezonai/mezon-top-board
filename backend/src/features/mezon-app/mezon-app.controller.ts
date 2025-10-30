@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
   Query,
@@ -15,7 +14,6 @@ import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
-import { CreateAppVersionRequest } from "@features/app-version/dtos/request";
 
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
@@ -45,39 +43,6 @@ export class MezonAppController {
     private readonly logger: Logger,
   ) {
     this.logger.setContext(MezonAppController.name);
-  }
-
-  @Post("version")
-  @ApiBearerAuth()
-  async createVersion(
-    @Body() data: CreateAppVersionRequest,
-  ) {
-    return await this.appVersionService.createVersion(data);
-  }
-
-  @Get('version/:appId')
-  @ApiBearerAuth()
-  @RoleRequired([Role.ADMIN])
-  async getVersionsByApp(@Param('appId') appId: string) {
-    return await this.appVersionService.getVersionsByApp(appId);
-  }
-
-  @Post('version/approve/:versionId')
-  @ApiBearerAuth()
-  @RoleRequired([Role.ADMIN])
-  async approveVersion(
-    @Param('versionId') versionId: string,
-  ) {
-    return await this.appVersionService.approveVersion(versionId);
-  }
-
-  @Post('version/reject/:versionId')
-  @ApiBearerAuth()
-  @RoleRequired([Role.ADMIN])
-  async rejectVersion(
-    @Param('versionId') versionId: string,
-  ) {
-    return await this.appVersionService.rejectVersion(versionId);
   }
 
   @Get("admin-all")

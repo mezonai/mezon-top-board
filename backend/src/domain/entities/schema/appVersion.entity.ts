@@ -1,10 +1,9 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, } from 'typeorm';
 
+import { BaseApp } from '@domain/entities/base/baseApp.entity';
 import { AppReviewHistory } from '@domain/entities/schema/appReviewHistory.entity';
 import { Link } from '@domain/entities/schema/link.entity';
 import { Tag } from '@domain/entities/schema/tag.entity';
-
-import { BaseApp } from '../base';
 
 import { App } from './app.entity';
 
@@ -23,12 +22,20 @@ export class AppVersion extends BaseApp {
   @JoinColumn({ name: 'appId' })
   public app: App;
 
-  @ManyToMany(() => Tag, (tag) => tag.appVersions)
-  @JoinTable()
-  public tags: Tag[];
+  @ManyToMany(() => Tag)
+  @JoinTable({
+    name: "app_version_tags",
+    joinColumn: { name: "appVersionId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "tagId", referencedColumnName: "id" },
+  })
+  tags: Tag[];
 
-  @ManyToMany(() => Link, (link) => link.apps)
-  @JoinTable()
+  @ManyToMany(() => Link, (link) => link.id)
+  @JoinTable({
+    name: "app_version_links",
+    joinColumn: { name: "appVersionId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "linkId", referencedColumnName: "id" },
+  })
   public socialLinks: Link[];
 
   @OneToMany(() => AppReviewHistory, (review) => review.appVersion)

@@ -32,6 +32,7 @@ import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
+import { AppPricing } from '@app/enums/appPricing'
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -54,7 +55,7 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
-      pricingTag: 'FREE',
+      pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
       remark: '',
