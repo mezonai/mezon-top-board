@@ -13,7 +13,7 @@ export class AppVersion extends BaseApp {
   @Column()
   public appId: string;
 
-  @Column({ type: 'integer', default: 1, generated: 'increment' })
+  @Column({ type: 'integer', generated: 'increment' })
   public version: number;
 
   @Column({ nullable: true })

@@ -14,6 +14,9 @@ export class App extends BaseApp {
     @Column({ type: "integer", nullable: true })
     public currentVersion: number;
 
+    @Column({ default: false })
+    public hasNewUpdate: boolean;
+
     @Column({ nullable: true })
     public mezonAppId: string;
 
