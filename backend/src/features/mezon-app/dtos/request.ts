@@ -1,12 +1,35 @@
-import { ApiPropertyOptional, OmitType, PartialType, IntersectionType, ApiProperty } from "@nestjs/swagger";
+import {
+  ApiPropertyOptional,
+  ApiProperty,
+  OmitType,
+  PartialType,
+  IntersectionType,
+} from "@nestjs/swagger";
 
-import { Transform } from "class-transformer";
-import { IsOptional, IsUUID, IsEnum, IsNumber, IsString, MaxLength } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import {
+  IsString,
+  IsBoolean,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsUUID,
+  MinLength,
+  MaxLength,
+  ArrayMinSize,
+  IsUrl,
+  ValidateIf,
+  IsEnum,
+  IsNumber,
+} from "class-validator";
 
-import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
-import { PaginationQuery, RequestWithId } from "@domain/common/dtos/request.dto";
+import {
+  PaginationQuery,
+  RequestWithId,
+} from "@domain/common/dtos/request.dto";
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 
 export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({

@@ -13,8 +13,6 @@ import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
-import { AppVersionService } from "@features/app-version/app-version.service";
-
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
@@ -39,7 +37,6 @@ import { MezonAppService } from "./mezon-app.service";
 export class MezonAppController {
   constructor(
     private readonly mezonAppService: MezonAppService,
-    private readonly appVersionService: AppVersionService,
     private readonly logger: Logger,
   ) {
     this.logger.setContext(MezonAppController.name);
