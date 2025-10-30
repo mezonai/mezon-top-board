@@ -1,7 +1,7 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { useState, useEffect, useRef } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -33,6 +33,7 @@ import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { AppPricing } from '@app/enums/appPricing'
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -58,7 +59,7 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
-      pricingTag: 'FREE',
+      pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
       remark: '',
@@ -156,7 +157,7 @@ function NewBotPage() {
       handleModalCancel()
     }
   }
-  const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
+  const stepFieldMap: Record<number, FieldPath<CreateMezonAppRequest>[]> = {
     0: ['type'],
     1: ['mezonAppId'],
     2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
@@ -167,7 +168,7 @@ function NewBotPage() {
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
     if (fieldsToValidate.length) {
-      const valid = await trigger(fieldsToValidate as any)
+      const valid = await trigger(fieldsToValidate)
       if (!valid) return
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
