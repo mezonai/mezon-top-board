@@ -1,29 +1,18 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
-import { AppStatus } from "@domain/common/enum/appStatus";
-import { Link, AppReviewHistory, Rating, Tag, User } from "@domain/entities";
-
-import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
-import { AppPricing } from "@domain/common/enum/appPricing";
+import { Link, AppReviewHistory, Rating, Tag, User, AppVersion } from "@domain/entities";
+
+import { BaseApp } from "../base";
+
 
 @Entity()
-export class App extends BaseSoftDelete {
-    @Column()
-    public name: string;
-
+export class App extends BaseApp {
     @Column()
     public ownerId: string;
 
-    @Column({
-        type: "enum",
-        enum: AppStatus,
-        default: AppStatus.PENDING,
-    })
-    public status: AppStatus;
-
-    @Column({ default: false })
-    public isAutoPublished: boolean;
+    @Column({ type: "integer", nullable: true })
+    public currentVersion: number;
 
     @Column({ nullable: true })
     public mezonAppId: string;
@@ -35,42 +24,9 @@ export class App extends BaseSoftDelete {
     })
     public type: MezonAppType;
 
-    @Column({ nullable: true })
-    public headline: string;
-
-    @Column({ nullable: true })
-    public description: string;
-
-    @Column({ nullable: true })
-    public prefix: string;
-
-    @Column({ nullable: true })
-    public featuredImage: string;
-
-    @Column({ nullable: true })
-    public supportUrl: string;
-
-    @Column({ nullable: true })
-    public remark: string;
-
     @ManyToMany(() => Tag, (tag) => tag.apps)
     @JoinTable()
     public tags: Tag[];
-
-    @Column({
-        type: "enum",
-        enum: AppPricing,
-        default: AppPricing.FREE,
-    })
-    public pricingTag: AppPricing;
-
-    @Column({
-        type: "decimal",
-        precision: 15,
-        scale: 0,
-        nullable: true,
-    })
-    public price: number | null;
 
     @ManyToMany(() => Link, (link) => link.apps)
     @JoinTable()
@@ -82,6 +38,9 @@ export class App extends BaseSoftDelete {
     @ManyToOne(() => User, (user) => user.apps, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     owner: User;
+
+    @OneToMany(() => AppReviewHistory, (review) => review.app)
+    public reviewHistories: AppReviewHistory[];
 
     @OneToMany(() => AppVersion, (version) => version.app)
     public versions: AppVersion[];

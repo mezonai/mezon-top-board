@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { Expose } from "class-transformer";
 
+import { AppPricing } from "@domain/common/enum/appPricing";
 import { AppStatus } from "@domain/common/enum/appStatus";
 
 import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
@@ -50,7 +51,7 @@ export class GetAppVersionDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public pricingTag: "FREE" | "PAID";
+  public pricingTag: AppPricing;
 
   @Expose()
   @ApiProperty()
@@ -58,7 +59,7 @@ export class GetAppVersionDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public version: string;
+  public version: number;
 
   @Expose()
   @ApiProperty({ type: () => [SocialLinkInMezonAppDetailResponse] })

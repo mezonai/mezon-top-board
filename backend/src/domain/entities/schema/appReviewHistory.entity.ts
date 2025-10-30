@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 
-import { AppVersion, User } from "@domain/entities";
+import { App, AppVersion, User } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 
@@ -8,6 +8,9 @@ import { BaseSoftDelete } from "../base";
 export class AppReviewHistory extends BaseSoftDelete {
     @Column({ default: false })
     public isApproved: boolean;
+
+    @Column()
+    public appId: string;
 
     @Column()
     public appVersionId: string;
@@ -20,6 +23,10 @@ export class AppReviewHistory extends BaseSoftDelete {
 
     @Column()
     public remark: string;
+
+    @ManyToOne(() => App, (app) => app.reviewHistories, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "appId" })
+    public app: App;
 
     @ManyToOne(() => AppVersion, (version) => version.reviewHistories, { onDelete: "CASCADE" })
     @JoinColumn({ name: "appVersionId" })

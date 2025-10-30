@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { App, AppReviewHistory, Rating, User } from "@domain/entities";
+import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
 
 import { ReviewHistoryController } from "./review-history.controller";
 import { ReviewHistoryService } from "./review-history.service";
 
 
 @Module({
-    imports: [TypeOrmModule.forFeature([App, User, AppReviewHistory, Rating])],
+    imports: [TypeOrmModule.forFeature([App, User, AppReviewHistory, Rating, AppVersion])],
     providers: [ReviewHistoryService],
     controllers: [ReviewHistoryController],
     exports: [ReviewHistoryService],

@@ -39,10 +39,11 @@ export class CreateAppVersionRequest {
   appId: string;
 
   @ApiProperty()
-  @IsString()
-  version: string
+  @IsNumber()
+  version: number
   
   @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   changelog?: string
 
@@ -108,12 +109,12 @@ export class CreateAppVersionRequest {
     message: "Pricing tag must be either 'free' or 'paid'",
   })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  pricingTag: AppPricing;
+  pricingTag?: AppPricing;
 
   @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
-  price: number;
+  price?: number;
 
   @ApiPropertyOptional({ type: [SocialLinkDto] })
   @IsArray()

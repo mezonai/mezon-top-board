@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   Query,
-  Req,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 
@@ -34,9 +33,6 @@ import {
 } from "./dtos/response";
 import { MezonAppService } from "./mezon-app.service";
 
-
-
-
 @Controller("mezon-app")
 @ApiTags("MezonApp")
 export class MezonAppController {
@@ -49,6 +45,7 @@ export class MezonAppController {
   }
 
   @Post("version")
+  @ApiBearerAuth()
   async createVersion(
     @Body() data: CreateAppVersionRequest,
   ) {
@@ -56,25 +53,28 @@ export class MezonAppController {
   }
 
   @Get('version/:appId')
+  @ApiBearerAuth()
+  @RoleRequired([Role.ADMIN])
   async getVersionsByApp(@Param('appId') appId: string) {
     return await this.appVersionService.getVersionsByApp(appId);
   }
 
   @Post('version/approve/:versionId')
+  @ApiBearerAuth()
+  @RoleRequired([Role.ADMIN])
   async approveVersion(
     @Param('versionId') versionId: string,
-    @Req() req: any,
   ) {
-    const approverId = req.user?.id ?? 'system';
-    return await this.appVersionService.approveVersion(versionId, approverId);
+    return await this.appVersionService.approveVersion(versionId);
   }
 
   @Post('version/reject/:versionId')
+  @ApiBearerAuth()
+  @RoleRequired([Role.ADMIN])
   async rejectVersion(
     @Param('versionId') versionId: string,
-    @Query('remark') remark?: string,
   ) {
-    return await this.appVersionService.rejectVersion(versionId, remark);
+    return await this.appVersionService.rejectVersion(versionId);
   }
 
   @Get("admin-all")

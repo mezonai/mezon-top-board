@@ -5,7 +5,7 @@ import { Brackets, EntityManager } from "typeorm";
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
-import { App, AppReviewHistory, Rating, User } from "@domain/entities";
+import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
 
 import { ErrorMessages, SuccessMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -23,27 +23,29 @@ import { AppReviewResponse } from "./dtos/response";
 @Injectable()
 export class ReviewHistoryService {
   private readonly appRepository: GenericRepository<App>;
+  private readonly appVersionRepository: GenericRepository<AppVersion>;
   private readonly appReviewRepository: GenericRepository<AppReviewHistory>;
   private readonly userRepository: GenericRepository<User>;
   private readonly ratingRepository: GenericRepository<Rating>;
 
   constructor(private manager: EntityManager) {
     this.appRepository = new GenericRepository(App, manager);
+    this.appVersionRepository = new GenericRepository(AppVersion, manager);
     this.appReviewRepository = new GenericRepository(AppReviewHistory, manager);
     this.userRepository = new GenericRepository(User, manager);
     this.ratingRepository = new GenericRepository(Rating, manager);
   }
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
-    const mezonApp = await this.appRepository.findById(body.appId);
-    if (!mezonApp || mezonApp.status !== AppStatus.PENDING) {
+    const mezonAppVersion = await this.appVersionRepository.findOne({ where: { appId: body.appId, id: body.appVersionId } });
+    if (!mezonAppVersion || mezonAppVersion.status !== AppStatus.PENDING) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
 
     const newStatus = body.isApproved
       ? AppStatus.PUBLISHED
       : AppStatus.REJECTED;
-    await this.appRepository.update(body.appId, { status: newStatus });
+    await this.appVersionRepository.update(body.appVersionId, { status: newStatus });
 
     const data = await this.appReviewRepository.create({
       ...body,
