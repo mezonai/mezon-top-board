@@ -23,6 +23,7 @@ const pageOptions = [
   { value: 6, label: "6 bots/page" },
   { value: 12, label: "12 bots/page" },
   { value: 18, label: "18 bots/page" },
+  { value: 24, label: "24 bots/page" },
 ];
 
 function ProfilePage() {
