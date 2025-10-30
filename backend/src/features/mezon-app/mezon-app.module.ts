@@ -6,6 +6,7 @@ import { App, AppVersion, Link, LinkType, Rating, Tag, User } from "@domain/enti
 import { MezonAppController } from "./mezon-app.controller";
 import { MezonAppService } from "./mezon-app.service";
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([App, Tag, User, Rating, Link, LinkType, AppVersion])],
   providers: [MezonAppService],

@@ -35,15 +35,15 @@ export class App extends BaseApp {
     @JoinTable()
     public socialLinks: Link[];
 
+    @OneToMany(() => AppReviewHistory, (review) => review.app)
+    reviewHistories: AppReviewHistory[];
+
     @OneToMany(() => Rating, (rating) => rating.app)
     ratings: Rating[];
 
     @ManyToOne(() => User, (user) => user.apps, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     owner: User;
-
-    @OneToMany(() => AppReviewHistory, (review) => review.app)
-    public reviewHistories: AppReviewHistory[];
 
     @OneToMany(() => AppVersion, (version) => version.app)
     public versions: AppVersion[];

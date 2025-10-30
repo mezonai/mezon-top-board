@@ -6,14 +6,14 @@ import { BaseSoftDelete } from "../base";
 
 @Entity()
 export class AppReviewHistory extends BaseSoftDelete {
-    @Column({ default: false })
-    public isApproved: boolean;
-
     @Column()
     public appId: string;
 
     @Column()
     public appVersionId: string;
+    
+    @Column({ default: false })
+    public isApproved: boolean;
 
     @Column()
     public reviewerId: string;
@@ -26,11 +26,11 @@ export class AppReviewHistory extends BaseSoftDelete {
 
     @ManyToOne(() => App, (app) => app.reviewHistories, { onDelete: "CASCADE" })
     @JoinColumn({ name: "appId" })
-    public app: App;
+    app: App;
 
     @ManyToOne(() => AppVersion, (version) => version.reviewHistories, { onDelete: "CASCADE" })
     @JoinColumn({ name: "appVersionId" })
-    public appVersion: AppVersion;
+    appVersion: AppVersion;
 
     @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
     @JoinColumn({ name: "reviewerId" })
