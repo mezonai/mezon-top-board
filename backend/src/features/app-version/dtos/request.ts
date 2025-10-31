@@ -5,6 +5,7 @@ import { IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 
+
 export class CreateAppVersionRequest extends CreateAppInfoRequest {
   @ApiProperty()
   @IsOptional()

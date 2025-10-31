@@ -23,13 +23,13 @@ import {
   IsNumber,
 } from "class-validator";
 
-import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 import {
   PaginationQuery,
   RequestWithId,
 } from "@domain/common/dtos/request.dto";
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 
 export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({
