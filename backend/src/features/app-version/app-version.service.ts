@@ -43,6 +43,8 @@ export class AppVersionService {
     const app = await this.appRepository.findById(appVersion.appId);
     if (!app) throw new NotFoundException('App not found for creating version');
 
+    await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
+
     const mergedData = Object.assign(app, appVersion);
     return await this.appRepository.update(appVersion.appId, {
       ...mergedData,
@@ -54,6 +56,7 @@ export class AppVersionService {
     const version = await this.appVersionRepository.findById(versionId);
     if (!version) throw new NotFoundException('AppVersion not found');
 
+    await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
     if (version.version === 1) {
       await this.appRepository.update(version.appId, { status: AppStatus.REJECTED });
     }

@@ -7,6 +7,8 @@ import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
 
+import { AppVersionService } from "@features/app-version/app-version.service";
+
 import { ErrorMessages, SuccessMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { Mapper } from "@libs/utils/mapper";
@@ -28,7 +30,10 @@ export class ReviewHistoryService {
   private readonly userRepository: GenericRepository<User>;
   private readonly ratingRepository: GenericRepository<Rating>;
 
-  constructor(private manager: EntityManager) {
+  constructor(
+    private manager: EntityManager,
+    private readonly appVersionService: AppVersionService,
+  ) {
     this.appRepository = new GenericRepository(App, manager);
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
     this.appReviewRepository = new GenericRepository(AppReviewHistory, manager);
@@ -42,10 +47,11 @@ export class ReviewHistoryService {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
 
-    const newStatus = body.isApproved
-      ? AppStatus.PUBLISHED
-      : AppStatus.REJECTED;
-    await this.appVersionRepository.update(body.appVersionId, { status: newStatus });
+    if (body.isApproved) {
+      await this.appVersionService.approveVersion(mezonAppVersion.id);
+    } else {
+      await this.appVersionService.rejectVersion(mezonAppVersion.id);
+    }
 
     const data = await this.appReviewRepository.create({
       ...body,
