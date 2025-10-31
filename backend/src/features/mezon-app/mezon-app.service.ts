@@ -12,6 +12,8 @@ import { SortField } from '@domain/common/enum/sortField';
 import { SortOrder } from '@domain/common/enum/sortOder';
 import { App, Link, LinkType, Tag, User } from "@domain/entities";
 
+import { AppVersionService } from "@features/app-version/app-version.service";
+
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { Mapper } from "@libs/utils/mapper";
@@ -40,7 +42,10 @@ export class MezonAppService {
   private readonly linkRepository: GenericRepository<Link>;
   private readonly linkTypeRepository: GenericRepository<LinkType>;
 
-  constructor(private manager: EntityManager) {
+  constructor(
+    private manager: EntityManager,
+    private appVersionService: AppVersionService,
+  ) {
     this.appRepository = new GenericRepository(App, manager);
     this.userRepository = new GenericRepository(User, manager);
     this.tagRepository = new GenericRepository(Tag, manager);
@@ -278,12 +283,19 @@ export class MezonAppService {
       );
     }
 
-    return await this.appRepository.create({
+    const newApp = await this.appRepository.create({
       ...appData,
       ownerId: ownerId,
       tags: existingTags,
       socialLinks: links
     });
+    if (newApp) await this.appVersionService.createVersion({
+      appId: newApp.id,
+      tagIds,
+      socialLinks,
+      ...appData,
+    })
+    return newApp
   }
 
   async updateMezonApp(userUpdating: User, req: UpdateMezonAppRequest) {
@@ -300,7 +312,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, ...updateData } = req;
+    const { tagIds, socialLinks, description, id, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -402,12 +414,16 @@ export class MezonAppService {
     });
 
 
-    this.appRepository.getRepository().merge(app, {
+    const versionData = {
+      appId: id,
       ...updateData,
       description: cleanedDescription,
-    });
+      tagIds,
+      socialLinks,
+    };
 
-    app.tags = tags;
+    const newVersion = await this.appVersionService.createVersion(versionData);
+    if (newVersion) await this.appRepository.update(req.id, { hasNewUpdate: true, });
 
     if (app.status === AppStatus.REJECTED) {
       app.status = AppStatus.PENDING;
