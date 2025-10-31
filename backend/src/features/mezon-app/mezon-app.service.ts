@@ -425,7 +425,11 @@ export class MezonAppService {
     const newVersion = await this.appVersionService.createVersion(versionData);
     if (newVersion) await this.appRepository.update(req.id, { hasNewUpdate: true, });
 
-    return app;
+    if (app.status === AppStatus.REJECTED) {
+      app.status = AppStatus.PENDING;
+    }
+
+    return this.appRepository.getRepository().save(app);
   }
 
   async listAdminMezonApp(query: SearchMezonAppRequest) {
