@@ -292,6 +292,7 @@ export class MezonAppService {
     if (newApp) await this.appVersionService.createVersion({
       appId: newApp.id,
       tagIds,
+      socialLinks,
       ...appData,
     })
     return newApp
@@ -417,8 +418,8 @@ export class MezonAppService {
       appId: id,
       ...updateData,
       description: cleanedDescription,
-      tagIds: tags.map(t => t.id),
-      socialLinks: links.map(l => ({ id: l.id, url: l.url, linkTypeId: l.linkTypeId })),
+      tagIds,
+      socialLinks,
       version: currentVersion + 1,
     };
 
