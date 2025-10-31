@@ -22,7 +22,7 @@ export class AppVersionService {
   }
 
   async createVersion(versionData: CreateAppVersionRequest) {
-    const app = await this.appRepository.findOne({ where: { id: versionData.appId } });
+    const app = await this.appRepository.findById(versionData.appId);
     if (!app) throw new NotFoundException('App not found for creating version');
 
     const mergedData = Object.assign(app, versionData);
@@ -37,35 +37,27 @@ export class AppVersionService {
   }
 
   async approveVersion(versionId: string) {
-    const appVersion = await this.appVersionRepository.findOne({
-      where: { id: versionId },
-    });
+    const appVersion = await this.appVersionRepository.findById(versionId);
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
+    const app = await this.appRepository.findById(appVersion.appId);
+    if (!app) throw new NotFoundException('App not found for creating version');
+
+    const mergedData = Object.assign(app, appVersion);
     return await this.appRepository.update(appVersion.appId, {
-      tags: appVersion.tags,
-      socialLinks: appVersion.socialLinks,
-      name: appVersion.name,
-      status: appVersion.status,
-      isAutoPublished: appVersion.isAutoPublished,
-      headline: appVersion.headline,
-      description: appVersion.description,
-      prefix: appVersion.prefix,
-      featuredImage: appVersion.featuredImage,
-      supportUrl: appVersion.supportUrl,
-      remark: appVersion.remark,
-      pricingTag: appVersion.pricingTag,
-      price: appVersion.price,
-      currentVersion: appVersion.version,
+      ...mergedData,
+      currentVersion: mergedData.version,
     });
   }
 
   async rejectVersion(versionId: string) {
-    const version = await this.appVersionRepository.findOne({ where: { id: versionId } });
+    const version = await this.appVersionRepository.findById(versionId);
     if (!version) throw new NotFoundException('AppVersion not found');
 
-    version.status = AppStatus.REJECTED;
-    await this.appVersionRepository.update(version.id, version);
+    if (version.version === 1) {
+      await this.appRepository.update(version.appId, { status: AppStatus.REJECTED });
+    }
+
     return new Result({message: 'Version rejected successfully'});
   }
 }
