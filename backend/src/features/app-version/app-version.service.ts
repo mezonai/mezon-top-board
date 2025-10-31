@@ -25,8 +25,19 @@ export class AppVersionService {
     const app = await this.appRepository.findOne({ where: { id: versionData.appId } });
     if (!app) throw new NotFoundException('App not found for creating version');
 
+    const latestVersion = await this.appVersionRepository.findOne({
+      where: { appId: versionData.appId },
+      order: { version: 'DESC' },
+    });
+    const nextVersion = latestVersion ? latestVersion.version + 1 : 1;
+
     const mergedData = Object.assign(app, versionData);
-    return await this.appVersionRepository.create(mergedData);
+    const { id, createdAt, updatedAt, ...rest } = mergedData;
+    return await this.appVersionRepository.create({
+      ...rest,
+      version: nextVersion,
+      status: AppStatus.PENDING,
+    });
   }
 
   async getVersionsByApp(appId: string) {

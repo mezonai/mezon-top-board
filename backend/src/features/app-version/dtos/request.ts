@@ -1,19 +1,15 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 
 
-export class CreateAppVersionRequest extends CreateAppInfoRequest {
+export class CreateAppVersionRequest extends PartialType(CreateAppInfoRequest) {
   @ApiProperty()
   @IsString()
   appId: string;
 
-  @ApiProperty()
-  @IsNumber()
-  version: number
-  
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
