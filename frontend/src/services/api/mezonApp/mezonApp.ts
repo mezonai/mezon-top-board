@@ -167,6 +167,7 @@ export type SocialLinkInMezonAppDetailResponse = {
 }
 export type GetMezonAppDetailsResponse = {
   id: string
+  currentVersion: number
   name: string
   description: string
   prefix: string

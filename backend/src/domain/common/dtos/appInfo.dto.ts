@@ -22,6 +22,13 @@ class SocialLinkDto {
 }
 
 export class CreateAppInfoRequest {
+  @ApiProperty()
+  @IsString()
+  @MinLength(1, { message: "Name must be at least 1 characters" })
+  @MaxLength(64, { message: "Name must not exceed 64 characters" })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  name: string;
+
   @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()

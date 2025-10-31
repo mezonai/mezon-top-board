@@ -312,7 +312,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, currentVersion, id, ...updateData } = req;
+    const { tagIds, socialLinks, description, id, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -420,7 +420,6 @@ export class MezonAppService {
       description: cleanedDescription,
       tagIds,
       socialLinks,
-      version: currentVersion + 1,
     };
 
     const newVersion = await this.appVersionService.createVersion(versionData);

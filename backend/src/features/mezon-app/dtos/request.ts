@@ -63,13 +63,6 @@ export class SearchMezonAppRequest extends PaginationQuery {
 }
 
 export class CreateMezonAppRequest extends CreateAppInfoRequest {
-  @ApiProperty()
-  @IsString()
-  @MinLength(1, { message: "Name must be at least 1 characters" })
-  @MaxLength(64, { message: "Name must not exceed 64 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  name: string;
-
   @ApiProperty({ enum: MezonAppType })
   @IsEnum(MezonAppType, { message: "Type must be either 'app' or 'bot'" })
   type: MezonAppType;
@@ -84,7 +77,4 @@ export class UpdateMezonAppRequest extends IntersectionType(
   RequestWithId,
   PartialType(OmitType(CreateMezonAppRequest, [] as const)),
 ) {
-  @ApiProperty()
-  @IsNumber()
-  currentVersion: number;
 }
