@@ -10,6 +10,7 @@ import { join } from "path";
 import { dataSourceOption } from "@config/data-source.config";
 import config, { envFilePath } from "@config/env.config";
 
+import { AppVersionModule } from '@features/app-version/app-version.module';
 import { AuthModule } from "@features/auth/auth.module";
 import { EmailSubscribeModule } from "@features/email-subscribe/email-subscribe.module";
 import { JobModule } from "@features/job/job.module";
@@ -69,6 +70,7 @@ import { LoggerModule } from "@libs/logger";
     EmailSubscribeModule,
     MailTemplateModule,
     JobModule,
+    AppVersionModule,
   ],
   controllers: [],
   providers: [],
