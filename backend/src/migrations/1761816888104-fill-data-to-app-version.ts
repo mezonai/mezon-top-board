@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class FillDataToAppVersion1761816888104 implements MigrationInterface {
+    name = 'FillDataToAppVersion1761816888104'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`

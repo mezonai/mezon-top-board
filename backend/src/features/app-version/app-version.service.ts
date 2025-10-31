@@ -25,7 +25,7 @@ export class AppVersionService {
     const app = await this.appRepository.findOne({ where: { id: versionData.appId } });
     if (!app) throw new NotFoundException('App not found for creating version');
 
-    const mergedData = Object.assign({}, versionData, app);
+    const mergedData = Object.assign(app, versionData);
     return await this.appVersionRepository.create(mergedData);
   }
 
