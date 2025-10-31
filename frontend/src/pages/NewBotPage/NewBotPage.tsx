@@ -104,6 +104,7 @@ function NewBotPage() {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
         return;
       }
+
       reset({
         ...rest,
         tagIds: mezonAppDetail.tags?.map(tag => tag.id),
