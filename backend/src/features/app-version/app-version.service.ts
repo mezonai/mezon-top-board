@@ -56,10 +56,10 @@ export class AppVersionService {
 
     await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
     const { id, createdAt, updatedAt, app, changelog, appId, version, ...rest } = appVersion;
-    if (rest.isAutoPublished) await this.appVersionRepository.update(versionId, { status: AppStatus.PUBLISHED });
+
     return await this.appRepository.update(appId, {
       ...rest,
-      status: rest.isAutoPublished ? AppStatus.PUBLISHED : AppStatus.APPROVED,
+      status: AppStatus.APPROVED,
       hasNewUpdate: false,
       currentVersion: version,
     });
