@@ -79,12 +79,4 @@ export class AppVersionService {
 
     return new Result({message: 'Version rejected successfully'});
   }
-
-  async publishVersion(versionId: string) {
-    const appVersion = await this.appVersionRepository.findOne({ where: { id: versionId } });
-    if (!appVersion) throw new NotFoundException('AppVersion not found');
-
-    await this.appVersionRepository.update(versionId, { status: AppStatus.PUBLISHED });
-    return await this.appRepository.update(appVersion.appId, { status: AppStatus.PUBLISHED, });
-  }
 }
