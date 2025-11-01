@@ -80,7 +80,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             </div>
           </div>
           <div className='flex gap-1'>
-            {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
+            <Tag color='red'>{AppStatus[data?.status || 0]}</Tag>
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
           </div>
           <div className='flex-wrap gap-2'>
@@ -91,6 +91,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             ))}
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
+            {/* bug 218 */}
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
               <OwnerActions data={data} isBotCard={true} />
             )}

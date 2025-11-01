@@ -4,6 +4,12 @@ export class UpdateAppVersion1761816111459 implements MigrationInterface {
     name = 'UpdateAppVersion1761816111459'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "subscriber" DROP COLUMN "confirmationTokenExpires"`);
+        await queryRunner.query(`ALTER TABLE "subscriber" DROP COLUMN "confirmationToken"`);
+        await queryRunner.query(`ALTER TABLE "app" ADD "currentVersion" integer NOT NULL DEFAULT '1'`);
+        await queryRunner.query(`ALTER TABLE "app" ADD "hasNewUpdate" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`CREATE TYPE "public"."app_version_status_enum" AS ENUM('0', '1', '2', '3')`);
+        await queryRunner.query(`CREATE TYPE "public"."app_version_pricingtag_enum" AS ENUM('FREE', 'PAID')`);
         await queryRunner.query(`CREATE TABLE "app_version" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "name" character varying NOT NULL, "status" "public"."app_version_status_enum" NOT NULL DEFAULT '0', "isAutoPublished" boolean NOT NULL DEFAULT false, "headline" character varying, "description" character varying, "prefix" character varying, "featuredImage" character varying, "supportUrl" character varying, "remark" character varying, "pricingTag" "public"."app_version_pricingtag_enum" NOT NULL DEFAULT 'FREE', "price" numeric(15,0), "appId" uuid NOT NULL, "version" SERIAL NOT NULL, "changelog" character varying, CONSTRAINT "PK_f2573b981a7eac664875e7483ac" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "app_version_tags" ("appVersionId" uuid NOT NULL, "tagId" uuid NOT NULL, CONSTRAINT "PK_7c535250eb4d7bbec4e0e12025e" PRIMARY KEY ("appVersionId", "tagId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_c58be179e2f32a0ffcaa5e04d1" ON "app_version_tags" ("appVersionId") `);
@@ -19,6 +25,10 @@ export class UpdateAppVersion1761816111459 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "app" DROP COLUMN "hasNewUpdate"`);
+        await queryRunner.query(`ALTER TABLE "app" DROP COLUMN "currentVersion"`);
+        await queryRunner.query(`ALTER TABLE "subscriber" ADD "confirmationToken" character varying`);
+        await queryRunner.query(`ALTER TABLE "subscriber" ADD "confirmationTokenExpires" TIMESTAMP WITH TIME ZONE`);
         await queryRunner.query(`ALTER TABLE "app_version_links" DROP CONSTRAINT "FK_7187cff12729f5eea90e7d72293"`);
         await queryRunner.query(`ALTER TABLE "app_version_links" DROP CONSTRAINT "FK_a486d9951b21e3fd3a1f46dff8c"`);
         await queryRunner.query(`ALTER TABLE "app_version_tags" DROP CONSTRAINT "FK_7c99fd7c8731a3d18c0807498d0"`);

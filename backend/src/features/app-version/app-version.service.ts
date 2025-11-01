@@ -32,7 +32,8 @@ export class AppVersionService {
     const nextVersion = latestVersion ? latestVersion.version + 1 : 1;
 
     const mergedData = Object.assign(app, versionData);
-    const { id, createdAt, updatedAt, ...rest } = mergedData;
+    const { id, createdAt, updatedAt, hasNewUpdate, ...rest } = mergedData
+
     return await this.appVersionRepository.create({
       ...rest,
       version: nextVersion,
@@ -53,30 +54,37 @@ export class AppVersionService {
     });
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
-    return await this.appRepository.update(appVersion.appId, {
-      tags: appVersion.tags,
-      socialLinks: appVersion.socialLinks,
-      name: appVersion.name,
-      status: appVersion.status,
-      isAutoPublished: appVersion.isAutoPublished,
-      headline: appVersion.headline,
-      description: appVersion.description,
-      prefix: appVersion.prefix,
-      featuredImage: appVersion.featuredImage,
-      supportUrl: appVersion.supportUrl,
-      remark: appVersion.remark,
-      pricingTag: appVersion.pricingTag,
-      price: appVersion.price,
-      currentVersion: appVersion.version,
+    await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
+    const { id, createdAt, updatedAt, app, changelog, appId, version, ...rest } = appVersion;
+    if (rest.isAutoPublished) await this.appVersionRepository.update(versionId, { status: AppStatus.PUBLISHED });
+    return await this.appRepository.update(appId, {
+      ...rest,
+      status: rest.isAutoPublished ? AppStatus.PUBLISHED : AppStatus.APPROVED,
+      hasNewUpdate: false,
+      currentVersion: version,
     });
   }
 
   async rejectVersion(versionId: string) {
-    const version = await this.appVersionRepository.findOne({ where: { id: versionId } });
-    if (!version) throw new NotFoundException('AppVersion not found');
+    const appVersion = await this.appVersionRepository.findOne({ where: { id: versionId } });
+    if (!appVersion) throw new NotFoundException('AppVersion not found');
 
-    version.status = AppStatus.REJECTED;
-    await this.appVersionRepository.update(version.id, version);
+    await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
+
+    if (appVersion.version === 1) {
+      await this.appRepository.update(appVersion.appId, { status: AppStatus.REJECTED });
+    } else {
+      await this.appRepository.update(appVersion.appId, { hasNewUpdate: false });
+    }
+
     return new Result({message: 'Version rejected successfully'});
+  }
+
+  async publishVersion(versionId: string) {
+    const appVersion = await this.appVersionRepository.findOne({ where: { id: versionId } });
+    if (!appVersion) throw new NotFoundException('AppVersion not found');
+
+    await this.appVersionRepository.update(versionId, { status: AppStatus.PUBLISHED });
+    return await this.appRepository.update(appVersion.appId, { status: AppStatus.PUBLISHED, });
   }
 }

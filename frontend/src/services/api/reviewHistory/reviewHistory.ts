@@ -93,6 +93,7 @@ export type ReviewHistoryControllerDeleteAppReviewApiArg = {
 }
 export type CreateAppReviewRequest = {
   appId: string
+  appVersionId: string
   isApproved: boolean
   remark: string
 }

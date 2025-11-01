@@ -183,6 +183,13 @@ export type GetMezonAppDetailsResponse = {
   type: MezonAppType
   mezonAppId?: string
   supportUrl: string;
+  versions: Version[]
+  hasNewUpdate: boolean
+}
+export type Version = {
+  id: string
+  version: number
+  status: number
 }
 export type RequestWithId = {
   id: string

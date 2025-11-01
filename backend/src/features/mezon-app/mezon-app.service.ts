@@ -10,7 +10,7 @@ import { AppStatus } from "@domain/common/enum/appStatus";
 import { Role } from "@domain/common/enum/role";
 import { SortField } from '@domain/common/enum/sortField';
 import { SortOrder } from '@domain/common/enum/sortOder';
-import { App, Link, LinkType, Tag, User } from "@domain/entities";
+import { App, AppVersion, Link, LinkType, Tag, User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
 
@@ -37,6 +37,7 @@ import { MezonAppType } from "@domain/common/enum/mezonAppType";
 @Injectable()
 export class MezonAppService {
   private readonly appRepository: GenericRepository<App>;
+  private readonly appVersionRepository: GenericRepository<AppVersion>;
   private readonly userRepository: GenericRepository<User>;
   private readonly tagRepository: GenericRepository<Tag>;
   private readonly linkRepository: GenericRepository<Link>;
@@ -47,6 +48,7 @@ export class MezonAppService {
     private appVersionService: AppVersionService,
   ) {
     this.appRepository = new GenericRepository(App, manager);
+    this.appVersionRepository = new GenericRepository(AppVersion, manager);
     this.userRepository = new GenericRepository(User, manager);
     this.tagRepository = new GenericRepository(Tag, manager);
     this.linkRepository = new GenericRepository(Link, manager);
@@ -239,7 +241,6 @@ export class MezonAppService {
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
     const { tagIds, socialLinks, ...appData } = req;
-    console.log("ownerId", ownerId);
 
     // Fetch existing tags
     const existingTags = tagIds?.length
@@ -290,10 +291,10 @@ export class MezonAppService {
       socialLinks: links
     });
     if (newApp) await this.appVersionService.createVersion({
-      appId: newApp.id,
-      tagIds,
-      socialLinks,
       ...appData,
+      appId: newApp.id,
+      tags: existingTags,
+      socialLinks: links
     })
     return newApp
   }
@@ -418,12 +419,27 @@ export class MezonAppService {
       appId: id,
       ...updateData,
       description: cleanedDescription,
-      tagIds,
-      socialLinks,
+      tags,
+      socialLinks: links,
     };
 
+    const existingPendingVersion = await this.appVersionRepository.findOne({
+      where: { appId: id, status: AppStatus.PENDING },
+    });
+
+    if (app.status === AppStatus.PENDING || existingPendingVersion) {
+      existingPendingVersion.tags = tags;
+      existingPendingVersion.socialLinks = links;
+      existingPendingVersion.description = cleanedDescription;
+      Object.assign(existingPendingVersion, updateData);
+
+      await this.appVersionRepository.getRepository().save(existingPendingVersion);
+      return app
+    }
+
     const newVersion = await this.appVersionService.createVersion(versionData);
-    if (newVersion) await this.appRepository.update(req.id, { hasNewUpdate: true, });
+
+    if (newVersion) app.hasNewUpdate = true;
 
     if (app.status === AppStatus.REJECTED) {
       app.status = AppStatus.PENDING;

@@ -19,6 +19,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewRemark, setReviewRemark] = useState("");
   const [reviewingAppId, setReviewingAppId] = useState<string | null>(null);
+  const [reviewingAppVersionId, setReviewingAppVersionId] = useState<string | null>(null);
 
   const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery();
   const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin); // Get apps from Redux store
@@ -49,14 +50,15 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   const reviewApp = async (status: AppStatus) => {
     try {
       const isApproved = status === AppStatus.APPROVED;
-      if (reviewingAppId === null) {
-        toast.error("Invalid app id");
+      if (reviewingAppId === null || reviewingAppVersionId === null) {
+        toast.error("Invalid app id or version id");
         return
       }
 
       await createReviewHistory({
         createAppReviewRequest: {
           appId: reviewingAppId || "",
+          appVersionId: reviewingAppVersionId || "",
           isApproved: isApproved,
           remark: reviewRemark,
         },
@@ -67,6 +69,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       toast.success(`App ${isApproved ? "approved" : "rejected"} successfully`);
       setShowReviewModal(false);
       setReviewingAppId(null);
+      setReviewingAppVersionId(null);
       setReviewRemark("");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to approve app");
@@ -76,6 +79,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   const onReviewStart = async (app: GetMezonAppDetailsResponse) => {
     setShowReviewModal(true);
     setReviewingAppId(app.id);
+    setReviewingAppVersionId(app?.versions?.filter(v => v.status === 0)[0]?.id);
   }
 
   const fetchApps = async () => {
@@ -199,7 +203,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             </Tooltip>
           </Popconfirm>
           {
-            record.status === AppStatus.PENDING && (
+            record.hasNewUpdate && (
               <Tooltip title="Review app">
                 <Button color="cyan" variant="outlined" icon={<LockOutlined />} onClick={() => onReviewStart(record)} />
               </Tooltip>
@@ -259,32 +263,22 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       <Modal
         title="Review App"
         open={showReviewModal}
-        onOk={() => {
-          if (reviewingAppId) {
-            createReviewHistory({
-              createAppReviewRequest: {
-                appId: reviewingAppId,
-                isApproved: false,
-                remark: reviewRemark,
-              },
-            });
-          }
-        }}
         onCancel={() => {
           setShowReviewModal(false);
           setReviewingAppId(null);
+          setReviewingAppVersionId(null);
           setReviewRemark("");
         }}
         footer={[
           <Button type="primary" onClick={() => {
-            if (reviewingAppId) {
+            if (reviewingAppId && reviewingAppVersionId) {
               reviewApp(AppStatus.APPROVED);
             }
           }}>
             Approve
           </Button>,
           <Button type="primary" danger onClick={() => {
-            if (reviewingAppId) {
+            if (reviewingAppId && reviewingAppVersionId) {
               reviewApp(AppStatus.REJECTED);
             }
           }}>

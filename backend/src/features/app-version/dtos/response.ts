@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PickType } from "@nestjs/swagger";
 
 import { Expose } from "class-transformer";
 import { IsOptional } from "class-validator";
@@ -19,3 +19,9 @@ export class GetAppVersionDetailsResponse extends GetAppInfoDetailsResponse {
   @ApiPropertyOptional()
   public changelog?: string;
 }
+
+export class AppVersionInAppReviewResponse extends PickType(GetAppVersionDetailsResponse, [
+  "id",
+  "version",
+  "changelog",
+]) { }
