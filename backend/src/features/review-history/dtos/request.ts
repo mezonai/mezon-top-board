@@ -10,10 +10,6 @@ export class CreateAppReviewRequest {
     appId: string;
 
     @ApiProperty()
-    @IsString()
-    appVersionId: string;
-
-    @ApiProperty()
     @IsBoolean()
     isApproved: boolean;
 

@@ -427,7 +427,7 @@ export class MezonAppService {
       where: { appId: id, status: AppStatus.PENDING },
     });
 
-    if (app.status === AppStatus.PENDING || existingPendingVersion) {
+    if (existingPendingVersion) {
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
       existingPendingVersion.description = cleanedDescription;

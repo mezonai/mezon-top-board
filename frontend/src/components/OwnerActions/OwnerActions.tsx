@@ -1,5 +1,5 @@
 import { Dropdown, MenuProps, Modal } from 'antd'
-import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { CheckOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import {
   useMezonAppControllerDeleteMezonAppMutation
 } from '@app/services/api/mezonApp/mezonApp'
@@ -36,8 +36,16 @@ function OwnerActions({ data, isBotCard }: { data: any; isBotCard?: boolean }) {
   }
   const items: MenuProps['items'] = [
     {
+      label: 'Publish',
+      key: 'publish',
+      icon: <CheckOutlined />,
+      onClick: () => {
+        toast.success('Published new version')
+      }
+    },
+    {
       label: 'Edit',
-      key: '1',
+      key: 'edit',
       icon: <EditOutlined />,
       onClick: () => {
         navigate(`/new-bot/${data?.id}`)
@@ -45,7 +53,7 @@ function OwnerActions({ data, isBotCard }: { data: any; isBotCard?: boolean }) {
     },
     {
       label: 'Delete',
-      key: '2',
+      key: 'delete',
       danger: true,
       icon: <DeleteOutlined />,
       onClick: () => {

@@ -42,7 +42,17 @@ export class ReviewHistoryService {
   }
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
-    const mezonAppVersion = await this.appVersionRepository.findById(body.appVersionId);
+    const mezonApp = await this.appRepository.findOne({
+      where: { id: body.appId, hasNewUpdate: true },
+    });
+    if (!mezonApp || mezonApp.status !== AppStatus.PENDING) {
+      throw new BadRequestException(ErrorMessages.INVALID_APP);
+    }
+
+    const mezonAppVersion = await this.appVersionRepository.findOne({
+      where: { appId: body.appId },
+      order: { version: 'DESC' },
+    });
     if (!mezonAppVersion || mezonAppVersion.status !== AppStatus.PENDING) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
