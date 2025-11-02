@@ -199,7 +199,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             </Tooltip>
           </Popconfirm>
           {
-            record.hasNewUpdate && (
+            (record.hasNewUpdate || record.status === 0) && (
               <Tooltip title="Review app">
                 <Button color="cyan" variant="outlined" icon={<LockOutlined />} onClick={() => onReviewStart(record)} />
               </Tooltip>

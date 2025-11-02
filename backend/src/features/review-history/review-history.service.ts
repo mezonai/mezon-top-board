@@ -42,9 +42,7 @@ export class ReviewHistoryService {
   }
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
-    const mezonApp = await this.appRepository.findOne({
-      where: { id: body.appId, hasNewUpdate: true },
-    });
+    const mezonApp = await this.appRepository.findById(body.appId);
     if (!mezonApp || mezonApp.status !== AppStatus.PENDING) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
