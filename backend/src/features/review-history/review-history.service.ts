@@ -43,7 +43,7 @@ export class ReviewHistoryService {
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
     const mezonApp = await this.appRepository.findById(body.appId);
-    if (!mezonApp || mezonApp.status !== AppStatus.PENDING) {
+    if (!mezonApp) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
 
@@ -52,7 +52,7 @@ export class ReviewHistoryService {
       order: { version: 'DESC' },
     });
     if (!mezonAppVersion || mezonAppVersion.status !== AppStatus.PENDING) {
-      throw new BadRequestException(ErrorMessages.INVALID_APP);
+      throw new BadRequestException("No pending app version found");
     }
 
     if (body.isApproved) {
@@ -63,6 +63,7 @@ export class ReviewHistoryService {
 
     const data = await this.appReviewRepository.create({
       ...body,
+      appVersionId: mezonAppVersion.id,
       reviewerId: reviewer.id,
     });
     return new Result({
