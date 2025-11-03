@@ -149,6 +149,8 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .take(query.pageSize)
       .leftJoinAndSelect("app.tags", "filterTag")
       .leftJoinAndSelect("app.ratings", "rating")
       .leftJoinAndSelect("app.socialLinks", "socialLink")
@@ -207,8 +209,6 @@ export class MezonAppService {
     return paginate<App, SearchMezonAppResponse>(
       () =>
         whereCondition
-          .skip((query.pageNumber - 1) * query.pageSize)
-          .take(query.pageSize)
           .getManyAndCount(),
       query.pageSize,
       query.pageNumber,

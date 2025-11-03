@@ -4,6 +4,10 @@ export class UpdateMailTemplateSubscriber1761035692201 implements MigrationInter
     name = 'UpdateMailTemplateSubscriber1761035692201'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "app" ADD "currentVersion" integer NOT NULL DEFAULT '1'`);
+        await queryRunner.query(`ALTER TABLE "app" ADD "hasNewUpdate" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`CREATE TYPE "public"."app_version_status_enum" AS ENUM('0', '1', '2', '3')`);
+        await queryRunner.query(`CREATE TYPE "public"."app_version_pricingtag_enum" AS ENUM('FREE', 'PAID')`);
         await queryRunner.query(`CREATE TYPE "public"."subscriber_status_enum" AS ENUM('PENDING', 'ACTIVE', 'UNSUBSCRIBED')`);
         await queryRunner.query(`CREATE TABLE "subscriber" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "email" character varying NOT NULL, "status" "public"."subscriber_status_enum" NOT NULL DEFAULT 'PENDING', "confirmationToken" character varying, "confirmationTokenExpires" TIMESTAMP WITH TIME ZONE, CONSTRAINT "UQ_073600148a22d05dcf81d119a6a" UNIQUE ("email"), CONSTRAINT "PK_1c52b7ddbaf79cd2650045b79c7" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."mail_template_repeatinterval_enum" AS ENUM('DAILY', 'WEEKLY', 'MONTHLY', 'ANNUALLY')`);
@@ -11,6 +15,8 @@ export class UpdateMailTemplateSubscriber1761035692201 implements MigrationInter
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "app" DROP COLUMN "hasNewUpdate"`);
+        await queryRunner.query(`ALTER TABLE "app" DROP COLUMN "currentVersion"`);
         await queryRunner.query(`DROP TABLE "mail_template"`);
         await queryRunner.query(`DROP TYPE "public"."mail_template_repeatinterval_enum"`);
         await queryRunner.query(`DROP TABLE "subscriber"`);
