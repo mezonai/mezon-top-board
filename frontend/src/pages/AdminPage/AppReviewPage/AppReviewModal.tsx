@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Input, Popconfirm, Descriptions, Form, Space } from 'antd'
+import { Modal, Button, Input, Descriptions, Form, Space } from 'antd'
 import { toast } from 'react-toastify'
-import { useMezonAppControllerUpdateMezonAppMutation, mockAppVersions } from './mockData'
+import { GetMezonAppDetailsResponse, useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
+import { AppStatus } from '@app/enums/AppStatus.enum'
 
 const { TextArea } = Input
 
@@ -10,22 +11,17 @@ interface Props {
   open: boolean
   onClose: () => void
   appId?: string
+  appData?: GetMezonAppDetailsResponse | undefined
+  latestVersion?: GetMezonAppDetailsResponse['versions'][0]
   onUpdated?: () => void
 }
 
-const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated }) => {
+const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated, appData, latestVersion }) => {
   const [form] = Form.useForm()
-  const remark = Form.useWatch('remark', form) 
+  const remark = Form.useWatch('remark', form)
 
   const [loading, setLoading] = useState(false)
-  const [updateApp] = useMezonAppControllerUpdateMezonAppMutation()
-
-  const latestVersion = React.useMemo(() => {
-    if (!appId) return undefined
-    const versions = mockAppVersions.filter(v => v.appId === appId && !v.deletedAt)
-    versions.sort((a, b) => (b.version || 0) - (a.version || 0))
-    return versions[0]
-  }, [appId])
+  const [reviewAppId] = useMezonAppControllerUpdateMezonAppMutation()
 
   useEffect(() => {
     if (!open) {
@@ -33,22 +29,22 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated }) =>
     }
   }, [open, form])
 
-  const submit = async (action: 'approve' | 'reject') => {
+  const submit = async (action: AppStatus.APPROVED | AppStatus.REJECTED) => {
     if (!appId) return
     setLoading(true)
     try {
-      const status = action === 'approve' ? 'PUBLISHED' : 'REJECTED'
+      const status = action === AppStatus.APPROVED ? AppStatus.APPROVED : AppStatus.REJECTED
 
       // TODO: SEND REQUEST TO BACKEND TO UPDATE APP STATUS
-      await updateApp({
+      await reviewAppId({
         updateMezonAppRequest: {
           id: appId,
           status,
-          remark: remark || null 
+          remark: remark || null,
         }
       })
 
-      toast.success(action === 'approve' ? 'App approved' : 'App rejected')
+      toast.success(action === AppStatus.APPROVED ? 'App approved' : 'App rejected')
       onUpdated && onUpdated()
       onClose()
     } catch (err: any) {
@@ -63,12 +59,10 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated }) =>
       <Button onClick={onClose} disabled={loading}>
         Cancel
       </Button>
-      <Popconfirm title='Reject this app?' onConfirm={() => submit('reject')} okText='Yes' cancelText='No'>
-        <Button danger loading={loading}>
-          Reject
-        </Button>
-      </Popconfirm>
-      <Button type='primary' onClick={() => submit('approve')} loading={loading}>
+      <Button danger loading={loading} onClick={() => submit(AppStatus.REJECTED)}>
+        Reject
+      </Button>
+      <Button type='primary' onClick={() => submit(AppStatus.APPROVED)} loading={loading}>
         Approve
       </Button>
     </Space>
@@ -78,20 +72,29 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated }) =>
     <Modal
       open={open}
       onCancel={onClose}
-      footer={renderFooter()} 
+      footer={renderFooter()}
       width={600}
       centered
       title='Review app'
+      style={{ backgroundColor: '#f6f8fb' }}
     >
-      <Descriptions bordered size="small" column={1}>
+      <Descriptions
+        bordered
+        size="small"
+        column={1}
+        labelStyle={{ backgroundColor: '#f3f5f7', color: '#374151', fontWeight: 700 }}
+        contentStyle={{ backgroundColor: '#ffffff', color: '#111827' }}
+      >
         <Descriptions.Item label="Version">
           {latestVersion?.version ?? '0'}
         </Descriptions.Item>
         <Descriptions.Item label="Submitted">
-          {formatDate(latestVersion?.createdAt)}
+          {formatDate(appData?.updatedAt)}
         </Descriptions.Item>
-        <Descriptions.Item label="Change Log"> 
-          {latestVersion?.changelog || 'none'}
+        <Descriptions.Item label="Change Log">
+          <div style={{ backgroundColor: '#ffffff', borderRadius: 6 }}>
+            {latestVersion?.changelog || '-'}
+          </div>
         </Descriptions.Item>
       </Descriptions>
 

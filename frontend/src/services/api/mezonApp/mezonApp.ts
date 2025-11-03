@@ -4,6 +4,8 @@ import { Rating } from '../rating/rating'
 import { LinkTypeResponse } from '../linkType/linkType'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
+import { AppStatus } from '@app/enums/AppStatus.enum'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mezonAppControllerListAdminMezonApp: build.query<
@@ -172,7 +174,7 @@ export type GetMezonAppDetailsResponse = {
   prefix: string
   headline: string
   featuredImage: string
-  status: number
+  status: AppStatus
   owner: OwnerInMezonAppDetailResponse
   tags: TagInMezonAppDetailResponse[]
   pricingTag: AppPricing
@@ -182,6 +184,11 @@ export type GetMezonAppDetailsResponse = {
   type: MezonAppType
   mezonAppId?: string
   supportUrl: string;
+  // ADDED FIELDS
+  versions: AppVersion[]
+  hasNewUpdate: boolean
+  createdAt?: string
+  updatedAt?: string
 }
 export type RequestWithId = {
   id: string
@@ -234,11 +241,20 @@ export type AppReviewHistory = {
   app: App
   reviewer: User
 }
+
+// ADDED TYPE
+export type AppVersion = {
+  id: string
+  version: number
+  status: AppStatus
+  changelog?: string
+}
+
 export type App = {
   id?: string
   name: string
   ownerId: string
-  status: Status
+  status: AppStatus
   isAutoPublished: boolean
   type: MezonAppType
   mezonAppId?: string
@@ -255,6 +271,8 @@ export type App = {
   reviewHistories: AppReviewHistory[]
   ratings: Rating[]
   owner: User
+  // ADDED FIELDS
+  version?: AppVersion
 }
 export type SocialLinkDto = {
   url?: string
@@ -281,7 +299,7 @@ export type UpdateMezonAppRequest = {
   id: string
   name?: string
   isAutoPublished?: boolean
-  type: MezonAppType
+  type?: MezonAppType
   mezonAppId?: string
   headline?: string
   description?: string
@@ -289,24 +307,21 @@ export type UpdateMezonAppRequest = {
   featuredImage?: string
   supportUrl?: string
   remark?: string
-  tagIds: string[]
+  tagIds?: string[]
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
+  // ADDED FIELDS
+  status?: AppStatus
 }
 export type GetRelatedMezonAppResponse = {
   id: string
   name: string
-  status: number
+  status: AppStatus
   featuredImage: string
   rateScore: number
 }
-export enum Status {
-  $0 = 0,
-  $1 = 1,
-  $2 = 2,
-  $3 = 3
-}
+
 export enum Role {
   Admin = 'ADMIN',
   Developer = 'DEVELOPER'

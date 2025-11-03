@@ -1,18 +1,16 @@
 import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
 import { Button, Input, Table, Tooltip, Tag, Alert } from 'antd'
 import { ChangeEvent, useEffect, useState } from 'react'
-import {
-    useLazyMezonAppControllerListAdminMezonAppQuery,
-    useMezonAppControllerGetMezonAppDetailQuery,
-    mockApps,
-    mockAppVersions
-} from './mockData'
+import { mockApps } from './mockData'
+import type { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
 import AppDetailModal from './AppDetailModal'
 import AppReviewModal from './AppReviewModal'
+import { AppStatus } from '@app/enums/AppStatus.enum'
+
+const pageSizeOptions = ['5', '10', '15']
 
 function AppReviewPage() {
-    const [getApps, { data }] = useLazyMezonAppControllerListAdminMezonAppQuery()
     const [searchQuery, setSearchQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(5)
@@ -20,11 +18,21 @@ function AppReviewPage() {
     const [selectedAppId, setSelectedAppId] = useState<string | undefined>(undefined)
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
     const [reviewAppId, setReviewAppId] = useState<string | undefined>(undefined)
+    const [tableData, setTableData] = useState<GetMezonAppDetailsResponse[]>([])
+    const [totalCount, setTotalCount] = useState(0)
 
-    const appDetail = useMezonAppControllerGetMezonAppDetailQuery(selectedAppId)
-
-    const fetchData = async () => {
-        await getApps({ search: searchQuery, pageNumber, pageSize, sortField: 'name', sortOrder: 'ASC' })
+    const fetchData = () => {
+        let list = [...mockApps]
+        if (searchQuery) {
+            const q = searchQuery.toLowerCase()
+            list = list.filter(i => i.name.toLowerCase().includes(q) || (i.headline || '').toLowerCase().includes(q))
+        }
+        list.sort((a, b) => a.name.localeCompare(b.name))
+        const total = list.length
+        const start = (pageNumber - 1) * pageSize
+        const page = list.slice(start, start + pageSize)
+        setTableData(page)
+        setTotalCount(total)
     }
 
     useEffect(() => {
@@ -46,13 +54,19 @@ function AppReviewPage() {
         setIsReviewModalOpen(true)
     }
 
-    const tableData = data?.data || []
+    const selectedAppData = mockApps.find(a => a.id === selectedAppId)
 
-    const getLatestVersion = (appId: string) => {
-        const versions = mockAppVersions.filter(v => v.appId === appId && !v.deletedAt)
-        if (!versions.length) return undefined
-        versions.sort((a, b) => (b.version || 0) - (a.version || 0))
-        return versions[0]
+    const latestVersion = (appId: string) => {
+        const app = mockApps.find(a => a.id === appId);
+        return app?.versions?.length ? app.versions[0] : undefined;
+    };
+
+
+    const getStatusTag = (status: AppStatus) => {
+        if (status === AppStatus.REJECTED) return <Tag color='red'>Rejected</Tag>
+        if (status === AppStatus.PUBLISHED || status === AppStatus.APPROVED) return <Tag color='green'>Approved</Tag>
+        if (status === AppStatus.PENDING) return <Tag color='gold'>Pending</Tag>
+        return <Tag>Published</Tag>
     }
 
     const columns = [
@@ -78,24 +92,23 @@ function AppReviewPage() {
             title: 'Version',
             key: 'version',
             render: (_: any, record: any) => {
-                const version = getLatestVersion(record.id)
-                return <div className='text-center'>{version?.version ?? (mockApps.find(a => a.id === record.id)?.currentVersion ?? '-')}</div>
+                const version = latestVersion(record.id)
+                return <div className='text-center'>{version?.version ?? '-'}</div>
             }
         },
         {
             title: 'Change Log',
             key: 'changelog',
             render: (_: any, record: any) => {
-                const version = getLatestVersion(record.id)
+                const version = latestVersion(record.id)
                 return <div className='max-w-[400px] break-words whitespace-pre-wrap text-sm text-gray-700'>{version?.changelog || '-'}</div>
             }
         },
         {
             title: 'Submitted',
             key: 'submitted',
-            render: (_: any, record: any) => {
-                const version = getLatestVersion(record.id)
-                const submitted = version?.createdAt || mockApps.find(a => a.id === record.id)?.createdAt
+            render: (_: any, _1: any) => {
+                const submitted = selectedAppData?.updatedAt
                 return <div className='text-center'>{formatDate(submitted, 'DD-MM-YYYY')}</div>
             }
         },
@@ -103,12 +116,9 @@ function AppReviewPage() {
             title: 'Status',
             key: 'status',
             render: (_: any, record: any) => {
-                const version = getLatestVersion(record.id)
-                const s = version?.status || record.status
-                if (s === 'REJECTED') return <Tag color='red'>Rejected</Tag>
-                if (s === 'PUBLISHED' || s === 'APPROVED' || s === 1) return <Tag color='green'>Approved</Tag>
-                if (s === 'PENDING') return <Tag color='gold'>Pending</Tag>
-                return <Tag>{String(s)}</Tag>
+                const version = latestVersion(record.id)
+                const status = version?.status || record.status
+                return <div className='text-center'>{getStatusTag(status)}</div>
             }
         },
         {
@@ -130,10 +140,10 @@ function AppReviewPage() {
     return (
         <>
             {tableData && tableData.length > 0 && (() => {
-                const pendingCount = tableData.filter((record: any) => {
-                    const version = getLatestVersion(record.id)
-                    const s = version?.status || record.status
-                    return s === 'PENDING'
+                const pendingCount = tableData.filter(app => {
+                    const version = latestVersion(app.id)
+                    const status = version?.status || app.status
+                    return status === AppStatus.PENDING
                 }).length
 
                 if (pendingCount > 0) {
@@ -172,27 +182,29 @@ function AppReviewPage() {
                 pagination={{
                     current: pageNumber,
                     pageSize,
-                    total: data?.totalCount,
+                    total: totalCount,
                     showSizeChanger: true,
-                    pageSizeOptions: ['5', '10', '15'],
+                    pageSizeOptions: pageSizeOptions,
                     onChange: (page, size) => {
                         setPageNumber(page)
-                        setPageSize(size || 5)
+                        setPageSize(size)
                     }
                 }}
             />
 
-            <AppDetailModal 
-                open={isOpenModal} 
-                onClose={() => setIsOpenModal(false)} 
-                appId={selectedAppId} 
-                appData={appDetail.data} 
+            <AppDetailModal
+                open={isOpenModal}
+                onClose={() => setIsOpenModal(false)}
+                appData={selectedAppData}
+                latestVersion={latestVersion(selectedAppId || '')}
             />
-            <AppReviewModal 
-                open={isReviewModalOpen} 
-                onClose={() => setIsReviewModalOpen(false)} 
-                appId={reviewAppId} 
-                onUpdated={fetchData} 
+            <AppReviewModal
+                open={isReviewModalOpen}
+                onClose={() => setIsReviewModalOpen(false)}
+                appId={reviewAppId}
+                latestVersion={latestVersion(selectedAppId || '')}
+                onUpdated={fetchData}
+                appData={selectedAppData}
             />
         </>
     )

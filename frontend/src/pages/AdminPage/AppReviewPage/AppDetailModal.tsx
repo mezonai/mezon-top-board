@@ -1,25 +1,18 @@
 import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
 import React from 'react'
-import { GetMezonAppDetailsResponse, mockAppVersions } from './mockData'
 import { formatDate } from '@app/utils/date'
+import type { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
 
 interface Props {
     open: boolean
     onClose: () => void
-    appId?: string
     appData?: GetMezonAppDetailsResponse | undefined
+    latestVersion?: GetMezonAppDetailsResponse['versions'][0]
 }
 
 const { Title, Text, Paragraph } = Typography
 
-const AppDetailModal: React.FC<Props> = ({ open, onClose, appId, appData }) => {
-    const latestVersion = React.useMemo(() => {
-        if (!appId) return undefined
-        const versions = mockAppVersions.filter(v => v.appId === appId && !v.deletedAt)
-        versions.sort((a, b) => (b.version || 0) - (a.version || 0))
-        return versions[0]
-    }, [appId])
-
+const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     return (
         <Modal
             open={open}
@@ -28,7 +21,13 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appId, appData }) => {
             width={720}
             centered
             title={appData ? 'App Details' : 'Loading...'}
-            bodyStyle={{ padding: '20px 24px' }}
+            styles={{
+                body: {
+                    padding: '20px 24px',
+                    maxHeight: '80vh',
+                    overflowY: 'auto'  
+                }
+            }}
         >
             {!appData ? (
                 <div className='text-center py-2'>
@@ -67,9 +66,18 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appId, appData }) => {
                         </div>
 
                         <div>
-                            <Paragraph className='mt-0' style={{ fontSize: 14 }}>
-                                {appData.description}
-                            </Paragraph>
+                            {appData.description ? (
+                                <div
+                                    className='mt-0'
+                                    style={{ fontSize: 14 }}
+                                    dangerouslySetInnerHTML={{ __html: appData.description }}
+                                />
+                            ) : (
+                                <Paragraph className='mt-0' style={{ fontSize: 14 }}>
+                                    No description
+                                </Paragraph>
+                            )}
+
                         </div>
                     </div>
 
@@ -82,7 +90,7 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appId, appData }) => {
                                     {latestVersion.version ?? '-'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Submitted">
-                                    {formatDate(latestVersion.createdAt)}
+                                    {formatDate(appData.updatedAt)}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Change Log">
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
