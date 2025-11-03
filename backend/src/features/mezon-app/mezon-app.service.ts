@@ -230,7 +230,8 @@ export class MezonAppService {
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
       .where("app.id IN (:...ids)", { ids })
-      .orderBy("version.version", "DESC")
+      .orderBy("app.createdAt", "DESC")
+      .addOrderBy("version.version", "DESC")
       .getMany();
 
     return [data, total];
