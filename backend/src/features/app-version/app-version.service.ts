@@ -73,10 +73,15 @@ export class AppVersionService {
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
     await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
+    if (appVersion.version === 1) {
+      return await this.appRepository.update(appVersion.appId, {
+        status: AppStatus.REJECTED,
+        hasNewUpdate: false,
+      });
+    }
 
     return await this.appRepository.update(appVersion.appId, {
-      status: appVersion.version === 1 && AppStatus.REJECTED,
-      hasNewUpdate: false
+      hasNewUpdate: false,
     });
   }
 }

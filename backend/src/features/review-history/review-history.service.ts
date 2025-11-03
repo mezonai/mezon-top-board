@@ -43,7 +43,7 @@ export class ReviewHistoryService {
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
     const mezonApp = await this.appRepository.findById(body.appId);
-    if (!mezonApp || mezonApp.hasNewUpdate === true) {
+    if (!mezonApp || mezonApp.hasNewUpdate === false) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
 
