@@ -174,7 +174,7 @@ function LinkTypesList() {
       render: (_: any, record: any) => (
         <div className='flex gap-2'>
           <Button
-            color='secondary'
+            color='blue'
             icon={<EditOutlined />}
             onClick={() => {
               setIsUpdateModal(true)

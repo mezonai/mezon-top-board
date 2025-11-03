@@ -1,15 +1,19 @@
 import { getMezonInstallLink } from '@app/utils/mezonApp'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { Tag } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { transformMediaSrc } from '@app/utils/stringHelper'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
-
+  const { control} = useFormContext<CreateMezonAppRequest>()
+  
+  const type = useWatch({ control, name: 'type' })
   const values = getValues()
   const tagIds = values.tagIds ?? []
   const selectedTags = tagList.data?.filter(tag => tagIds.includes(tag.id)) ?? []
@@ -22,7 +26,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         <li><strong>Bot/App ID:</strong> {values.mezonAppId}</li>
         <li><strong>Name:</strong> {values.name}</li>
         <li className='break-words'><strong>Headline:</strong> {values.headline}</li>
-        <li><strong>Prefix:</strong> {values.prefix}</li>
+        {type === MezonAppType.BOT && <li><strong>Prefix:</strong> {values.prefix}</li>}
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
         <li className='break-words'><strong>Install Link:</strong> {getMezonInstallLink(values.type, values.mezonAppId)}</li>
         <li>
@@ -36,6 +40,12 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
               <span className="text-gray-500 italic ml-2">No tags selected</span>
             )}
           </div>
+        </li>
+        <li>
+          <strong>Tag Price:</strong> {values.pricingTag}
+        </li>
+        <li>
+          <strong>Price: </strong> {values.price}
         </li>
         <li className='break-words'><strong>Support URL: </strong>{values.supportUrl}</li>
         <li>

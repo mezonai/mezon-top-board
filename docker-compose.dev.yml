@@ -63,6 +63,17 @@ services:
     networks:
       - main_net
   
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    environment:
+      - DOCUSAURUS_DOMAIN=${DOCUSAURUS_DOMAIN}
+      - URL=${URL}
+    container_name: docs
+    networks:
+      - main_net
+  
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -72,6 +83,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - docs
     ports:
       - 80:80
       - 443:443

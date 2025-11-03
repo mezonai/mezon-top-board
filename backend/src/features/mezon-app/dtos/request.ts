@@ -20,12 +20,14 @@ import {
   IsUrl,
   ValidateIf,
   IsEnum,
+  IsNumber,
 } from "class-validator";
 
 import {
   PaginationQuery,
   RequestWithId,
 } from "@domain/common/dtos/request.dto";
+import { AppPricing } from "@domain/common/enum/appPricing";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
 
 export class SearchMezonAppRequest extends PaginationQuery {
@@ -38,6 +40,16 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional()
   @IsOptional()
   tags: string[];
+
+  @ApiPropertyOptional({ enum: AppPricing })
+  @IsOptional()
+  @IsEnum(AppPricing, { message: "Invalid pricing tag" })
+  pricingTag: AppPricing;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  price: number;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -94,6 +106,7 @@ export class CreateMezonAppRequest {
   description?: string;
 
   @ApiPropertyOptional()
+  @ValidateIf(o => o.type === MezonAppType.BOT)
   @IsString()
   @MinLength(1, { message: "Prefix must be at least 1 character" })
   @MaxLength(10, { message: "Prefix must not exceed 10 characters" })
@@ -124,6 +137,18 @@ export class CreateMezonAppRequest {
   @ArrayMinSize(1, { message: "At least one tag is required" })
   @IsString({ each: true })
   tagIds: string[];
+
+  @ApiPropertyOptional()
+  @IsEnum(AppPricing, {
+    message: "Pricing tag must be either 'free' or 'paid'",
+  })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  pricingTag: AppPricing;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  price: number;
 
   @ApiPropertyOptional({ type: [SocialLinkDto] })
   @IsArray()
