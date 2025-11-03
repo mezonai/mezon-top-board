@@ -24,6 +24,7 @@ jobs:
     - name: Build BE & Deploy
       run: |
         cd backend/
+        nvm use 22
         yarn
         yarn build
         cp -r . /var/www/top-mezon-ai-be/
