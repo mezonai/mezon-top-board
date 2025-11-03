@@ -154,6 +154,7 @@ export class MezonAppService {
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version");
+
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
     }
@@ -291,10 +292,10 @@ export class MezonAppService {
       hasNewUpdate: true,
     });
     if (newApp) await this.appVersionService.createVersion({
-      ...appData,
       appId: newApp.id,
       tagIds,
-      socialLinks: links
+      socialLinks,
+      ...appData,
     })
     return newApp
   }
