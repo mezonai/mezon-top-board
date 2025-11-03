@@ -12,9 +12,8 @@ function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(5)
-    const [isOpenModal, setIsOpenModal] = useState(false)
-    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-    const [modalAppData, setModalAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
+    const [activeModal, setActiveModal] = useState<'detail' | 'review' | null>(null);
+    const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
     const [tableData, setTableData] = useState<GetMezonAppDetailsResponse[]>([])
     const [totalCount, setTotalCount] = useState(0)
 
@@ -32,6 +31,8 @@ function AppReviewPage() {
         setTotalCount(total)
     }
 
+    const latestVersion = detailAppData?.versions?.[0]
+
     useEffect(() => {
         fetchData()
     }, [pageNumber, pageSize])
@@ -43,29 +44,24 @@ function AppReviewPage() {
 
     const handleView = (id: string) => {
         const app = mockApps.find(a => a.id === id);
-        setModalAppData(app);
-        setIsOpenModal(true)
+        setDetailAppData(app);
+        setActiveModal('detail');
     }
 
     const handleOpenReview = (id: string) => {
         const app = mockApps.find(a => a.id === id);
-        setModalAppData(app);
-        setIsReviewModalOpen(true)
+        setDetailAppData(app);
+        setActiveModal('review');
     }
 
-    const handleDetailModalClose = () => {
-        setIsOpenModal(false);
-        setModalAppData(undefined);
-    }
-
-    const handleReviewModalClose = () => {
-        setIsReviewModalOpen(false);
-        setModalAppData(undefined);
+    const handleCloseModals = () => {
+        setActiveModal(null);
+        setDetailAppData(undefined);
     }
 
     const handleReviewSuccess = () => {
         fetchData();
-        handleReviewModalClose();
+        handleCloseModals();
     }
 
     const getStatusTag = (status: AppStatus) => {
@@ -198,18 +194,18 @@ function AppReviewPage() {
                 }}
             />
 
-            <AppDetailModal 
-                open={isOpenModal} 
-                onClose={handleDetailModalClose} 
-                appData={modalAppData}
-                latestVersion={modalAppData?.versions?.[0]} 
+            <AppDetailModal
+                open={activeModal === 'detail'}
+                onClose={handleCloseModals}
+                appData={detailAppData}
+                latestVersion={latestVersion}
             />
-            <AppReviewModal 
-                open={isReviewModalOpen} 
-                onClose={handleReviewModalClose} 
-                onUpdated={handleReviewSuccess} 
-                appData={modalAppData}
-                latestVersion={modalAppData?.versions?.[0]}
+            <AppReviewModal
+                open={activeModal === 'review'}
+                onClose={handleCloseModals}
+                onUpdated={handleReviewSuccess}
+                appData={detailAppData}
+                latestVersion={latestVersion}
             />
         </>
     )

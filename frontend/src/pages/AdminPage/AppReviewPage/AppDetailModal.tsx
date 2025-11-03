@@ -25,7 +25,7 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
                 body: {
                     padding: '20px 24px',
                     maxHeight: '80vh',
-                    overflowY: 'auto'  
+                    overflowY: 'auto'
                 }
             }}
         >
@@ -65,24 +65,12 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
                             </div>
                         </div>
 
-                        <div>
-                            {appData.description ? (
-                                <div
-                                    className='mt-0'
-                                    style={{ fontSize: 14 }}
-                                    dangerouslySetInnerHTML={{ __html: appData.description }}
-                                />
-                            ) : (
-                                <Paragraph className='mt-0' style={{ fontSize: 14 }}>
-                                    No description
-                                </Paragraph>
-                            )}
-
-                        </div>
+                        {appData.description
+                            ? <div dangerouslySetInnerHTML={{ __html: appData.description }} />
+                            : <Paragraph>No description</Paragraph>
+                        }
                     </div>
-
                     <Divider />
-
                     <Descriptions title="Latest version" bordered size="small" column={1}>
                         {latestVersion ? (
                             <>
