@@ -2,7 +2,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as sanitizeHtml from "sanitize-html";
-import { Brackets, EntityManager, In, Not, ObjectLiteral } from "typeorm";
+import { Brackets, EntityManager, In, Not, ObjectLiteral, SelectQueryBuilder } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
@@ -11,8 +11,6 @@ import { Role } from "@domain/common/enum/role";
 import { SortField } from '@domain/common/enum/sortField';
 import { SortOrder } from '@domain/common/enum/sortOder';
 import { App, AppVersion, Link, LinkType, Tag, User } from "@domain/entities";
-
-import { AppVersionService } from "@features/app-version/app-version.service";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
 
@@ -151,13 +149,7 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .skip((query.pageNumber - 1) * query.pageSize)
-      .take(query.pageSize)
       .leftJoinAndSelect("app.tags", "filterTag")
-      .leftJoinAndSelect("app.ratings", "rating")
-      .leftJoinAndSelect("app.socialLinks", "socialLink")
-      .leftJoinAndSelect("app.owner", "owner")
-      .leftJoinAndSelect("app.versions", "version");
 
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
@@ -201,17 +193,54 @@ export class MezonAppService {
         .addSelect('LOWER(app.name)', 'app_name_lower')
         .orderBy('app_name_lower', sortOrder);
     } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
-    whereCondition.addOrderBy("version.version", "DESC");
+
     return whereCondition;
+  }
+
+  private async fetchPaginatedApps(
+    whereCondition: SelectQueryBuilder<App>,
+    query: SearchMezonAppRequest
+  ): Promise<[App[], number]> {
+    const offset = (query.pageNumber - 1) * query.pageSize;
+
+    const idQuery = whereCondition.clone().orderBy();
+    const countQuery = whereCondition.clone().orderBy();
+
+    const [rawIds, total] = await Promise.all([
+      idQuery
+        .select("DISTINCT app.id", "id")
+        .skip(offset)
+        .take(query.pageSize)
+        .getRawMany(),
+      countQuery
+        .select("COUNT(DISTINCT app.id)", "count")
+        .getRawOne()
+        .then((r) => Number(r.count)),
+    ]);
+
+    const ids = rawIds.map((r) => r.id);
+    if (!ids.length) return [[], total];
+
+    const data = await this.appRepository
+      .getRepository()
+      .createQueryBuilder("app")
+      .leftJoinAndSelect("app.tags", "tag")
+      .leftJoinAndSelect("app.ratings", "rating")
+      .leftJoinAndSelect("app.socialLinks", "socialLink")
+      .leftJoinAndSelect("app.owner", "owner")
+      .leftJoinAndSelect("app.versions", "version")
+      .where("app.id IN (:...ids)", { ids })
+      .orderBy("version.version", "DESC")
+      .getMany();
+
+    return [data, total];
   }
 
   async searchMezonApp(query: SearchMezonAppRequest) {
     const whereCondition = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
 
     return paginate<App, SearchMezonAppResponse>(
-      () =>
-        whereCondition
-          .getManyAndCount(),
+      () => this.fetchPaginatedApps(whereCondition, query),
       query.pageSize,
       query.pageNumber,
       (entity) => {
@@ -455,7 +484,7 @@ export class MezonAppService {
     const whereCondition = await this.buildSearchQuery(query);
 
     return paginate<App, SearchMezonAppResponse>(
-      () => whereCondition.getManyAndCount(),
+      () => this.fetchPaginatedApps(whereCondition, query),
       query.pageSize,
       query.pageNumber,
       (entity) => {
@@ -478,7 +507,7 @@ export class MezonAppService {
     });
 
     return paginate<App, SearchMezonAppResponse>(
-      () => whereCondition.getManyAndCount(),
+      () => this.fetchPaginatedApps(whereCondition, query),
       query.pageSize,
       query.pageNumber,
       (entity) => {
