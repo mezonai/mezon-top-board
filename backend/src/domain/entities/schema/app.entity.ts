@@ -5,6 +5,7 @@ import { Link, AppReviewHistory, Rating, Tag, User } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { AppPricing } from "@domain/common/enum/appPricing";
 
 @Entity()
 export class App extends BaseSoftDelete {
@@ -55,6 +56,21 @@ export class App extends BaseSoftDelete {
     @ManyToMany(() => Tag, (tag) => tag.apps)
     @JoinTable()
     public tags: Tag[];
+
+    @Column({
+        type: "enum",
+        enum: AppPricing,
+        default: AppPricing.FREE,
+    })
+    public pricingTag: AppPricing;
+
+    @Column({
+        type: "decimal",
+        precision: 15,
+        scale: 0,
+        nullable: true,
+    })
+    public price: number | null;
 
     @ManyToMany(() => Link, (link) => link.apps)
     @JoinTable()
