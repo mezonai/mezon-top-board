@@ -154,7 +154,6 @@ export class MezonAppService {
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version");
-
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
     }
@@ -197,7 +196,7 @@ export class MezonAppService {
         .addSelect('LOWER(app.name)', 'app_name_lower')
         .orderBy('app_name_lower', sortOrder);
     } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
-
+    whereCondition.addOrderBy("version.version", "DESC");
     return whereCondition;
   }
 
@@ -288,12 +287,13 @@ export class MezonAppService {
       ...appData,
       ownerId: ownerId,
       tags: existingTags,
-      socialLinks: links
+      socialLinks: links,
+      hasNewUpdate: true,
     });
     if (newApp) await this.appVersionService.createVersion({
       ...appData,
       appId: newApp.id,
-      tags: existingTags,
+      tagIds,
       socialLinks: links
     })
     return newApp
@@ -419,7 +419,7 @@ export class MezonAppService {
       appId: id,
       ...updateData,
       description: cleanedDescription,
-      tags,
+      tagIds,
       socialLinks: links,
     };
 
@@ -428,10 +428,10 @@ export class MezonAppService {
     });
 
     if (existingPendingVersion) {
+      Object.assign(existingPendingVersion, updateData);
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
       existingPendingVersion.description = cleanedDescription;
-      Object.assign(existingPendingVersion, updateData);
 
       await this.appVersionRepository.getRepository().save(existingPendingVersion);
       return app

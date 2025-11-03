@@ -199,7 +199,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             </Tooltip>
           </Popconfirm>
           {
-            (record.status === AppStatus.PENDING || record.hasNewUpdate) && (
+            record.status === AppStatus.PENDING && (
               <Tooltip title="Review app">
                 <Button color="cyan" variant="outlined" icon={<LockOutlined />} onClick={() => onReviewStart(record)} />
               </Tooltip>
@@ -259,6 +259,17 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       <Modal
         title="Review App"
         open={showReviewModal}
+        onOk={() => {
+          if (reviewingAppId) {
+            createReviewHistory({
+              createAppReviewRequest: {
+                appId: reviewingAppId,
+                isApproved: false,
+                remark: reviewRemark,
+              },
+            });
+          }
+        }}
         onCancel={() => {
           setShowReviewModal(false);
           setReviewingAppId(null);

@@ -71,13 +71,9 @@ export class AppVersionService {
 
     await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
 
-    await this.appRepository.update(
-      appVersion.appId,
-      appVersion.version === 1
-        ? { status: AppStatus.REJECTED }
-        : { hasNewUpdate: false }
-    );
-
-    return new Result({ message: 'Version rejected successfully' });
+    return await this.appRepository.update(appVersion.appId, {
+      status: appVersion.version === 1 && AppStatus.REJECTED,
+      hasNewUpdate: false
+    });
   }
 }
