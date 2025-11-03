@@ -23,6 +23,8 @@ jobs:
 
     - name: Build BE & Deploy
       run: |
+        export NVM_DIR=~/.nvm
+        source ~/.nvm/nvm.sh
         cd backend/
         yarn
         yarn build
