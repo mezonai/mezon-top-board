@@ -1,6 +1,6 @@
 export enum AppStatus {
-  PENDING,
-  APPROVED,
-  PUBLISHED,
-  REJECTED,
+    PENDING,
+    APPROVED,
+    PUBLISHED,
+    REJECTED
 }
