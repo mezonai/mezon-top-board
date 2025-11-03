@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { EntityManager, In } from 'typeorm';
 
-import { Result } from '@domain/common/dtos/result.dto';
 import { AppStatus } from '@domain/common/enum/appStatus';
 import { App, AppVersion, Tag } from '@domain/entities';
 
