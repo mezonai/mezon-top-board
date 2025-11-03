@@ -517,6 +517,7 @@ export class MezonAppService {
           id: tag.id,
           name: tag.name,
         }));
+        mappedMezonApp.versions = entity.versions;
         return mappedMezonApp;
       },
     );
