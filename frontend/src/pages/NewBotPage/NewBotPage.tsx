@@ -99,7 +99,11 @@ function NewBotPage() {
   }, [botId])
 
   useEffect(() => {
+<<<<<<< HEAD
     const { owner, tags, rateScore, featuredImage, status, versions, hasNewUpdate, ...rest } = mezonAppDetail
+=======
+    const { owner, tags, rateScore, featuredImage, status, currentVersion, ...rest } = mezonAppDetail
+>>>>>>> release/app-version-control
     if (mezonAppDetail && botId) {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
         return;
