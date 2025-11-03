@@ -8,16 +8,13 @@ import AppDetailModal from './AppDetailModal'
 import AppReviewModal from './AppReviewModal'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 
-const pageSizeOptions = ['5', '10', '15']
-
 function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(5)
     const [isOpenModal, setIsOpenModal] = useState(false)
-    const [selectedAppId, setSelectedAppId] = useState<string | undefined>(undefined)
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
-    const [reviewAppId, setReviewAppId] = useState<string | undefined>(undefined)
+    const [modalAppData, setModalAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
     const [tableData, setTableData] = useState<GetMezonAppDetailsResponse[]>([])
     const [totalCount, setTotalCount] = useState(0)
 
@@ -45,22 +42,31 @@ function AppReviewPage() {
     }
 
     const handleView = (id: string) => {
-        setSelectedAppId(id)
+        const app = mockApps.find(a => a.id === id);
+        setModalAppData(app);
         setIsOpenModal(true)
     }
 
     const handleOpenReview = (id: string) => {
-        setReviewAppId(id)
+        const app = mockApps.find(a => a.id === id);
+        setModalAppData(app);
         setIsReviewModalOpen(true)
     }
 
-    const selectedAppData = mockApps.find(a => a.id === selectedAppId)
+    const handleDetailModalClose = () => {
+        setIsOpenModal(false);
+        setModalAppData(undefined);
+    }
 
-    const latestVersion = (appId: string) => {
-        const app = mockApps.find(a => a.id === appId);
-        return app?.versions?.length ? app.versions[0] : undefined;
-    };
+    const handleReviewModalClose = () => {
+        setIsReviewModalOpen(false);
+        setModalAppData(undefined);
+    }
 
+    const handleReviewSuccess = () => {
+        fetchData();
+        handleReviewModalClose();
+    }
 
     const getStatusTag = (status: AppStatus) => {
         if (status === AppStatus.REJECTED) return <Tag color='red'>Rejected</Tag>
@@ -73,7 +79,7 @@ function AppReviewPage() {
         {
             title: 'App',
             key: 'app',
-            render: (_: any, record: any) => (
+            render: (_: any, record: GetMezonAppDetailsResponse) => (
                 <div className='flex items-center gap-3'>
                     <img src={record.featuredImage || '/assets/imgs/default.png'} alt={record.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8 }} />
                     <div className='flex flex-col'>
@@ -86,37 +92,37 @@ function AppReviewPage() {
         {
             title: 'Owner',
             key: 'owner',
-            render: (_: any, record: any) => <div className='font-medium'>{record.owner?.name || '—'}</div>
+            render: (_: any, record: GetMezonAppDetailsResponse) => <div className='font-medium'>{record.owner?.name || '—'}</div>
         },
         {
             title: 'Version',
             key: 'version',
-            render: (_: any, record: any) => {
-                const version = latestVersion(record.id)
+            render: (_: any, record: GetMezonAppDetailsResponse) => {
+                const version = record.versions?.[0]
                 return <div className='text-center'>{version?.version ?? '-'}</div>
             }
         },
         {
             title: 'Change Log',
             key: 'changelog',
-            render: (_: any, record: any) => {
-                const version = latestVersion(record.id)
+            render: (_: any, record: GetMezonAppDetailsResponse) => {
+                const version = record.versions?.[0]
                 return <div className='max-w-[400px] break-words whitespace-pre-wrap text-sm text-gray-700'>{version?.changelog || '-'}</div>
             }
         },
         {
             title: 'Submitted',
             key: 'submitted',
-            render: (_: any, _1: any) => {
-                const submitted = selectedAppData?.updatedAt
+            render: (_: any, record: GetMezonAppDetailsResponse) => {
+                const submitted = record.updatedAt
                 return <div className='text-center'>{formatDate(submitted, 'DD-MM-YYYY')}</div>
             }
         },
         {
             title: 'Status',
             key: 'status',
-            render: (_: any, record: any) => {
-                const version = latestVersion(record.id)
+            render: (_: any, record: GetMezonAppDetailsResponse) => {
+                const version = record.versions?.[0]
                 const status = version?.status || record.status
                 return <div className='text-center'>{getStatusTag(status)}</div>
             }
@@ -124,7 +130,7 @@ function AppReviewPage() {
         {
             title: 'Actions',
             key: 'action',
-            render: (_: any, record: any) => (
+            render: (_: any, record: GetMezonAppDetailsResponse) => (
                 <div className='flex gap-3'>
                     <Tooltip title='View'>
                         <Button color='blue' variant='outlined' icon={<EyeOutlined />} onClick={() => handleView(record.id)} />
@@ -141,7 +147,7 @@ function AppReviewPage() {
         <>
             {tableData && tableData.length > 0 && (() => {
                 const pendingCount = tableData.filter(app => {
-                    const version = latestVersion(app.id)
+                    const version = app.versions?.[0]
                     const status = version?.status || app.status
                     return status === AppStatus.PENDING
                 }).length
@@ -184,27 +190,26 @@ function AppReviewPage() {
                     pageSize,
                     total: totalCount,
                     showSizeChanger: true,
-                    pageSizeOptions: pageSizeOptions,
+                    pageSizeOptions: ['5', '10', '15'],
                     onChange: (page, size) => {
                         setPageNumber(page)
-                        setPageSize(size)
+                        setPageSize(size || 5)
                     }
                 }}
             />
 
-            <AppDetailModal
-                open={isOpenModal}
-                onClose={() => setIsOpenModal(false)}
-                appData={selectedAppData}
-                latestVersion={latestVersion(selectedAppId || '')}
+            <AppDetailModal 
+                open={isOpenModal} 
+                onClose={handleDetailModalClose} 
+                appData={modalAppData}
+                latestVersion={modalAppData?.versions?.[0]} 
             />
-            <AppReviewModal
-                open={isReviewModalOpen}
-                onClose={() => setIsReviewModalOpen(false)}
-                appId={reviewAppId}
-                latestVersion={latestVersion(selectedAppId || '')}
-                onUpdated={fetchData}
-                appData={selectedAppData}
+            <AppReviewModal 
+                open={isReviewModalOpen} 
+                onClose={handleReviewModalClose} 
+                onUpdated={handleReviewSuccess} 
+                appData={modalAppData}
+                latestVersion={modalAppData?.versions?.[0]}
             />
         </>
     )

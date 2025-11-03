@@ -1,13 +1,13 @@
 import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
 import React from 'react'
 import { formatDate } from '@app/utils/date'
-import type { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
+import type { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
 
 interface Props {
     open: boolean
     onClose: () => void
     appData?: GetMezonAppDetailsResponse | undefined
-    latestVersion?: GetMezonAppDetailsResponse['versions'][0]
+    latestVersion?: AppVersion
 }
 
 const { Title, Text, Paragraph } = Typography

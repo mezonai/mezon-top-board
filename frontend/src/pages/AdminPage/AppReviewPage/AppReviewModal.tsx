@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Button, Input, Descriptions, Form, Space } from 'antd'
 import { toast } from 'react-toastify'
-import { GetMezonAppDetailsResponse, useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse, useMezonAppControllerUpdateMezonAppMutation, AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 
@@ -10,13 +10,12 @@ const { TextArea } = Input
 interface Props {
   open: boolean
   onClose: () => void
-  appId?: string
   appData?: GetMezonAppDetailsResponse | undefined
-  latestVersion?: GetMezonAppDetailsResponse['versions'][0]
+  latestVersion?: AppVersion
   onUpdated?: () => void
 }
 
-const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated, appData, latestVersion }) => {
+const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, latestVersion }) => {
   const [form] = Form.useForm()
   const remark = Form.useWatch('remark', form)
 
@@ -30,7 +29,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated, appD
   }, [open, form])
 
   const submit = async (action: AppStatus.APPROVED | AppStatus.REJECTED) => {
-    if (!appId) return
+    if (!appData?.id) return
     setLoading(true)
     try {
       const status = action === AppStatus.APPROVED ? AppStatus.APPROVED : AppStatus.REJECTED
@@ -38,7 +37,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, appId, onUpdated, appD
       // TODO: SEND REQUEST TO BACKEND TO UPDATE APP STATUS
       await reviewAppId({
         updateMezonAppRequest: {
-          id: appId,
+          id: appData.id,
           status,
           remark: remark || null,
         }
