@@ -83,8 +83,11 @@ export class AppVersionService {
     const version = await this.appVersionRepository.findOne({ where: { id: versionId } });
     if (!version) throw new NotFoundException('AppVersion not found');
 
+    const app = await this.appRepository.findOne({ where: { id: version.appId } });
+    if (!app) throw new NotFoundException('App not found');
+
     await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
-    if (version.version === 1) {
+    if (version.version === 1 || app.status === AppStatus.PENDING) {
       return await this.appRepository.update(version.appId, {
         status: AppStatus.REJECTED,
         hasNewUpdate: false,
