@@ -2,6 +2,8 @@ import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
 import React from 'react'
 import { formatDate } from '@app/utils/date'
 import type { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
+import { getUrlMedia } from '@app/utils/stringHelper'
 
 interface Props {
     open: boolean
@@ -38,7 +40,7 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
                     <div className='flex flex-col gap-4'>
                         <div className='flex items-start gap-4'>
                             <img
-                                src={appData.featuredImage || '/assets/imgs/default.png'}
+                                src={appData.featuredImage ? getUrlMedia(appData.featuredImage) : sampleBotImg}
                                 alt={appData.name}
                                 className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md mx-auto md:mx-0'
                             />
@@ -84,7 +86,7 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Submitted">
-                                    {formatDate(appData.updatedAt)}
+                                    {formatDate(appData.versions?.[0]?.updatedAt)}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Change Log">
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>

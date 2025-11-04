@@ -26,7 +26,7 @@ export const adminRoutePaths: RoutePath[] = [
     isShowMenu: true
   },
   {
-    path: '/manage/apps/review',
+    path: '/manage/review',
     element: <AppReviewPage />,
     strLabel: 'App Review',
     icon: <HistoryOutlined />,

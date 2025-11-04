@@ -99,7 +99,7 @@ function NewBotPage() {
   }, [botId])
 
   useEffect(() => {
-    const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, ...rest } = mezonAppDetail
+    const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
     if (mezonAppDetail && botId) {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
         return;

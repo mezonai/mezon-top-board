@@ -73,7 +73,7 @@ type ReviewHistory = {
   id: string
   remark: string
   reviewer: Reviewer
-  reviewedAt: string
+  reviewedAt: Date
   app: AppInfo
 }
 

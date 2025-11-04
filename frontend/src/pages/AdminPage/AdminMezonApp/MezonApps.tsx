@@ -1,14 +1,12 @@
-import { CiOutlined, DeleteOutlined, EditOutlined, LockOutlined, SearchOutlined, EyeOutlined } from "@ant-design/icons";
+import { CiOutlined, DeleteOutlined, EditOutlined, SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
-import { AppStatus } from "@app/enums/AppStatus.enum";
 import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerDeleteMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
-import { useReviewHistoryControllerCreateAppReviewMutation } from "@app/services/api/reviewHistory/reviewHistory";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
 import { getMezonInstallLink, mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
 import { getUrlMedia } from "@app/utils/stringHelper";
-import { Button, Input, Modal, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
-import { ChangeEvent, useEffect, useState } from "react";
+import { Button, Input, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -16,9 +14,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   const navigate = useNavigate()
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const [reviewRemark, setReviewRemark] = useState("");
-  const [reviewingAppId, setReviewingAppId] = useState<string | null>(null);
 
   const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery();
   const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin); // Get apps from Redux store
@@ -29,14 +24,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [deleteMezonApp, { isLoading: isDeleting }] = useMezonAppControllerDeleteMezonAppMutation();
-  const [
-    createReviewHistory,
-    {
-      isLoading: isCreatingReviewHistory,
-      error: createReviewHistoryError,
-      isSuccess: isReviewHistoryCreated,
-    }
-  ] = useReviewHistoryControllerCreateAppReviewMutation();
   const handleDelete = async (appId: string) => {
     try {
       await deleteMezonApp({ requestWithId: { id: appId } }).unwrap();
@@ -45,38 +32,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       toast.error(error?.data?.message || "Failed to delete app");
     }
   };
-
-  const reviewApp = async (status: AppStatus) => {
-    try {
-      const isApproved = status === AppStatus.APPROVED;
-      if (reviewingAppId === null) {
-        toast.error("Invalid app id");
-        return
-      }
-
-      await createReviewHistory({
-        createAppReviewRequest: {
-          appId: reviewingAppId || "",
-          isApproved: isApproved,
-          remark: reviewRemark,
-        },
-      }).unwrap();
-
-      await fetchApps();
-
-      toast.success(`App ${isApproved ? "approved" : "rejected"} successfully`);
-      setShowReviewModal(false);
-      setReviewingAppId(null);
-      setReviewRemark("");
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to approve app");
-    }
-  };
-
-  const onReviewStart = async (app: GetMezonAppDetailsResponse) => {
-    setShowReviewModal(true);
-    setReviewingAppId(app.id);
-  }
 
   const fetchApps = async () => {
     listAdminMezonApp({
@@ -93,7 +48,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   }, [currentPageSize, currentPageNumber]);
 
   const handleSearchSubmit = () => {
-    setCurrentPageNumber(1); 
+    setCurrentPageNumber(1);
     fetchApps();
   }
 
@@ -138,7 +93,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       dataIndex: "installLink",
       key: "installLink",
       render: (_: any, record: GetMezonAppDetailsResponse) => {
-       const installLink = getMezonInstallLink(record.type, record.mezonAppId);
+        const installLink = getMezonInstallLink(record.type, record.mezonAppId);
         return (
           <Tooltip title="Try Install">
             <Button
@@ -198,13 +153,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
               <Button type="primary" color="danger" icon={<DeleteOutlined />} danger loading={isDeleting} />
             </Tooltip>
           </Popconfirm>
-          {
-            (record.hasNewUpdate) && (
-              <Tooltip title="Review app">
-                <Button color="cyan" variant="outlined" icon={<LockOutlined />} onClick={() => onReviewStart(record)} />
-              </Tooltip>
-            )
-          }
         </div>
       ),
     },
@@ -222,7 +170,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           className='w-full rounded-[8px] h-[40px]'
         />
         <Button className="w-50" size="large"
-          type='primary' 
+          type='primary'
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}
         >
@@ -255,50 +203,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           />
         )
       }
-
-      <Modal
-        title="Review App"
-        open={showReviewModal}
-        onOk={() => {
-          if (reviewingAppId) {
-            createReviewHistory({
-              createAppReviewRequest: {
-                appId: reviewingAppId,
-                isApproved: false,
-                remark: reviewRemark,
-              },
-            });
-          }
-        }}
-        onCancel={() => {
-          setShowReviewModal(false);
-          setReviewingAppId(null);
-          setReviewRemark("");
-        }}
-        footer={[
-          <Button type="primary" onClick={() => {
-            if (reviewingAppId) {
-              reviewApp(AppStatus.APPROVED);
-            }
-          }}>
-            Approve
-          </Button>,
-          <Button type="primary" danger onClick={() => {
-            if (reviewingAppId) {
-              reviewApp(AppStatus.REJECTED);
-            }
-          }}>
-            Reject
-          </Button>,
-        ]}
-      >
-        {isCreatingReviewHistory && <Spin size="large" />}
-        <Input.TextArea
-          placeholder="Remark"
-          value={reviewRemark}
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setReviewRemark(e.target.value)}
-        />
-      </Modal>
     </>
   );
 };
