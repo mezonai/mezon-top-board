@@ -24,7 +24,7 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public isHasUpdated: boolean;
+  public hasNewUpdate: boolean;
 
   @Expose()
   @ApiProperty({ type: () => OwnerInMezonAppDetailResponse })
@@ -54,6 +54,7 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "rateScore",
   "owner",
   "versions",
+  "hasNewUpdate"
 ]) { }
 
 export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {
