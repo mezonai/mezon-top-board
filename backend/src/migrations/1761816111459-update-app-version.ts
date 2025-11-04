@@ -4,7 +4,6 @@ export class UpdateAppVersion1761816111459 implements MigrationInterface {
     name = 'UpdateAppVersion1761816111459'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TYPE "public"."subscriber_status_enum" AS ENUM('PENDING', 'ACTIVE', 'UNSUBSCRIBED')`);
         await queryRunner.query(`CREATE TABLE "app_version" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "name" character varying NOT NULL, "status" "public"."app_version_status_enum" NOT NULL DEFAULT '0', "isAutoPublished" boolean NOT NULL DEFAULT false, "headline" character varying, "description" character varying, "prefix" character varying, "featuredImage" character varying, "supportUrl" character varying, "remark" character varying, "pricingTag" "public"."app_version_pricingtag_enum" NOT NULL DEFAULT 'FREE', "price" numeric(15,0), "appId" uuid NOT NULL, "version" SERIAL NOT NULL, "changelog" character varying, CONSTRAINT "PK_f2573b981a7eac664875e7483ac" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "app_version_tags" ("appVersionId" uuid NOT NULL, "tagId" uuid NOT NULL, CONSTRAINT "PK_7c535250eb4d7bbec4e0e12025e" PRIMARY KEY ("appVersionId", "tagId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_c58be179e2f32a0ffcaa5e04d1" ON "app_version_tags" ("appVersionId") `);
