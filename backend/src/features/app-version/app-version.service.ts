@@ -53,18 +53,30 @@ export class AppVersionService {
   async approveVersion(versionId: string) {
     const appVersion = await this.appVersionRepository.findOne({
       where: { id: versionId },
+      relations: ['tags', 'socialLinks', 'app'],
     });
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
-    await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
-    const { id, createdAt, updatedAt, app, changelog, appId, version, ...rest } = appVersion;
+    const { id, createdAt, updatedAt, app, changelog, tags, socialLinks, appId, version, ...rest } = appVersion;
 
-    return await this.appRepository.update(appId, {
-      ...rest,
-      status: AppStatus.APPROVED,
-      hasNewUpdate: false,
-      currentVersion: version,
+    const mezonApp = await this.appRepository.findOne({
+      where: { id: appId },
+      relations: ['tags', 'socialLinks'],
     });
+    if (!mezonApp) throw new NotFoundException('App not found');
+
+    Object.assign(mezonApp, rest);
+    mezonApp.tags = tags;
+    mezonApp.socialLinks = socialLinks;
+    mezonApp.status = AppStatus.APPROVED;
+    mezonApp.hasNewUpdate = false;
+    mezonApp.currentVersion = version;
+
+    await this.appRepository.getRepository().save(mezonApp);
+
+    await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
+
+    return mezonApp;
   }
 
   async rejectVersion(versionId: string) {
