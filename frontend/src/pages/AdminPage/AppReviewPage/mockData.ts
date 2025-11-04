@@ -47,7 +47,7 @@ export const mockApps: GetMezonAppDetailsResponse[] = [
       }
     ],
     hasNewUpdate: false,
-    updatedAt: '2025-06-10T12:34:56Z',
+    updatedAt: new Date('2025-06-10T12:34:56Z'),
   },
   {
     id: '22222222-2222-2222-2222-222222222222',
@@ -81,7 +81,7 @@ export const mockApps: GetMezonAppDetailsResponse[] = [
       }
     ],
     hasNewUpdate: false,
-    updatedAt: '2025-06-08T09:21:45Z',
+    updatedAt: new Date('2025-06-08T09:21:45Z'),
   },
   {
     id: '33333333-3333-3333-3333-333333333333',
@@ -121,7 +121,7 @@ export const mockApps: GetMezonAppDetailsResponse[] = [
       }
     ],
     hasNewUpdate: false,
-    updatedAt: '2025-06-05T15:45:30Z',
+    updatedAt: new Date('2025-06-05T15:45:30Z'),
   },
   {
     id: '44444444-4444-4444-4444-444444444444',
@@ -155,6 +155,6 @@ export const mockApps: GetMezonAppDetailsResponse[] = [
       }
     ],
     hasNewUpdate: false,
-    updatedAt: '2025-06-05T15:45:30Z',
+    updatedAt: new Date('2025-06-05T15:45:30Z'),
   },
 ];

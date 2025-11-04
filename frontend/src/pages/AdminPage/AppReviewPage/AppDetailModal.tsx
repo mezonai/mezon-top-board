@@ -71,11 +71,17 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
                         }
                     </div>
                     <Divider />
-                    <Descriptions title="Latest version" bordered size="small" column={1}>
+                    <Descriptions
+                        title="Latest version"
+                        bordered size="small"
+                        column={1}
+                        labelStyle={{ backgroundColor: '#f3f5f7', color: '#374151', fontWeight: 700 }}
+                        contentStyle={{ backgroundColor: '#ffffff', color: '#111827' }}
+                    >
                         {latestVersion ? (
                             <>
                                 <Descriptions.Item label="Version">
-                                    {latestVersion.version ?? '-'}
+                                    {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Submitted">
                                     {formatDate(appData.updatedAt)}

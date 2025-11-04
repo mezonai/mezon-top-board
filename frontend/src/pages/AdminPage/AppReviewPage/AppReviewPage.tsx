@@ -1,6 +1,6 @@
 import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
 import { Button, Input, Table, Tooltip, Tag, Alert } from 'antd'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { mockApps } from './mockData'
 import type { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
@@ -12,12 +12,14 @@ function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(5)
-    const [activeModal, setActiveModal] = useState<'detail' | 'review' | null>(null);
+    const [openDetailModal, setOpenDetailModal] = useState(false)
+    const [openReviewModal, setOpenReviewModal] = useState(false)
     const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
     const [tableData, setTableData] = useState<GetMezonAppDetailsResponse[]>([])
     const [totalCount, setTotalCount] = useState(0)
 
     const fetchData = () => {
+        // TODO: replace with API fetch
         let list = [...mockApps]
         if (searchQuery) {
             const q = searchQuery.toLowerCase()
@@ -31,7 +33,7 @@ function AppReviewPage() {
         setTotalCount(total)
     }
 
-    const latestVersion = detailAppData?.versions?.[0]
+    const latestVersion = useMemo(() => detailAppData?.versions?.[0], [detailAppData])
 
     useEffect(() => {
         fetchData()
@@ -42,21 +44,20 @@ function AppReviewPage() {
         fetchData()
     }
 
-    const handleView = (id: string) => {
-        const app = mockApps.find(a => a.id === id);
-        setDetailAppData(app);
-        setActiveModal('detail');
+    const handleView = (app: GetMezonAppDetailsResponse) => {
+        setDetailAppData(app)
+        setOpenDetailModal(true)
     }
 
-    const handleOpenReview = (id: string) => {
-        const app = mockApps.find(a => a.id === id);
-        setDetailAppData(app);
-        setActiveModal('review');
+    const handleOpenReview = (app: GetMezonAppDetailsResponse) => {
+        setDetailAppData(app)
+        setOpenReviewModal(true)
     }
 
     const handleCloseModals = () => {
-        setActiveModal(null);
-        setDetailAppData(undefined);
+        setOpenDetailModal(false)
+        setOpenReviewModal(false)
+        setDetailAppData(undefined)
     }
 
     const handleReviewSuccess = () => {
@@ -129,10 +130,10 @@ function AppReviewPage() {
             render: (_: any, record: GetMezonAppDetailsResponse) => (
                 <div className='flex gap-3'>
                     <Tooltip title='View'>
-                        <Button color='blue' variant='outlined' icon={<EyeOutlined />} onClick={() => handleView(record.id)} />
+                        <Button color='blue' variant='outlined' icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     </Tooltip>
                     <Tooltip title='Review'>
-                        <Button color='cyan' variant='outlined' icon={<LockOutlined />} onClick={() => handleOpenReview(record.id)} />
+                        <Button color='cyan' variant='outlined' icon={<LockOutlined />} onClick={() => handleOpenReview(record)} />
                     </Tooltip>
                 </div>
             )
@@ -195,13 +196,13 @@ function AppReviewPage() {
             />
 
             <AppDetailModal
-                open={activeModal === 'detail'}
+                open={openDetailModal}
                 onClose={handleCloseModals}
                 appData={detailAppData}
                 latestVersion={latestVersion}
             />
             <AppReviewModal
-                open={activeModal === 'review'}
+                open={openReviewModal}
                 onClose={handleCloseModals}
                 onUpdated={handleReviewSuccess}
                 appData={detailAppData}

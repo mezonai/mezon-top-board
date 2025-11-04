@@ -188,8 +188,8 @@ export type GetMezonAppDetailsResponse = {
   // ADDED FIELDS
   versions: AppVersion[]
   hasNewUpdate: boolean
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date
+  updatedAt?: Date
 }
 export type RequestWithId = {
   id: string
@@ -246,9 +246,21 @@ export type AppReviewHistory = {
 // ADDED TYPE
 export type AppVersion = {
   id: string
+  name?: string
   version: number
   status: AppStatus
   changelog?: string
+  isAutoPublished?: boolean
+  headline?: string
+  description?: string
+  prefix?: string
+  featuredImage?: string
+  supportUrl?: string
+  remark?: string
+  pricingTag?: AppPricing
+  price?: number
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export type App = {
@@ -273,7 +285,7 @@ export type App = {
   ratings: Rating[]
   owner: User
   // ADDED FIELDS
-  version?: AppVersion
+  versions?: AppVersion[]
 }
 export type SocialLinkDto = {
   url?: string
@@ -312,8 +324,6 @@ export type UpdateMezonAppRequest = {
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
-  // ADDED FIELDS
-  status?: AppStatus
 }
 export type GetRelatedMezonAppResponse = {
   id: string

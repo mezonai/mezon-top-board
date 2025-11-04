@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Modal, Button, Input, Descriptions, Form, Space } from 'antd'
 import { toast } from 'react-toastify'
-import { GetMezonAppDetailsResponse, useMezonAppControllerUpdateMezonAppMutation, AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
 import { AppStatus } from '@app/enums/AppStatus.enum'
+import { useReviewHistoryControllerCreateAppReviewMutation } from '@app/services/api/reviewHistory/reviewHistory'
 
 const { TextArea } = Input
 
@@ -19,8 +20,11 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
   const [form] = Form.useForm()
   const remark = Form.useWatch('remark', form)
 
-  const [loading, setLoading] = useState(false)
-  const [reviewAppId] = useMezonAppControllerUpdateMezonAppMutation()
+  const [createReviewHistory, {
+    isLoading: isCreatingReviewHistory,
+    error: createReviewHistoryError,
+    isSuccess: isReviewHistoryCreated,
+  }] = useReviewHistoryControllerCreateAppReviewMutation()
 
   useEffect(() => {
     if (!open) {
@@ -29,39 +33,38 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
   }, [open, form])
 
   const submit = async (action: AppStatus.APPROVED | AppStatus.REJECTED) => {
-    if (!appData?.id) return
-    setLoading(true)
+    if (!appData?.id) {
+      toast.error('Invalid app id')
+      return
+    }
     try {
-      const status = action === AppStatus.APPROVED ? AppStatus.APPROVED : AppStatus.REJECTED
+      const isApproved = action === AppStatus.APPROVED
 
-      // TODO: SEND REQUEST TO BACKEND TO UPDATE APP STATUS
-      await reviewAppId({
-        updateMezonAppRequest: {
-          id: appData.id,
-          status,
+      await createReviewHistory({
+        createAppReviewRequest: {
+          appId: appData.id,
+          isApproved: isApproved,
           remark: remark || null,
         }
-      })
+      }).unwrap()
 
       toast.success(action === AppStatus.APPROVED ? 'App approved' : 'App rejected')
       onUpdated && onUpdated()
       onClose()
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to review')
-    } finally {
-      setLoading(false)
     }
   }
 
   const renderFooter = () => (
     <Space>
-      <Button onClick={onClose} disabled={loading}>
+      <Button onClick={onClose} disabled={isCreatingReviewHistory}>
         Cancel
       </Button>
-      <Button danger loading={loading} onClick={() => submit(AppStatus.REJECTED)}>
+      <Button danger loading={isCreatingReviewHistory} onClick={() => submit(AppStatus.REJECTED)}>
         Reject
       </Button>
-      <Button type='primary' onClick={() => submit(AppStatus.APPROVED)} loading={loading}>
+      <Button type='primary' onClick={() => submit(AppStatus.APPROVED)} loading={isCreatingReviewHistory}>
         Approve
       </Button>
     </Space>
@@ -75,7 +78,6 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
       width={600}
       centered
       title='Review app'
-      style={{ backgroundColor: '#f6f8fb' }}
     >
       <Descriptions
         bordered
