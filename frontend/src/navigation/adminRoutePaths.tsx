@@ -1,5 +1,3 @@
-// src/routes/adminRoutePaths.ts
-
 import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, MailOutlined, TeamOutlined } from '@ant-design/icons'
 import MezonAppsContainer from '@app/pages/AdminPage/AdminMezonApp/MezonAppsContainer'
 import ReviewHistoryPage from '@app/pages/AdminPage/ReviewHistoryPage/ReviewHistoryPage'
@@ -9,12 +7,13 @@ import LinkTypesList from '@app/pages/AdminPage/AdminManageLinkTypes/LinkTypesLi
 import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
 import MailScheduleList from '@app/pages/AdminPage/AdminManageMailSchedule/MailScheduleList';
 import EmailSubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
+import AppReviewPage from '@app/pages/AdminPage/AppReviewPage/AppReviewPage';
 
 export const adminRoutePaths: RoutePath[] = [
   {
     index: true,
     path: '/manage/apps',
-    element: <MezonAppsContainer />, // Default page when accessing /admin
+    element: <MezonAppsContainer />, 
     strLabel: 'Apps',
     icon: <AppstoreAddOutlined />,
     isShowMenu: true
@@ -24,6 +23,13 @@ export const adminRoutePaths: RoutePath[] = [
     element: <TagsList />,
     strLabel: 'Tags',
     icon: <TagOutlined />,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/apps/review',
+    element: <AppReviewPage />,
+    strLabel: 'App Review',
+    icon: <HistoryOutlined />,
     isShowMenu: true
   },
   {
