@@ -2,7 +2,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as sanitizeHtml from "sanitize-html";
-import { Brackets, EntityManager, In, Not, ObjectLiteral, SelectQueryBuilder } from "typeorm";
+import { Brackets, EntityManager, In, Not, ObjectLiteral } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
@@ -146,10 +146,15 @@ export class MezonAppService {
     initialWhereCondition?: string | Brackets | ((qb: this) => string) | ObjectLiteral | ObjectLiteral[],
     ititialWhereParams?: ObjectLiteral,
   ) {
+    const skip = (query.pageNumber - 1) * query.pageSize;
+    const take = query.pageSize;
+
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .leftJoinAndSelect("app.tags", "filterTag")
+      .select("app.id")
+      .skip(skip)
+      .take(take);
 
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
@@ -168,7 +173,9 @@ export class MezonAppService {
       );
 
     if (query.tags?.length) {
-      whereCondition.andWhere("filterTag.id IN (:...tagIds)", { tagIds: query.tags }).leftJoinAndSelect("app.tags", "tag");
+      whereCondition.andWhere("EXISTS (SELECT 1 FROM app_tags tag WHERE tag.appId = app.id AND tag.tagId IN (:...tagIds))", {
+        tagIds: query.tags,
+      });
     }
 
     if (query?.ownerId) {
@@ -194,54 +201,34 @@ export class MezonAppService {
         .orderBy('app_name_lower', sortOrder);
     } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
 
-    return whereCondition;
-  }
+    const [appIds, total] = await whereCondition.getManyAndCount();
+    const ids = appIds.map(a => a.id);
 
-  private async fetchPaginatedApps(
-    whereCondition: SelectQueryBuilder<App>,
-    query: SearchMezonAppRequest
-  ): Promise<[App[], number]> {
-    const offset = (query.pageNumber - 1) * query.pageSize;
-
-    const idQuery = whereCondition.clone().orderBy();
-    const countQuery = whereCondition.clone().orderBy();
-
-    const [rawIds, total] = await Promise.all([
-      idQuery
-        .select("DISTINCT app.id", "id")
-        .skip(offset)
-        .take(query.pageSize)
-        .getRawMany(),
-      countQuery
-        .select("COUNT(DISTINCT app.id)", "count")
-        .getRawOne()
-        .then((r) => Number(r.count)),
-    ]);
-
-    const ids = rawIds.map((r) => r.id);
-    if (!ids.length) return [[], total];
-
-    const data = await this.appRepository
+    const apps = await this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .leftJoinAndSelect("app.tags", "tag")
+      .leftJoinAndSelect("app.tags", "filterTag")
       .leftJoinAndSelect("app.ratings", "rating")
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
-      .where("app.id IN (:...ids)", { ids })
-      .orderBy("app.createdAt", "DESC")
-      .addOrderBy("version.version", "DESC")
-      .getMany();
+      .where("app.id IN (:...ids)", { ids });
 
-    return [data, total];
+    if (query.sortField === SortField.NAME) {
+      apps
+        .addSelect('LOWER(app.name)', 'app_name_lower')
+        .orderBy('app_name_lower', sortOrder);
+    } else apps.orderBy(`app.${sortField}`, sortOrder);
+    apps.addOrderBy("version.version", "DESC");
+    const appsData = await apps.getMany();
+    return { data: appsData, total };
   }
 
   async searchMezonApp(query: SearchMezonAppRequest) {
-    const whereCondition = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
+    const { data, total } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
 
     return paginate<App, SearchMezonAppResponse>(
-      () => this.fetchPaginatedApps(whereCondition, query),
+      [data, total],
       query.pageSize,
       query.pageNumber,
       (entity) => {
@@ -482,10 +469,10 @@ export class MezonAppService {
   }
 
   async listAdminMezonApp(query: SearchMezonAppRequest) {
-    const whereCondition = await this.buildSearchQuery(query);
+    const { data, total } = await this.buildSearchQuery(query);
 
     return paginate<App, SearchMezonAppResponse>(
-      () => this.fetchPaginatedApps(whereCondition, query),
+      [data, total],
       query.pageSize,
       query.pageNumber,
       (entity) => {
@@ -503,12 +490,12 @@ export class MezonAppService {
   }
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
-    const whereCondition = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
+    const { data, total } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
       ownerId: userId,
     });
 
     return paginate<App, SearchMezonAppResponse>(
-      () => this.fetchPaginatedApps(whereCondition, query),
+      [data, total],
       query.pageSize,
       query.pageNumber,
       (entity) => {
