@@ -76,6 +76,7 @@ export class MezonAppService {
       "socialLinks",
       "socialLinks.type",
       "ratings",
+      "versions",
     ]);
 
     if (!mezonApp) {
@@ -105,6 +106,7 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
+    detail.versions = mezonApp.versions
 
     return new Result({
       data: detail,
