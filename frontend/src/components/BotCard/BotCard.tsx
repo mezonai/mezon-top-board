@@ -41,9 +41,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
     e.stopPropagation()
   }
 
-  const handlePreviewClick = (e: React.MouseEvent<HTMLElement>, version?: AppVersion) => {
-    e.stopPropagation()
-    setPreviewVersion(version);
+  const handleOwnerNewVersionClick = (version?: AppVersion) => {
+    setPreviewVersion(version)
   }
 
   return (
@@ -91,8 +90,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           <div className='flex gap-1'>
             {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
             {userInfo?.id && data?.owner?.id === userInfo?.id && data?.hasNewUpdate && (
-              <Tag color='blue' onClick={(e) => handlePreviewClick(e, data?.versions?.[0])} className='cursor-pointer'>
-                NEW UPDATE
+              <Tag color='blue'>
+                NEW VERSION
               </Tag>
             )}
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
@@ -106,7 +105,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
-              <OwnerActions data={data} isBotCard={true} />
+              <OwnerActions data={data} isBotCard={true} onNewVersionClick={handleOwnerNewVersionClick} />
             )}
             <MessageButton data={data!} />
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
@@ -132,7 +131,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               WebkitLineClamp: 3
             }}
           >
-            {data?.headline}
+            {data?.versions?.[0]?.headline}
           </div>
         </div>
       </div>
@@ -140,7 +139,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
         open={!!previewVersion}
         onClose={() => setPreviewVersion(undefined)}
         appData={data!}
-        latestVersion={previewVersion}
+        latestVersion={data?.versions?.[0]}
       />
     </div>
   )
