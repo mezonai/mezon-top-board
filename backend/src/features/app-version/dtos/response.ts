@@ -7,11 +7,16 @@ import { GetAppInfoDetailsResponse } from "@domain/common/dtos/appInfo.dto";
 
 export class GetAppVersionDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
+  @ApiProperty()
+  public version: number;
+
+  @Expose()
   @IsOptional()
   @ApiPropertyOptional()
   public changelog?: string;
 }
 
 export class AppVersionInAppReviewResponse extends PickType(GetAppVersionDetailsResponse, [
+  "version",
   "changelog",
 ]) { }
