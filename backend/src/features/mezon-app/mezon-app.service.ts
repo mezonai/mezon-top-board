@@ -14,8 +14,6 @@ import { App, AppVersion, Link, LinkType, Tag, User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
 
-import { AppVersionService } from "@features/app-version/app-version.service";
-
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { Mapper } from "@libs/utils/mapper";
@@ -108,7 +106,7 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
-    detail.versions = mezonApp.versions
+    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version);
 
     return new Result({
       data: detail,
