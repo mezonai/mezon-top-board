@@ -320,6 +320,7 @@ export type UpdateMezonAppRequest = {
   featuredImage?: string
   supportUrl?: string
   remark?: string
+  changelog?: string
   tagIds?: string[]
   pricingTag?: AppPricing
   price?: number

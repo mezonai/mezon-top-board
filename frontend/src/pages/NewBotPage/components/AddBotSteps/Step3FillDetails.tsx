@@ -22,8 +22,10 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = () => {
-  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
+type BotFormValues = CreateMezonAppRequest & { changelog?: string }
+
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
+  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<BotFormValues>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
@@ -287,6 +289,18 @@ const Step3FillDetails = () => {
           )}
         />
       </FormField>
+
+      {isEdit && (
+        <FormField label='Changelog' description='Describe what changed in this update (shown to users)'>
+          <Controller
+            control={control}
+            name='changelog'
+            render={({ field }) => (
+              <TextArea {...field} rows={4} placeholder='Fixed bugs, improved performance, new features...' />
+            )}
+          />
+        </FormField>
+      )}
 
       <FormField label='Social Links' description='Link your social channels'>
         <div className='flex flex-col sm:flex-row gap-4'>

@@ -36,6 +36,8 @@ import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
 
+type BotFormValues = CreateMezonAppRequest & { changelog?: string }
+
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -53,7 +55,7 @@ function NewBotPage() {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const fileRef = useRef<File | null>(null)
 
-  const methods = useForm<CreateMezonAppRequest>({
+  const methods = useForm<BotFormValues>({
     defaultValues: {
       type: MezonAppType.BOT,
       mezonAppId: '',
@@ -66,6 +68,7 @@ function NewBotPage() {
       price: 0,
       supportUrl: '',
       remark: '',
+      changelog: '',
       isAutoPublished: false,
       socialLinks: []
     },
@@ -189,7 +192,7 @@ function NewBotPage() {
     }
   }
 
-  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+  const step3FillDetailsFields: FieldPath<BotFormValues>[] = [
     'name',
     'headline',
     'description',
@@ -201,11 +204,12 @@ function NewBotPage() {
     'featuredImage', 
     'socialLinks',
     'remark',
+    'changelog',
     'isAutoPublished'
   ]
 
   type StepFieldMap = {
-    [key: number]: FieldPath<CreateMezonAppRequest>[];
+    [key: number]: FieldPath<BotFormValues>[];
   }
 
   const stepFieldMap = useMemo((): StepFieldMap => {
@@ -230,10 +234,7 @@ function NewBotPage() {
     const fieldsToValidate = stepFieldMap[currentStep] || []
     if (fieldsToValidate.length) {
       const valid = await trigger(fieldsToValidate)
-      if (!valid) {
-        toast.error('Vui lòng kiểm tra lại các trường báo lỗi');
-        return
-      }
+      if (!valid) return
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
     setTimeout(() => {
@@ -243,9 +244,9 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-    { title: 'Choose Type', content: <Step1ChooseType /> },
-    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-    { title: 'Fill Details', content: <Step3FillDetails /> },
+  { title: 'Choose Type', content: <Step1ChooseType /> },
+  { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
+  { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -257,7 +258,7 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-    { title: 'Edit Bot Info', content: <Step3FillDetails /> },
+  { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)

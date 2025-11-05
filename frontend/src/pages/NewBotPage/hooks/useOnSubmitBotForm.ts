@@ -5,6 +5,8 @@ import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/m
 import dataURLtoFile from '@app/utils/file'
 import { ApiError } from '@app/types/API.types'
 
+type BotFormValues = CreateMezonAppRequest & { changelog?: string }
+
 export const useOnSubmitBotForm = (
   isEdit: boolean,
   onSuccess: (id: string) => void,
@@ -15,7 +17,7 @@ export const useOnSubmitBotForm = (
   const [addBot] = useMezonAppControllerCreateMezonAppMutation()
   const [updateBot] = useMezonAppControllerUpdateMezonAppMutation()
 
-  const onSubmit = async (formData: CreateMezonAppRequest) => {
+  const onSubmit = async (formData: BotFormValues) => {
     try {
       const parser = new DOMParser()
       const doc = parser.parseFromString(formData.description || '', 'text/html')
@@ -67,7 +69,8 @@ export const useOnSubmitBotForm = (
           updateMezonAppRequest: {
             ...payload,
             id: botId,
-            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId
+            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId,
+            changelog: formData.changelog
           }
         }).unwrap()
         toast.success(`${formData.type} updated successfully!`)
