@@ -3,14 +3,19 @@ import { formatDate } from '@app/utils/date'
 
 export const REVIEW_HISTORY_COLUMNS = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id'
+    title: 'Image',
+    dataIndex: 'featuredImage',
+    key: 'featuredImage'
   },
   {
     title: 'App',
     key: 'app',
     render: (_: any, record: ReviewHistoryResponse) => record?.app?.name || ''
+  },
+  {
+    title: 'Version',
+    key: 'version',
+    render: (_: any, record: ReviewHistoryResponse) => record?.appVersion?.version ?? '0'
   },
   {
     title: 'Remark',

@@ -131,7 +131,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               WebkitLineClamp: 3
             }}
           >
-            {data?.versions?.[0]?.headline}
+            {data?.headline}
           </div>
         </div>
       </div>

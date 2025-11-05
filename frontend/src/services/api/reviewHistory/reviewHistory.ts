@@ -69,12 +69,18 @@ type AppInfo = {
   featuredImage: string | null
 }
 
+type AppVersion = {
+  version: string
+  changelog: string | null
+}
+
 type ReviewHistory = {
   id: string
   remark: string
   reviewer: Reviewer
   reviewedAt: Date
   app: AppInfo
+  appVersion: AppVersion
 }
 
 export type ReviewHistoryResponse = ReviewHistory

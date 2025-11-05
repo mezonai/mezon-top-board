@@ -8,6 +8,8 @@ import {
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { mapDataSourceTable } from '@app/utils/table'
 import { Button, Form, Input, Modal, Popconfirm, Table, Tooltip } from 'antd'
+import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
+import { getUrlMedia } from '@app/utils/stringHelper'
 import { ChangeEvent, useEffect, useState } from 'react'
 import ReviewHistoryInfo from './ReviewHistoryInfo/ReviewHistoryInfo'
 import { toast } from 'react-toastify'
@@ -38,9 +40,9 @@ function ReviewHistoryPage() {
   useEffect(() => {
     fetchData()
   }, [currentPageSize, currentPageNumber])
-  
+
   const handleSearchSubmit = () => {
-    setCurrentPageNumber(1); 
+    setCurrentPageNumber(1);
     fetchData();
   }
 
@@ -95,59 +97,84 @@ function ReviewHistoryPage() {
   }
 
   const dataHistoryTable = !!data?.data?.length ? mapDataSourceTable(data?.data) : []
-  const columns = [
-    ...REVIEW_HISTORY_COLUMNS.map(col => {
-      if (['remark', 'app', 'reviewer'].includes(col.key)) {
-        return {
-          ...col,
-          ellipsis: true,
-          render: (_: any, record: ReviewHistoryResponse) => (
-            <Tooltip title={col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name}>
-              <span className="break-words whitespace-pre-wrap block">
-                {col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''}
-              </span>
-            </Tooltip>
-          )
-        }
+  const mappedCols = REVIEW_HISTORY_COLUMNS.map(col => {
+    if (['remark', 'app', 'reviewer'].includes(col.key)) {
+      return {
+        ...col,
+        ellipsis: true,
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <Tooltip title={col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name}>
+            <span className="break-words whitespace-pre-wrap block">
+              {col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''}
+            </span>
+          </Tooltip>
+        )
       }
-      return col
-    }),
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_: any, record: ReviewHistoryResponse) => (
-        <div className='flex gap-3'>
-          <Tooltip title='View'>
-            <Button
-              color='cyan'
-              variant='outlined'
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record.app.id || '')}
-            ></Button>
-          </Tooltip>
-          <Tooltip title='Edit'>
-            <Button
-              color='default'
-              variant='outlined'
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record.id || '')}
-            ></Button>
-          </Tooltip>
-          <Popconfirm
-            title='Delete the history'
-            description='Are you sure to delete this history?'
-            onConfirm={() => handleDelete(record?.id)}
-            okText='Yes'
-            cancelText='No'
-          >
-            <Tooltip title='Delete'>
-              <Button color='danger' variant='outlined' icon={<DeleteOutlined />}></Button>
-            </Tooltip>
-          </Popconfirm>
-        </div>
-      )
     }
-  ]
+
+    if (col.key === 'featuredImage') {
+      return {
+        ...col,
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <img
+            src={record.app?.featuredImage ? getUrlMedia(record.app.featuredImage) : sampleBotImg}
+            alt={record.app?.name}
+            style={{ width: 100, display: 'block', margin: '0 auto' }}
+          />
+        )
+      }
+    }
+
+    if (col.key === 'version') {
+      return {
+        ...col,
+        align: 'center',
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <div className='text-center'>{record.appVersion?.version ?? '-'}</div>
+        )
+      }
+    }
+
+    return col
+  })
+
+  const actionCol = {
+    title: 'Action',
+    key: 'action',
+    render: (_: any, record: ReviewHistoryResponse) => (
+      <div className='flex gap-3'>
+        <Tooltip title='View'>
+          <Button
+            color='cyan'
+            variant='outlined'
+            icon={<EyeOutlined />}
+            onClick={() => handleView(record.app.id || '')}
+          ></Button>
+        </Tooltip>
+        <Tooltip title='Edit'>
+          <Button
+            color='default'
+            variant='outlined'
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record.id || '')}
+          ></Button>
+        </Tooltip>
+        <Popconfirm
+          title='Delete the history'
+          description='Are you sure to delete this history?'
+          onConfirm={() => handleDelete(record?.id)}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Tooltip title='Delete'>
+            <Button color='danger' variant='outlined' icon={<DeleteOutlined />}></Button>
+          </Tooltip>
+        </Popconfirm>
+      </div>
+    )
+  }
+
+  const columns = [...mappedCols, actionCol]
 
   return (
     <>
@@ -162,7 +189,7 @@ function ReviewHistoryPage() {
           style={{ borderRadius: '8px', height: '40px' }}
         />
         <Button className="w-50"
-          type='primary' 
+          type='primary'
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}
         >

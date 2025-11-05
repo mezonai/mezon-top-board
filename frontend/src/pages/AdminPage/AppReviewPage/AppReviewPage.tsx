@@ -183,7 +183,7 @@ function AppReviewPage() {
                             }
                             type='warning'
                             showIcon
-                            style={{ marginBottom: 16 }}
+                            style={{ marginBottom: 16, padding: 10 }}
                         />
                     )
                 }
