@@ -300,6 +300,7 @@ export type CreateMezonAppRequest = {
   headline: string
   description: string
   prefix?: string
+  changelog?: string
   featuredImage?: string
   supportUrl: string
   remark?: string

@@ -22,10 +22,8 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-type BotFormValues = CreateMezonAppRequest & { changelog?: string }
-
 const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
-  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<BotFormValues>()
+  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 

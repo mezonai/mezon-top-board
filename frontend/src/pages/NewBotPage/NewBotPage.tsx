@@ -36,8 +36,6 @@ import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
 
-type BotFormValues = CreateMezonAppRequest & { changelog?: string }
-
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -55,7 +53,7 @@ function NewBotPage() {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const fileRef = useRef<File | null>(null)
 
-  const methods = useForm<BotFormValues>({
+  const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
       mezonAppId: '',
@@ -192,7 +190,7 @@ function NewBotPage() {
     }
   }
 
-  const step3FillDetailsFields: FieldPath<BotFormValues>[] = [
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
     'name',
     'headline',
     'description',
@@ -209,7 +207,7 @@ function NewBotPage() {
   ]
 
   type StepFieldMap = {
-    [key: number]: FieldPath<BotFormValues>[];
+    [key: number]: FieldPath<CreateMezonAppRequest>[];
   }
 
   const stepFieldMap = useMemo((): StepFieldMap => {

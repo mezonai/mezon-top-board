@@ -8,12 +8,10 @@ import { transformMediaSrc } from '@app/utils/stringHelper'
 import { CreateMezonAppRequest, SocialLinkDto } from '@app/services/api/mezonApp/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-type BotFormValues = CreateMezonAppRequest & { changelog?: string }
-
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
-  const { control} = useFormContext<BotFormValues>()
+  const { control} = useFormContext<CreateMezonAppRequest>()
   
   const type = useWatch({ control, name: 'type' })
   const values = getValues()
