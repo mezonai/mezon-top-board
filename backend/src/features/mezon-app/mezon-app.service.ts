@@ -123,6 +123,8 @@ export class MezonAppService {
         pricingTag: version.pricingTag,
         socialLinks: version.socialLinks,
         tags: version.tags,
+        version: version.version,
+        updatedAt: version.updatedAt,
       }));
 
     return new Result({

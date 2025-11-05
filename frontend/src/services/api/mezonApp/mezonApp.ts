@@ -307,8 +307,10 @@ export type CreateMezonAppRequest = {
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
+  version?: number
   status?: AppStatus
   changelog?: string
+  updatedAt?: Date
 }
 export type UpdateMezonAppRequest = {
   appId: string
