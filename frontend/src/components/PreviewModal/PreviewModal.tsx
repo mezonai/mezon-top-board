@@ -3,9 +3,11 @@ import React from 'react'
 import { formatDate } from '@app/utils/date'
 import type { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
-import { getUrlMedia } from '@app/utils/stringHelper'
+import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
+import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
+import { AppStatus } from '@app/enums/AppStatus.enum';
 
 interface Props {
     open: boolean
@@ -17,6 +19,32 @@ interface Props {
 const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
+    const renderStatusTag = (status?: AppStatus) => {
+        if (status === null || status === undefined) return '-'
+        let color: string | undefined = undefined
+        let label = AppStatus[status] ?? String(status)
+        switch (status) {
+            case AppStatus.PUBLISHED:
+                color = 'green'
+                label = 'Published'
+                break
+            case AppStatus.APPROVED:
+                color = 'blue'
+                label = 'Approved'
+                break
+            case AppStatus.PENDING:
+                color = 'orange'
+                label = 'Pending'
+                break
+            case AppStatus.REJECTED:
+                color = 'red'
+                label = 'Rejected'
+                break
+            default:
+                color = undefined
+        }
+        return <Tag color={color}>{label}</Tag>
+    }
     return (
         <Modal
             open={open}
@@ -63,14 +91,14 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
 
                                     <div className='flex items-center justify-start gap-2 order-first md:order-none md:self-start'>
                                         {appData.type === MezonAppType.BOT ? (
-                                            <Tag className='!border-primary-hover !text-primary-hover !bg-white'>{appData.type || '—'}</Tag>
+                                            <Tag className='!border-primary-hover !text-primary-hover !bg-white uppercase'>{appData.type || '—'}</Tag>
                                         ) : (
-                                            <Tag className='!border-sky-500 !text-sky-500 !bg-white'>{appData.type || '—'}</Tag>
+                                            <Tag className='!border-sky-500 !text-sky-500 !bg-white uppercase'>{appData.type || '—'}</Tag>
                                         )}
                                         {latestVersion?.pricingTag === AppPricing.FREE ? (
-                                            <Tag className='!border-green-500 !text-green-500 !bg-white'>{latestVersion?.pricingTag || '-'}</Tag>
+                                            <Tag className='!border-green-500 !text-green-500 !bg-white uppercase'>{latestVersion?.pricingTag || '-'}</Tag>
                                         ) : (
-                                            <Tag className='!border-purple-500 !text-purple-500 !bg-white'>{latestVersion?.pricingTag || '-'}</Tag>
+                                            <Tag className='!border-purple-500 !text-purple-500 !bg-white uppercase'>{latestVersion?.pricingTag || '-'}</Tag>
                                         )}
                                     </div>
 
@@ -82,6 +110,14 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                             ? <div dangerouslySetInnerHTML={{ __html: latestVersion.description }} />
                             : <Paragraph>No description</Paragraph>
                         }
+
+                        <div className='flex flex-wrap gap-2'>
+                            {appData.tags?.map((tag) => (
+                                <Tag key={tag.id} color={randomColor('normal', uuidToNumber(tag.id))}>
+                                    {tag.name}
+                                </Tag>
+                            ))}
+                        </div>
                     </div>
                     <Divider />
                     <Descriptions
@@ -96,12 +132,54 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                 <Descriptions.Item label="Version">
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
+                                <Descriptions.Item label="Status">
+                                    {renderStatusTag(latestVersion.status)}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Auto Publish">
+                                    {latestVersion.isAutoPublished ? 'Yes' : 'No'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Prefix">
+                                    {latestVersion.prefix ?? '-'}
+                                </Descriptions.Item>
                                 <Descriptions.Item label="Submitted">
-                                    {formatDate(appData.versions?.[0]?.updatedAt)}
+                                    {formatDate(latestVersion.updatedAt)}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Support URL">
+                                    {latestVersion.supportUrl ? (
+                                        <a href={latestVersion.supportUrl} target="_blank" rel="noreferrer">
+                                            {latestVersion.supportUrl}
+                                        </a>
+                                    ) : (
+                                        '-'
+                                    )}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Price">
+                                    {latestVersion.price ?? 0}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="App ID">
+                                    {appData.mezonAppId || '-'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Install Link">
+                                    {appData.mezonAppId ? (
+                                        <a
+                                            href={getMezonInstallLink(appData.type, appData.mezonAppId)}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {getMezonInstallLink(appData.type, appData.mezonAppId)}
+                                        </a>
+                                    ) : (
+                                        '-'
+                                    )}
                                 </Descriptions.Item>
                                 <Descriptions.Item label="Change Log">
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
                                         {latestVersion.changelog || '-'}
+                                    </Paragraph>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Note">
+                                    <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
+                                        {latestVersion.remark || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
                             </>
@@ -111,6 +189,32 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                             </Descriptions.Item>
                         )}
                     </Descriptions>
+                    <Divider />
+                    <div>
+                        <Title level={5} style={{ marginTop: 0 }}>Social Links</Title>
+                        {(appData.socialLinks && appData.socialLinks.length > 0) ? (
+                            <div className='flex flex-col gap-2'>
+                                {appData.socialLinks.map((link) => (
+                                    <div key={link.id} className='flex items-center gap-2 text-sm'>
+                                        {link.type?.icon && (
+                                            <img src={link.type.icon} alt={link.type.name} className='w-4 h-4' />
+                                        )}
+                                        <span className='font-medium'>{link.type?.name || 'Link'}:</span>
+                                        <a
+                                            href={(link.type?.prefixUrl ?? '') + (link.url ?? '')}
+                                            target='_blank'
+                                            rel='noreferrer'
+                                            className='text-blue-600 hover:underline'
+                                        >
+                                            {link.url}
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <Text type='secondary'>No social links</Text>
+                        )}
+                    </div>
                 </div>
             )}
         </Modal>

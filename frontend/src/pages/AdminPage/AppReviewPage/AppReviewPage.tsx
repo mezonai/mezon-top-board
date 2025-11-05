@@ -171,11 +171,7 @@ function AppReviewPage() {
     return (
         <>
             {tableData && tableData.length > 0 && (() => {
-                const pendingCount = filteredApps.filter(app => {
-                    const version = app.versions?.[0]
-                    const status = version?.status || app.status
-                    return status === AppStatus.PENDING
-                }).length
+                const pendingCount = filteredApps.length;
 
                 if (pendingCount > 0) {
                     return (
