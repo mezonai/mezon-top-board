@@ -106,7 +106,7 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
-    detail.versions = mezonApp.versions
+    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version);
 
     return new Result({
       data: detail,
