@@ -14,7 +14,7 @@ interface Props {
 
 const { Title, Text, Paragraph } = Typography
 
-const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
+const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     return (
         <Modal
             open={open}
@@ -106,4 +106,4 @@ const AppDetailModal: React.FC<Props> = ({ open, onClose, appData, latestVersion
     )
 }
 
-export default AppDetailModal
+export default PreviewModal

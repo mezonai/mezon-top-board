@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
-import AppDetailModal from './AppDetailModal'
+import PreviewModal from '@app/components/PreviewModal/PreviewModal'
 import AppReviewModal from './AppReviewModal'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
@@ -227,7 +227,7 @@ function AppReviewPage() {
                 />
             )}
 
-            <AppDetailModal
+            <PreviewModal
                 open={openDetailModal}
                 onClose={handleCloseModals}
                 appData={detailAppData}

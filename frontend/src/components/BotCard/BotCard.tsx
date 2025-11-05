@@ -17,6 +17,9 @@ import OwnerActions from '../OwnerActions/OwnerActions'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
+import PreviewModal from '../PreviewModal/PreviewModal'
+import { useState } from 'react'
+import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -28,6 +31,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
   const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
+  const [openPreviewModal, setOpenPreviewModal] = useState(false);
+  const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   
   const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
@@ -35,6 +40,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   } 
   const handleShare = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
+  }
+
+  const handlePreviewClick = (e: React.MouseEvent<HTMLElement>, version?: AppVersion) => {
+    e.stopPropagation()
+    setPreviewVersion(version)
+    setOpenPreviewModal(true)
   }
   
   return (
@@ -81,6 +92,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
           <div className='flex gap-1'>
             {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
+            {userInfo?.id && data?.owner?.id === userInfo?.id && data?.hasNewUpdate && (
+              <Tag color='blue' onClick={(e) => handlePreviewClick(e, data?.versions?.[0])} className='cursor-pointer'>
+                NEW UPDATE
+              </Tag>
+            )}
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
           </div>
           <div className='flex-wrap gap-2'>
@@ -122,6 +138,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
         </div>
       </div>
+      <PreviewModal
+        open={openPreviewModal}
+        onClose={() => setOpenPreviewModal(false)}
+        appData={data!}
+        latestVersion={previewVersion}
+      />
     </div>
   )
 }

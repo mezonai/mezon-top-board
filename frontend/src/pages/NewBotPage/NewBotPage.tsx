@@ -1,11 +1,12 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { AppStatus } from '@app/enums/AppStatus.enum'
 
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
@@ -42,9 +43,11 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
 
-  const imgUrl = botId && mezonAppDetail.featuredImage
-    ? getUrlMedia(mezonAppDetail.featuredImage)
-    : avatarBotDefault
+  const imgUrl = useMemo(() => {
+    return botId && mezonAppDetail.featuredImage
+      ? getUrlMedia(mezonAppDetail.featuredImage)
+      : avatarBotDefault
+  }, [botId, mezonAppDetail.featuredImage])
   const [avatar, setAvatar] = useState<string>(imgUrl)
   const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -88,7 +91,7 @@ function NewBotPage() {
   useEffect(() => {
     if (isEmpty(tagList.data)) getTagList()
     getSocialLink()
-  }, [])
+  }, [getTagList, getSocialLink, tagList.data]) 
 
   useEffect(() => {
     if (!botId) {
@@ -96,24 +99,52 @@ function NewBotPage() {
       return
     }
     getMezonAppDetails({ id: botId })
-  }, [botId])
+  }, [botId, getMezonAppDetails, reset])
 
   useEffect(() => {
+    setAvatar(imgUrl)
+  }, [imgUrl])
+
+  useEffect(() => {
+    type Tag = { id: string };
+    type DataSource = Partial<Omit<CreateMezonAppRequest, 'tagIds'>>;
     const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
+    
+    if (!mezonAppDetail.id || !botId) {
+      return;
+    }
+
     if (mezonAppDetail && botId) {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
         return;
       }
 
+      let versionData: DataSource;
+
+      if (hasNewUpdate && versions && versions.length > 0) {
+        versionData = versions[0] as DataSource;
+      } else if (versions && versions.length > 0) {
+        const approvedVersions = versions.filter(v => v.status === AppStatus.APPROVED);
+
+        if (approvedVersions.length > 0) {
+          versionData = approvedVersions[0] as DataSource;
+        } else {
+          versionData = versions[0] as DataSource;
+        }
+      } else {
+        versionData = { ...rest } as DataSource;
+      }
+
       reset({
-        ...rest,
-        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
-        mezonAppId: mezonAppDetail.mezonAppId,
-        type: mezonAppDetail.type
+        ...versionData,
+        featuredImage: versionData.featuredImage || '',
+        tagIds: mezonAppDetail.tags?.map((tag: Tag) => tag.id),
+        mezonAppId: mezonAppDetail.mezonAppId, 
+        type: mezonAppDetail.type 
       })
     }
-    setAvatar(imgUrl)
-  }, [mezonAppDetail])
+    
+  }, [mezonAppDetail, botId, reset])
 
   const handleBeforeUpload = (file: File) => {
     if (!imageMimeTypes.includes(file.type)) {
@@ -157,19 +188,52 @@ function NewBotPage() {
       handleModalCancel()
     }
   }
-  const stepFieldMap: Record<number, FieldPath<CreateMezonAppRequest>[]> = {
-    0: ['type'],
-    1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
-    3: [],
-    4: []
+
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+    'name',
+    'headline',
+    'description',
+    'prefix',
+    'tagIds',
+    'pricingTag',
+    'price',
+    'supportUrl',
+    'featuredImage', 
+    'socialLinks',
+    'remark',
+    'isAutoPublished'
+  ]
+
+  type StepFieldMap = {
+    [key: number]: FieldPath<CreateMezonAppRequest>[];
   }
+
+  const stepFieldMap = useMemo((): StepFieldMap => {
+    if (isEditMode) {
+      return {
+        0: step3FillDetailsFields, 
+        1: [], 
+        2: []  
+      }
+    } else {
+      return {
+        0: ['type'],
+        1: ['mezonAppId'],
+        2: step3FillDetailsFields, 
+        3: [], 
+        4: []  
+      }
+    }
+  }, [isEditMode, step3FillDetailsFields]) 
 
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
     if (fieldsToValidate.length) {
       const valid = await trigger(fieldsToValidate)
-      if (!valid) return
+      if (!valid) {
+        toast.error('Vui lòng kiểm tra lại các trường báo lỗi');
+        return
+      }
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
     setTimeout(() => {
@@ -263,8 +327,8 @@ function NewBotPage() {
             <div className='pt-6'>{steps[currentStep].content}</div>
             <div
               className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
-                ? 'justify-end'
-                : 'justify-between'
+                  ? 'justify-end'
+                  : 'justify-between'
                 }`}
             >
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (

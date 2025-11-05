@@ -36,18 +36,26 @@ export const useOnSubmitBotForm = (
       )
 
       const updatedDescription = doc.body.innerHTML
-      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link: any) => ({
-        url: link.url,
+      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link) => ({
+        url: link?.url,
         linkTypeId: link.linkTypeId
       }))
 
       const payload: CreateMezonAppRequest = {
-        ...formData,
-        price: Number(formData.price),
-        description: updatedDescription,
-        socialLinks: formattedLinks,
+        type: formData.type,
         mezonAppId: formData.mezonAppId,
-        type: formData.type
+        name: formData.name,
+        headline: formData.headline,
+        description: updatedDescription,
+        prefix: formData.prefix,
+        tagIds: formData.tagIds,
+        pricingTag: formData.pricingTag,
+        price: Number(formData.price),
+        supportUrl: formData.supportUrl,
+        remark: formData.remark,
+        isAutoPublished: formData.isAutoPublished,
+        socialLinks: formattedLinks,
+        featuredImage: formData.featuredImage
       }
 
       if (!isEdit) {
