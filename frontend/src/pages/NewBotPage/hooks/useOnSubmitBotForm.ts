@@ -42,20 +42,12 @@ export const useOnSubmitBotForm = (
       }))
 
       const payload: CreateMezonAppRequest = {
-        type: formData.type,
-        mezonAppId: formData.mezonAppId,
-        name: formData.name,
-        headline: formData.headline,
-        description: updatedDescription,
-        prefix: formData.prefix,
-        tagIds: formData.tagIds,
-        pricingTag: formData.pricingTag,
+        ...formData,
         price: Number(formData.price),
-        supportUrl: formData.supportUrl,
-        remark: formData.remark,
-        isAutoPublished: formData.isAutoPublished,
+        description: updatedDescription,
         socialLinks: formattedLinks,
-        featuredImage: formData.featuredImage
+        mezonAppId: formData.mezonAppId,
+        type: formData.type
       }
 
       if (!isEdit) {
@@ -63,12 +55,11 @@ export const useOnSubmitBotForm = (
         toast.success(`${formData.type} created successfully!`)
         result.id && onSuccess(result.id)
       } else if (botId) {
+        const { mezonAppId, type, status, ...rest } = payload;
         const result = await updateBot({
           updateMezonAppRequest: {
-            ...payload,
-            id: botId,
-            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId,
-            changelog: formData.changelog
+            ...rest,
+            appId: botId,
           }
         }).unwrap()
         toast.success(`${formData.type} updated successfully!`)

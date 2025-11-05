@@ -13,6 +13,8 @@ import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
+import { UpdateAppVersionRequest } from "@features/app-version/dtos/request";
+
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
@@ -135,10 +137,10 @@ export class MezonAppController {
 
   @ApiBearerAuth()
   @Put()
-  @ApiBody({ type: UpdateMezonAppRequest })
+  @ApiBody({ type: UpdateAppVersionRequest })
   updateMezonApp(
     @GetUserFromHeader() user: User,
-    @Body() body: UpdateMezonAppRequest
+    @Body() body: UpdateAppVersionRequest
   ) {
     try {
       return this.mezonAppService.updateMezonApp(user, body);

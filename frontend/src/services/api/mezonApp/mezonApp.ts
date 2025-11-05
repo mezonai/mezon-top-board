@@ -300,7 +300,6 @@ export type CreateMezonAppRequest = {
   headline: string
   description: string
   prefix?: string
-  changelog?: string
   featuredImage?: string
   supportUrl: string
   remark?: string
@@ -308,13 +307,13 @@ export type CreateMezonAppRequest = {
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
+  status?: AppStatus
+  changelog?: string
 }
 export type UpdateMezonAppRequest = {
-  id: string
+  appId: string
   name?: string
   isAutoPublished?: boolean
-  type?: MezonAppType
-  mezonAppId?: string
   headline?: string
   description?: string
   prefix?: string
