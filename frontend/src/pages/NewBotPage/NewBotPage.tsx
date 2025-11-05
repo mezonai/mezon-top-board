@@ -66,7 +66,6 @@ function NewBotPage() {
       price: 0,
       supportUrl: '',
       remark: '',
-      changelog: '',
       isAutoPublished: false,
       socialLinks: []
     },
@@ -326,8 +325,8 @@ function NewBotPage() {
             <div className='pt-6'>{steps[currentStep].content}</div>
             <div
               className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
-                  ? 'justify-end'
-                  : 'justify-between'
+                ? 'justify-end'
+                : 'justify-between'
                 }`}
             >
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (

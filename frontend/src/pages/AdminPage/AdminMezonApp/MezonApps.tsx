@@ -48,7 +48,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
   }, [currentPageSize, currentPageNumber]);
 
   const handleSearchSubmit = () => {
-    setCurrentPageNumber(1);
+    setCurrentPageNumber(1); 
     fetchApps();
   }
 
@@ -93,7 +93,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       dataIndex: "installLink",
       key: "installLink",
       render: (_: any, record: GetMezonAppDetailsResponse) => {
-        const installLink = getMezonInstallLink(record.type, record.mezonAppId);
+       const installLink = getMezonInstallLink(record.type, record.mezonAppId);
         return (
           <Tooltip title="Try Install">
             <Button
@@ -170,7 +170,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           className='w-full rounded-[8px] h-[40px]'
         />
         <Button className="w-50" size="large"
-          type='primary'
+          type='primary' 
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}
         >
