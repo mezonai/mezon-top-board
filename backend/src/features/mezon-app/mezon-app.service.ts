@@ -31,6 +31,7 @@ import {
   SearchMezonAppResponse,
 } from "./dtos/response";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { UpdateAppVersionRequest } from "@features/app-version/dtos/request";
 
 
 
@@ -106,7 +107,25 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
-    detail.versions = mezonApp.versions
+    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version).map((version) => ({
+        id: version.id,
+        name: version.name,
+        changelog: version.changelog,
+        isAutoPublished: version.isAutoPublished,
+        status: version.status,
+        headline: version.headline,
+        description: version.description,
+        prefix: version.prefix,
+        featuredImage: version.featuredImage,
+        supportUrl: version.supportUrl,
+        remark: version.remark,
+        price: version.price,
+        pricingTag: version.pricingTag,
+        socialLinks: version.socialLinks,
+        tags: version.tags,
+        version: version.version,
+        updatedAt: version.updatedAt,
+      }));
 
     return new Result({
       data: detail,
@@ -321,8 +340,11 @@ export class MezonAppService {
     return newApp
   }
 
-  async updateMezonApp(userUpdating: User, req: UpdateMezonAppRequest) {
-    const app = await this.appRepository.findById(req.id, [
+  async updateMezonApp(userUpdating: User, req: UpdateAppVersionRequest) {
+
+    const { tagIds, socialLinks, description, appId, ...updateData } = req;
+
+    const app = await this.appRepository.findById(appId, [
       "tags",
       "socialLinks",
     ]);
@@ -335,7 +357,6 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, id, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -438,7 +459,7 @@ export class MezonAppService {
 
 
     const versionData = {
-      appId: id,
+      appId,
       ...updateData,
       description: cleanedDescription,
       tagIds,
@@ -446,7 +467,7 @@ export class MezonAppService {
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
-      where: { appId: id, status: AppStatus.PENDING },
+      where: { appId, status: AppStatus.PENDING },
     });
 
     if (existingPendingVersion) {

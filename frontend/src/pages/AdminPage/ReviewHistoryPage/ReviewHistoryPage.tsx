@@ -7,9 +7,11 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Button, Form, Input, Modal, Popconfirm, Table, Tooltip } from 'antd'
-import { ChangeEvent, useEffect, useState } from 'react'
-import ReviewHistoryInfo from './ReviewHistoryInfo/ReviewHistoryInfo'
+import { Button, Input, Popconfirm, Table, Tooltip } from 'antd'
+import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import { useEffect, useState } from 'react'
+import ReviewHistoryModal from './ReviewHistoryModal'
 import { toast } from 'react-toastify'
 
 function ReviewHistoryPage() {
@@ -21,7 +23,6 @@ function ReviewHistoryPage() {
   const [currentPageSize, setCurrentPageSize] = useState<number>(5)
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [remark, setRemark] = useState<string>('')
   const [selectedHistory, setSelectedHistory] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -76,18 +77,16 @@ function ReviewHistoryPage() {
     }
   }
 
-  const handleUpdate = async () => {
-    setIsEdit(true)
-    setIsOpenModal(true)
+  const handleUpdate = async (id: string, newRemark: string) => {
     try {
       await updateReviewHistory({
         updateAppReviewRequest: {
-          id: selectedHistory,
-          remark
+          id,
+          remark: newRemark
         }
       })
-      setIsOpenModal(false)
       toast.success('Update history successfull')
+      setIsOpenModal(false)
       await fetchData()
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to edit history')
@@ -95,59 +94,84 @@ function ReviewHistoryPage() {
   }
 
   const dataHistoryTable = !!data?.data?.length ? mapDataSourceTable(data?.data) : []
-  const columns = [
-    ...REVIEW_HISTORY_COLUMNS.map(col => {
-      if (['remark', 'app', 'reviewer'].includes(col.key)) {
-        return {
-          ...col,
-          ellipsis: true,
-          render: (_: any, record: ReviewHistoryResponse) => (
-            <Tooltip title={col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name}>
-              <span className="break-words whitespace-pre-wrap block">
-                {col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''}
-              </span>
-            </Tooltip>
-          )
-        }
+  const mappedCols = REVIEW_HISTORY_COLUMNS.map(col => {
+    if (['remark', 'app', 'reviewer'].includes(col.key)) {
+      return {
+        ...col,
+        ellipsis: true,
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <Tooltip title={col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name}>
+            <span className="break-words whitespace-pre-wrap block">
+              {col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''}
+            </span>
+          </Tooltip>
+        )
       }
-      return col
-    }),
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_: any, record: ReviewHistoryResponse) => (
-        <div className='flex gap-3'>
-          <Tooltip title='View'>
-            <Button
-              color='cyan'
-              variant='outlined'
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record.app.id || '')}
-            ></Button>
-          </Tooltip>
-          <Tooltip title='Edit'>
-            <Button
-              color='default'
-              variant='outlined'
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record.id || '')}
-            ></Button>
-          </Tooltip>
-          <Popconfirm
-            title='Delete the history'
-            description='Are you sure to delete this history?'
-            onConfirm={() => handleDelete(record?.id)}
-            okText='Yes'
-            cancelText='No'
-          >
-            <Tooltip title='Delete'>
-              <Button color='danger' variant='outlined' icon={<DeleteOutlined />}></Button>
-            </Tooltip>
-          </Popconfirm>
-        </div>
-      )
     }
-  ]
+
+    if (col.key === 'featuredImage') {
+      return {
+        ...col,
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <img
+            src={record.app?.featuredImage ? getUrlMedia(record.app.featuredImage) : sampleBotImg}
+            alt={record.app?.name}
+            style={{ width: 100, display: 'block', margin: '0 auto' }}
+          />
+        )
+      }
+    }
+
+    if (col.key === 'version') {
+      return {
+        ...col,
+        align: 'center',
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <div className='text-center'>{record.appVersion?.version ?? '-'}</div>
+        )
+      }
+    }
+
+    return col
+  })
+
+  const actionCol = {
+    title: 'Action',
+    key: 'action',
+    render: (_: any, record: ReviewHistoryResponse) => (
+      <div className='flex gap-3'>
+        <Tooltip title='View'>
+          <Button
+            color='cyan'
+            variant='outlined'
+            icon={<EyeOutlined />}
+            onClick={() => handleView(record.app.id || '')}
+          ></Button>
+        </Tooltip>
+        <Tooltip title='Edit'>
+          <Button
+            color='default'
+            variant='outlined'
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record.id || '')}
+          ></Button>
+        </Tooltip>
+        <Popconfirm
+          title='Delete the history'
+          description='Are you sure to delete this history?'
+          onConfirm={() => handleDelete(record?.id)}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Tooltip title='Delete'>
+            <Button color='danger' variant='outlined' icon={<DeleteOutlined />}></Button>
+          </Tooltip>
+        </Popconfirm>
+      </div>
+    )
+  }
+
+  const columns = [...mappedCols, actionCol]
 
   return (
     <>
@@ -187,29 +211,13 @@ function ReviewHistoryPage() {
         }}
         className='cursor-pointer'
       ></Table>
-      <Modal
-        title={isEdit ? 'Edit History' : 'View history'}
+      <ReviewHistoryModal
         open={isOpenModal}
-        onCancel={() => setIsOpenModal(false)}
-        footer={isEdit ? <Button onClick={handleUpdate}>Update</Button> : null}
-        width={600}
-        centered
-      >
-        {isEdit ? (
-          <Form layout='vertical' className='!pt-2'>
-            <Form.Item name='remark' label='Remark' rules={[{ required: true, message: 'This field is required' }]}>
-              <Input.TextArea
-                autoSize={false}
-                rows={4}
-                className='!resize-none'
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setRemark(e.target.value)}
-              />
-            </Form.Item>
-          </Form>
-        ) : (
-          <ReviewHistoryInfo data={reviewHistoryDetail?.data?.[0]}></ReviewHistoryInfo>
-        )}
-      </Modal>
+        isEdit={isEdit}
+        data={isEdit ? ({ id: selectedHistory } as ReviewHistoryResponse) : reviewHistoryDetail?.data?.[0]}
+        onClose={() => setIsOpenModal(false)}
+        onSave={handleUpdate}
+      />
     </>
   )
 }

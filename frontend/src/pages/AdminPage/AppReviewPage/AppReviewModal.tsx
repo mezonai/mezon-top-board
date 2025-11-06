@@ -52,7 +52,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
       onUpdated && onUpdated()
       onClose()
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to review')
+      toast.error(err?.data?.message?.[0] || 'Failed to review')
     }
   }
 
@@ -90,7 +90,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
           {latestVersion?.version ?? '0'}
         </Descriptions.Item>
         <Descriptions.Item label="Submitted">
-          {formatDate(appData?.updatedAt)}
+          {formatDate(appData?.versions?.[0]?.updatedAt)}
         </Descriptions.Item>
         <Descriptions.Item label="Change Log">
           <div style={{ backgroundColor: '#ffffff', borderRadius: 6 }}>
@@ -102,7 +102,8 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
       <Form form={form} layout="vertical" style={{ marginTop: 24 }}>
         <Form.Item
           name="remark"
-          label="Remark (optional)"
+          label="Remark"
+          required
         >
           <TextArea rows={4} placeholder='Provide a reason for rejection or approval...' />
         </Form.Item>

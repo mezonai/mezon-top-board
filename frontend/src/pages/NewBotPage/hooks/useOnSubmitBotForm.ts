@@ -36,8 +36,8 @@ export const useOnSubmitBotForm = (
       )
 
       const updatedDescription = doc.body.innerHTML
-      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link: any) => ({
-        url: link.url,
+      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link) => ({
+        url: link?.url,
         linkTypeId: link.linkTypeId
       }))
 
@@ -55,11 +55,11 @@ export const useOnSubmitBotForm = (
         toast.success(`${formData.type} created successfully!`)
         result.id && onSuccess(result.id)
       } else if (botId) {
+        const { mezonAppId, type, status, version, updatedAt, ...rest } = payload;
         const result = await updateBot({
           updateMezonAppRequest: {
-            ...payload,
-            id: botId,
-            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId
+            ...rest,
+            appId: botId,
           }
         }).unwrap()
         toast.success(`${formData.type} updated successfully!`)

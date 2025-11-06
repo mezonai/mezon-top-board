@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { transformMediaSrc } from '@app/utils/stringHelper'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest, SocialLinkDto } from '@app/services/api/mezonApp/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
@@ -52,14 +52,14 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           <strong>Social Links:</strong>
           <div className="mt-2 flex flex-col gap-2">
             {(values.socialLinks ?? []).length > 0 ? (
-              values.socialLinks.map((link, idx) => (
+              values.socialLinks.map((link: SocialLinkDto, idx: number) => (
                 <div key={idx} className="flex items-center gap-2 text-sm">
                   {link.type?.icon && (
-                    <img src={link.type.icon} alt={link.type.name} className="w-4 h-4" />
+                    <img src={link.type.icon} alt={link.type?.name || ''} className="w-4 h-4" />
                   )}
                   <span className="font-medium">{link.type?.name || 'Link'}:</span>
-                  <a href={link.type?.prefixUrl + link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    {link.url}
+                  <a href={(link.type?.prefixUrl ?? '') + (link.url ?? '')} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {link.url ?? ''}
                   </a>
                 </div>
               ))
@@ -69,6 +69,9 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           </div>
         </li>
         <li><strong>Note: </strong>{values.remark ==='' ? 'None' : values.remark}</li>
+        {isEdit && (
+          <li className='break-words'><strong>Changelog: </strong>{values.changelog ? values.changelog : 'None'}</li>
+        )}
         <li><strong>Description:</strong></li>
         <div className='border border-gray-300 p-3 rounded-md text-sm description break-words' 
           dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />

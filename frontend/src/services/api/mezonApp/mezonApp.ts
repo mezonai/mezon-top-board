@@ -307,13 +307,15 @@ export type CreateMezonAppRequest = {
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
+  version?: number
+  status?: AppStatus
+  changelog?: string
+  updatedAt?: Date
 }
 export type UpdateMezonAppRequest = {
-  id: string
+  appId: string
   name?: string
   isAutoPublished?: boolean
-  type?: MezonAppType
-  mezonAppId?: string
   headline?: string
   description?: string
   prefix?: string
@@ -323,7 +325,8 @@ export type UpdateMezonAppRequest = {
   tagIds?: string[]
   pricingTag?: AppPricing
   price?: number
-  socialLinks?: SocialLinkDto[]
+  socialLinks?: SocialLinkDto
+  changelog?: string
 }
 export type GetRelatedMezonAppResponse = {
   id: string

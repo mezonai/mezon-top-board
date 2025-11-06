@@ -3,10 +3,11 @@ import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-de
 import {
   useMezonAppControllerDeleteMezonAppMutation
 } from '@app/services/api/mezonApp/mezonApp'
+import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
-function OwnerActions({ data, isBotCard }: { data: any; isBotCard?: boolean }) {
+function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBotCard?: boolean; onNewVersionClick?: (version?: AppVersion) => void }) {
   const navigate = useNavigate()
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -34,7 +35,20 @@ function OwnerActions({ data, isBotCard }: { data: any; isBotCard?: boolean }) {
       }
     })
   }
+  const newVersionItems = data?.hasNewUpdate
+    ? [{
+        label: 'New version',
+        style: { whiteSpace: 'nowrap' },
+        key: '0',
+        icon: <ExclamationCircleOutlined />,
+        onClick: () => {
+          onNewVersionClick?.(data?.versions?.[0])
+        }
+      }]
+    : []
+
   const items: MenuProps['items'] = [
+    ...newVersionItems,
     {
       label: 'Edit',
       key: '1',
@@ -66,7 +80,7 @@ function OwnerActions({ data, isBotCard }: { data: any; isBotCard?: boolean }) {
       style={{ display: 'contents' }}
       size={isBotCard ? 'large' : 'middle'}
       getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
-      buttonsRender={([leftBtn, rightBtn]) => [
+      buttonsRender={([, rightBtn]) => [
         null,
         <span onClick={(e) => e.stopPropagation()} className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
           {rightBtn}
