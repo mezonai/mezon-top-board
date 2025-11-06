@@ -39,9 +39,9 @@ function ReviewHistoryPage() {
   useEffect(() => {
     fetchData()
   }, [currentPageSize, currentPageNumber])
-
+  
   const handleSearchSubmit = () => {
-    setCurrentPageNumber(1);
+    setCurrentPageNumber(1); 
     fetchData();
   }
 
@@ -186,7 +186,7 @@ function ReviewHistoryPage() {
           style={{ borderRadius: '8px', height: '40px' }}
         />
         <Button className="w-50"
-          type='primary'
+          type='primary' 
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}
         >

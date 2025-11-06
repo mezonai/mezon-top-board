@@ -107,7 +107,13 @@ function NewBotPage() {
 
   useEffect(() => {
     type Tag = { id: string };
-    type DataSource = Partial<Omit<CreateMezonAppRequest, 'tagIds'>>;
+    type DataSource = Partial<Omit<CreateMezonAppRequest, 'tagIds'>> & {
+      id: string;
+      version: number;
+      status: AppStatus;
+      updatedAt: Date;
+      changelog: string;
+    }
     const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
     
     if (!mezonAppDetail.id || !botId) {
@@ -132,11 +138,11 @@ function NewBotPage() {
           versionData = versions[0] as DataSource;
         }
       } else {
-        versionData = { ...rest } as DataSource;
+        versionData = { ...rest } as unknown as DataSource;
       }
-
+      const { id, version, status, mezonAppId, type, updatedAt, changelog, ...updateData } = versionData;
       reset({
-        ...versionData,
+        ...updateData,
         featuredImage: versionData.featuredImage || '',
         tagIds: mezonAppDetail.tags?.map((tag: Tag) => tag.id),
         mezonAppId: mezonAppDetail.mezonAppId, 
@@ -201,7 +207,6 @@ function NewBotPage() {
     'featuredImage', 
     'socialLinks',
     'remark',
-    'changelog',
     'isAutoPublished'
   ]
 
@@ -241,9 +246,9 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-  { title: 'Choose Type', content: <Step1ChooseType /> },
-  { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-  { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
+    { title: 'Choose Type', content: <Step1ChooseType /> },
+    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
+    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -255,7 +260,7 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-  { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
+    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)

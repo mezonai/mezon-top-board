@@ -290,13 +290,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
       {isEdit && (
         <FormField label='Changelog' description='Describe what changed in this update (shown to users)'>
-          <Controller
-            control={control}
-            name='changelog'
-            render={({ field }) => (
-              <TextArea {...field} rows={4} placeholder='Fixed bugs, improved performance, new features...' />
-            )}
-          />
+          <TextArea rows={4} placeholder='Fixed bugs, improved performance, new features...' />
         </FormField>
       )}
 
