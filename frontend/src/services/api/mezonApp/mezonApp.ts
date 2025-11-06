@@ -249,6 +249,7 @@ export type AppVersion = {
   name?: string
   version: number
   status: AppStatus
+  changelog?: string
   isAutoPublished?: boolean
   headline?: string
   description?: string
@@ -311,6 +312,8 @@ export type UpdateMezonAppRequest = {
   id: string
   name?: string
   isAutoPublished?: boolean
+  type?: MezonAppType
+  mezonAppId?: string
   headline?: string
   description?: string
   prefix?: string
@@ -329,7 +332,6 @@ export type GetRelatedMezonAppResponse = {
   featuredImage: string
   rateScore: number
 }
-
 
 export enum Role {
   Admin = 'ADMIN',
