@@ -249,7 +249,6 @@ export type AppVersion = {
   name?: string
   version: number
   status: AppStatus
-  changelog?: string
   isAutoPublished?: boolean
   headline?: string
   description?: string
@@ -307,13 +306,9 @@ export type CreateMezonAppRequest = {
   pricingTag?: AppPricing
   price?: number
   socialLinks?: SocialLinkDto[]
-  version?: number
-  status?: AppStatus
-  changelog?: string
-  updatedAt?: Date
 }
 export type UpdateMezonAppRequest = {
-  appId: string
+  id: string
   name?: string
   isAutoPublished?: boolean
   headline?: string
@@ -325,8 +320,7 @@ export type UpdateMezonAppRequest = {
   tagIds?: string[]
   pricingTag?: AppPricing
   price?: number
-  socialLinks?: SocialLinkDto
-  changelog?: string
+  socialLinks?: SocialLinkDto[]
 }
 export type GetRelatedMezonAppResponse = {
   id: string

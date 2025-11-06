@@ -5,6 +5,8 @@ import { Brackets, EntityManager } from "typeorm";
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
+import { SortField } from "@domain/common/enum/sortField";
+import { SortOrder } from "@domain/common/enum/sortOder";
 import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
@@ -159,6 +161,13 @@ export class ReviewHistoryService {
     if (query.appVersionId) {
       qb.andWhere('review.appVersionId = :appVersionId', { appVersionId: query.appVersionId });
     }
+    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
+    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
+    const sortField = invalidSortField ? query.sortField : SortField.NAME;
+    const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
+
+    qb.orderBy(`review.${sortField}`, sortOrder);
+    
 
     return paginate<AppReviewHistory, AppReviewResponse>(
       () =>

@@ -340,11 +340,8 @@ export class MezonAppService {
     return newApp
   }
 
-  async updateMezonApp(userUpdating: User, req: UpdateAppVersionRequest) {
-
-    const { tagIds, socialLinks, description, appId, ...updateData } = req;
-
-    const app = await this.appRepository.findById(appId, [
+  async updateMezonApp(userUpdating: User, req: UpdateMezonAppRequest) {
+    const app = await this.appRepository.findById(req.id, [
       "tags",
       "socialLinks",
     ]);
@@ -357,6 +354,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
+    const { tagIds, socialLinks, description, id, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -459,7 +457,7 @@ export class MezonAppService {
 
 
     const versionData = {
-      appId,
+      appId: id,
       ...updateData,
       description: cleanedDescription,
       tagIds,
@@ -467,7 +465,7 @@ export class MezonAppService {
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
-      where: { appId, status: AppStatus.PENDING },
+      where: { appId: id, status: AppStatus.PENDING },
     });
 
     if (existingPendingVersion) {

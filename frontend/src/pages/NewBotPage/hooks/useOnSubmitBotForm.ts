@@ -55,11 +55,10 @@ export const useOnSubmitBotForm = (
         toast.success(`${formData.type} created successfully!`)
         result.id && onSuccess(result.id)
       } else if (botId) {
-        const { mezonAppId, type, status, version, updatedAt, ...rest } = payload;
         const result = await updateBot({
           updateMezonAppRequest: {
-            ...rest,
-            appId: botId,
+            ...payload,
+            id: botId,
           }
         }).unwrap()
         toast.success(`${formData.type} updated successfully!`)
