@@ -6,8 +6,6 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 
-import { AppStatus } from '@app/enums/AppStatus.enum'
-
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mezonAppControllerListAdminMezonApp: build.query<
@@ -178,7 +176,6 @@ export type GetMezonAppDetailsResponse = {
   headline: string
   featuredImage: string
   status: AppStatus
-  status: AppStatus
   owner: OwnerInMezonAppDetailResponse
   tags: TagInMezonAppDetailResponse[]
   pricingTag: AppPricing
@@ -188,11 +185,6 @@ export type GetMezonAppDetailsResponse = {
   type: MezonAppType
   mezonAppId?: string
   supportUrl: string;
-  // ADDED FIELDS
-  versions: AppVersion[]
-  hasNewUpdate: boolean
-  createdAt?: Date
-  updatedAt?: Date
   // ADDED FIELDS
   versions: AppVersion[]
   hasNewUpdate: boolean
@@ -271,32 +263,10 @@ export type AppVersion = {
   updatedAt?: Date
 }
 
-
-// ADDED TYPE
-export type AppVersion = {
-  id: string
-  name?: string
-  version: number
-  status: AppStatus
-  changelog?: string
-  isAutoPublished?: boolean
-  headline?: string
-  description?: string
-  prefix?: string
-  featuredImage?: string
-  supportUrl?: string
-  remark?: string
-  pricingTag?: AppPricing
-  price?: number
-  createdAt?: Date
-  updatedAt?: Date
-}
-
 export type App = {
   id?: string
   name: string
   ownerId: string
-  status: AppStatus
   status: AppStatus
   isAutoPublished: boolean
   type: MezonAppType
@@ -314,8 +284,6 @@ export type App = {
   reviewHistories: AppReviewHistory[]
   ratings: Rating[]
   owner: User
-  // ADDED FIELDS
-  versions?: AppVersion[]
   // ADDED FIELDS
   versions?: AppVersion[]
 }
@@ -363,7 +331,6 @@ export type UpdateMezonAppRequest = {
 export type GetRelatedMezonAppResponse = {
   id: string
   name: string
-  status: AppStatus
   status: AppStatus
   featuredImage: string
   rateScore: number
