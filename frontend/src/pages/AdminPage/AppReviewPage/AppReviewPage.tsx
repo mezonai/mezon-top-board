@@ -1,5 +1,5 @@
 import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
-import { Button, Input, Table, Tooltip, Tag, Alert, Spin } from 'antd'
+import { Button, Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
@@ -127,9 +127,10 @@ function AppReviewPage() {
             render: (_: any, record: GetMezonAppDetailsResponse) => {
                 const version = record.versions?.[0]
                 return (
-                    <div className='line-clamp-5 overflow-hidden text-ellipsis max-w-[300px] 2xl:max-w-[400px] whitespace-pre-wrap text-sm text-gray-700'>
+                    <Typography.Paragraph
+                        ellipsis={{ rows: 2, expandable: false }}>
                         {version?.changelog || '-'}
-                    </div>
+                    </Typography.Paragraph>
                 )
             }
         },

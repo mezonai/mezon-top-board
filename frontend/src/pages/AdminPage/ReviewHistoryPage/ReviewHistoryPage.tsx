@@ -7,11 +7,11 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Button, Form, Input, Modal, Popconfirm, Table, Tooltip } from 'antd'
+import { Button, Input, Popconfirm, Table, Tooltip } from 'antd'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { ChangeEvent, useEffect, useState } from 'react'
-import ReviewHistoryInfo from './ReviewHistoryInfo/ReviewHistoryInfo'
+import { useEffect, useState } from 'react'
+import ReviewHistoryModal from './ReviewHistoryModal'
 import { toast } from 'react-toastify'
 
 function ReviewHistoryPage() {
@@ -23,7 +23,6 @@ function ReviewHistoryPage() {
   const [currentPageSize, setCurrentPageSize] = useState<number>(5)
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [remark, setRemark] = useState<string>('')
   const [selectedHistory, setSelectedHistory] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -78,18 +77,16 @@ function ReviewHistoryPage() {
     }
   }
 
-  const handleUpdate = async () => {
-    setIsEdit(true)
-    setIsOpenModal(true)
+  const handleUpdate = async (id: string, newRemark: string) => {
     try {
       await updateReviewHistory({
         updateAppReviewRequest: {
-          id: selectedHistory,
-          remark
+          id,
+          remark: newRemark
         }
       })
-      setIsOpenModal(false)
       toast.success('Update history successfull')
+      setIsOpenModal(false)
       await fetchData()
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to edit history')
@@ -214,29 +211,13 @@ function ReviewHistoryPage() {
         }}
         className='cursor-pointer'
       ></Table>
-      <Modal
-        title={isEdit ? 'Edit History' : 'View history'}
+      <ReviewHistoryModal
         open={isOpenModal}
-        onCancel={() => setIsOpenModal(false)}
-        footer={isEdit ? <Button onClick={handleUpdate}>Update</Button> : null}
-        width={600}
-        centered
-      >
-        {isEdit ? (
-          <Form layout='vertical' className='!pt-2'>
-            <Form.Item name='remark' label='Remark' rules={[{ required: true, message: 'This field is required' }]}>
-              <Input.TextArea
-                autoSize={false}
-                rows={4}
-                className='!resize-none'
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setRemark(e.target.value)}
-              />
-            </Form.Item>
-          </Form>
-        ) : (
-          <ReviewHistoryInfo data={reviewHistoryDetail?.data?.[0]}></ReviewHistoryInfo>
-        )}
-      </Modal>
+        isEdit={isEdit}
+        data={isEdit ? ({ id: selectedHistory } as ReviewHistoryResponse) : reviewHistoryDetail?.data?.[0]}
+        onClose={() => setIsOpenModal(false)}
+        onSave={handleUpdate}
+      />
     </>
   )
 }
