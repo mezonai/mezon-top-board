@@ -322,11 +322,11 @@ export type UpdateMezonAppRequest = {
   featuredImage?: string
   supportUrl?: string
   remark?: string
-  changelog?: string
   tagIds?: string[]
   pricingTag?: AppPricing
   price?: number
-  socialLinks?: SocialLinkDto[]
+  socialLinks?: SocialLinkDto
+  changelog?: string
 }
 export type GetRelatedMezonAppResponse = {
   id: string

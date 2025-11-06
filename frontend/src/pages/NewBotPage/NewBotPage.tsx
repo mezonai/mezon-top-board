@@ -241,9 +241,9 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-  { title: 'Choose Type', content: <Step1ChooseType /> },
-  { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-  { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
+    { title: 'Choose Type', content: <Step1ChooseType /> },
+    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
+    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -255,7 +255,7 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-  { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
+    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)

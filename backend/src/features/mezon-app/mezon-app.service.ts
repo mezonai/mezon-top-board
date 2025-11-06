@@ -31,7 +31,7 @@ import {
   SearchMezonAppResponse,
 } from "./dtos/response";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
-import { CreateAppVersionRequest, UpdateAppVersionRequest } from "@features/app-version/dtos/request";
+import { UpdateAppVersionRequest } from "@features/app-version/dtos/request";
 
 
 
