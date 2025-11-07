@@ -81,6 +81,7 @@ type ReviewHistory = {
   reviewedAt: Date
   app: AppInfo
   appVersion: AppVersion
+  isApproved: boolean
 }
 
 export type ReviewHistoryResponse = ReviewHistory

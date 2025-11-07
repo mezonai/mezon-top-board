@@ -23,6 +23,11 @@ export const REVIEW_HISTORY_COLUMNS = [
     key: 'remark'
   },
   {
+    title: 'Status',
+    key: 'isApproved',
+    render: (_: any, record: ReviewHistoryResponse) => record?.isApproved ? 'Approved' : 'Rejected'
+  },
+  {
     title: 'Reviewer',
     key: 'reviewer',
     render: (_: any, record: ReviewHistoryResponse) => record?.reviewer?.name || ''
