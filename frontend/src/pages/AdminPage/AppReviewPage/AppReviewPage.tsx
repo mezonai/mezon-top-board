@@ -144,12 +144,11 @@ function AppReviewPage() {
             }
         },
         {
-            title: 'Status',
+            title: 'App Status',
             align: 'center',
             key: 'status',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
-                const version = record.versions?.[0]
-                const status = version?.status || record.status
+                const status = record?.status
                 return <div className='text-center'>{getStatusTag(status)}</div>
             }
         },
