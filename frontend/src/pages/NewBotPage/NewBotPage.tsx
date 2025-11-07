@@ -116,6 +116,7 @@ function NewBotPage() {
       deletedAt: Date | null;
       appId: string;
       changelog: string;
+      tags?: Tag[];
     }
     const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
     
@@ -143,7 +144,7 @@ function NewBotPage() {
       } else {
         versionData = { ...rest } as unknown as DataSource;
       }
-      const { id, version, status, mezonAppId, type, createdAt, updatedAt, deletedAt, changelog, appId, ...updateData } = versionData;
+      const { id, version, status, mezonAppId, type, createdAt, updatedAt, deletedAt, changelog, appId, tags, ...updateData } = versionData;
       reset({
         ...updateData,
         featuredImage: versionData.featuredImage || '',
