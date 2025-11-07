@@ -23,7 +23,7 @@ export const REVIEW_HISTORY_COLUMNS = [
     key: 'remark'
   },
   {
-    title: 'Status',
+    title: 'Review Status',
     key: 'isApproved',
     render: (_: any, record: ReviewHistoryResponse) => record?.isApproved ? 'Approved' : 'Rejected'
   },
