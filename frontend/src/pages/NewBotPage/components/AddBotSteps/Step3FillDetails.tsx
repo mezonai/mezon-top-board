@@ -288,12 +288,6 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      {isEdit && (
-        <FormField label='Changelog' description='Describe what changed in this update (shown to users)'>
-          <TextArea rows={4} placeholder='Fixed bugs, improved performance, new features...' />
-        </FormField>
-      )}
-
       <FormField label='Social Links' description='Link your social channels'>
         <div className='flex flex-col sm:flex-row gap-4'>
           <Select

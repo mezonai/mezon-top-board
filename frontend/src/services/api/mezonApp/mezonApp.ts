@@ -264,6 +264,7 @@ export type AppVersion = {
   deletedAt?: Date
   appId: string
   tags: TagInMezonAppDetailResponse[]
+  socialLinks: SocialLinkInMezonAppDetailResponse[]
 }
 
 export type App = {
