@@ -8,6 +8,10 @@ import { GetAppInfoDetailsResponse } from "@domain/common/dtos/appInfo.dto";
 export class GetAppVersionDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
+  public appId: string;
+
+  @Expose()
+  @ApiProperty()
   public version: number;
 
   @Expose()
@@ -17,6 +21,7 @@ export class GetAppVersionDetailsResponse extends GetAppInfoDetailsResponse {
 }
 
 export class AppVersionInAppReviewResponse extends PickType(GetAppVersionDetailsResponse, [
+  "id",
   "version",
   "changelog",
 ]) { }

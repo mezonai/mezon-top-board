@@ -77,6 +77,7 @@ export class MezonAppService {
       "socialLinks.type",
       "ratings",
       "versions",
+      "versions.tags"
     ]);
 
     if (!mezonApp) {
@@ -106,25 +107,7 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
-    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version).map((version) => ({
-        id: version.id,
-        name: version.name,
-        changelog: version.changelog,
-        isAutoPublished: version.isAutoPublished,
-        status: version.status,
-        headline: version.headline,
-        description: version.description,
-        prefix: version.prefix,
-        featuredImage: version.featuredImage,
-        supportUrl: version.supportUrl,
-        remark: version.remark,
-        price: version.price,
-        pricingTag: version.pricingTag,
-        socialLinks: version.socialLinks,
-        tags: version.tags,
-        version: version.version,
-        updatedAt: version.updatedAt,
-      }));
+    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version)
 
     return new Result({
       data: detail,
@@ -232,6 +215,7 @@ export class MezonAppService {
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
+      .leftJoinAndSelect("version.tags", "versionTag")
       .where("app.id IN (:...ids)", { ids });
 
     if (query.sortField === SortField.NAME) {
