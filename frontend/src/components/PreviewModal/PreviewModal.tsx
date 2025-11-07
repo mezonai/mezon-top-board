@@ -197,7 +197,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                 {latestVersion.socialLinks.map((link) => (
                                     <div key={link.id} className='flex items-center gap-2 text-sm'>
                                         {link.type?.icon && (
-                                            <img src={link.type.icon} alt={link.type.name} className='w-4 h-4' />
+                                            <img src={getUrlMedia(link.type.icon)} alt={link.type.name} className='w-4 h-4' />
                                         )}
                                         <span className='font-medium'>{link.type?.name || 'Link'}:</span>
                                         <a

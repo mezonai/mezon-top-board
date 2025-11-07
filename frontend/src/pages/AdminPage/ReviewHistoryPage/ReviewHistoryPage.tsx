@@ -7,7 +7,7 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Button, Input, Popconfirm, Table, Tooltip } from 'antd'
+import { Button, Input, Popconfirm, Table, Tag, Tooltip } from 'antd'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { useEffect, useState } from 'react'
@@ -128,6 +128,17 @@ function ReviewHistoryPage() {
         align: 'center',
         render: (_: any, record: ReviewHistoryResponse) => (
           <div className='text-center'>{record.appVersion?.version ?? '-'}</div>
+        )
+      }
+    }
+
+    if( col.key === 'isApproved') {
+      return {
+        ...col,
+        render: (_: any, record: ReviewHistoryResponse) => (
+          <Tag color={record.isApproved ? 'green' : 'red'}>
+            {record.isApproved ? 'Approved' : 'Rejected'}
+          </Tag>
         )
       }
     }
