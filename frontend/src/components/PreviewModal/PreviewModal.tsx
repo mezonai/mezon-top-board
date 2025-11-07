@@ -112,7 +112,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         }
 
                         <div className='flex flex-wrap gap-2'>
-                            {appData.tags?.map((tag) => (
+                            {latestVersion?.tags?.map((tag) => (
                                 <Tag key={tag.id} color={randomColor('normal', uuidToNumber(tag.id))}>
                                     {tag.name}
                                 </Tag>

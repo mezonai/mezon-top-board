@@ -80,7 +80,7 @@ function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBot
       style={{ display: 'contents' }}
       size={isBotCard ? 'large' : 'middle'}
       getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
-      buttonsRender={([, rightBtn]) => [
+      buttonsRender={([_, rightBtn]) => [
         null,
         <span onClick={(e) => e.stopPropagation()} className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
           {rightBtn}
