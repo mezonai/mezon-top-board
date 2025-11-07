@@ -192,9 +192,9 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                     <Divider />
                     <div>
                         <Title level={5} style={{ marginTop: 0 }}>Social Links</Title>
-                        {(appData.socialLinks && appData.socialLinks.length > 0) ? (
+                        {(latestVersion?.socialLinks && latestVersion.socialLinks.length > 0) ? (
                             <div className='flex flex-col gap-2'>
-                                {appData.socialLinks.map((link) => (
+                                {latestVersion.socialLinks.map((link) => (
                                     <div key={link.id} className='flex items-center gap-2 text-sm'>
                                         {link.type?.icon && (
                                             <img src={link.type.icon} alt={link.type.name} className='w-4 h-4' />
