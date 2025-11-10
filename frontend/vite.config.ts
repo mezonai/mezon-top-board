@@ -9,8 +9,7 @@ dotenv.config()
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   server: {
-    port: 3000,
-    allowedHosts: ['.trycloudflare.com']
+    port: 3000
   },
   define: {
     'process.env': process.env // Inject process.env
