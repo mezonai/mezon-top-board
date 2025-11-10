@@ -167,8 +167,9 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         <Controller
           control={control}
           name='isAutoPublished'
-          render={({ field }) => (
-            <Checkbox {...field} />
+          render={() => (
+            //TODO: isAutoPublished will be implemented later
+            <Checkbox checked={true} disabled />
           )}
         />
       </FormField>

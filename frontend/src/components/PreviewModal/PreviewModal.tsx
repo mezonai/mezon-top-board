@@ -89,8 +89,8 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                     </div>
 
                                     <div className='flex items-center justify-start gap-2 order-first md:order-none md:self-start'>
-                                        <TagPill kind="type" value={appData.type} />
-                                        <TagPill kind="pricing" value={latestVersion?.pricingTag} />
+                                        <TagPill value={appData.type} />
+                                        <TagPill value={latestVersion?.pricingTag} />
                                     </div>
 
                                 </div>

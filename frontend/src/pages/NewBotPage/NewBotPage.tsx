@@ -6,7 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { AppStatus } from '@app/enums/AppStatus.enum'
 
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
@@ -20,9 +19,6 @@ import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
 import { 
   CreateMezonAppRequest, 
   useLazyMezonAppControllerGetMezonAppDetailQuery, 
-  GetMezonAppDetailsResponse, 
-  AppVersion, 
-  TagInMezonAppDetailResponse 
 } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
@@ -41,48 +37,9 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
+import { mapDetailToFormData } from './helpers'
 
 type StepFieldMap = {[key: number]: FieldPath<CreateMezonAppRequest>[]}
-
-const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersion | GetMezonAppDetailsResponse => {
-  const { versions, hasNewUpdate } = detail
-
-  if (hasNewUpdate && versions && versions.length > 0) {
-    return versions[0] 
-  }
-
-  if (versions && versions.length > 0) {
-    const approvedVersions = versions.filter((v) => v.status === AppStatus.APPROVED)
-    if (approvedVersions.length > 0) {
-      return approvedVersions[0] 
-    }
-    return versions[0] 
-  }
-
-  return detail 
-}
-
-const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonAppRequest => {
-  const dataSource = getDataSource(detail)
-  const remark = 'remark' in dataSource ? dataSource.remark : ''
-
-  return {
-    name: dataSource.name || '',
-    headline: dataSource.headline || '',
-    description: dataSource.description || '',
-    prefix: dataSource.prefix || '',
-    featuredImage: dataSource.featuredImage || '',
-    supportUrl: dataSource.supportUrl || '',
-    pricingTag: dataSource.pricingTag || AppPricing.FREE,
-    price: dataSource.price || 0,
-    socialLinks: dataSource.socialLinks || [],
-    remark: remark,
-    // TODO: isAutoPublished will be implemented later
-    tagIds: detail.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],
-    mezonAppId: detail.mezonAppId || '',
-    type: detail.type
-  }
-}
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -114,7 +71,8 @@ function NewBotPage() {
       price: 0,
       supportUrl: '',
       remark: '',
-      isAutoPublished: false,
+      //TODO: isAutoPublished will be implemented later
+      isAutoPublished: true,
       socialLinks: []
     },
     resolver: yupResolver(ADD_BOT_SCHEMA),

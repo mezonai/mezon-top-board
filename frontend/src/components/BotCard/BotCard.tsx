@@ -57,10 +57,10 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
             {data?.type && (
-              <TagPill kind="type" value={data.type} />
+              <TagPill value={data.type} />
             )}
             {data?.pricingTag && (
-              <TagPill kind="pricing" value={data.pricingTag} />
+              <TagPill value={data.pricingTag} />
             )}
             <div className='truncate-title flex-1'>
               <style>
