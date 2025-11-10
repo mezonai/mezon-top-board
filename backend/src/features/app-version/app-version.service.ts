@@ -1,12 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
 import { EntityManager, In } from 'typeorm';
-
 import { AppStatus } from '@domain/common/enum/appStatus';
 import { App, AppVersion, Tag } from '@domain/entities';
-
 import { CreateAppVersionRequest } from '@features/app-version/dtos/request';
-
 import { GenericRepository } from '@libs/repository/genericRepository';
 
 @Injectable()
@@ -73,11 +69,9 @@ export class AppVersionService {
     mezonApp.hasNewUpdate = false;
     mezonApp.currentVersion = version;
 
-    await this.appRepository.getRepository().save(mezonApp);
-
     await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
 
-    return mezonApp;
+    return await this.appRepository.getRepository().save(mezonApp);
   }
 
   async rejectVersion(versionId: string) {
@@ -88,7 +82,7 @@ export class AppVersionService {
     if (!app) throw new NotFoundException('App not found');
 
     await this.appVersionRepository.update(versionId, { status: AppStatus.REJECTED });
-    if (version.version === 1 || app.status === AppStatus.PENDING) {
+    if (app.status === AppStatus.PENDING) {
       return await this.appRepository.update(version.appId, {
         status: AppStatus.REJECTED,
         hasNewUpdate: false,

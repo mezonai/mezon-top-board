@@ -514,6 +514,12 @@ export class MezonAppService {
           name: tag.name,
         }));
         mappedMezonApp.versions = entity.versions;
+        // TODO: fix with exposeUnsetFields later in class-transformer
+        mappedMezonApp.owner = {
+          id: entity.owner.id,
+          name: entity.owner.name,
+          profileImage: entity.owner.profileImage,
+        }
         return mappedMezonApp;
       },
     );
