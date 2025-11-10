@@ -1,5 +1,4 @@
 import { Entity, Column } from "typeorm";
-
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { BaseSoftDelete } from "@domain/entities/base";

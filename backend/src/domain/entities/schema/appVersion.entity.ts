@@ -1,10 +1,8 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, } from 'typeorm';
-
 import { BaseApp } from '@domain/entities/base/baseApp.entity';
 import { AppReviewHistory } from '@domain/entities/schema/appReviewHistory.entity';
 import { Link } from '@domain/entities/schema/link.entity';
 import { Tag } from '@domain/entities/schema/tag.entity';
-
 import { App } from './app.entity';
 
 @Entity()

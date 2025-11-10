@@ -1,13 +1,10 @@
 import { ApiPropertyOptional, ApiProperty, } from "@nestjs/swagger";
-
 import { Transform, Type } from "class-transformer";
 import { Expose } from "class-transformer";
 import { IsString, IsBoolean, IsOptional, IsArray, MinLength, MaxLength, ArrayMinSize, IsUrl, ValidateIf, IsEnum, IsNumber, IsUUID, ValidateNested } from "class-validator";
-
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
-
 import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
 import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
 
