@@ -318,6 +318,7 @@ export class MezonAppService {
       socialLinks: links,
       hasNewUpdate: true,
     });
+    
     if (newApp) await this.appVersionService.createVersion({
       appId: newApp.id,
       tagIds,
