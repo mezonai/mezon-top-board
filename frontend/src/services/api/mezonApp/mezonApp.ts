@@ -185,7 +185,6 @@ export type GetMezonAppDetailsResponse = {
   type: MezonAppType
   mezonAppId?: string
   supportUrl: string;
-  // ADDED FIELDS
   versions: AppVersion[]
   hasNewUpdate: boolean
   createdAt?: Date
@@ -243,7 +242,6 @@ export type AppReviewHistory = {
   reviewer: User
 }
 
-// ADDED TYPE
 export type AppVersion = {
   id: string
   name?: string
@@ -288,7 +286,6 @@ export type App = {
   reviewHistories: AppReviewHistory[]
   ratings: Rating[]
   owner: User
-  // ADDED FIELDS
   versions?: AppVersion[]
 }
 export type SocialLinkDto = {

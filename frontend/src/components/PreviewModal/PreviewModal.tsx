@@ -4,15 +4,14 @@ import { formatDate } from '@app/utils/date'
 import type { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
-import { MezonAppType } from '@app/enums/mezonAppType.enum'
-import { AppPricing } from '@app/enums/appPricing'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
 import { AppStatus } from '@app/enums/AppStatus.enum';
+import TagPill from '@app/components/TagPill/TagPill';
 
 interface Props {
     open: boolean
     onClose: () => void
-    appData?: GetMezonAppDetailsResponse | undefined
+    appData?: Partial<GetMezonAppDetailsResponse> | undefined
     latestVersion?: AppVersion
 }
 
@@ -90,16 +89,8 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                     </div>
 
                                     <div className='flex items-center justify-start gap-2 order-first md:order-none md:self-start'>
-                                        {appData.type === MezonAppType.BOT ? (
-                                            <Tag className='!border-primary-hover !text-primary-hover !bg-white uppercase'>{appData.type || '—'}</Tag>
-                                        ) : (
-                                            <Tag className='!border-sky-500 !text-sky-500 !bg-white uppercase'>{appData.type || '—'}</Tag>
-                                        )}
-                                        {latestVersion?.pricingTag === AppPricing.FREE ? (
-                                            <Tag className='!border-green-500 !text-green-500 !bg-white uppercase'>{latestVersion?.pricingTag || '-'}</Tag>
-                                        ) : (
-                                            <Tag className='!border-purple-500 !text-purple-500 !bg-white uppercase'>{latestVersion?.pricingTag || '-'}</Tag>
-                                        )}
+                                        <TagPill kind="type" value={appData.type} />
+                                        <TagPill kind="pricing" value={latestVersion?.pricingTag} />
                                     </div>
 
                                 </div>

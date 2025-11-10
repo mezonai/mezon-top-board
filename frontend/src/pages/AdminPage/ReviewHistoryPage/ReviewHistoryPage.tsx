@@ -39,9 +39,9 @@ function ReviewHistoryPage() {
   useEffect(() => {
     fetchData()
   }, [currentPageSize, currentPageNumber])
-  
+
   const handleSearchSubmit = () => {
-    setCurrentPageNumber(1); 
+    setCurrentPageNumber(1);
     fetchData();
   }
 
@@ -132,7 +132,7 @@ function ReviewHistoryPage() {
       }
     }
 
-    if( col.key === 'isApproved') {
+    if (col.key === 'isApproved') {
       return {
         ...col,
         render: (_: any, record: ReviewHistoryResponse) => (
@@ -197,7 +197,7 @@ function ReviewHistoryPage() {
           style={{ borderRadius: '8px', height: '40px' }}
         />
         <Button className="w-50"
-          type='primary' 
+          type='primary'
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}
         >
@@ -225,7 +225,7 @@ function ReviewHistoryPage() {
       <ReviewHistoryModal
         open={isOpenModal}
         isEdit={isEdit}
-        data={isEdit ? ({ id: selectedHistory } as ReviewHistoryResponse) : reviewHistoryDetail?.data?.[0]}
+        data={isEdit ? { id: selectedHistory } : reviewHistoryDetail?.data?.[0]}
         onClose={() => setIsOpenModal(false)}
         onSave={handleUpdate}
       />

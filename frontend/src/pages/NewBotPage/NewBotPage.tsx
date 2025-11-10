@@ -17,7 +17,13 @@ import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
-import { CreateMezonAppRequest, useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
+import { 
+  CreateMezonAppRequest, 
+  useLazyMezonAppControllerGetMezonAppDetailQuery, 
+  GetMezonAppDetailsResponse, 
+  AppVersion, 
+  TagInMezonAppDetailResponse 
+} from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
@@ -35,6 +41,48 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
+
+type StepFieldMap = {[key: number]: FieldPath<CreateMezonAppRequest>[]}
+
+const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersion | GetMezonAppDetailsResponse => {
+  const { versions, hasNewUpdate } = detail
+
+  if (hasNewUpdate && versions && versions.length > 0) {
+    return versions[0] 
+  }
+
+  if (versions && versions.length > 0) {
+    const approvedVersions = versions.filter((v) => v.status === AppStatus.APPROVED)
+    if (approvedVersions.length > 0) {
+      return approvedVersions[0] 
+    }
+    return versions[0] 
+  }
+
+  return detail 
+}
+
+const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonAppRequest => {
+  const dataSource = getDataSource(detail)
+  const remark = 'remark' in dataSource ? dataSource.remark : ''
+
+  return {
+    name: dataSource.name || '',
+    headline: dataSource.headline || '',
+    description: dataSource.description || '',
+    prefix: dataSource.prefix || '',
+    featuredImage: dataSource.featuredImage || '',
+    supportUrl: dataSource.supportUrl || '',
+    pricingTag: dataSource.pricingTag || AppPricing.FREE,
+    price: dataSource.price || 0,
+    socialLinks: dataSource.socialLinks || [],
+    remark: remark,
+    // TODO: isAutoPublished will be implemented later
+    tagIds: detail.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],
+    mezonAppId: detail.mezonAppId || '',
+    type: detail.type
+  }
+}
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -106,55 +154,17 @@ function NewBotPage() {
   }, [imgUrl])
 
   useEffect(() => {
-    type Tag = { id: string };
-    type DataSource = Partial<Omit<CreateMezonAppRequest, 'tagIds'>> & {
-      id: string;
-      version: number;
-      status: AppStatus;
-      createdAt: Date;
-      updatedAt: Date;
-      deletedAt: Date | null;
-      appId: string;
-      changelog: string;
-      tags?: Tag[];
-    }
-    const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
-    
     if (!mezonAppDetail.id || !botId) {
-      return;
+      return
     }
 
-    if (mezonAppDetail && botId) {
-      if (!checkOwnership(mezonAppDetail?.owner?.id)) {
-        return;
-      }
-
-      let versionData: DataSource;
-
-      if (hasNewUpdate && versions && versions.length > 0) {
-        versionData = versions[0] as DataSource;
-      } else if (versions && versions.length > 0) {
-        const approvedVersions = versions.filter(v => v.status === AppStatus.APPROVED);
-
-        if (approvedVersions.length > 0) {
-          versionData = approvedVersions[0] as DataSource;
-        } else {
-          versionData = versions[0] as DataSource;
-        }
-      } else {
-        versionData = { ...rest } as unknown as DataSource;
-      }
-      const { id, version, status, mezonAppId, type, createdAt, updatedAt, deletedAt, changelog, appId, tags, ...updateData } = versionData;
-      reset({
-        ...updateData,
-        featuredImage: versionData.featuredImage || '',
-        tagIds: mezonAppDetail.tags?.map((tag: Tag) => tag.id),
-        mezonAppId: mezonAppDetail.mezonAppId, 
-        type: mezonAppDetail.type 
-      })
+    if (!checkOwnership(mezonAppDetail.owner?.id)) {
+      return
     }
-    
-  }, [mezonAppDetail, botId, reset])
+
+    const formData = mapDetailToFormData(mezonAppDetail)
+    reset(formData)
+  }, [mezonAppDetail.id, botId, reset])
 
   const handleBeforeUpload = (file: File) => {
     if (!imageMimeTypes.includes(file.type)) {
@@ -214,10 +224,6 @@ function NewBotPage() {
     'isAutoPublished'
   ]
 
-  type StepFieldMap = {
-    [key: number]: FieldPath<CreateMezonAppRequest>[];
-  }
-
   const stepFieldMap = useMemo((): StepFieldMap => {
     if (isEditMode) {
       return {
@@ -225,7 +231,7 @@ function NewBotPage() {
         1: [], 
         2: []  
       }
-    } else {
+    } 
       return {
         0: ['type'],
         1: ['mezonAppId'],
@@ -233,7 +239,7 @@ function NewBotPage() {
         3: [], 
         4: []  
       }
-    }
+    
   }, [isEditMode, step3FillDetailsFields]) 
 
   const next = async () => {

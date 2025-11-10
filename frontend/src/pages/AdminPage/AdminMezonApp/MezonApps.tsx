@@ -38,7 +38,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       search: searchQuery,
       pageSize: currentPageSize,
       pageNumber: currentPageNumber,
-      sortField: "updatedAt",
+      sortField: "createdAt",
       sortOrder: "DESC",
     });
   }
