@@ -5,7 +5,7 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotCardProps } from './BotCard.types'
-import { randomColor, getMezonInstallLink  } from '@app/utils/mezonApp'
+import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -14,12 +14,11 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import OwnerActions from '../OwnerActions/OwnerActions'
-import { MezonAppType } from '@app/enums/mezonAppType.enum'
-import { AppPricing } from '@app/enums/appPricing'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
 import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import TagPill from '@app/components/TagPill/TagPill';
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -36,7 +35,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     window.open(inviteUrl, '_blank')
-  } 
+  }
   const handleShare = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
   }
@@ -57,16 +56,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
-            {data?.type === MezonAppType.BOT ?
-              <Tag className='!border-primary-hover !text-primary-hover !bg-white'>BOT</Tag>
-              : 
-              <Tag className='!border-sky-500 !text-sky-500 !bg-white'>APP</Tag>
-            }
-            {data?.pricingTag === AppPricing.FREE ?
-              <Tag className='!border-green-500 !text-green-500 !bg-white'>FREE</Tag>
-              :
-              <Tag className='!border-purple-500 !text-purple-500 !bg-white'>PAID</Tag>
-            }
+            {data?.type && (
+              <TagPill value={data.type} />
+            )}
+            {data?.pricingTag && (
+              <TagPill value={data.pricingTag} />
+            )}
             <div className='truncate-title flex-1'>
               <style>
                 {`

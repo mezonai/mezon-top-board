@@ -9,7 +9,7 @@ const { Paragraph } = Typography
 interface Props {
     open: boolean
     isEdit: boolean
-    data?: ReviewHistoryResponse
+    data?: Partial<ReviewHistoryResponse>
     initialRemark?: string
     onClose: () => void
     onSave?: (id: string, remark: string) => Promise<void>
@@ -87,7 +87,7 @@ const ReviewHistoryModal: React.FC<Props> = ({ open, isEdit, data, initialRemark
                 contentStyle={{ backgroundColor: '#ffffff', color: '#111827' }}
             >
                 <Descriptions.Item label='Version'>
-                    {data.appVersion.version ?? '0'}
+                    {data.appVersion?.version ?? '0'}
                 </Descriptions.Item>
                 <Descriptions.Item label='App'>
                     {data.app?.name ?? '-'}
