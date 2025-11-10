@@ -514,6 +514,11 @@ export class MezonAppService {
           name: tag.name,
         }));
         mappedMezonApp.versions = entity.versions;
+        mappedMezonApp.owner = {
+          id: entity.owner.id,
+          name: entity.owner.name,
+          profileImage: entity.owner.profileImage,
+        }
         return mappedMezonApp;
       },
     );
