@@ -15,14 +15,15 @@ import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
+import { getUrlMedia } from '@app/utils/stringHelper'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
-    <ImgIcon src={src || ''} width={17} /> {prefixUrl}
+    <ImgIcon src={getUrlMedia(src!) || ''} width={17} /> {prefixUrl}
   </div>
 )
 
-const Step3FillDetails = () => {
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })

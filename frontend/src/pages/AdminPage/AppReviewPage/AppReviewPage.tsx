@@ -1,12 +1,16 @@
 import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
-import { Button, Input, Table, Tooltip, Tag, Alert } from 'antd'
+import { Button, Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { mockApps } from './mockData'
-import type { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { formatDate } from '@app/utils/date'
-import AppDetailModal from './AppDetailModal'
+import PreviewModal from '@app/components/PreviewModal/PreviewModal'
 import AppReviewModal from './AppReviewModal'
 import { AppStatus } from '@app/enums/AppStatus.enum'
+import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
+import { getUrlMedia } from '@app/utils/stringHelper'
+import { RootState } from '@app/store'
+import { useAppSelector } from '@app/store/hook'
 
 function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -15,23 +19,23 @@ function AppReviewPage() {
     const [openDetailModal, setOpenDetailModal] = useState(false)
     const [openReviewModal, setOpenReviewModal] = useState(false)
     const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
-    const [tableData, setTableData] = useState<GetMezonAppDetailsResponse[]>([])
-    const [totalCount, setTotalCount] = useState(0)
+    const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery()
+    const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin)
+    const { data: tableData } = dataAPI || { data: [] }
 
-    const fetchData = () => {
-        // TODO: replace with API fetch
-        let list = [...mockApps]
-        if (searchQuery) {
-            const q = searchQuery.toLowerCase()
-            list = list.filter(i => i.name.toLowerCase().includes(q) || (i.headline || '').toLowerCase().includes(q))
-        }
-        list.sort((a, b) => a.name.localeCompare(b.name))
-        const total = list.length
-        const start = (pageNumber - 1) * pageSize
-        const page = list.slice(start, start + pageSize)
-        setTableData(page)
-        setTotalCount(total)
+    const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery) => {
+        listAdminMezonApp({
+            search,
+            pageSize: size,
+            pageNumber: page,
+            sortField: 'updatedAt',
+            sortOrder: 'DESC',
+        })
     }
+
+    const filteredApps = useMemo(() => {
+        return (tableData || []).filter(app => app.hasNewUpdate === true);
+    }, [tableData]);
 
     const latestVersion = useMemo(() => detailAppData?.versions?.[0], [detailAppData])
 
@@ -41,7 +45,7 @@ function AppReviewPage() {
 
     const handleSearch = () => {
         setPageNumber(1)
-        fetchData()
+        fetchData(1, pageSize, searchQuery)
     }
 
     const handleView = (app: GetMezonAppDetailsResponse) => {
@@ -72,27 +76,45 @@ function AppReviewPage() {
         return <Tag>Published</Tag>
     }
 
-    const columns = [
+    const columns: ColumnsType<GetMezonAppDetailsResponse> = [
         {
-            title: 'App',
-            key: 'app',
-            render: (_: any, record: GetMezonAppDetailsResponse) => (
-                <div className='flex items-center gap-3'>
-                    <img src={record.featuredImage || '/assets/imgs/default.png'} alt={record.name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8 }} />
-                    <div className='flex flex-col'>
-                        <div className='font-medium'>{record.name}</div>
-                        <div className='text-sm text-gray-500'>{record.headline || record.description}</div>
-                    </div>
+            title: "Image",
+            dataIndex: "featuredImage",
+            key: "featuredImage",
+            render: (featuredImage: string, data: GetMezonAppDetailsResponse) => (
+                <img
+                    src={
+                        featuredImage
+                            ? getUrlMedia(featuredImage)
+                            : sampleBotImg
+                    }
+                    alt={data.name}
+                    style={{ width: 100, display: 'block', margin: '0 auto' }} />
+            ),
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text: string) => (
+                <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>
+                    {text}
                 </div>
             )
         },
         {
             title: 'Owner',
+            dataIndex: 'owner',
             key: 'owner',
-            render: (_: any, record: GetMezonAppDetailsResponse) => <div className='font-medium'>{record.owner?.name || '—'}</div>
+            render: (owner: { name: string }) => (
+                <div className='line-clamp-5 break-words max-w-[80px] 2xl:max-w-[120px]'>
+                    {owner?.name || '—'}
+                </div>
+            )
         },
         {
             title: 'Version',
+            align: 'center',
             key: 'version',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
                 const version = record.versions?.[0]
@@ -104,23 +126,29 @@ function AppReviewPage() {
             key: 'changelog',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
                 const version = record.versions?.[0]
-                return <div className='max-w-[400px] break-words whitespace-pre-wrap text-sm text-gray-700'>{version?.changelog || '-'}</div>
+                return (
+                    <Typography.Paragraph
+                        ellipsis={{ rows: 2, expandable: false }}>
+                        {version?.changelog || '-'}
+                    </Typography.Paragraph>
+                )
             }
         },
         {
             title: 'Submitted',
+            align: 'center',
             key: 'submitted',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
-                const submitted = record.updatedAt
+                const submitted = record.versions?.[0]?.updatedAt
                 return <div className='text-center'>{formatDate(submitted, 'DD-MM-YYYY')}</div>
             }
         },
         {
-            title: 'Status',
+            title: 'App Status',
+            align: 'center',
             key: 'status',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
-                const version = record.versions?.[0]
-                const status = version?.status || record.status
+                const status = record?.status
                 return <div className='text-center'>{getStatusTag(status)}</div>
             }
         },
@@ -143,11 +171,7 @@ function AppReviewPage() {
     return (
         <>
             {tableData && tableData.length > 0 && (() => {
-                const pendingCount = tableData.filter(app => {
-                    const version = app.versions?.[0]
-                    const status = version?.status || app.status
-                    return status === AppStatus.PENDING
-                }).length
+                const pendingCount = filteredApps.length;
 
                 if (pendingCount > 0) {
                     return (
@@ -159,7 +183,7 @@ function AppReviewPage() {
                             }
                             type='warning'
                             showIcon
-                            style={{ marginBottom: 16 }}
+                            style={{ marginBottom: 16, padding: 10 }}
                         />
                     )
                 }
@@ -172,30 +196,34 @@ function AppReviewPage() {
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     prefix={<SearchOutlined style={{ color: '#bbb' }} />}
                     onPressEnter={handleSearch}
-                    className='w-full'
-                    style={{ borderRadius: '8px', height: '40px' }}
+                    className='w-full rounded-[8px] h-[40px]'
                 />
-                <Button type='primary' onClick={handleSearch} icon={<SearchOutlined />}>Search</Button>
+                <Button className="w-50" size="large" type='primary' onClick={handleSearch} icon={<SearchOutlined />}>Search</Button>
             </div>
 
-            <Table
-                dataSource={tableData}
-                columns={columns}
-                rowKey='id'
-                pagination={{
-                    current: pageNumber,
-                    pageSize,
-                    total: totalCount,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['5', '10', '15'],
-                    onChange: (page, size) => {
-                        setPageNumber(page)
-                        setPageSize(size || 5)
-                    }
-                }}
-            />
+            {isLoading ? (
+                <Spin size='large' className='text-center mt-5' />
+            ) : (
+                <Table
+                    dataSource={filteredApps}
+                    columns={columns}
+                    rowKey='id'
+                    pagination={{
+                        current: pageNumber,
+                        pageSize,
+                        total: filteredApps.length,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['5', '10', '15'],
+                        onChange: (page, size) => {
+                            setPageNumber(page)
+                            setPageSize(size || 5)
+                        }
+                    }}
+                    className='cursor-pointer'
+                />
+            )}
 
-            <AppDetailModal
+            <PreviewModal
                 open={openDetailModal}
                 onClose={handleCloseModals}
                 appData={detailAppData}

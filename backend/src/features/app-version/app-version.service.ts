@@ -68,7 +68,8 @@ export class AppVersionService {
     Object.assign(mezonApp, rest);
     mezonApp.tags = tags;
     mezonApp.socialLinks = socialLinks;
-    mezonApp.status = AppStatus.APPROVED;
+    // TODO: will implement manual publish later
+    mezonApp.status = AppStatus.PUBLISHED;
     mezonApp.hasNewUpdate = false;
     mezonApp.currentVersion = version;
 

@@ -16,6 +16,10 @@ export class AppReviewResponse {
   public remark: string;
 
   @Expose()
+  @ApiProperty()
+  public isApproved: boolean;
+
+  @Expose()
   @ApiProperty({ type: () => ReviewerResponse })
   @Type(() => ReviewerResponse)
   public reviewer: ReviewerResponse;

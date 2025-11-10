@@ -77,6 +77,9 @@ export class MezonAppService {
       "socialLinks.type",
       "ratings",
       "versions",
+      "versions.tags",
+      "versions.socialLinks",
+      "versions.socialLinks.type",
     ]);
 
     if (!mezonApp) {
@@ -106,7 +109,7 @@ export class MezonAppService {
         prefixUrl: link.type.prefixUrl,
       },
     }));
-    detail.versions = mezonApp.versions
+    detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version)
 
     return new Result({
       data: detail,
@@ -214,6 +217,9 @@ export class MezonAppService {
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
+      .leftJoinAndSelect("version.tags", "versionTag")
+      .leftJoinAndSelect("version.socialLinks", "versionSocialLink")
+      .leftJoinAndSelect("versionSocialLink.type", "versionLinkType")
       .where("app.id IN (:...ids)", { ids });
 
     if (query.sortField === SortField.NAME) {
@@ -315,7 +321,7 @@ export class MezonAppService {
     if (newApp) await this.appVersionService.createVersion({
       appId: newApp.id,
       tagIds,
-      socialLinks,
+      socialLinks: links,
       ...appData,
     })
     return newApp

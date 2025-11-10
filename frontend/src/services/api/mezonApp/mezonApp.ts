@@ -261,6 +261,10 @@ export type AppVersion = {
   price?: number
   createdAt?: Date
   updatedAt?: Date
+  deletedAt?: Date
+  appId: string
+  tags: TagInMezonAppDetailResponse[]
+  socialLinks: SocialLinkInMezonAppDetailResponse[]
 }
 
 export type App = {
