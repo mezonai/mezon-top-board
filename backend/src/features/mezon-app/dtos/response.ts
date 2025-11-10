@@ -26,7 +26,6 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @ApiProperty()
   public hasNewUpdate: boolean;
 
-  // TODO: fix with exposeUnsetFields later in class-transformer
   @Expose()
   @ApiProperty({ type: () => OwnerInMezonAppDetailResponse })
   public owner: OwnerInMezonAppDetailResponse;
