@@ -1,11 +1,12 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect } from 'react'
-import { useForm, FormProvider, useFormContext } from 'react-hook-form'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { AppStatus } from '@app/enums/AppStatus.enum'
 
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
@@ -32,6 +33,8 @@ import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
+import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { AppPricing } from '@app/enums/appPricing'
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -40,11 +43,16 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
 
-  const imgUrl = botId && mezonAppDetail.featuredImage
-    ? getUrlMedia(mezonAppDetail.featuredImage)
-    : avatarBotDefault
+  const imgUrl = useMemo(() => {
+    return botId && mezonAppDetail.featuredImage
+      ? getUrlMedia(mezonAppDetail.featuredImage)
+      : avatarBotDefault
+  }, [botId, mezonAppDetail.featuredImage])
   const [avatar, setAvatar] = useState<string>(imgUrl)
- 
+  const [imgSrc, setImgSrc] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const fileRef = useRef<File | null>(null)
+
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
@@ -54,6 +62,8 @@ function NewBotPage() {
       description: '',
       prefix: '',
       tagIds: [],
+      pricingTag: AppPricing.FREE,
+      price: 0,
       supportUrl: '',
       remark: '',
       isAutoPublished: false,
@@ -63,7 +73,7 @@ function NewBotPage() {
     mode: 'onChange'
   })
 
-  const { setValue, reset, watch, trigger, handleSubmit  } = methods
+  const { setValue, reset, watch, trigger, handleSubmit } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
 
@@ -81,7 +91,7 @@ function NewBotPage() {
   useEffect(() => {
     if (isEmpty(tagList.data)) getTagList()
     getSocialLink()
-  }, [])
+  }, [getTagList, getSocialLink, tagList.data]) 
 
   useEffect(() => {
     if (!botId) {
@@ -89,40 +99,91 @@ function NewBotPage() {
       return
     }
     getMezonAppDetails({ id: botId })
-  }, [botId])
+  }, [botId, getMezonAppDetails, reset])
 
   useEffect(() => {
-    const { owner, tags, rateScore, featuredImage, status, ...rest } = mezonAppDetail
+    setAvatar(imgUrl)
+  }, [imgUrl])
+
+  useEffect(() => {
+    type Tag = { id: string };
+    type DataSource = Partial<Omit<CreateMezonAppRequest, 'tagIds'>> & {
+      id: string;
+      version: number;
+      status: AppStatus;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date | null;
+      appId: string;
+      changelog: string;
+      tags?: Tag[];
+    }
+    const { owner, tags, rateScore, featuredImage, status, currentVersion, hasNewUpdate, versions, ...rest } = mezonAppDetail
+    
+    if (!mezonAppDetail.id || !botId) {
+      return;
+    }
+
     if (mezonAppDetail && botId) {
       if (!checkOwnership(mezonAppDetail?.owner?.id)) {
         return;
       }
 
+      let versionData: DataSource;
+
+      if (hasNewUpdate && versions && versions.length > 0) {
+        versionData = versions[0] as DataSource;
+      } else if (versions && versions.length > 0) {
+        const approvedVersions = versions.filter(v => v.status === AppStatus.APPROVED);
+
+        if (approvedVersions.length > 0) {
+          versionData = approvedVersions[0] as DataSource;
+        } else {
+          versionData = versions[0] as DataSource;
+        }
+      } else {
+        versionData = { ...rest } as unknown as DataSource;
+      }
+      const { id, version, status, mezonAppId, type, createdAt, updatedAt, deletedAt, changelog, appId, tags, ...updateData } = versionData;
       reset({
-        ...rest,
-        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
-        mezonAppId: mezonAppDetail.mezonAppId,
-        type: mezonAppDetail.type
+        ...updateData,
+        featuredImage: versionData.featuredImage || '',
+        tagIds: mezonAppDetail.tags?.map((tag: Tag) => tag.id),
+        mezonAppId: mezonAppDetail.mezonAppId, 
+        type: mezonAppDetail.type 
       })
     }
-    setAvatar(imgUrl)
-  }, [mezonAppDetail])
+    
+  }, [mezonAppDetail, botId, reset])
 
-  const handleUpload = async (options: any) => {
-    const { file, onSuccess, onError } = options
+  const handleBeforeUpload = (file: File) => {
     if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!');
-      onError(new Error('Invalid file type'));
-      return;
+      toast.error('Please upload a valid image file!')
+      return false
     }
     const maxFileSize = 4 * 1024 * 1024
     if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`);
-      return ;
+      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
+      return false
     }
+
+    fileRef.current = file
+    setImgSrc(URL.createObjectURL(file))
+    setIsModalVisible(true)
+
+    return false
+  }
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false)
+    setImgSrc('')
+    fileRef.current = null
+  }
+
+  const handleModalConfirm = async (croppedFile: File) => {
     try {
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', croppedFile)
       const response = await uploadImage(formData).unwrap()
 
       if (response?.statusCode === 200) {
@@ -130,25 +191,55 @@ function NewBotPage() {
         setValue('featuredImage', response.data?.filePath)
       }
 
-      onSuccess(response, file)
       toast.success('Upload Success')
     } catch (error) {
       toast.error('Upload failed!')
-      onError(error)
+    } finally {
+      handleModalCancel()
     }
   }
-  const stepFieldMap: Record<number, (keyof CreateMezonAppRequest)[]> = {
-    0: ['type'],
-    1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'supportUrl'],
-    3: [],
-    4: []
+
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+    'name',
+    'headline',
+    'description',
+    'prefix',
+    'tagIds',
+    'pricingTag',
+    'price',
+    'supportUrl',
+    'featuredImage', 
+    'socialLinks',
+    'remark',
+    'isAutoPublished'
+  ]
+
+  type StepFieldMap = {
+    [key: number]: FieldPath<CreateMezonAppRequest>[];
   }
+
+  const stepFieldMap = useMemo((): StepFieldMap => {
+    if (isEditMode) {
+      return {
+        0: step3FillDetailsFields, 
+        1: [], 
+        2: []  
+      }
+    } else {
+      return {
+        0: ['type'],
+        1: ['mezonAppId'],
+        2: step3FillDetailsFields, 
+        3: [], 
+        4: []  
+      }
+    }
+  }, [isEditMode, step3FillDetailsFields]) 
 
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
     if (fieldsToValidate.length) {
-      const valid = await trigger(fieldsToValidate as any)
+      const valid = await trigger(fieldsToValidate)
       if (!valid) return
     }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
@@ -159,12 +250,12 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-    { title: 'Choose Type', content: <Step1ChooseType/> },
-    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')}/> },
-    { title: 'Fill Details', content: <Step3FillDetails /> },
+    { title: 'Choose Type', content: <Step1ChooseType /> },
+    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
+    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
-      content: (<Step4Review isEdit={isEditMode}/>)
+      content: (<Step4Review isEdit={isEditMode} />)
     },
     {
       title: 'Result',
@@ -173,12 +264,12 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-    { title: 'Edit Bot Info', content: <Step3FillDetails /> },
+    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
-      content: (<Step4Review isEdit={isEditMode}/>)
+      content: (<Step4Review isEdit={isEditMode} />)
     },
-    { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true}/> }
+    { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true} /> }
   ]
   const steps = isEditMode ? editSteps : createSteps
 
@@ -207,18 +298,27 @@ function NewBotPage() {
     }
   )
 
-  const SubmitForm = handleSubmit(onSubmit, (formErrors) => {
+  const SubmitForm = handleSubmit(onSubmit, () => {
     toast.error('Form validation failed!')
   })
-  
+
   return (
     <div className='pt-8 pb-12 w-[85%] m-auto'>
       <div className='flex items-center justify-between'>
         <div className='flex gap-6'>
           <div className='w-[80px] object-cover flex-shrink-0'>
-            <Upload accept={imageMimeTypes.join(',')} customRequest={handleUpload} showUploadList={false}>
+            <Upload accept={imageMimeTypes.join(',')} beforeUpload={handleBeforeUpload} showUploadList={false}>
               <MTBAvatar imgUrl={avatar} isAllowUpdate={true} isUpdatingAvatar={isUpdatingAvatar} />
             </Upload>
+            <CropImageModal
+              open={isModalVisible}
+              imgSrc={imgSrc}
+              originalFileName={fileRef.current?.name}
+              aspect={1}
+              onCancel={handleModalCancel}
+              onConfirm={handleModalConfirm}
+              parentLoading={isUpdatingAvatar}
+            />
           </div>
           <div>
             <MtbTypography variant='h4'>{nameValue || 'Name'}</MtbTypography>
@@ -233,20 +333,19 @@ function NewBotPage() {
             <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
             <div className='pt-6'>{steps[currentStep].content}</div>
             <div
-              className={`flex pt-8 ${
-                (!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
-                  ? 'justify-end'
-                  : 'justify-between'
-              }`}
+              className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
+                ? 'justify-end'
+                : 'justify-between'
+                }`}
             >
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
-                <Button color="dark" onClick={prev} >
+                <Button color="default" variant="outlined" onClick={prev} >
                   Back
                 </Button>
               )}
-              
+
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
-                <Button color="primary" variant="outlined" onClick={next}>
+                <Button variant="outlined" onClick={next}>
                   Next
                 </Button>
               )}

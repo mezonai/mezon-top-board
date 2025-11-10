@@ -34,7 +34,8 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [getMezonApp, { isError, error }] = useLazyMezonAppControllerSearchMezonAppQuery()
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const defaultSearchQuery = useMemo(() => searchParams.get('q')?.trim() || '', [searchParams.get('q')?.trim()])
+  const queryParam = searchParams.get('q');
+  const defaultSearchQuery = useMemo(() => queryParam?.trim() || '', [queryParam]);
   const defaultTagIds = useMemo(
     () => searchParams.get('tags')?.split(',').filter(Boolean) || [],
     [searchParams.get('tags')]
@@ -51,19 +52,26 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-  const [type, setType] = useState<MezonAppType>()
+  const [type, setType] = useState<MezonAppType| undefined>(defaultType)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
     getTagList()
-    if (!isInitialized && isSearchPage) {
-      setSearchQuery(defaultSearchQuery)
-      setTagIds(defaultTagIds)
-      setType(defaultType)
-      searchMezonAppList(defaultSearchQuery, defaultTagIds)
-      setIsInitialized(true)
-    }
   }, [])
+
+  useEffect(() => {
+    if (!isSearchPage) return;
+
+    setSearchQuery(defaultSearchQuery);
+    setTagIds(defaultTagIds);
+    setType(defaultType);
+
+    if (isInitialized || defaultSearchQuery || defaultTagIds.length || defaultType) {
+      searchMezonAppList(defaultSearchQuery, defaultTagIds, defaultType);
+    }
+
+    setIsInitialized(true);
+  }, [searchParams, page, botPerPage, selectedSort]);
 
   useEffect(() => {
     if (isError && error) {
@@ -191,6 +199,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               className='w-[13rem]'
               dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
               defaultValue={sortOptions[0]}
+              data-e2e="selectSortOptions"
             />
             <SingleSelect
               getPopupContainer={(trigger) => trigger.parentElement}
@@ -201,6 +210,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               className='w-[10rem] lg:w-[13rem]'
               dropDownTitle='Title'
               defaultValue={options[0]}
+              data-e2e="selectPageOptions"
             />
           </Flex>
         </Flex>

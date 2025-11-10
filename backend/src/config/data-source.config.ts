@@ -11,7 +11,7 @@ export const dataSourceOption: DataSourceOptions = {
   username: config().DB_USERNAME,
   password: config().DB_PASSWORD,
   synchronize: false,
-  logging: true,
+  logging: false,
   entities: ["dist/domain/entities/schema/*.entity.js"],
   migrations: ["dist/migrations/*.js"],
   subscribers: [],

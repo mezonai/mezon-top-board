@@ -1,5 +1,8 @@
 import Button from '@app/mtb-ui/Button'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
 import { Result } from 'antd'
+import { capitalize } from 'lodash'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 const Step5Submit = ({
@@ -12,12 +15,16 @@ const Step5Submit = ({
   botId?: string
 }) => {
   const navigate = useNavigate()
+  const { control } = useFormContext<CreateMezonAppRequest>()
+  
+  const type = useWatch({ control, name: 'type' })
+  const formattedType = capitalize(type)
 
   if (isSuccess) {
-    const title = isEdit ? 'Bot updated successfully!' : 'Bot submitted successfully!'
+    const title = isEdit ? `${formattedType} updated successfully!` : `${formattedType} submitted successfully!`
     const subTitle = isEdit
-      ? 'Your bot has been updated. You can now return to view it or go back to home.'
-      : 'Your bot has been submitted for review. You can now view it or return to homepage.'
+      ? `Your ${formattedType} has been updated. You can now return to view it or go back to home.`
+      : `Your ${formattedType} has been submitted for review. You can now view it or return to homepage.`
 
     return (
       <Result

@@ -15,6 +15,11 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import OwnerActions from '../OwnerActions/OwnerActions'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import { AppPricing } from '@app/enums/appPricing'
+import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
+import PreviewModal from '../PreviewModal/PreviewModal'
+import { useState } from 'react'
+import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -26,7 +31,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
   const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
-  
+  const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
+
   const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     window.open(inviteUrl, '_blank')
@@ -34,7 +40,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const handleShare = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
   }
-  
+
+  const handleOwnerNewVersionClick = (version?: AppVersion) => {
+    setPreviewVersion(version)
+  }
+
   return (
     <div
       className='shadow-md pb-8 pt-8 px-8 border border-gray-300 relative rounded-xl cursor-pointer'
@@ -47,7 +57,16 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
           <div className='flex flex-1 items-center'>
-            <Tag className='!border-primary-hover !text-primary-hover'>{data?.type === MezonAppType.BOT ? 'BOT' : 'APP'}</Tag>
+            {data?.type === MezonAppType.BOT ?
+              <Tag className='!border-primary-hover !text-primary-hover !bg-white'>BOT</Tag>
+              : 
+              <Tag className='!border-sky-500 !text-sky-500 !bg-white'>APP</Tag>
+            }
+            {data?.pricingTag === AppPricing.FREE ?
+              <Tag className='!border-green-500 !text-green-500 !bg-white'>FREE</Tag>
+              :
+              <Tag className='!border-purple-500 !text-purple-500 !bg-white'>PAID</Tag>
+            }
             <div className='truncate-title flex-1'>
               <style>
                 {`
@@ -70,6 +89,11 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
           <div className='flex gap-1'>
             {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
+            {userInfo?.id && data?.owner?.id === userInfo?.id && data?.hasNewUpdate && (
+              <Tag color='blue'>
+                NEW VERSION
+              </Tag>
+            )}
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
           </div>
           <div className='flex-wrap gap-2'>
@@ -81,9 +105,10 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
           <div className='sm:absolute sm:top-2 sm:right-2 flex gap-3 relative z-1'>
             {userInfo?.id && data?.owner?.id === userInfo?.id && (
-              <OwnerActions data={data} isBotCard={true} />
+              <OwnerActions data={data} isBotCard={true} onNewVersionClick={handleOwnerNewVersionClick} />
             )}
-            <Button variant='solid' size='large' onClick={handleInvite}>
+            <MessageButton data={data!} />
+            <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
               Invite
             </Button>
             <Popover
@@ -93,7 +118,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               arrow={false}
               overlayInnerStyle={{ marginTop: '8px', minWidth: '200px', maxWidth: '300px' }}
             >
-              <Button size='large' color='dark' icon={<UploadOutlined />} onClick={handleShare} />
+              <Button size='large' color='default' variant='outlined' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
           <div
@@ -110,6 +135,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
           </div>
         </div>
       </div>
+      <PreviewModal
+        open={!!previewVersion}
+        onClose={() => setPreviewVersion(undefined)}
+        appData={data!}
+        latestVersion={data?.versions?.[0]}
+      />
     </div>
   )
 }

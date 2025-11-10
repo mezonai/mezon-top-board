@@ -1,5 +1,6 @@
 import AboutPage from '@app/pages/AboutPage/AboutPage'
 import BotDetailPage from '@app/pages/BotDetailPage/BotDetailPage'
+import ConfirmSubscribePage from '@app/pages/ConfirmSubscribePage/ConfirmSubscribePage'
 import ContactUsPage from '@app/pages/ContactUsPage/ContactUsPage'
 import HomePage from '@app/pages/HomePage/HomePage'
 import LoginPage from '@app/pages/LoginPage/LoginPage'
@@ -10,6 +11,7 @@ import ProfilePage from '@app/pages/ProfilePage/ProfilePage'
 import SettingPage from '@app/pages/ProfilePage/SettingPage'
 import SearchPage from '@app/pages/SearchPage/SearchPage'
 import TermsPage from '@app/pages/TermsPage/TermsPage'
+import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
 
 export const routePaths: RoutePath[] = [
@@ -95,7 +97,7 @@ export const routePaths: RoutePath[] = [
       {
         strLabel:'How to use',
         isExternal: true,
-        path: 'https://drive.google.com/file/d/14vd5T8JxT96bVG2ZRjO5Q8Ouo57ZF39F/view',
+        path: '/how-to-use',
         element: undefined,
       },
       {
@@ -127,6 +129,22 @@ export const routePaths: RoutePath[] = [
     path: 'login',
     element: <LoginPage />,
     strLabel: 'Login',
+    isShowMenu: false,
+    requireAuth: false,
+  },
+  {
+    index: false,
+    path: 'confirm-subscribe',
+    element: <ConfirmSubscribePage />,
+    strLabel: 'Confirm Subscription',
+    isShowMenu: false,
+    requireAuth: false,
+  },
+  {
+    index: false,
+    path: 'unsubscribe',
+    element: <UnsubscribePage />,
+    strLabel: 'Unsubscription',
     isShowMenu: false,
     requireAuth: false,
   },

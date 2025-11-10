@@ -11,18 +11,27 @@ import { TypographyStyle } from '@app/enums/typography.enum'
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
-import { useUserControllerSelfUpdateUserMutation, useUserControllerSyncMezonMutation } from '@app/services/api/user/user'
+import {
+  useUserControllerSelfUpdateUserMutation,
+  useUserControllerSyncMezonMutation,
+} from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Button, Popconfirm, Upload } from 'antd'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
+import { useState, useRef } from 'react'
+import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
+
+  const [imgSrc, setImgSrc] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const fileRef = useRef<File | null>(null)
 
   const cardInfoLink = [
     {
@@ -51,21 +60,8 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   ]
 
-  const handleUpload = async (options: any) => {
+  const handleUpload = async (file: File) => {
     if (isPublic) return
-
-    const { file, onSuccess, onError } = options
-    const maxFileSize = 4 * 1024 * 1024
-    if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`);
-      return ;
-    }
-    
-    if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!');
-      onError(new Error('Invalid file type'));
-      return;
-    }
 
     try {
       const formData = new FormData()
@@ -73,14 +69,51 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       const response = await uploadImage(formData).unwrap()
 
       if (response?.statusCode === 200) {
-        await selfUpdate({ selfUpdateUserRequest: { profileImage: response?.data?.filePath } }).unwrap()
+        await selfUpdate({
+          selfUpdateUserRequest: {
+            profileImage: response?.data?.filePath
+          }
+        }).unwrap()
       }
 
-      onSuccess(response, file)
       toast.success('Upload Success')
     } catch (error) {
       toast.error('Upload failed!')
-      onError(error)
+    }
+  }
+
+  const handleBeforeUpload = (file: File) => {
+    if (isPublic) return false
+
+    const maxFileSize = 4 * 1024 * 1024
+    if (file.size > maxFileSize) {
+      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
+      return false
+    }
+
+    if (!imageMimeTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file!')
+      return false
+    }
+
+    fileRef.current = file
+    setImgSrc(URL.createObjectURL(file))
+    setIsModalVisible(true)
+    return false
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setImgSrc('')
+    fileRef.current = null
+  }
+
+  const handleModalConfirm = async (croppedFile: File) => {
+    try {
+      await handleUpload(croppedFile)
+    } catch (err) {
+    } finally {
+      handleCancel()
     }
   }
 
@@ -100,8 +133,18 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
       <div className='flex items-center gap-4 w-full max-lg:flex-col max-2xl:flex-col'>
         <div className='flex-shrink-0'>
-          <Upload accept={imageMimeTypes.join(',')} disabled={isPublic} listType='picture-circle' customRequest={handleUpload} showUploadList={false}>
-            <MTBAvatar imgUrl={imgUrl} isAllowUpdate={!isPublic} isUpdatingAvatar={isUpdatingAvatar} />
+          <Upload
+            accept={imageMimeTypes.join(',')}
+            disabled={isPublic}
+            listType='picture-circle'
+            beforeUpload={handleBeforeUpload}
+            showUploadList={false}
+          >
+            <MTBAvatar
+              imgUrl={imgUrl}
+              isAllowUpdate={!isPublic}
+              isUpdatingAvatar={isUpdatingAvatar}
+            />
           </Upload>
         </div>
         <div className='text-lg font-semibold break-words max-w-full flex-1 min-w-0'>{userInfo?.name}</div>
@@ -146,6 +189,15 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           </Button>
         </Popconfirm>
       }
+      <CropImageModal
+        open={isModalVisible}
+        imgSrc={imgSrc}
+        originalFileName={fileRef.current?.name}
+        aspect={1}
+        onCancel={handleCancel}
+        onConfirm={handleModalConfirm}
+        parentLoading={isUpdatingAvatar}
+      />
     </div>
   )
 }

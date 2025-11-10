@@ -1,28 +1,23 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 import { AppStatus } from "@domain/common/enum/appStatus";
-import { Link, AppReviewHistory, Rating, Tag, User } from "@domain/entities";
+import { Link, AppReviewHistory, Rating, Tag, User, AppVersion } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { AppPricing } from "@domain/common/enum/appPricing";
+import { BaseApp } from "@domain/entities/base/baseApp.entity";
 
 @Entity()
-export class App extends BaseSoftDelete {
-    @Column()
-    public name: string;
-
+export class App extends BaseApp {
     @Column()
     public ownerId: string;
 
-    @Column({
-        type: "enum",
-        enum: AppStatus,
-        default: AppStatus.PENDING,
-    })
-    public status: AppStatus;
+    @Column({ type: "integer", default: 1 })
+    public currentVersion: number;
 
     @Column({ default: false })
-    public isAutoPublished: boolean;
+    public hasNewUpdate: boolean;
 
     @Column({ nullable: true })
     public mezonAppId: string;
@@ -33,24 +28,6 @@ export class App extends BaseSoftDelete {
         default: MezonAppType.BOT,
     })
     public type: MezonAppType;
-
-    @Column({ nullable: true })
-    public headline: string;
-
-    @Column({ nullable: true })
-    public description: string;
-
-    @Column({ nullable: true })
-    public prefix: string;
-
-    @Column({ nullable: true })
-    public featuredImage: string;
-
-    @Column({ nullable: true })
-    public supportUrl: string;
-
-    @Column({ nullable: true })
-    public remark: string;
 
     @ManyToMany(() => Tag, (tag) => tag.apps)
     @JoinTable()
@@ -69,4 +46,7 @@ export class App extends BaseSoftDelete {
     @ManyToOne(() => User, (user) => user.apps, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     owner: User;
+
+    @OneToMany(() => AppVersion, (version) => version.app)
+    public versions: AppVersion[];
 }

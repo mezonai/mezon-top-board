@@ -4,10 +4,12 @@ import { ratingExtraReducers } from './extraReducer';
 
 export interface IRatingStore {
   ratings: RatingControllerGetRatingByAppApiResponse;
+  allRatings: RatingControllerGetRatingByAppApiResponse
 }
 
 const initialState: IRatingStore = {
-  ratings: {} as RatingControllerGetRatingByAppApiResponse
+  ratings: {} as RatingControllerGetRatingByAppApiResponse,
+  allRatings: {} as RatingControllerGetRatingByAppApiResponse
 }
 
 const ratingSlice = createSlice({

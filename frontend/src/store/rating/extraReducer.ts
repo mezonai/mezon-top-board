@@ -3,6 +3,9 @@ import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const ratingExtraReducers = (builder: ActionReducerMapBuilder<any>) => {
   builder
+    .addMatcher(ratingService.endpoints.ratingControllerGetAllRatingsByApp.matchFulfilled, (state, { payload }) => {
+      state.allRatings = payload
+    })
     .addMatcher(ratingService.endpoints.ratingControllerGetRatingsByApp.matchFulfilled, (state, { payload }) => {
       const existingRatings = state.ratings?.data ?? []
       const isFirstPage = payload.pageNumber === 1
@@ -23,5 +26,6 @@ export const ratingExtraReducers = (builder: ActionReducerMapBuilder<any>) => {
     })
     .addMatcher(ratingService.endpoints.ratingControllerCreateRating.matchFulfilled, (state, { payload }) => {
       state.ratings.data.unshift(payload)
+      state.allRatings.data.unshift(payload)
     })
 }

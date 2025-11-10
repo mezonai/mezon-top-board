@@ -36,13 +36,14 @@ export const useOnSubmitBotForm = (
       )
 
       const updatedDescription = doc.body.innerHTML
-      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link: any) => ({
-        url: link.url,
+      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link) => ({
+        url: link?.url,
         linkTypeId: link.linkTypeId
       }))
 
       const payload: CreateMezonAppRequest = {
         ...formData,
+        price: Number(formData.price),
         description: updatedDescription,
         socialLinks: formattedLinks,
         mezonAppId: formData.mezonAppId,
@@ -51,17 +52,16 @@ export const useOnSubmitBotForm = (
 
       if (!isEdit) {
         const result = await addBot({ createMezonAppRequest: payload }).unwrap()
-        toast.success('Bot created successfully!')
+        toast.success(`${formData.type} created successfully!`)
         result.id && onSuccess(result.id)
       } else if (botId) {
         const result = await updateBot({
           updateMezonAppRequest: {
             ...payload,
             id: botId,
-            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId
           }
         }).unwrap()
-        toast.success('Bot updated successfully!')
+        toast.success(`${formData.type} updated successfully!`)
         result.id && onSuccess(result.id)
       }
     } catch (err: unknown) {

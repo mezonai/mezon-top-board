@@ -20,13 +20,16 @@ import {
   IsUrl,
   ValidateIf,
   IsEnum,
+  IsNumber,
 } from "class-validator";
 
 import {
   PaginationQuery,
   RequestWithId,
 } from "@domain/common/dtos/request.dto";
+import { AppPricing } from "@domain/common/enum/appPricing";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { CreateAppInfoRequest } from "@domain/common/dtos/appInfo.dto";
 
 export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({
@@ -39,6 +42,16 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @IsOptional()
   tags: string[];
 
+  @ApiPropertyOptional({ enum: AppPricing })
+  @IsOptional()
+  @IsEnum(AppPricing, { message: "Invalid pricing tag" })
+  pricingTag: AppPricing;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  price: number;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
@@ -49,29 +62,7 @@ export class SearchMezonAppRequest extends PaginationQuery {
   type?: MezonAppType;
 }
 
-class SocialLinkDto {
-  @ApiProperty()
-  @IsString()
-  url: string;
-
-  @ApiProperty()
-  @IsUUID()
-  linkTypeId: string;
-}
-
-export class CreateMezonAppRequest {
-  @ApiProperty()
-  @IsString()
-  @MinLength(1, { message: "Name must be at least 1 characters" })
-  @MaxLength(64, { message: "Name must not exceed 64 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  name: string;
-
-  @ApiPropertyOptional()
-  @IsBoolean()
-  @IsOptional()
-  isAutoPublished?: boolean;
-
+export class CreateMezonAppRequest extends CreateAppInfoRequest {
   @ApiProperty({ enum: MezonAppType })
   @IsEnum(MezonAppType, { message: "Type must be either 'app' or 'bot'" })
   type: MezonAppType;
@@ -80,57 +71,6 @@ export class CreateMezonAppRequest {
   @MaxLength(2042, { message: 'Bot ID must not exceed 2042 characters' })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   mezonAppId: string;
- 
-  @ApiPropertyOptional()
-  @IsString()
-  @MinLength(50, { message: "Headline must be at least 50 characters" })
-  @MaxLength(510, { message: "Headline must not exceed 510 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  headline?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  description?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @MinLength(1, { message: "Prefix must be at least 1 character" })
-  @MaxLength(10, { message: "Prefix must not exceed 10 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  prefix?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  featuredImage?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  @ValidateIf(o => o.supportUrl !== '' && o.supportUrl !== null)
-  @IsUrl(undefined, { message: "Support URL Invalid URL format" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  supportUrl?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  remark?: string;
- 
-  @ApiPropertyOptional()
-  @IsArray()
-  @ArrayMinSize(1, { message: "At least one tag is required" })
-  @IsString({ each: true })
-  tagIds: string[];
-
-  @ApiPropertyOptional({ type: [SocialLinkDto] })
-  @IsArray()
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => SocialLinkDto)
-  socialLinks?: SocialLinkDto[];
 }
 
 export class UpdateMezonAppRequest extends IntersectionType(
