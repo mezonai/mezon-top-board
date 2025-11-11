@@ -1,6 +1,22 @@
-import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
-import { EmailSubscriptionStatus } from '@app/enums/subscribe'
+import type {
+  EmailSubscribeControllerSendConfirmMailApiResponse,
+  EmailSubscribeControllerSendConfirmMailApiArg,
+  EmailSubscribeControllerGetAllSubscribersApiResponse,
+  EmailSubscribeControllerGetAllSubscribersApiArg,
+  EmailSubscribeControllerConfirmSubscribeApiResponse,
+  EmailSubscribeControllerConfirmSubscribeApiArg,
+  EmailSubscribeControllerUnsubscribeApiResponse,
+  EmailSubscribeControllerUnsubscribeApiArg,
+  EmailSubscribeControllerSearchSubscriberApiResponse,
+  EmailSubscribeControllerSearchSubscriberApiArg,
+  EmailSubscribeControllerUpdateSubscriberApiResponse,
+  EmailSubscribeControllerUpdateSubscriberApiArg,
+  EmailSubscribeControllerReSubscribeApiResponse,
+  EmailSubscribeControllerReSubscribeApiArg,
+  EmailSubscribeControllerDeleteApiResponse,
+  EmailSubscribeControllerDeleteApiArg
+} from './emailSubscribe.types'
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -63,50 +79,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as emailSubscribeService }
-export type EmailSubscribeControllerSendConfirmMailApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerSendConfirmMailApiArg = { email: string }
-
-export type EmailSubscribeControllerGetAllSubscribersApiResponse = HttpResponse<EmailSubscriber[]>
-export type EmailSubscribeControllerGetAllSubscribersApiArg = void
-
-export type EmailSubscribeControllerConfirmSubscribeApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerConfirmSubscribeApiArg = void
-
-export type EmailSubscribeControllerUnsubscribeApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerUnsubscribeApiArg = void
-
-export type EmailSubscribeControllerSearchSubscriberApiResponse = HttpResponse<EmailSubscriber[]>
-export type EmailSubscribeControllerSearchSubscriberApiArg = {
-  search?: string
-  pageSize: number
-  pageNumber: number
-}
-
-export type EmailSubscribeControllerUpdateSubscriberApiResponse = HttpResponse<{ message: string, data: EmailSubscriber }>
-export type EmailSubscribeControllerUpdateSubscriberApiArg = {
-  id: string
-  updateSubscriptionRequest: {
-    status: EmailSubscriptionStatus
-  }
-}
-
-export type EmailSubscribeControllerReSubscribeApiResponse = HttpResponse<{ message: string, data: EmailSubscriber }>
-export type EmailSubscribeControllerReSubscribeApiArg = {
-  updateSubscriptionRequest: {
-    status: EmailSubscriptionStatus
-  }
-}
-
-export type EmailSubscribeControllerDeleteApiResponse = HttpResponse<{ message: string }>
-export type EmailSubscribeControllerDeleteApiArg = {
-  id: string
-}
-
-export type EmailSubscriber = {
-  id: string
-  email: string
-  status: EmailSubscriptionStatus
-}
 export const {
   useEmailSubscribeControllerSendConfirmMailMutation,
   useEmailSubscribeControllerGetAllSubscribersQuery,

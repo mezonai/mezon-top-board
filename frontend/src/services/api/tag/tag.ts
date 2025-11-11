@@ -1,5 +1,17 @@
-import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
+import type {
+  TagControllerGetTagsApiResponse,
+  TagControllerGetTagsApiArg,
+  TagControllerSearchTagsApiResponse,
+  TagControllerSearchTagsApiArg,
+  TagControllerCreateTagApiResponse,
+  TagControllerCreateTagApiArg,
+  TagControllerUpdateTagApiResponse,
+  TagControllerUpdateTagApiArg,
+  TagControllerDeleteTagApiResponse,
+  TagControllerDeleteTagApiArg
+} from './tag.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     tagControllerGetTags: build.query<TagControllerGetTagsApiResponse, TagControllerGetTagsApiArg>({
@@ -36,55 +48,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as tagService }
-export type TagControllerGetTagsApiResponse = HttpResponse<TagResponse[]>
-export type TagControllerGetTagsApiArg = void
-
-export type TagControllerCreateTagApiResponse = HttpResponse<TagResponse>
-export type TagControllerCreateTagApiArg = {
-  createTagRequest: CreateTagRequest
-}
-
-export type TagControllerUpdateTagApiResponse = HttpResponse<TagResponse>
-export type TagControllerUpdateTagApiArg = {
-  updateTagRequest: UpdateTagRequest
-}
-
-export type TagControllerDeleteTagApiResponse = HttpResponse<CreateTagRequest>
-export type TagControllerDeleteTagApiArg = {
-  requestWithId: RequestWithId
-}
-
-export type TagControllerSearchTagsApiResponse = HttpResponse<TagResponse[]>
-export type TagControllerSearchTagsApiArg = {
-  search?: string
-  tags?: string[]
-  pageSize: number
-  pageNumber: number
-  sortField?: string
-  sortOrder?: string
-}
-
-export type TagResponse = {
-  id: string
-  name: string
-  slug: string
-  botCount: number
-}
-
-export type CreateTagRequest = {
-  name: string
-  slug: string
-}
-
-export type UpdateTagRequest = {
-  id: string
-  name?: string
-  slug?: string
-}
-
-export type RequestWithId = {
-  id: string
-}
 
 export const {
   useTagControllerGetTagsQuery,
