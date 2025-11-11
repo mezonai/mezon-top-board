@@ -1,6 +1,6 @@
 import { Steps, Upload } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
@@ -16,7 +16,10 @@ import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
-import { CreateMezonAppRequest, useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
+import { 
+  CreateMezonAppRequest, 
+  useLazyMezonAppControllerGetMezonAppDetailQuery, 
+} from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
@@ -34,6 +37,9 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
+import { mapDetailToFormData } from './helpers'
+
+type StepFieldMap = {[key: number]: FieldPath<CreateMezonAppRequest>[]}
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -42,9 +48,11 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
 
-  const imgUrl = botId && mezonAppDetail.featuredImage
-    ? getUrlMedia(mezonAppDetail.featuredImage)
-    : avatarBotDefault
+  const imgUrl = useMemo(() => {
+    return botId && mezonAppDetail.featuredImage
+      ? getUrlMedia(mezonAppDetail.featuredImage)
+      : avatarBotDefault
+  }, [botId, mezonAppDetail.featuredImage])
   const [avatar, setAvatar] = useState<string>(imgUrl)
   const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -63,7 +71,8 @@ function NewBotPage() {
       price: 0,
       supportUrl: '',
       remark: '',
-      isAutoPublished: false,
+      //TODO: isAutoPublished will be implemented later
+      isAutoPublished: true,
       socialLinks: []
     },
     resolver: yupResolver(ADD_BOT_SCHEMA),
@@ -88,7 +97,7 @@ function NewBotPage() {
   useEffect(() => {
     if (isEmpty(tagList.data)) getTagList()
     getSocialLink()
-  }, [])
+  }, [getTagList, getSocialLink, tagList.data]) 
 
   useEffect(() => {
     if (!botId) {
@@ -96,24 +105,24 @@ function NewBotPage() {
       return
     }
     getMezonAppDetails({ id: botId })
-  }, [botId])
+  }, [botId, getMezonAppDetails, reset])
 
   useEffect(() => {
-    const { owner, tags, rateScore, featuredImage, status, ...rest } = mezonAppDetail
-    if (mezonAppDetail && botId) {
-      if (!checkOwnership(mezonAppDetail?.owner?.id)) {
-        return;
-      }
-
-      reset({
-        ...rest,
-        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
-        mezonAppId: mezonAppDetail.mezonAppId,
-        type: mezonAppDetail.type
-      })
-    }
     setAvatar(imgUrl)
-  }, [mezonAppDetail])
+  }, [imgUrl])
+
+  useEffect(() => {
+    if (!mezonAppDetail.id || !botId) {
+      return
+    }
+
+    if (!checkOwnership(mezonAppDetail.owner?.id)) {
+      return
+    }
+
+    const formData = mapDetailToFormData(mezonAppDetail)
+    reset(formData)
+  }, [mezonAppDetail.id, botId, reset])
 
   const handleBeforeUpload = (file: File) => {
     if (!imageMimeTypes.includes(file.type)) {
@@ -157,13 +166,39 @@ function NewBotPage() {
       handleModalCancel()
     }
   }
-  const stepFieldMap: Record<number, FieldPath<CreateMezonAppRequest>[]> = {
-    0: ['type'],
-    1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
-    3: [],
-    4: []
-  }
+
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+    'name',
+    'headline',
+    'description',
+    'prefix',
+    'tagIds',
+    'pricingTag',
+    'price',
+    'supportUrl',
+    'featuredImage', 
+    'socialLinks',
+    'remark',
+    'isAutoPublished'
+  ]
+
+  const stepFieldMap = useMemo((): StepFieldMap => {
+    if (isEditMode) {
+      return {
+        0: step3FillDetailsFields, 
+        1: [], 
+        2: []  
+      }
+    } 
+      return {
+        0: ['type'],
+        1: ['mezonAppId'],
+        2: step3FillDetailsFields, 
+        3: [], 
+        4: []  
+      }
+    
+  }, [isEditMode, step3FillDetailsFields]) 
 
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
@@ -181,7 +216,7 @@ function NewBotPage() {
   const createSteps = [
     { title: 'Choose Type', content: <Step1ChooseType /> },
     { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-    { title: 'Fill Details', content: <Step3FillDetails /> },
+    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -193,7 +228,7 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-    { title: 'Edit Bot Info', content: <Step3FillDetails /> },
+    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)

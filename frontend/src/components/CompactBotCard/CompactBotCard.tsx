@@ -4,12 +4,16 @@ import { ICompactBotCardProps } from '@app/components/BotCard/BotCard.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
 import OwnerActions from '../OwnerActions/OwnerActions'
+import { useState } from 'react'
+import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import PreviewModal from '../PreviewModal/PreviewModal'
 
 function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardProps) {
   const navigate = useNavigate()
+  const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
 
   const handleNavigateDetail = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (isDragging) {
+    if (isDragging || previewVersion) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -20,6 +24,9 @@ function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardPr
   }
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
 
+  const handleOwnerNewVersionClick = (version?: AppVersion) => {
+    setPreviewVersion(version)
+  }
   return (
     <div className='shadow-sm rounded-2xl p-4 bg-white cursor-pointer relative z-1' onClick={handleNavigateDetail}>
       <div className='relative'>
@@ -27,7 +34,7 @@ function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardPr
           <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full' width={'100%'} />
         </div>
         {!isPublic && (
-          <OwnerActions data={data} />
+          <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
         )}
       </div>
       <div className='pt-3 pb-3 font-black truncate'>{data?.name || 'Name'}</div>
@@ -39,6 +46,12 @@ function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardPr
           <RiseOutlined /> 841,999
         </p>
       </div>
+      <PreviewModal
+        open={!!previewVersion}
+        onClose={() => setPreviewVersion(undefined)}
+        appData={data}
+        latestVersion={previewVersion}
+      />
     </div>
   )
 }
