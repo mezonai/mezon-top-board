@@ -7,6 +7,8 @@ import OwnerActions from '../OwnerActions/OwnerActions'
 import { useState } from 'react'
 import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
 import PreviewModal from '../PreviewModal/PreviewModal'
+import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
+import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 
 function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardProps) {
   const navigate = useNavigate()
@@ -29,6 +31,7 @@ function CompactBotCard({ data, isPublic = true, isDragging }: ICompactBotCardPr
   }
   return (
     <div className='shadow-sm rounded-2xl p-4 bg-white cursor-pointer relative z-1' onClick={handleNavigateDetail}>
+      <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)}/>
       <div className='relative'>
         <div className='w-20 m-auto'>
           <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full' width={'100%'} />
