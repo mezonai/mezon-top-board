@@ -27,7 +27,10 @@ export class FillDataToAppVersion1761816888104 implements MigrationInterface {
             "id" AS "appId",
             1 AS "version",
             "name",
-            "status"::text::app_version_status_enum,
+            (CASE 
+                WHEN "status"::text = '2' THEN '1'
+                ELSE "status"::text
+            END)::app_version_status_enum AS "status",
             "headline",
             "description",
             "prefix",
