@@ -42,7 +42,7 @@ const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonApp
     remark: remark,
     // TODO: isAutoPublished will be implemented later
     isAutoPublished: true,
-    tagIds: detail.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],
+    tagIds: dataSource.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],
     mezonAppId: detail.mezonAppId || '',
     type: detail.type
   }
