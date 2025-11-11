@@ -1,6 +1,19 @@
-import { RepeatInterval } from '@app/enums/subscribe'
 import { api } from '../../apiInstance'
-import { HttpResponse } from '@app/types/API.types'
+import type {
+  MailTemplateControllerCreateMailApiResponse,
+  MailTemplateControllerCreateMailApiArg,
+  MailTemplateControllerGetAllMailsApiResponse,
+  MailTemplateControllerGetAllMailsApiArg,
+  MailTemplateControllerGetMailsSearchApiResponse,
+  MailTemplateControllerGetMailsSearchApiArg,
+  MailTemplateControllerGetOneMailApiResponse,
+  MailTemplateControllerGetOneMailApiArg,
+  MailTemplateControllerUpdateMailApiResponse,
+  MailTemplateControllerUpdateMailApiArg,
+  MailTemplateControllerDeleteMailApiResponse,
+  MailTemplateControllerDeleteMailApiArg
+} from './marketingMail.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     mailTemplateControllerCreateMail: build.mutation<
@@ -50,49 +63,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as marketingMailService }
-export type MailTemplateControllerCreateMailApiResponse = HttpResponse<MailTemplate>
-export type MailTemplateControllerCreateMailApiArg = {
-  createMailTemplateRequest: CreateMailTemplateRequest
-}
 
-export type MailTemplateControllerGetAllMailsApiResponse = HttpResponse<MailTemplate[]>
-export type MailTemplateControllerGetAllMailsApiArg = void
-
-export type MailTemplateControllerGetMailsSearchApiResponse = HttpResponse<MailTemplate[]>
-export type MailTemplateControllerGetMailsSearchApiArg = {
-  search?: string
-  pageSize: number
-  pageNumber: number
-}
-export type MailTemplateControllerGetOneMailApiResponse = HttpResponse<MailTemplate>
-export type MailTemplateControllerGetOneMailApiArg = {
-  id: string
-}
-export type MailTemplateControllerUpdateMailApiResponse = HttpResponse<MailTemplate>
-export type MailTemplateControllerUpdateMailApiArg = {
-  id: string
-  updateMailRequest: Partial<CreateMailTemplateRequest>
-}
-export type MailTemplateControllerDeleteMailApiResponse = HttpResponse<{ message: string }>
-export type MailTemplateControllerDeleteMailApiArg = {
-  id: string
-}
-export type CreateMailTemplateRequest = {
-  subject: string
-  content: string
-  scheduledAt: Date
-  isRepeatable: boolean
-  repeatInterval?: RepeatInterval
-}
-
-export type MailTemplate = {
-  id: string
-  subject: string
-  content: string
-  scheduledAt: Date
-  isRepeatable: boolean
-  repeatInterval?: RepeatInterval
-}
 export const {
   useMailTemplateControllerCreateMailMutation,
   useMailTemplateControllerGetAllMailsQuery,
