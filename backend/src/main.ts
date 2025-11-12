@@ -9,6 +9,8 @@ import { configHbsPartials } from "@config/hbs";
 import { configSwagger } from "@config/swagger.config";
 
 import { AppModule } from "./app.module";
+import { APP_CONSTANTS } from "@domain/common/constants/constants";
+import { BotGateway } from "@gateway/bot.gateway";
 
 configHbsPartials();
 
@@ -27,6 +29,14 @@ async function bootstrap() {
   );
   configSwagger(app);
   configStaticFiles(app);
+
+  app.enableCors({
+    origin: APP_CONSTANTS.HTTP.CORS.ORIGIN,
+    methods: APP_CONSTANTS.HTTP.CORS.METHODS,
+  });
+
+  const bot = app.get(BotGateway);
+  bot.initEvent();
 
   await app.listen(config().PORT);
   console.log(`Server is running on http://localhost:${config().PORT}/api`);

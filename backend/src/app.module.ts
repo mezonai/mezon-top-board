@@ -25,6 +25,8 @@ import { UserModule } from "@features/user/user.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
 
 @Module({
   imports: [
@@ -57,6 +59,10 @@ import { LoggerModule } from "@libs/logger";
       },
     }),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
+    MezonModule.forRootAsync({
+      imports: [ConfigModule],
+    }),
     LoggerModule,
     MediaModule,
     MezonAppModule,

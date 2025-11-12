@@ -23,6 +23,7 @@ import {
   UpdateAppReviewRequest,
 } from "./dtos/request";
 import { AppReviewResponse } from "./dtos/response";
+import { MezonClientService } from "@features/mezon-noti-bot/mezon-client.service";
 
 @Injectable()
 export class ReviewHistoryService {
@@ -35,6 +36,7 @@ export class ReviewHistoryService {
   constructor(
     private manager: EntityManager,
     private readonly appVersionService: AppVersionService,
+    private readonly mezonClientService: MezonClientService
   ) {
     this.appRepository = new GenericRepository(App, manager);
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
@@ -68,6 +70,20 @@ export class ReviewHistoryService {
       appVersionId: mezonAppVersion.id,
       reviewerId: reviewer.id,
     });
+
+    if (mezonApp.ownerId) {
+      const text =`Your ${mezonApp.type} **${mezonApp.name}** version ${mezonAppVersion.version} ${body.isApproved ? 'has been APPROVED' : 'has been REJECTED'} by ${reviewer.name}.`
+      const user = await this.userRepository.findById(mezonApp.ownerId);
+      await this.mezonClientService.sendMessageToUser({
+        userId: user.mezonUserId,
+        textContent: text,
+        messOptions: {
+          mention_everyone: false,
+          anonymous_message: false,
+        },
+      });
+    }
+
     return new Result({
       data: Mapper(AppReviewResponse, data),
     });
