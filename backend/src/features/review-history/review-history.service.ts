@@ -24,6 +24,7 @@ import {
 } from "./dtos/request";
 import { AppReviewResponse } from "./dtos/response";
 import { MezonClientService } from "@features/mezon-noti-bot/mezon-client.service";
+import { EMarkdownType } from "mezon-sdk";
 
 @Injectable()
 export class ReviewHistoryService {
@@ -72,12 +73,17 @@ export class ReviewHistoryService {
     });
 
     if (mezonApp.ownerId) {
-      const text =`Your ${mezonApp.type} **${mezonApp.name}** version ${mezonAppVersion.version} ${body.isApproved ? 'has been APPROVED' : 'has been REJECTED'} by ${reviewer.name}.`
       const user = await this.userRepository.findById(mezonApp.ownerId);
+      const statusText = body.isApproved ? "APPROVED" : "REJECTED";
+      
+      const text =`Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+
       await this.mezonClientService.sendMessageToUser({
         userId: user.mezonUserId,
         textContent: text,
         messOptions: {
+          mk: [{ s: text.indexOf(mezonApp.name), e: text.indexOf(mezonApp.name) + mezonApp.name.length, type: EMarkdownType.BOLD },
+               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
           mention_everyone: false,
           anonymous_message: false,
         },
