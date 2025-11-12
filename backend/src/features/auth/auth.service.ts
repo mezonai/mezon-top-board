@@ -54,7 +54,7 @@ export class AuthService {
             willSyncFromMezon: false,
             mezonUserId: oryInfo.user_id
           });
-        }else{
+        } else {
           await this.userRepository.update(user.id, {
             mezonUserId: oryInfo.user_id
           });
