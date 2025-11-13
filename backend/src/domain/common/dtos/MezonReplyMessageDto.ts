@@ -4,6 +4,5 @@ export interface ReplyMezonMessage {
   messOptions?: {
     [x: string]: any;
   };
-  avatar?: string;
   code?: number;
 }
