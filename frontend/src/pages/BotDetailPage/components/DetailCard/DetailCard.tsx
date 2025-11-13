@@ -8,6 +8,7 @@ import { IMezonAppStore } from '@app/store/mezonApp'
 import { IUserStore } from '@app/store/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
+import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -39,7 +40,7 @@ function DetailCard() {
               </a>
             </MtbTypography>
           )}
-          {mezonAppDetail?.socialLinks?.map((link) => (
+          {mezonAppDetail?.socialLinks?.map((link: SocialLinkInMezonAppDetailResponse) => (
             <MtbTypography key={link.id} variant='h5' weight='normal' label={<ImgIcon src={getUrlMedia(link.type.icon)} width={17} />}>
               <a href={`${link.type.prefixUrl}${link.url}`} target='_blank' rel='noopener noreferrer' className='!text-black'>
                 {link.type.prefixUrl}{link.url}
@@ -53,7 +54,7 @@ function DetailCard() {
           Categories
         </MtbTypography>
         <div className='pt-1'>
-          {mezonAppDetail?.tags?.map((tag) => (
+          {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
             <Tag key={tag.id} className='!cursor-pointer'>
               {tag?.name}
             </Tag>

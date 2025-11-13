@@ -12,9 +12,7 @@ const ConfirmSubscribePage = () => {
 
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
 
-  const { data, refetch } = useEmailSubscribeControllerConfirmSubscribeQuery({ email: userInfo?.email! }, {
-    skip: !userInfo?.email,
-  });
+  const { data, refetch } = useEmailSubscribeControllerConfirmSubscribeQuery();
 
   useEffect(() => {
     if (userInfo?.email) {

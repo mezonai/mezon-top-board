@@ -1,4 +1,4 @@
-import { LinkTypeControllerGetAllLinksApiResponse } from '@app/services/api/linkType/linkType'
+import { LinkTypeControllerGetAllLinksApiResponse } from '@app/services/api/linkType/linkType.types'
 import { createSlice } from '@reduxjs/toolkit'
 import { linkTypeExtraReducers } from './extraReducer'
 

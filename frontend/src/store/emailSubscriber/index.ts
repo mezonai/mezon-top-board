@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { EmailSubscribeControllerGetAllSubscriberResponse, EmailSubscriberControllerSearchEmailSubscribersApiResponse } from '@app/services/api/emailSubscriber/emailSubscriber'
+import { EmailSubscribeControllerGetAllSubscribersApiResponse, EmailSubscribeControllerSearchSubscriberApiResponse } from '@app/services/api/emailSubscribe/emailSubscribe.types'
 
 export interface IEmailSubscriberStore {
-    subscriberList: EmailSubscribeControllerGetAllSubscriberResponse
-    searchSubscriberList: EmailSubscriberControllerSearchEmailSubscribersApiResponse
+    subscriberList: EmailSubscribeControllerGetAllSubscribersApiResponse
+    searchSubscriberList: EmailSubscribeControllerSearchSubscriberApiResponse
 }
 
 const initialState: IEmailSubscriberStore = {
-    subscriberList: {} as EmailSubscribeControllerGetAllSubscriberResponse,
-    searchSubscriberList: {} as EmailSubscriberControllerSearchEmailSubscribersApiResponse
+    subscriberList: {} as EmailSubscribeControllerGetAllSubscribersApiResponse,
+    searchSubscriberList: {} as EmailSubscribeControllerSearchSubscriberApiResponse
 }
 
 const emailSubscriberSlice = createSlice({

@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
@@ -217,7 +218,7 @@ function Main({ isSearchPage = false }: IMainProps) {
         <div>
           {mezonApp?.data?.length !== 0 ? (
             <div className='flex flex-col gap-4 pt-8'>
-              {mezonApp?.data?.map((bot) => <BotCard key={bot.id} data={bot} />)}
+              {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotCard key={bot.id} data={bot} />)}
             </div>
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>

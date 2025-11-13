@@ -1,4 +1,5 @@
-import { MediaControllerGetAllMediaApiResponse, mediaService } from '@app/services/api/media/media'
+import { mediaService } from '@app/services/api/media/media'
+import { MediaControllerGetAllMediaApiResponse } from '@app/services/api/media/media.types'
 import { createSlice } from '@reduxjs/toolkit'
 
 export interface IMediaStore {

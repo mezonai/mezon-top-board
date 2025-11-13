@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit'
 import { tagService } from '@app/services/api/tag/tag'
 import { ITagStore } from '@app/store/tag'
-import { TagResponse } from '@app/services/api/tag/tag'
+import { TagResponse } from '@app/services/api/tag/tag.types'
 
 export const tagExtraReducers = (builder: ActionReducerMapBuilder<ITagStore>) => {
   builder

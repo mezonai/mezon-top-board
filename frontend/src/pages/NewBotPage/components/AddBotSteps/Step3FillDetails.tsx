@@ -1,5 +1,5 @@
 import { Controller, useFormContext, useWatch, useFieldArray } from 'react-hook-form'
-import { Input, Checkbox, Select, Form, TagProps, Tag, InputNumber } from 'antd'
+import { Input, Checkbox, Select, Form, Tag, InputNumber } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'

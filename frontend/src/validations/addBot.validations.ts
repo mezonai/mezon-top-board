@@ -1,6 +1,7 @@
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import * as yup from 'yup'
+import { LINK_TYPE_SCHEMA } from './linkType.validation'
 
 export const ADD_BOT_SCHEMA = yup.object({
   type: yup
@@ -19,7 +20,7 @@ export const ADD_BOT_SCHEMA = yup.object({
     .required("Name is required")
     .min(1, "Minimum 1 characters")
     .max(64, "Maximum 64 characters"),
-  isAutoPublished: yup.boolean().optional(),
+  isAutoPublished: yup.boolean().required("isAutoPublished is required"),
   headline: yup
     .string()
     .trim()
@@ -76,7 +77,10 @@ export const ADD_BOT_SCHEMA = yup.object({
         .trim()
         .test("url-length", "URL is too long", (val) => (val || "").length <= 2082),
       linkTypeId: yup.string().required("Link Type is required"),
-      type: yup.mixed().optional() 
+      type: LINK_TYPE_SCHEMA.shape({
+        id: yup.string().required(),
+        icon: yup.string().required(),
+      }).optional()
     })
   ).optional()
 })

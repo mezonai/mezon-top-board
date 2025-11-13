@@ -1,14 +1,20 @@
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
+import type { ReactNode } from 'react'
+
+type Props = {
+  title: string
+  children?: ReactNode
+}
 
 function TermsPage() {
-  const Section = ({ title, children }) => (
+  const Section = ({ title, children }: Props) => (
     <div className='mt-8'>
       <MtbTypography variant='h3'>{title}</MtbTypography>
       <div className='mt-2 space-y-2'>{children}</div>
     </div>
   )
 
-  const SubSection = ({ title, children }) => (
+  const SubSection = ({ title, children }: Props) => (
     <div className='mt-4'>
       <MtbTypography variant='h5'>{title}</MtbTypography>
       <div className='mt-2'>{children}</div>

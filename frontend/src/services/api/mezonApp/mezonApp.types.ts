@@ -77,13 +77,13 @@ export type CreateMezonAppRequest = Pick<
   | 'isAutoPublished'
   | 'headline'
   | 'description'
-  | 'prefix'
-  | 'featuredImage'
   | 'supportUrl'
-  | 'remark'
   | 'pricingTag'
   | 'price'
 > & {
+  prefix?: string;
+  featuredImage?: string;
+  remark?: string;
   tagIds: string[];
   socialLinks?: SocialLink[];
 };
