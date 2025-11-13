@@ -13,6 +13,7 @@ export type OAuth2UserInfoResponse = {
     display_name?: string;
     mezon_id: string;
     username: string;
+    user_id: string;
     iss: string;
     iat: number;
     rat: number;
