@@ -1,6 +1,5 @@
-import { HttpResponse } from '@app/types/API.types';
+import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { LinkType } from '@app/types/link.types'; 
-import { RequestWithId } from '@app/services/api/common.types';
 
 export type LinkTypeResponse = Pick<LinkType, 'id' | 'name' | 'icon' | 'prefixUrl'>;
 export type CreateLinkTypeRequest = Pick<LinkType, 'name' | 'icon' | 'prefixUrl'>;

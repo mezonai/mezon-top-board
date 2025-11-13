@@ -1,6 +1,6 @@
-import { HttpResponse } from '@app/types/API.types';
+import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { Media } from '@app/types/media.types';
-import { BaseListApiArg, RequestWithId } from '@app/services/api/common.types';
+import { BaseListApiArg } from '@app/types/common.types';
 
 export type MediaResponse = Omit<Media, 'owner'> 
 

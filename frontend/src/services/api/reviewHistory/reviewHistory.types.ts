@@ -1,8 +1,8 @@
-import { HttpResponse } from '@app/types/API.types';
+import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { User } from '@app/types/user.types';
 import { App, AppVersion } from '@app/types';
 import { AppReviewHistory } from '@app/types/appReviewHistory.types';
-import { BaseListApiArg, SearchableApiArg, RequestWithId } from '@app/services/api/common.types';
+import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
 
 type ReviewerDto = Pick<User, 'id' | 'name' | 'email' | 'role'>;
 type AppInfoDto = Pick<

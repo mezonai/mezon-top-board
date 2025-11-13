@@ -1,3 +1,4 @@
+import { LinkTypeResponse } from "@app/services/api/linkType/linkType.types"
 import { App, User } from "@app/types"
 
 export type LinkType = {
@@ -22,3 +23,9 @@ export type Link = {
     createdAt: Date
     updatedAt: Date
 }
+
+export type SocialLink = {
+  url?: string;
+  linkTypeId: string;
+  type?: LinkTypeResponse;
+};

@@ -1,7 +1,7 @@
 import { HttpResponse } from '@app/types/API.types';
 import { Subscriber } from '@app/types/mail.types'; 
 import { EmailSubscriptionStatus } from '@app/enums/subscribe';
-import { SimplePaginationApiArg, SearchableApiArg } from '@app/services/api/common.types';
+import { BasePaginationApiArg, SearchableApiArg } from '@app/types/common.types';
 
 export type UpdateSubscriptionRequest = {
   status: EmailSubscriptionStatus;
@@ -18,7 +18,7 @@ export type EmailSubscribeControllerConfirmSubscribeApiArg = void;
 export type EmailSubscribeControllerUnsubscribeApiResponse = HttpResponse<{ message: string }>;
 export type EmailSubscribeControllerUnsubscribeApiArg = void;
 
-export type EmailSubscribeControllerSearchSubscriberApiArg = SimplePaginationApiArg & SearchableApiArg;
+export type EmailSubscribeControllerSearchSubscriberApiArg = BasePaginationApiArg & SearchableApiArg;
 export type EmailSubscribeControllerSearchSubscriberApiResponse = HttpResponse<Subscriber[]>;
 
 export type EmailSubscribeControllerUpdateSubscriberApiResponse = HttpResponse<{ message: string; data: Subscriber }>;

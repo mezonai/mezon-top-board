@@ -1,6 +1,6 @@
 import { HttpResponse } from '@app/types/API.types';
 import { MailTemplate } from '@app/types/mail.types'; 
-import { SimplePaginationApiArg, SearchableApiArg } from '@app/services/api/common.types';
+import { BasePaginationApiArg, SearchableApiArg } from '@app/types/common.types';
 
 export type CreateMailTemplateRequest = Pick<
   MailTemplate,
@@ -17,7 +17,7 @@ export type MailTemplateControllerCreateMailApiArg = {
 export type MailTemplateControllerGetAllMailsApiResponse = HttpResponse<MailTemplate[]>;
 export type MailTemplateControllerGetAllMailsApiArg = void;
 
-export type MailTemplateControllerGetMailsSearchApiArg = SimplePaginationApiArg & SearchableApiArg;
+export type MailTemplateControllerGetMailsSearchApiArg = BasePaginationApiArg & SearchableApiArg;
 export type MailTemplateControllerGetMailsSearchApiResponse = HttpResponse<MailTemplate[]>;
 export type MailTemplateControllerGetOneMailApiResponse = HttpResponse<MailTemplate>;
 export type MailTemplateControllerGetOneMailApiArg = {

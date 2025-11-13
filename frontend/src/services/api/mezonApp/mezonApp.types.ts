@@ -4,8 +4,10 @@ import { User } from '@app/types/user.types';
 import { Tag } from '@app/types/tag.types';
 import { Link } from '@app/types/link.types';
 import { MezonAppType } from '@app/enums/mezonAppType.enum';
-import { BaseListApiArg, SearchableApiArg, RequestWithId } from '@app/services/api/common.types';
+import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
+import { RequestWithId } from '@app/types/API.types';
 import { LinkTypeResponse } from '../linkType/linkType.types';
+import { SocialLink } from '@app/types/link.types';
 
 export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage'>;
 export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name'>;
@@ -67,12 +69,6 @@ export type GetRelatedMezonAppResponse = Pick<App, 'id' | 'name' | 'status' | 'f
   rateScore: number;
 };
 
-export type SocialLinkDto = {
-  url?: string;
-  linkTypeId: string;
-  type?: LinkTypeResponse; // For render only
-};
-
 export type CreateMezonAppRequest = Pick<
   App,
   | 'mezonAppId'
@@ -89,7 +85,7 @@ export type CreateMezonAppRequest = Pick<
   | 'price'
 > & {
   tagIds: string[];
-  socialLinks?: SocialLinkDto[];
+  socialLinks?: SocialLink[];
 };
 
 export type UpdateMezonAppRequest = Partial<CreateMezonAppRequest> & {

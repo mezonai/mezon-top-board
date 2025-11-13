@@ -1,6 +1,6 @@
-import { HttpResponse } from '@app/types/API.types';
+import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { Tag } from '@app/types';
-import { SimplePaginationApiArg, SearchableApiArg, RequestWithId } from '@app/services/api/common.types';
+import { BasePaginationApiArg, SearchableApiArg } from '@app/types/common.types';
 
 export type TagResponse = Tag & {
   botCount: number; 
@@ -12,7 +12,7 @@ export type UpdateTagRequest = Partial<CreateTagRequest> & { id: string };
 export type TagControllerGetTagsApiResponse = HttpResponse<TagResponse[]>;
 export type TagControllerGetTagsApiArg = void;
 
-export type TagControllerSearchTagsApiArg = SimplePaginationApiArg &
+export type TagControllerSearchTagsApiArg = BasePaginationApiArg &
   SearchableApiArg & {
     sortField?: string;
     sortOrder?: string;

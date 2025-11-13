@@ -1,7 +1,7 @@
-import { HttpResponse } from '@app/types/API.types';
+import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { User } from '@app/types/user.types';
 import { Role } from '@app/enums/role.enum';
-import { BaseListApiArg, SearchableApiArg, RequestWithId } from '@app/services/api/common.types';
+import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
 
 export type SearchUserResponse = Pick<User, 'id' | 'name' | 'email' | 'bio' | 'role'>;
 export type GetUserDetailsResponse = Pick<
