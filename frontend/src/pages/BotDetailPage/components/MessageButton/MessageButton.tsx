@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { QrCode } from 'lucide-react'
-import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { Link } from 'react-router-dom'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'

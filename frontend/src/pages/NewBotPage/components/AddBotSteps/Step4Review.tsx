@@ -5,7 +5,9 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { transformMediaSrc } from '@app/utils/stringHelper'
-import { CreateMezonAppRequest, SocialLinkDto } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
+import { TagResponse } from '@app/services/api/tag/tag.types'
+import { SocialLink } from '@app/types'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
@@ -17,7 +19,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const type = useWatch({ control, name: 'type' })
   const values = getValues()
   const tagIds = values.tagIds ?? []
-  const selectedTags = tagList.data?.filter(tag => tagIds.includes(tag.id)) ?? []
+  const selectedTags = tagList.data?.filter((tag: TagResponse) => tagIds.includes(tag.id)) ?? []
 
   return (
     <div>
@@ -34,7 +36,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           <strong>Tags:</strong>
           <div className='gap-2'>
             {selectedTags.length > 0 ? (
-              selectedTags.map((tag) => (
+              selectedTags.map((tag: TagResponse) => (
                 <Tag key={tag.id}>{tag.name}</Tag>
               ))
             ) : (
@@ -53,7 +55,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           <strong>Social Links:</strong>
           <div className="mt-2 flex flex-col gap-2">
             {(values.socialLinks ?? []).length > 0 ? (
-              values.socialLinks.map((link: SocialLinkDto, idx: number) => (
+              values.socialLinks.map((link: SocialLink, idx: number) => (
                 <div key={idx} className="flex items-center gap-2 text-sm">
                   {link.type?.icon && (
                     <img src={getUrlMedia(link.type.icon)} alt={link.type?.name || ''} className="w-4 h-4" />

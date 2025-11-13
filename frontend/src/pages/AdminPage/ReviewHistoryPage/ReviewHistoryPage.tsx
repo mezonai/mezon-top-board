@@ -1,11 +1,11 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons'
 import { REVIEW_HISTORY_COLUMNS } from '@app/constants/table.constant'
 import {
-  ReviewHistoryResponse,
   useLazyReviewHistoryControllerSearchAppReviewsQuery,
   useReviewHistoryControllerDeleteAppReviewMutation,
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
+import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
 import { mapDataSourceTable } from '@app/utils/table'
 import { Button, Input, Popconfirm, Table, Tag, Tooltip } from 'antd'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'

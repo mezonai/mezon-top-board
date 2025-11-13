@@ -3,7 +3,7 @@ import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-de
 import {
   useMezonAppControllerDeleteMezonAppMutation
 } from '@app/services/api/mezonApp/mezonApp'
-import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import { AppVersion } from '@app/types/appVersion.types'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 

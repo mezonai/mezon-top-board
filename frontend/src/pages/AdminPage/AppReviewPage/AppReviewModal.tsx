@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { Modal, Button, Input, Descriptions, Form, Space } from 'antd'
 import { toast } from 'react-toastify'
-import { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { AppVersion } from '@app/types'
 import { formatDate } from '@app/utils/date'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import { useReviewHistoryControllerCreateAppReviewMutation } from '@app/services/api/reviewHistory/reviewHistory'
@@ -12,7 +13,7 @@ interface Props {
   open: boolean
   onClose: () => void
   appData?: GetMezonAppDetailsResponse | undefined
-  latestVersion?: AppVersion
+  latestVersion?: AppVersionDetailsDto | undefined
   onUpdated?: () => void
 }
 

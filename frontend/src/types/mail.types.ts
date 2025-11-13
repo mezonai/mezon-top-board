@@ -11,7 +11,7 @@ export type MailTemplate = {
     updatedAt: Date
 }
 
-export type Subscriber = {
+export type EmailSubscriber = {
     id: string
     email: string
     status: EmailSubscriptionStatus

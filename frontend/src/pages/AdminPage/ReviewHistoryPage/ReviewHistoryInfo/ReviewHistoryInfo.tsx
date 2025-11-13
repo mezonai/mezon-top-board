@@ -1,4 +1,4 @@
-import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory'
+import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
 import { formatDate } from '@app/utils/date'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
 import { getUrlMedia } from '@app/utils/stringHelper'

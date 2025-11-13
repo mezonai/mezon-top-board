@@ -10,7 +10,8 @@ import MailScheduleModal from '@app/pages/AdminPage/AdminManageMailSchedule/comp
 import { useAppDispatch, useAppSelector } from '@app/store/hook'
 import { setSearchMailTemplateList } from '@app/store/mailTemplate'
 import { RepeatInterval } from '@app/enums/subscribe'
-import { MailTemplate, useLazyMailTemplateControllerGetAllMailsQuery, useLazyMailTemplateControllerGetMailsSearchQuery, useMailTemplateControllerDeleteMailMutation } from '@app/services/api/marketingMail/marketingMail'
+import { useLazyMailTemplateControllerGetAllMailsQuery, useLazyMailTemplateControllerGetMailsSearchQuery, useMailTemplateControllerDeleteMailMutation } from '@app/services/api/marketingMail/marketingMail'
+import { MailTemplate } from '@app/types'
 
 const pageOptions = [5, 10, 15]
 

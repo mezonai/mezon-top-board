@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, Button, Form, Input, Descriptions, Space, Spin, Typography } from 'antd'
-import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory'
+import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
 import { formatDate } from '@app/utils/date'
 
 const { TextArea } = Input

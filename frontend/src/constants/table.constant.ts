@@ -1,4 +1,4 @@
-import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory'
+import { ReviewHistoryResponse } from "@app/services/api/reviewHistory/reviewHistory.types"
 import { formatDate } from '@app/utils/date'
 
 export const REVIEW_HISTORY_COLUMNS = [

@@ -1,5 +1,5 @@
 import { HttpResponse } from '@app/types/API.types';
-import { Subscriber } from '@app/types/mail.types'; 
+import { EmailSubscriber } from '@app/types/mail.types'; 
 import { EmailSubscriptionStatus } from '@app/enums/subscribe';
 import { BasePaginationApiArg, SearchableApiArg } from '@app/types/common.types';
 
@@ -10,7 +10,7 @@ export type UpdateSubscriptionRequest = {
 export type EmailSubscribeControllerSendConfirmMailApiResponse = HttpResponse<{ message: string }>;
 export type EmailSubscribeControllerSendConfirmMailApiArg = { email: string };
 
-export type EmailSubscribeControllerGetAllSubscribersApiResponse = HttpResponse<Subscriber[]>;
+export type EmailSubscribeControllerGetAllSubscribersApiResponse = HttpResponse<EmailSubscriber[]>;
 export type EmailSubscribeControllerGetAllSubscribersApiArg = void;
 export type EmailSubscribeControllerConfirmSubscribeApiResponse = HttpResponse<{ message: string }>;
 export type EmailSubscribeControllerConfirmSubscribeApiArg = void;
@@ -19,15 +19,15 @@ export type EmailSubscribeControllerUnsubscribeApiResponse = HttpResponse<{ mess
 export type EmailSubscribeControllerUnsubscribeApiArg = void;
 
 export type EmailSubscribeControllerSearchSubscriberApiArg = BasePaginationApiArg & SearchableApiArg;
-export type EmailSubscribeControllerSearchSubscriberApiResponse = HttpResponse<Subscriber[]>;
+export type EmailSubscribeControllerSearchSubscriberApiResponse = HttpResponse<EmailSubscriber[]>;
 
-export type EmailSubscribeControllerUpdateSubscriberApiResponse = HttpResponse<{ message: string; data: Subscriber }>;
+export type EmailSubscribeControllerUpdateSubscriberApiResponse = HttpResponse<{ message: string; data: EmailSubscriber }>;
 export type EmailSubscribeControllerUpdateSubscriberApiArg = {
   id: string;
   updateSubscriptionRequest: UpdateSubscriptionRequest;
 };
 
-export type EmailSubscribeControllerReSubscribeApiResponse = HttpResponse<{ message: string; data: Subscriber }>;
+export type EmailSubscribeControllerReSubscribeApiResponse = HttpResponse<{ message: string; data: EmailSubscriber }>;
 export type EmailSubscribeControllerReSubscribeApiArg = {
   updateSubscriptionRequest: UpdateSubscriptionRequest;
 };

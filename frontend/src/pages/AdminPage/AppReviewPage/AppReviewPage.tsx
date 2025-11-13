@@ -2,7 +2,8 @@ import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
 import { Button, Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { GetMezonAppDetailsResponse, useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
+import { useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
+import { GetMezonAppDetailsResponse, OwnerInMezonAppDetailResponse, AppVersionDetailsDto } from '@app/services/api/mezonApp/mezonApp.types'
 import { formatDate } from '@app/utils/date'
 import PreviewModal from '@app/components/PreviewModal/PreviewModal'
 import AppReviewModal from './AppReviewModal'
@@ -34,10 +35,13 @@ function AppReviewPage() {
     }
 
     const filteredApps = useMemo(() => {
-        return (tableData || []).filter(app => app.hasNewUpdate === true);
+        return (tableData || []).filter((app: GetMezonAppDetailsResponse) => app.hasNewUpdate === true);
     }, [tableData]);
 
-    const latestVersion = useMemo(() => detailAppData?.versions?.[0], [detailAppData])
+    const latestVersion = useMemo((): AppVersionDetailsDto | undefined => 
+        detailAppData?.versions?.[0], 
+        [detailAppData]
+    );
 
     useEffect(() => {
         fetchData()
@@ -106,7 +110,7 @@ function AppReviewPage() {
             title: 'Owner',
             dataIndex: 'owner',
             key: 'owner',
-            render: (owner: { name: string }) => (
+            render: (owner: OwnerInMezonAppDetailResponse) => (
                 <div className='line-clamp-5 break-words max-w-[80px] 2xl:max-w-[120px]'>
                     {owner?.name || '—'}
                 </div>

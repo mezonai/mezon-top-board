@@ -1,7 +1,8 @@
 import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
 import React from 'react'
 import { formatDate } from '@app/utils/date'
-import type { GetMezonAppDetailsResponse, AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { AppVersion } from '@app/types/appVersion.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
@@ -12,7 +13,7 @@ interface Props {
     open: boolean
     onClose: () => void
     appData?: Partial<GetMezonAppDetailsResponse> | undefined
-    latestVersion?: AppVersion
+    latestVersion?: AppVersionDetailsDto | undefined
 }
 
 const { Title, Text, Paragraph } = Typography

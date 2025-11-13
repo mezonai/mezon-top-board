@@ -17,9 +17,9 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
 import { 
-  CreateMezonAppRequest, 
   useLazyMezonAppControllerGetMezonAppDetailQuery, 
 } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
@@ -66,6 +66,7 @@ function NewBotPage() {
       headline: '',
       description: '',
       prefix: '',
+      featuredImage: '',
       tagIds: [],
       pricingTag: AppPricing.FREE,
       price: 0,

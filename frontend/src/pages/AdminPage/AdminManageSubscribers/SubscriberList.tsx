@@ -9,8 +9,8 @@ import { toast } from 'react-toastify'
 import MtbButton from '@app/mtb-ui/Button'
 import { EmailSubscriptionStatus } from '@app/enums/subscribe'
 import { IEmailSubscriberStore, setSearchSubscriberList } from '@app/store/emailSubscriber'
-import { EmailSubscriber, useEmailSubscribeControllerDeleteMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscribersQuery, useLazyEmailSubscribeControllerSearchSubscriberQuery } from '@app/services/api/emailSubscribe/emailSubscribe'
-
+import { useEmailSubscribeControllerDeleteMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscribersQuery, useLazyEmailSubscribeControllerSearchSubscriberQuery } from '@app/services/api/emailSubscribe/emailSubscribe'
+import { EmailSubscriber } from '@app/types'
 const pageOptions = [5, 10, 15]
 
 interface SearchFormValues {

@@ -5,8 +5,8 @@ import { toast } from 'react-toastify'
 import { RepeatInterval } from '@app/enums/subscribe'
 import TimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/TimePicker'
 import moment from 'moment'
-import { MailTemplate, useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
-
+import { useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
+import { MailTemplate } from '@app/types'
 
 export interface MailFormValues {
   subject: string,

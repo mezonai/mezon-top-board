@@ -17,8 +17,9 @@ import OwnerActions from '../OwnerActions/OwnerActions'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
-import type { AppVersion } from '@app/services/api/mezonApp/mezonApp'
+import type { AppVersion } from '@app/types/appVersion.types'
 import TagPill from '@app/components/TagPill/TagPill';
+import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -92,7 +93,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
           </div>
           <div className='flex-wrap gap-2'>
-            {data?.tags?.map((tag) => (
+            {data?.tags?.map((tag: TagInMezonAppDetailResponse) => (
               <Tag key={tag?.id} color={randomColor('normal', uuidToNumber(tag?.id))} style={{ marginBottom: '0.2rem' }} >
                 {tag?.name}
               </Tag>

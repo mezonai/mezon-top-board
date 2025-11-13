@@ -5,6 +5,7 @@ import {
   useTagControllerDeleteTagMutation,
   useTagControllerUpdateTagMutation
 } from '@app/services/api/tag/tag'
+import { TagResponse } from '@app/services/api/tag/tag.types'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { generateSlug } from '@app/utils/stringHelper'
@@ -65,7 +66,7 @@ function TagsList() {
       values.slug = generateSlug(values.name)
     }
     values.name = values.name.trim()
-    const isDuplicate = tagList?.data?.some((tag) =>
+    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
       (tag.name.trim() === values.name || tag.slug === values.slug)
     )
     if (isDuplicate) {
@@ -84,7 +85,7 @@ function TagsList() {
   }
 
   const handleUpdate = async (id: string) => {
-    const isDuplicate = tagList?.data?.some((tag) =>
+    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
       (tag.name === editingTag.name.trim() || tag.slug === editingTag.slug) &&
       tag.id !== id
     )
@@ -111,7 +112,7 @@ function TagsList() {
   }
 
   const handleDelete = async (id: string) => {
-    if (tagList?.data?.some((tag) => tag.id === id && tag.botCount > 0) ) {
+    if (tagList?.data?.some((tag: TagResponse) => tag.id === id && tag.botCount > 0) ) {
       toast.error('Tag is in use and cannot be deleted')
       return
     }

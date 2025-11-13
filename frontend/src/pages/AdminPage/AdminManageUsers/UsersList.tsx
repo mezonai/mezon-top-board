@@ -5,12 +5,11 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  GetUserDetailsResponse,
-  UpdateUserRequest,
   useLazyUserControllerSearchUserQuery,
   useUserControllerActivateUserMutation,
   useUserControllerDeactivateUserMutation,
 } from '@app/services/api/user/user'
+import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
 import { Alert, Breakpoint, Button, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
