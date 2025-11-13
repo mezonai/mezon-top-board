@@ -38,6 +38,7 @@ import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
+import { IUserStore } from '@app/store/user'
 
 type StepFieldMap = {[key: number]: FieldPath<CreateMezonAppRequest>[]}
 
@@ -45,6 +46,7 @@ function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
+  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
 
@@ -112,17 +114,15 @@ function NewBotPage() {
   }, [imgUrl])
 
   useEffect(() => {
-    if (!mezonAppDetail.id || !botId) {
-      return
-    }
+    if (!mezonAppDetail.id || !botId) return;
 
-    if (!checkOwnership(mezonAppDetail.owner?.id)) {
-      return
-    }
+    if (!userInfo?.id) return;
 
-    const formData = mapDetailToFormData(mezonAppDetail)
-    reset(formData)
-  }, [mezonAppDetail.id, botId, reset])
+    if (!checkOwnership(mezonAppDetail.owner?.id)) return;
+
+    const formData = mapDetailToFormData(mezonAppDetail);
+    reset(formData);
+  }, [mezonAppDetail.id, botId, userInfo?.id, reset]);
 
   const handleBeforeUpload = (file: File) => {
     if (!imageMimeTypes.includes(file.type)) {
