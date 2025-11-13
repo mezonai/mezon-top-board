@@ -25,6 +25,7 @@ import { UserModule } from "@features/user/user.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
+import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
 
 @Module({
   imports: [
@@ -57,6 +58,9 @@ import { LoggerModule } from "@libs/logger";
       },
     }),
     ScheduleModule.forRoot(),
+    MezonModule.forRootAsync({
+      imports: [ConfigModule],
+    }),
     LoggerModule,
     MediaModule,
     MezonAppModule,

@@ -54,6 +54,11 @@ export class AuthService {
             willSyncFromMezon: false,
           });
         }
+        if (!user.mezonUserId) {
+          await this.userRepository.update(user.id, {
+            mezonUserId: oryInfo.user_id
+          });
+        }
 
         const tokens = await this.generateAccessAndRefreshTokens(user);
         return new Result({ data: tokens });
@@ -64,6 +69,7 @@ export class AuthService {
         name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
         profileImage: oryInfo.avatar,
         role: Role.DEVELOPER,
+        mezonUserId: oryInfo.user_id
       });
       const tokens = await this.generateAccessAndRefreshTokens(newUser);
       return new Result({ data: tokens });
