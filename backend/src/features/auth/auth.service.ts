@@ -52,9 +52,9 @@ export class AuthService {
             name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
             profileImage: oryInfo.avatar,
             willSyncFromMezon: false,
-            mezonUserId: oryInfo.user_id
           });
-        } else {
+        }
+        if (!user.mezonUserId) {
           await this.userRepository.update(user.id, {
             mezonUserId: oryInfo.user_id
           });

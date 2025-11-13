@@ -1,5 +1,4 @@
-import { APP_CONSTANTS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '@domain/common/constants/constants';
-import { ReactMessageChannel, ReplyMezonMessage } from '@domain/common/dtos/MezonReplyMessageDto';
+import { ReplyMezonMessage } from '@domain/common/dtos/MezonReplyMessageDto';
 import { MezonClientConfig } from '@domain/common/types/mezon.types';
 import { Injectable, Logger } from '@nestjs/common';
 import { MezonClient } from 'mezon-sdk';
@@ -21,11 +20,11 @@ export class MezonClientService {
   async initializeClient(): Promise<void> {
     try {
       const result = await this.client.login();
-      this.logger.log(SUCCESS_MESSAGES.CLIENT_AUTHENTICATED, result);
+      this.logger.log('authenticated', result);
       const data = JSON.parse(result);
       this.token = data?.token;
     } catch (error) {
-      this.logger.error(ERROR_MESSAGES.CLIENT_AUTHENTICATION, error);
+      this.logger.error('error authenticating', error);
       throw error;
     }
   }
@@ -35,9 +34,7 @@ export class MezonClientService {
   }
 
   async sendMessageToUser(message: ReplyMezonMessage): Promise<any> {
-    const dmClan = await this.client.clans.fetch(
-      APP_CONSTANTS.MEZON.DM_CLAN_ID,
-    );
+    const dmClan = await this.client.clans.fetch('0');
     const user = await dmClan.users.fetch(message.userId);
 
     if (!user) return;
