@@ -178,9 +178,10 @@ export class MezonAppService {
       );
 
     if (query.tags?.length) {
-      whereCondition.andWhere("EXISTS (SELECT 1 FROM app_tags tag WHERE tag.appId = app.id AND tag.tagId IN (:...tagIds))", {
-        tagIds: query.tags,
-      });
+      whereCondition.andWhere(
+        `EXISTS (SELECT 1 FROM app_tags_tag tag WHERE tag."appId" = app.id AND tag."tagId" IN (:...tagIds))`,
+        { tagIds: query.tags },
+      );
     }
 
     if (query?.ownerId) {
