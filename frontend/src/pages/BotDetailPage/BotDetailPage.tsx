@@ -31,6 +31,8 @@ import Button from '@app/mtb-ui/Button'
 import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
+import { IUserStore } from '@app/store/user'
+
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -42,6 +44,7 @@ function BotDetailPage() {
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { ratings, allRatings } = useSelector<RootState, IRatingStore>((s) => s.rating)
+  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { checkOwnership } = useOwnershipCheck();
   const ratingCounts = allRatings?.data?.reduce(
     (acc, rating) => {
@@ -99,13 +102,16 @@ function BotDetailPage() {
       }
     }
   }, [isError, error]);
-  useEffect(() => {
-    // TODO: improve logic
-    if (getMezonAppDetailApiResponse?.data && getMezonAppDetailApiResponse?.data?.status !== AppStatus.PUBLISHED) {
-      checkOwnership(getMezonAppDetailApiResponse.data?.owner?.id, true);
-    }
-  }, [getMezonAppDetailApiResponse])
 
+  useEffect(() => {
+    if (
+      userInfo?.id &&
+      getMezonAppDetailApiResponse?.data &&
+      getMezonAppDetailApiResponse.data.status !== AppStatus.PUBLISHED
+    ) {
+      checkOwnership(getMezonAppDetailApiResponse.data.owner?.id, true);
+    }
+  }, [getMezonAppDetailApiResponse, userInfo])
   const onLoadMore = async () => {
     if (botId && botId !== 'undefined' && botId.trim() !== '') {
       try {
