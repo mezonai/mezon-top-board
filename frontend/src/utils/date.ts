@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 export const formatDate = (date?: moment.MomentInput, format: string = 'DD/MM/YYYY HH:mm:ss') => {
-  return date ? moment.utc(date).format(format) : ''
+  return date ? moment.utc(date).zone('+0700').format(format) : ''
 }
 
 export const formatAgo = (date?: moment.MomentInput): string => {
