@@ -99,12 +99,8 @@ function ReviewHistoryPage() {
       return {
         ...col,
         ellipsis: true,
-        render: (_: any, record: ReviewHistoryResponse) => (
-          <Tooltip title={col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name}>
-            <span className="break-words whitespace-pre-wrap block">
-              {col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''}
-            </span>
-          </Tooltip>
+        render: (_: any, record: ReviewHistoryResponse) => ( 
+          col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''
         )
       }
     }
