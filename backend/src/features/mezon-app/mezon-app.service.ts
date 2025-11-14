@@ -210,6 +210,10 @@ export class MezonAppService {
     const [appIds, total] = await whereCondition.getManyAndCount();
     const ids = appIds.map(a => a.id);
 
+    if (ids.length === 0) {
+      return { apps: this.appRepository.getRepository().createQueryBuilder("app").where("1=0"), total: 0 };
+    }
+
     const apps = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
