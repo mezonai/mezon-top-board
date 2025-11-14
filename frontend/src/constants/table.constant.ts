@@ -1,5 +1,4 @@
 import { ReviewHistoryResponse } from "@app/services/api/reviewHistory/reviewHistory.types"
-import { formatDate } from '@app/utils/date'
 
 export const REVIEW_HISTORY_COLUMNS = [
   {
@@ -36,6 +35,5 @@ export const REVIEW_HISTORY_COLUMNS = [
     title: 'Reviewed At',
     dataIndex: 'reviewedAt',
     key: 'reviewedAt',
-    render: (date: string) => (date ? formatDate(date) : '')
   }
 ]
