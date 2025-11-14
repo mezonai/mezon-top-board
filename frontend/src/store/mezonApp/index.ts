@@ -9,6 +9,7 @@ import { mezonAppExtraReducers } from './extraReducer'
 export interface IMezonAppStore {
   mezonApp: MezonAppControllerSearchMezonAppApiResponse;
   mezonAppOfAdmin: MezonAppControllerSearchMezonAppApiResponse;
+  mezonAppOfAdminHasNewUpdate: MezonAppControllerSearchMezonAppApiResponse;
   mezonAppDetail: GetMezonAppDetailsResponse
   relatedMezonApp: GetRelatedMezonAppResponse[]
   mezonAppOfUser: MezonAppControllerSearchMezonAppApiResponse
@@ -17,6 +18,7 @@ export interface IMezonAppStore {
 const initialState: IMezonAppStore = {
   mezonApp: {} as MezonAppControllerSearchMezonAppApiResponse,
   mezonAppOfAdmin: {} as MezonAppControllerSearchMezonAppApiResponse,
+  mezonAppOfAdminHasNewUpdate: {} as MezonAppControllerSearchMezonAppApiResponse,
   mezonAppDetail: {} as GetMezonAppDetailsResponse,
   relatedMezonApp: [],
   mezonAppOfUser: {} as MezonAppControllerSearchMezonAppApiResponse

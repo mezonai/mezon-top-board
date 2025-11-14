@@ -497,6 +497,29 @@ export class MezonAppService {
       },
     );
   }
+  
+  async listAdminHasNewUpdateApp(query: SearchMezonAppRequest) {
+    const { apps, total } = await this.buildSearchQuery(query, "app.hasNewUpdate = :hasNewUpdate", {
+      hasNewUpdate: true,
+    });
+    const data = await apps.getMany();
+    return paginate<App, SearchMezonAppResponse>(
+      [data, total],
+      query.pageSize,
+      query.pageNumber,
+      (entity) => {
+        const mappedMezonApp = Mapper(SearchMezonAppResponse, entity);
+        mappedMezonApp.rateScore = this.getAverageRating(entity);
+        mappedMezonApp.tags = entity.tags.map((tag) => ({
+          id: tag.id,
+          name: tag.name,
+        }));
+        mappedMezonApp.owner = entity.owner;
+        mappedMezonApp.versions = entity.versions;
+        return mappedMezonApp;
+      },
+    );
+  }
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
     const { apps, total } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {

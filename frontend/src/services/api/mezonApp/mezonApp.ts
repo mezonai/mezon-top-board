@@ -15,7 +15,9 @@ import type {
   MezonAppControllerGetRelatedMezonAppApiResponse,
   MezonAppControllerGetRelatedMezonAppApiArg,
   MezonAppControllerSearchMezonAppApiResponse,
-  MezonAppControllerSearchMezonAppApiArg
+  MezonAppControllerSearchMezonAppApiArg,
+  MezonAppControllerListAdminHasNewUpdateAppApiResponse,
+  MezonAppControllerListAdminHasNewUpdateAppApiArg
 } from './mezonApp.types'
 
 const injectedRtkApi = api.injectEndpoints({
@@ -29,6 +31,17 @@ const injectedRtkApi = api.injectEndpoints({
         params: { ...queryArg }
       })
     }),
+
+    mezonAppControllerListAdminHasNewUpdateApp: build.query<
+      MezonAppControllerListAdminHasNewUpdateAppApiResponse,
+      MezonAppControllerListAdminHasNewUpdateAppApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/mezon-app/admin-review`,
+        params: { ...queryArg }
+      })
+    }),
+
     mezonAppControllerGetMyApp: build.query<MezonAppControllerGetMyAppApiResponse, MezonAppControllerGetMyAppApiArg>({
       query: (queryArg) => ({
         url: `/api/mezon-app/my-app`,
@@ -92,6 +105,8 @@ export { injectedRtkApi as mezonAppService }
 export const {
   useMezonAppControllerListAdminMezonAppQuery,
   useLazyMezonAppControllerListAdminMezonAppQuery,
+  useMezonAppControllerListAdminHasNewUpdateAppQuery,
+  useLazyMezonAppControllerListAdminHasNewUpdateAppQuery,
   useMezonAppControllerGetMyAppQuery,
   useLazyMezonAppControllerGetMyAppQuery,
   useMezonAppControllerGetMezonAppDetailQuery,
