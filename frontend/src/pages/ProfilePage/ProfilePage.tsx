@@ -5,7 +5,9 @@ import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useLazyMezonAppControllerSearchMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
-import { GetPublicProfileResponse, useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
+import { useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
+import { GetPublicProfileResponse } from '@app/services/api/user/user.types'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
 import { IMezonAppStore } from '@app/store/mezonApp'
@@ -196,7 +198,7 @@ function ProfilePage() {
           ) : (
             <>
               <div className='grid grid-cols-1 gap-8 min-lg:grid-cols-2 min-xl:grid-cols-3 max-w-full pt-8'>
-                {mezonApp?.data?.map((item) => (
+                {mezonApp?.data?.map((item: GetMezonAppDetailsResponse) => (
                   <CompactBotCard key={item.id} data={item} isPublic={Boolean(userId)} />
                 ))}
               </div>

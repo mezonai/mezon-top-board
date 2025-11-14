@@ -1,6 +1,15 @@
-import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
-import { MezonAppType } from '@app/enums/mezonAppType.enum'
+import type {
+  ReviewHistoryControllerSearchAppReviewsApiResponse,
+  ReviewHistoryControllerSearchAppReviewsApiArg,
+  ReviewHistoryControllerCreateAppReviewApiResponse,
+  ReviewHistoryControllerCreateAppReviewApiArg,
+  ReviewHistoryControllerUpdateAppReviewApiResponse,
+  ReviewHistoryControllerUpdateAppReviewApiArg,
+  ReviewHistoryControllerDeleteAppReviewApiResponse,
+  ReviewHistoryControllerDeleteAppReviewApiArg
+} from './reviewHistory.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     reviewHistoryControllerSearchAppReviews: build.query<
@@ -41,75 +50,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as reviewHistoryService }
-export type ReviewHistoryControllerSearchAppReviewsApiResponse = HttpResponse<ReviewHistoryResponse[]>
-export type ReviewHistoryControllerSearchAppReviewsApiArg = {
-  search?: string
-  appId?: string
-  pageSize: number
-  pageNumber: number
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-}
 
-
-type Reviewer = {
-  id: string
-  name: string
-  email: string
-  role: string
-}
- 
-type AppInfo = {
-  id: string
-  name: string
-  type: MezonAppType
-  mezonAppId?: string
-  description: string | null
-  headline: string | null
-  featuredImage: string | null
-}
-
-type AppVersion = {
-  version: string
-  changelog: string | null
-}
-
-type ReviewHistory = {
-  id: string
-  remark: string
-  reviewer: Reviewer
-  reviewedAt: Date
-  app: AppInfo
-  appVersion: AppVersion
-  isApproved: boolean
-}
-
-export type ReviewHistoryResponse = ReviewHistory
-
-export type ReviewHistoryControllerCreateAppReviewApiResponse = unknown
-export type ReviewHistoryControllerCreateAppReviewApiArg = {
-  createAppReviewRequest: CreateAppReviewRequest
-}
-export type ReviewHistoryControllerUpdateAppReviewApiResponse = unknown
-export type ReviewHistoryControllerUpdateAppReviewApiArg = {
-  updateAppReviewRequest: UpdateAppReviewRequest
-}
-export type ReviewHistoryControllerDeleteAppReviewApiResponse = unknown
-export type ReviewHistoryControllerDeleteAppReviewApiArg = {
-  requestWithId: RequestWithId
-}
-export type CreateAppReviewRequest = {
-  appId: string
-  isApproved: boolean
-  remark: string
-}
-export type UpdateAppReviewRequest = {
-  id: string
-  remark: string
-}
-export type RequestWithId = {
-  id: string
-}
 export const {
   useReviewHistoryControllerSearchAppReviewsQuery,
   useLazyReviewHistoryControllerSearchAppReviewsQuery,

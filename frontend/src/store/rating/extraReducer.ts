@@ -1,4 +1,5 @@
-import { Rating, ratingService } from "@app/services/api/rating/rating"
+import { ratingService } from "@app/services/api/rating/rating"
+import { Rating } from "@app/types"
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const ratingExtraReducers = (builder: ActionReducerMapBuilder<any>) => {

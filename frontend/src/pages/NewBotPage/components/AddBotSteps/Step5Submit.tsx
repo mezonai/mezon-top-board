@@ -1,5 +1,5 @@
 import Button from '@app/mtb-ui/Button'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { Result } from 'antd'
 import { capitalize } from 'lodash'
 import { useFormContext, useWatch } from 'react-hook-form'

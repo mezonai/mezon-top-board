@@ -22,3 +22,7 @@ export type ApiError = {
   status: number
   data: HttpError
 }
+
+export type RequestWithId = {
+  id: string;
+};

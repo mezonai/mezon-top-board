@@ -1,13 +1,9 @@
 import { AppStatus } from '@app/enums/AppStatus.enum'
-import { 
-  CreateMezonAppRequest, 
-  GetMezonAppDetailsResponse, 
-  AppVersion, 
-  TagInMezonAppDetailResponse 
-} from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
+import { GetMezonAppDetailsResponse, TagInMezonAppDetailResponse, AppVersionDetailsDto } from '@app/services/api/mezonApp/mezonApp.types'
 import { AppPricing } from '@app/enums/appPricing'
 
-const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersion | GetMezonAppDetailsResponse => {
+const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersionDetailsDto | GetMezonAppDetailsResponse => {
   const { versions, hasNewUpdate } = detail
 
   if (hasNewUpdate && versions && versions.length > 0) {

@@ -1,6 +1,13 @@
-import { HttpResponse } from "@app/types/API.types"
 import { api } from "../../apiInstance"
-import { App, User } from "../mezonApp/mezonApp"
+import type {
+  RatingControllerCreateRatingApiResponse,
+  RatingControllerCreateRatingApiArg,
+  RatingControllerGetRatingByAppApiResponse,
+  RatingControllerGetRatingByAppApiArg,
+  RatingControllerGetAllRatingsByAppApiResponse,
+  RatingControllerGetAllRatingsByAppApiArg
+} from "./rating.types"
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     ratingControllerCreateRating: build.mutation<
@@ -36,29 +43,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as ratingService }
-export type CreateRatingRequest = {
-  appId: string
-  score: number
-  comment: string
-}
-export type RatingControllerGetRatingByAppApiResponse = HttpResponse<Rating[]>
-export type RatingControllerGetRatingByAppApiArg = {
-  appId: string
-  pageNumber?: number
-}
-export type RatingControllerCreateRatingApiResponse = unknown
-export type RatingControllerCreateRatingApiArg = {
-  createRatingRequest: CreateRatingRequest
-}
-
-export type Rating = {
-  id: string
-  score: number
-  comment: string
-  updatedAt: string
-  user: Pick<User, 'id' | 'name' | 'profileImage'>
-  app: App
-}
 
 export const {
   useRatingControllerCreateRatingMutation,

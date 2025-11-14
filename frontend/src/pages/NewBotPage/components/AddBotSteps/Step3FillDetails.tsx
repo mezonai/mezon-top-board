@@ -1,5 +1,5 @@
 import { Controller, useFormContext, useWatch, useFieldArray } from 'react-hook-form'
-import { Input, Checkbox, Select, Form, TagProps, Tag } from 'antd'
+import { Input, Checkbox, Select, Form, Tag, InputNumber } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -11,7 +11,10 @@ import { ITagStore } from '@app/store/tag'
 import { ILinkTypeStore } from '@app/store/linkType'
 import Button from '@app/mtb-ui/Button'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
+import { SocialLink } from '@app/types'
+import { LinkTypeResponse } from '@app/services/api/linkType/linkType.types'
+import { TagResponse } from '@app/services/api/tag/tag.types'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
@@ -48,12 +51,12 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
   const inviteURL = getMezonInstallLink(type, mezonAppId)
 
-  const tagOptions = useMemo(() => {
-    return tagList.data?.map(tag => ({ label: tag.name, value: tag.id })) || []
+  const tagOptions = useMemo((): { label: string; value: string }[] => {
+    return tagList.data?.map((tag: TagResponse) => ({ label: tag.name, value: tag.id })) || []
   }, [tagList])
 
-  const linkOptions = useMemo(() => {
-    return linkTypeList.data?.map(link => ({
+  const linkOptions = useMemo((): { icon: string; label: React.ReactNode; name: string; value: string; siteName: string }[] => {
+    return linkTypeList.data?.map((link: LinkTypeResponse) => ({
       icon: link.icon,
       label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
       name: link.name,
@@ -81,16 +84,14 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
     const selected = linkOptions.find(opt => opt.value === selectedSocialLink)
     if (!selected) return
 
-
-    const newLink = {
-      icon: selected.icon,
+    const newLink: SocialLink = {
       url: trimmedUrl,
-      linkTypeId: selected?.value,
-      type: {
-        id: selected?.value,
-        name: selected?.name,
-        prefixUrl: selected?.siteName,
-        icon: selected?.icon
+      linkTypeId: selected.value,
+      type: { 
+        id: selected.value,
+        name: selected.name,
+        prefixUrl: selected.siteName,
+        icon: selected.icon
       }
     }
     append(newLink)
@@ -218,7 +219,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                 }}
               />
               <div className='mt-2 flex flex-wrap'>
-                {(field.value ?? []).map((tagId) => {
+                {(field.value ?? []).map((tagId: string) => {
                   const tag = tagOptions.find(t => t.value === tagId)
                   return (
                     <Tag
@@ -263,7 +264,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         <Controller
           control={control}
           name='price'
-          render={({ field }) => <Input {...field} placeholder='MezonBot' status={errorStatus(errors.price)} />}
+          render={({ field }) => <InputNumber {...field} placeholder='MezonBot' status={errorStatus(errors.price)} />}
         />
       </FormField>
 
@@ -309,7 +310,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
               onChange={(e) => setSocialLinkUrl(e.target.value)}
               prefix={
                 selectedSocialLink
-                  ? linkTypeList.data.find(l => l.id === selectedSocialLink)?.prefixUrl || ''
+                  ? linkTypeList.data.find((l: LinkTypeResponse) => l.id === selectedSocialLink)?.prefixUrl || ''
                   : ''
               }
               disabled={!selectedSocialLink}

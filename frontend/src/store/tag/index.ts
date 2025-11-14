@@ -1,4 +1,4 @@
-import { TagControllerGetTagsApiResponse, TagControllerSearchTagsApiArg, TagControllerSearchTagsApiResponse, tagService } from '@app/services/api/tag/tag'
+import { TagControllerGetTagsApiResponse, TagControllerSearchTagsApiResponse } from '@app/services/api/tag/tag.types'
 import { createSlice } from '@reduxjs/toolkit'
 import { tagExtraReducers } from './extraReducer'
 

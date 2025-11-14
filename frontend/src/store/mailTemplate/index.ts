@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { MailTemplateControllerGetAllMailTemplatesApiResponse, MailTemplateControllerSearchMailTemplatesApiResponse } from '@app/services/api/mailTemplate/mailTemplate'
+import { MailTemplateControllerGetAllMailsApiResponse, MailTemplateControllerGetMailsSearchApiResponse } from '@app/services/api/marketingMail/marketingMail.types'
 
 export interface IMailTemplateStore {
-    mailTemplateList: MailTemplateControllerGetAllMailTemplatesApiResponse
-    searchMailTemplateList: MailTemplateControllerSearchMailTemplatesApiResponse
+    mailTemplateList: MailTemplateControllerGetAllMailsApiResponse
+    searchMailTemplateList: MailTemplateControllerGetMailsSearchApiResponse
 }
 
 const initialState: IMailTemplateStore = {
-    mailTemplateList: {} as MailTemplateControllerGetAllMailTemplatesApiResponse,
-    searchMailTemplateList: {} as MailTemplateControllerSearchMailTemplatesApiResponse
+    mailTemplateList: {} as MailTemplateControllerGetAllMailsApiResponse,
+    searchMailTemplateList: {} as MailTemplateControllerGetMailsSearchApiResponse
 }
 
 const mailTemplateSlice = createSlice({

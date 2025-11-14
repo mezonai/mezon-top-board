@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
 import { Input } from 'antd'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { capitalize } from 'lodash'
 

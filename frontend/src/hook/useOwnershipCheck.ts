@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useAuth } from './useAuth'
+import { Role } from '@app/enums/role.enum'
 
 const useOwnershipCheck = () => {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ const useOwnershipCheck = () => {
       return false
     }
 
-    if (ownerId && ownerId !== userInfo.id && userInfo.role !== 'ADMIN') {
+    if (ownerId && ownerId !== userInfo.id && userInfo.role !== Role.ADMIN) {
       toast.error('You do not have permission to access this page.')
       navigate('/', { replace: shouldReplaceRoute })
       return false
