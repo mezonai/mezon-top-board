@@ -242,16 +242,16 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-gray-200'></Divider>
-            {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
-              <RatingForm
-                onSubmitted={() => {
-                  if (botId) {
-                    getRatingsByApp({ appId: botId });
-                    getMezonAppDetail({ id: botId });
-                  }
-                }}
-              />
-            )}
+              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
+                <RatingForm
+                  onSubmitted={() => {
+                    if (botId) {
+                      getRatingsByApp({ appId: botId });
+                      getMezonAppDetail({ id: botId });
+                    }
+                  }}
+                />
+              )}
             <Divider className='bg-gray-200'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
