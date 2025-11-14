@@ -9,7 +9,6 @@ export interface IBotCardProps {
 export interface ICompactBotCardProps {
   data?: GetRelatedMezonAppResponse
   isPublic?: boolean
-  isDragging?: boolean
 }
 
 export interface IAddBotFormProps {
