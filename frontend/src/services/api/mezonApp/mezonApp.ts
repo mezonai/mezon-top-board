@@ -15,7 +15,7 @@ import type {
   MezonAppControllerGetRelatedMezonAppApiResponse,
   MezonAppControllerGetRelatedMezonAppApiArg,
   MezonAppControllerSearchMezonAppApiResponse,
-  MezonAppControllerSearchMezonAppApiArg,
+  MezonAppControllerSearchMezonAppApiArg
 } from './mezonApp.types'
 
 const injectedRtkApi = api.injectEndpoints({
@@ -29,7 +29,6 @@ const injectedRtkApi = api.injectEndpoints({
         params: { ...queryArg }
       })
     }),
-
     mezonAppControllerGetMyApp: build.query<MezonAppControllerGetMyAppApiResponse, MezonAppControllerGetMyAppApiArg>({
       query: (queryArg) => ({
         url: `/api/mezon-app/my-app`,
