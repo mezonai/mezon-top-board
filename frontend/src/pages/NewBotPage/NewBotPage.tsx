@@ -1,6 +1,6 @@
-import { Steps, Upload } from 'antd'
+import { Steps } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
@@ -11,7 +11,6 @@ import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import useAuthRedirect from '@app/hook/useAuthRedirect'
 import useOwnershipCheck from '@app/hook/useOwnershipCheck'
-import { imageMimeTypes } from '@app/constants/mimeTypes'
 import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
@@ -35,7 +34,7 @@ import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
-import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
@@ -56,9 +55,7 @@ function NewBotPage() {
       : avatarBotDefault
   }, [botId, mezonAppDetail.featuredImage])
   const [avatar, setAvatar] = useState<string>(imgUrl)
-  const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const fileRef = useRef<File | null>(null)
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
@@ -125,46 +122,43 @@ function NewBotPage() {
     reset(formData);
   }, [mezonAppDetail.id, botId, userInfo?.id, reset]);
 
-  const handleBeforeUpload = (file: File) => {
-    if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!')
-      return false
-    }
-    const maxFileSize = 4 * 1024 * 1024
-    if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
-      return false
-    }
-
-    fileRef.current = file
-    setImgSrc(URL.createObjectURL(file))
-    setIsModalVisible(true)
-
-    return false
-  }
-
   const handleModalCancel = () => {
     setIsModalVisible(false)
-    setImgSrc('')
-    fileRef.current = null
   }
 
-  const handleModalConfirm = async (croppedFile: File) => {
-    try {
-      const formData = new FormData()
-      formData.append('file', croppedFile)
-      const response = await uploadImage(formData).unwrap()
+  const handleAvatarClick = () => {
+    setIsModalVisible(true)
+  }
 
-      if (response?.statusCode === 200) {
-        setAvatar(getUrlMedia(response.data?.filePath))
-        setValue('featuredImage', response.data?.filePath)
+  const handleMediaSelect = async (selection: File | string) => {
+    setIsModalVisible(false) 
+
+    try {
+      let filePath: string | undefined;
+
+      if (typeof selection === 'string') {
+        filePath = selection;
+      } else {
+        const formData = new FormData()
+        formData.append('file', selection)
+        const response = await uploadImage(formData).unwrap()
+
+        if (response?.statusCode === 200) {
+          filePath = response.data?.filePath;
+        } else {
+          throw new Error('Upload failed');
+        }
       }
 
-      toast.success('Upload Success')
+      if (filePath) {
+        setAvatar(getUrlMedia(filePath))
+        setValue('featuredImage', filePath)
+        toast.success('Upload Success');
+      } else {
+        toast.error('Could not get file path.');
+      }
     } catch (error) {
       toast.error('Upload failed!')
-    } finally {
-      handleModalCancel()
     }
   }
 
@@ -272,17 +266,13 @@ function NewBotPage() {
       <div className='flex items-center justify-between'>
         <div className='flex gap-6'>
           <div className='w-[80px] object-cover flex-shrink-0'>
-            <Upload accept={imageMimeTypes.join(',')} beforeUpload={handleBeforeUpload} showUploadList={false}>
+            <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
               <MTBAvatar imgUrl={avatar} isAllowUpdate={true} isUpdatingAvatar={isUpdatingAvatar} />
-            </Upload>
-            <CropImageModal
-              open={isModalVisible}
-              imgSrc={imgSrc}
-              originalFileName={fileRef.current?.name}
-              aspect={1}
-              onCancel={handleModalCancel}
-              onConfirm={handleModalConfirm}
-              parentLoading={isUpdatingAvatar}
+            </div>
+            <MediaManagerModal
+              isVisible={isModalVisible}
+              onChoose={handleMediaSelect}
+              onClose={handleModalCancel}
             />
           </div>
           <div>

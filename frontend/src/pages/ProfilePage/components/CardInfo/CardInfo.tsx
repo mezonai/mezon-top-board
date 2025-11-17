@@ -16,22 +16,18 @@ import {
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { Button, Popconfirm, Upload } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
-import { imageMimeTypes } from '@app/constants/mimeTypes'
-import { useState, useRef } from 'react'
-import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { useState } from 'react'
+import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
-
-  const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const fileRef = useRef<File | null>(null)
 
   const cardInfoLink = [
     {
@@ -82,38 +78,30 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   }
 
-  const handleBeforeUpload = (file: File) => {
-    if (isPublic) return false
-
-    const maxFileSize = 4 * 1024 * 1024
-    if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
-      return false
+  const handleUpdateProfilePath = async (filePath: string) => {
+    if (isPublic) return;
+    try {
+      await selfUpdate({
+        selfUpdateUserRequest: {
+          profileImage: filePath
+        }
+      }).unwrap();
+      toast.success('Update Success');
+    } catch (error) {
+      toast.error('Update failed!');
     }
-
-    if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!')
-      return false
-    }
-
-    fileRef.current = file
-    setImgSrc(URL.createObjectURL(file))
-    setIsModalVisible(true)
-    return false
   }
 
   const handleCancel = () => {
     setIsModalVisible(false)
-    setImgSrc('')
-    fileRef.current = null
   }
 
-  const handleModalConfirm = async (croppedFile: File) => {
-    try {
-      await handleUpload(croppedFile)
-    } catch (err) {
-    } finally {
-      handleCancel()
+  const handleMediaSelect = async (selection: File | string) => {
+    setIsModalVisible(false); 
+    if (typeof selection === 'string') {
+      await handleUpdateProfilePath(selection);
+    } else {
+      await handleUpload(selection);
     }
   }
 
@@ -132,20 +120,17 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   return (
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
       <div className='flex items-center gap-4 w-full max-lg:flex-col max-2xl:flex-col'>
-        <div className='flex-shrink-0'>
-          <Upload
-            accept={imageMimeTypes.join(',')}
-            disabled={isPublic}
-            listType='picture-circle'
-            beforeUpload={handleBeforeUpload}
-            showUploadList={false}
+        <div className='flex-shrink-0 w-[120px] object-cover'>
+          <div
+            onClick={() => !isPublic && setIsModalVisible(true)}
+            style={{ cursor: isPublic ? 'default' : 'pointer' }}
           >
             <MTBAvatar
               imgUrl={imgUrl}
               isAllowUpdate={!isPublic}
               isUpdatingAvatar={isUpdatingAvatar}
             />
-          </Upload>
+          </div>
         </div>
         <div className='text-lg font-semibold break-words max-w-full flex-1 min-w-0'>{userInfo?.name}</div>
       </div>
@@ -189,14 +174,10 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           </Button>
         </Popconfirm>
       }
-      <CropImageModal
-        open={isModalVisible}
-        imgSrc={imgSrc}
-        originalFileName={fileRef.current?.name}
-        aspect={1}
-        onCancel={handleCancel}
-        onConfirm={handleModalConfirm}
-        parentLoading={isUpdatingAvatar}
+      <MediaManagerModal
+        isVisible={isModalVisible}
+        onChoose={handleMediaSelect}
+        onClose={handleCancel}
       />
     </div>
   )
