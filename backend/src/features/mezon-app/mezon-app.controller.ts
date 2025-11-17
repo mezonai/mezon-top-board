@@ -47,9 +47,7 @@ export class MezonAppController {
   @RoleRequired([Role.ADMIN])
   listAdminMezonApp(@Query() query: SearchMezonAppRequest) {
     try {
-      return query.hasNewUpdate 
-      ? this.mezonAppService.listAdminHasNewUpdateApp(query) 
-      : this.mezonAppService.listAdminMezonApp(query);
+      return this.mezonAppService.listAdminMezonApp(query);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;

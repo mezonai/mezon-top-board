@@ -10,4 +10,5 @@ export type BaseListApiArg = BasePaginationApiArg & {
 
 export type SearchableApiArg = {
   search?: string;
+  hasNewUpdate?: boolean;
 };

@@ -478,30 +478,9 @@ export class MezonAppService {
   }
 
   async listAdminMezonApp(query: SearchMezonAppRequest) {
-    const { apps, total } = await this.buildSearchQuery(query);
-    const data = await apps.getMany();
-    return paginate<App, SearchMezonAppResponse>(
-      [data, total],
-      query.pageSize,
-      query.pageNumber,
-      (entity) => {
-        const mappedMezonApp = Mapper(SearchMezonAppResponse, entity);
-        mappedMezonApp.rateScore = this.getAverageRating(entity);
-        mappedMezonApp.tags = entity.tags.map((tag) => ({
-          id: tag.id,
-          name: tag.name,
-        }));
-        mappedMezonApp.owner = entity.owner;
-        mappedMezonApp.versions = entity.versions;
-        return mappedMezonApp;
-      },
-    );
-  }
-  
-  async listAdminHasNewUpdateApp(query: SearchMezonAppRequest) {
-    const { apps, total } = await this.buildSearchQuery(query, "app.hasNewUpdate = :hasNewUpdate", {
-      hasNewUpdate: true,
-    });
+    const { apps, total } = query.hasNewUpdate 
+      ? await this.buildSearchQuery(query, "app.hasNewUpdate = :hasNewUpdate", { hasNewUpdate: query.hasNewUpdate }) 
+      : await this.buildSearchQuery(query);
     const data = await apps.getMany();
     return paginate<App, SearchMezonAppResponse>(
       [data, total],

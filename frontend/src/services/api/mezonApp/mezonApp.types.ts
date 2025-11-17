@@ -92,9 +92,7 @@ export type UpdateMezonAppRequest = Partial<CreateMezonAppRequest> & {
   id: string;
 };
 
-export type MezonAppControllerListAdminMezonAppApiArg = BaseListApiArg & SearchableApiArg & {
-  hasNewUpdate?: boolean;
-};
+export type MezonAppControllerListAdminMezonAppApiArg = BaseListApiArg & SearchableApiArg;
 export type MezonAppControllerListAdminMezonAppApiResponse = unknown; // TODO: define type
 
 export type MezonAppControllerGetMyAppApiArg = BaseListApiArg & SearchableApiArg & {

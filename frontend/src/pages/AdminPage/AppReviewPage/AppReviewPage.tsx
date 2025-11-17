@@ -24,14 +24,14 @@ function AppReviewPage() {
     const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin)
     const { totalCount, data: tableData } = dataAPI || { totalCount: 0, data: [] }
 
-    const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery, hasNewUpdate: boolean = true) => {
+    const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery) => {
         listAdminMezonApp({
             search,
             pageSize: size,
             pageNumber: page,
             sortField: 'updatedAt',
             sortOrder: 'DESC',
-            hasNewUpdate
+            hasNewUpdate: true,
         })
     }
 
