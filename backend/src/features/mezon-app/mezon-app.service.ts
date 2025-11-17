@@ -210,10 +210,6 @@ export class MezonAppService {
     const [appIds, total] = await whereCondition.getManyAndCount();
     const ids = appIds.map(a => a.id);
 
-    if (ids.length === 0) {
-      return { apps: this.appRepository.getRepository().createQueryBuilder("app").where("1=0"), total: 0 };
-    }
-
     const apps = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
@@ -225,7 +221,7 @@ export class MezonAppService {
       .leftJoinAndSelect("version.tags", "versionTag")
       .leftJoinAndSelect("version.socialLinks", "versionSocialLink")
       .leftJoinAndSelect("versionSocialLink.type", "versionLinkType")
-      .where("app.id IN (:...ids)", { ids });
+      .where("app.id IN (:...ids)", { ids: ids.length ? ids : ["00000000-0000-0000-0000-000000000000"] });
 
     if (query.sortField === SortField.NAME) {
       apps
