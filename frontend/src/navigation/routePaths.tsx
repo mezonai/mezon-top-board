@@ -13,6 +13,7 @@ import SearchPage from '@app/pages/SearchPage/SearchPage'
 import TermsPage from '@app/pages/TermsPage/TermsPage'
 import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
+import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 
 export const routePaths: RoutePath[] = [
   {
@@ -22,6 +23,14 @@ export const routePaths: RoutePath[] = [
     strLabel: 'Home',
     isShowMenu: true,
     requireAuth: false,
+  },
+  {
+    index: false,
+    path: '/welcome',
+    element: <OnboardingPage />,
+    strLabel: 'Welcome',
+    isShowMenu: false,
+    requireAuth: true,
   },
   {
     index: false,
