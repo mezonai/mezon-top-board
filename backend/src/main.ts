@@ -1,8 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import helmet from 'helmet';
 import { json, urlencoded } from "express";
-import { AllExceptionsFilter } from "@domain/common/filters/all-exception.filter";
 import config from "@config/env.config";
 import { configStaticFiles } from "@config/files.config";
 import { configHbsPartials } from "@config/hbs";
@@ -14,27 +12,6 @@ configHbsPartials();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
-  app.use(helmet({
-    frameguard: { action: 'deny' },
-    xssFilter: true,
-    noSniff: true,
-    hidePoweredBy: true,
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "https://www.googletagmanager.com",
-          "https://www.google-analytics.com",
-        ],
-        imgSrc: ["'self'", "data:", "blob:", "https://www.google-analytics.com"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        connectSrc: ["'self'", "https://www.google-analytics.com"],
-        objectSrc: ["'none'"],
-        frameAncestors: ["'none'"],
-      },
-    },
-  }));
   app.use((req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     next();
@@ -45,7 +22,6 @@ async function bootstrap() {
     origin: [config().APP_CLIENT_URL],
     credentials: true,
   });
-  app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
