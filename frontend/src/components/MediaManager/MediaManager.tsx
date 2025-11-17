@@ -127,27 +127,24 @@ const MediaManagerModal = ({
   const handleChoose = async () => {
     try {
       if (selectedFile) {
-        const formData = new FormData()
-        formData.append('file', selectedFile)
-        onChoose(selectedFile)
+        onChoose(selectedFile);
       }
       else if (selectedPath) {
-        onChoose(selectedPath)
-      } else if (selectedImage) {
-        onChoose(selectedImage)
-      } else {
-        toast.error('Please select an image')
-        return
+        onChoose(selectedPath);
+      }
+      else {
+        toast.error('Please select an image');
+        return;
       }
 
-      setSelectedImage(null)
-      setSelectedFile(null)
-      setSelectedPath(null)
-      setActiveTab('1')
-      setPage(1)
-      onClose()
+      setSelectedImage(null);
+      setSelectedFile(null);
+      setSelectedPath(null);
+      setActiveTab('1');
+      setPage(1);
+      onClose();
     } catch (error) {
-      toast.error('Upload failed!')
+      toast.error('Upload failed!');
     }
   }
 

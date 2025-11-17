@@ -15,8 +15,8 @@ import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
-import { 
-  useLazyMezonAppControllerGetMezonAppDetailQuery, 
+import {
+  useLazyMezonAppControllerGetMezonAppDetailQuery,
 } from '@app/services/api/mezonApp/mezonApp'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
@@ -39,7 +39,7 @@ import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
 
-type StepFieldMap = {[key: number]: FieldPath<CreateMezonAppRequest>[]}
+type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -97,7 +97,7 @@ function NewBotPage() {
   useEffect(() => {
     if (isEmpty(tagList.data)) getTagList()
     getSocialLink()
-  }, [getTagList, getSocialLink, tagList.data]) 
+  }, [getTagList, getSocialLink, tagList.data])
 
   useEffect(() => {
     if (!botId) {
@@ -131,7 +131,7 @@ function NewBotPage() {
   }
 
   const handleMediaSelect = async (selection: File | string) => {
-    setIsModalVisible(false) 
+    setIsModalVisible(false);
 
     try {
       let filePath: string | undefined;
@@ -139,26 +139,22 @@ function NewBotPage() {
       if (typeof selection === 'string') {
         filePath = selection;
       } else {
-        const formData = new FormData()
-        formData.append('file', selection)
-        const response = await uploadImage(formData).unwrap()
+        const formData = new FormData();
+        formData.append('file', selection);
 
-        if (response?.statusCode === 200) {
-          filePath = response.data?.filePath;
-        } else {
-          throw new Error('Upload failed');
-        }
+        const response = await uploadImage(formData).unwrap();
+        filePath = response.data.filePath;
       }
 
       if (filePath) {
-        setAvatar(getUrlMedia(filePath))
-        setValue('featuredImage', filePath)
+        setAvatar(getUrlMedia(filePath));
+        setValue('featuredImage', filePath);
         toast.success('Upload Success');
       } else {
         toast.error('Could not get file path.');
       }
     } catch (error) {
-      toast.error('Upload failed!')
+      toast.error('Upload failed!');
     }
   }
 
@@ -171,7 +167,7 @@ function NewBotPage() {
     'pricingTag',
     'price',
     'supportUrl',
-    'featuredImage', 
+    'featuredImage',
     'socialLinks',
     'remark',
     'isAutoPublished'
@@ -180,20 +176,20 @@ function NewBotPage() {
   const stepFieldMap = useMemo((): StepFieldMap => {
     if (isEditMode) {
       return {
-        0: step3FillDetailsFields, 
-        1: [], 
-        2: []  
+        0: step3FillDetailsFields,
+        1: [],
+        2: []
       }
-    } 
-      return {
-        0: ['type'],
-        1: ['mezonAppId'],
-        2: step3FillDetailsFields, 
-        3: [], 
-        4: []  
-      }
-    
-  }, [isEditMode, step3FillDetailsFields]) 
+    }
+    return {
+      0: ['type'],
+      1: ['mezonAppId'],
+      2: step3FillDetailsFields,
+      3: [],
+      4: []
+    }
+
+  }, [isEditMode, step3FillDetailsFields])
 
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
