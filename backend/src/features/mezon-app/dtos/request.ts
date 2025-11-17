@@ -60,6 +60,10 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({ enum: MezonAppType, description: 'Filter by bot or app type' })
   @IsOptional()
   type?: MezonAppType;
+
+  @ApiPropertyOptional({ description: "Filter by has new update" })
+  @IsOptional()
+  hasNewUpdate?: boolean;
 }
 
 export class CreateMezonAppRequest extends CreateAppInfoRequest {

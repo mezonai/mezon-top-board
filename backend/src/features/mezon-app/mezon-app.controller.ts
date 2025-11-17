@@ -47,19 +47,9 @@ export class MezonAppController {
   @RoleRequired([Role.ADMIN])
   listAdminMezonApp(@Query() query: SearchMezonAppRequest) {
     try {
-      return this.mezonAppService.listAdminMezonApp(query);
-    } catch (error) {
-      this.logger.error("An error occured", error);
-      throw error;
-    }
-  }
-
-  @Get("admin-review")
-  @ApiBearerAuth()
-  @RoleRequired([Role.ADMIN])
-  listAdminHasNewUpdateApp(@Query() query: SearchMezonAppRequest) {
-    try {
-      return this.mezonAppService.listAdminHasNewUpdateApp(query);
+      return query.hasNewUpdate 
+      ? this.mezonAppService.listAdminHasNewUpdateApp(query) 
+      : this.mezonAppService.listAdminMezonApp(query);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;

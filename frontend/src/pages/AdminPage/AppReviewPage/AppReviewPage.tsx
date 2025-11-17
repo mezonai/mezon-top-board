@@ -2,7 +2,7 @@ import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
 import { Button, Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { useLazyMezonAppControllerListAdminHasNewUpdateAppQuery } from '@app/services/api/mezonApp/mezonApp'
+import { useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { GetMezonAppDetailsResponse, OwnerInMezonAppDetailResponse, AppVersionDetailsDto } from '@app/services/api/mezonApp/mezonApp.types'
 import { formatDate } from '@app/utils/date'
 import PreviewModal from '@app/components/PreviewModal/PreviewModal'
@@ -20,17 +20,18 @@ function AppReviewPage() {
     const [openDetailModal, setOpenDetailModal] = useState(false)
     const [openReviewModal, setOpenReviewModal] = useState(false)
     const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
-    const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminHasNewUpdateAppQuery()
-    const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdminHasNewUpdate)
+    const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery()
+    const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin)
     const { totalCount, data: tableData } = dataAPI || { totalCount: 0, data: [] }
 
-    const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery) => {
+    const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery, hasNewUpdate: boolean = true) => {
         listAdminMezonApp({
             search,
             pageSize: size,
             pageNumber: page,
             sortField: 'updatedAt',
             sortOrder: 'DESC',
+            hasNewUpdate
         })
     }
 
