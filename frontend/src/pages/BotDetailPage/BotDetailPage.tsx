@@ -18,7 +18,7 @@ import { IRatingStore } from '@app/store/rating'
 import { ITagStore } from '@app/store/tag'
 import { ApiError } from '@app/types/API.types'
 import { Carousel, Divider, Spin } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -28,7 +28,6 @@ import RatingForm from './components/RatingForm/RatingForm'
 import useOwnershipCheck from '@app/hook/useOwnershipCheck'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
-import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
@@ -61,7 +60,6 @@ function BotDetailPage() {
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { isLogin } = useAuth()
-  const [dragging, setDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -164,14 +162,6 @@ function BotDetailPage() {
     }
   ]
 
-  const handleAfterChange = useMemo(
-    () =>
-      debounce(() => {
-        setDragging(false);
-      }, 100),
-    []
-  );
-
   return (
     <div className='m-auto pt-10 pb-10 w-[75%]'>
       <MtbTypography>Explore milions of mezon bots</MtbTypography>
@@ -199,13 +189,19 @@ function BotDetailPage() {
             <MtbTypography variant='h3'>More like this</MtbTypography>
             <Divider className='bg-gray-200'></Divider>
             {relatedMezonApp?.length > 0 ? (
-              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
-                slidesToShow={4}  responsive={responsive} className='text-center' 
-                beforeChange={() => setDragging(true)}
-                afterChange={handleAfterChange}>
+              <Carousel
+                arrows={!isMobile}
+                infinite={true}
+                draggable
+                swipeToSlide={true}
+                touchThreshold={5}
+                variableWidth={false}
+                slidesToShow={4}
+                responsive={responsive} className='text-center'
+              >
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
-                    <CompactBotCard data={bot} isDragging={dragging} />
+                    <CompactBotCard data={bot} />
                   </div>
                 ))}
               </Carousel>
