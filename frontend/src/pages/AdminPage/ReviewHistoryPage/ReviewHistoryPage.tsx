@@ -1,15 +1,15 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons'
-import { REVIEW_HISTORY_COLUMNS } from '@app/constants/table.constant'
+import type { ColumnsType } from 'antd/es/table'
 import {
   useLazyReviewHistoryControllerSearchAppReviewsQuery,
   useReviewHistoryControllerDeleteAppReviewMutation,
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
-import { mapDataSourceTable } from '@app/utils/table'
-import { Button, Input, Popconfirm, Table, Tag, Tooltip } from 'antd'
+import { Button, Input, Popconfirm, Table, Tag, Tooltip, Typography } from 'antd'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { formatDate } from '@app/utils/date'
 import { useEffect, useState } from 'react'
 import ReviewHistoryModal from './ReviewHistoryModal'
 import { toast } from 'react-toastify'
@@ -93,92 +93,111 @@ function ReviewHistoryPage() {
     }
   }
 
-  const dataHistoryTable = !!data?.data?.length ? mapDataSourceTable(data?.data) : []
-  const mappedCols = REVIEW_HISTORY_COLUMNS.map(col => {
-    if (['remark', 'app', 'reviewer'].includes(col.key)) {
-      return {
-        ...col,
-        ellipsis: true,
-        render: (_: any, record: ReviewHistoryResponse) => ( 
-          col.key === 'remark' ? record.remark : col.key === 'app' ? record.app?.name : record.reviewer?.name || ''
-        )
-      }
-    }
+  const dataHistoryTable = data?.data || []
 
-    if (col.key === 'featuredImage') {
-      return {
-        ...col,
-        render: (_: any, record: ReviewHistoryResponse) => (
-          <img
-            src={record.app?.featuredImage ? getUrlMedia(record.app.featuredImage) : sampleBotImg}
-            alt={record.app?.name}
-            style={{ width: 100, display: 'block', margin: '0 auto' }}
-          />
-        )
-      }
-    }
-
-    if (col.key === 'version') {
-      return {
-        ...col,
-        align: 'center',
-        render: (_: any, record: ReviewHistoryResponse) => (
-          <div className='text-center'>{record.appVersion?.version ?? '-'}</div>
-        )
-      }
-    }
-
-    if (col.key === 'isApproved') {
-      return {
-        ...col,
-        render: (_: any, record: ReviewHistoryResponse) => (
-          <Tag color={record.isApproved ? 'green' : 'red'}>
-            {record.isApproved ? 'Approved' : 'Rejected'}
-          </Tag>
-        )
-      }
-    }
-
-    return col
-  })
-
-  const actionCol = {
-    title: 'Action',
-    key: 'action',
-    render: (_: any, record: ReviewHistoryResponse) => (
-      <div className='flex gap-3'>
-        <Tooltip title='View'>
-          <Button
-            color='cyan'
-            variant='outlined'
-            icon={<EyeOutlined />}
-            onClick={() => handleView(record.app.id || '')}
-          ></Button>
-        </Tooltip>
-        <Tooltip title='Edit'>
-          <Button
-            color='default'
-            variant='outlined'
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record.id || '')}
-          ></Button>
-        </Tooltip>
-        <Popconfirm
-          title='Delete the history'
-          description='Are you sure to delete this history?'
-          onConfirm={() => handleDelete(record?.id)}
-          okText='Yes'
-          cancelText='No'
-        >
-          <Tooltip title='Delete'>
-            <Button color='danger' variant='outlined' icon={<DeleteOutlined />}></Button>
+  const columns: ColumnsType<ReviewHistoryResponse> = [
+    {
+      title: 'Image',
+      dataIndex: 'featuredImage',
+      key: 'featuredImage',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <img
+          src={record.app?.featuredImage ? getUrlMedia(record.app.featuredImage) : sampleBotImg}
+          alt={record.app?.name}
+          style={{ width: 100, display: 'block', margin: '0 auto' }}
+        />
+      )
+    },
+    {
+      title: 'App',
+      key: 'app',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>
+          {record?.app?.name || ''}
+        </div>
+      )
+    },
+    {
+      title: 'Version',
+      align: 'center',
+      key: 'version',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <div className='text-center'>{record.appVersion?.version ?? '-'}</div>
+      )
+    },
+    {
+      title: 'Remark',
+      dataIndex: 'remark',
+      key: 'remark',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <Typography.Paragraph ellipsis={{ rows: 2, expandable: false }}>
+          {record.remark || '-'}
+        </Typography.Paragraph>
+      )
+    },
+    {
+      title: 'Review Status',
+      key: 'isApproved',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <Tag color={record.isApproved ? 'green' : 'red'}>
+          {record.isApproved ? 'Approved' : 'Rejected'}
+        </Tag>
+      )
+    },
+    {
+      title: 'Reviewer',
+      key: 'reviewer',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>
+          {record?.reviewer?.name || ''}
+        </div>
+      )
+    },
+    {
+      title: 'Reviewed At',
+      dataIndex: 'reviewedAt',
+      key: 'reviewedAt',
+      align: 'center',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <div className='text-center'>{formatDate(record.reviewedAt, 'DD-MM-YYYY')}</div>
+      )
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_: any, record: ReviewHistoryResponse) => (
+        <div className='flex gap-3'>
+          <Tooltip title='View'>
+            <Button
+              color='cyan'
+              variant='outlined'
+              icon={<EyeOutlined />}
+              onClick={() => handleView(record.app.id || '')}
+            />
           </Tooltip>
-        </Popconfirm>
-      </div>
-    )
-  }
-
-  const columns = [...mappedCols, actionCol]
+          <Tooltip title='Edit'>
+            <Button
+              color='default'
+              variant='outlined'
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record.id || '')}
+            />
+          </Tooltip>
+          <Popconfirm
+            title='Delete the history'
+            description='Are you sure to delete this history?'
+            onConfirm={() => handleDelete(record?.id)}
+            okText='Yes'
+            cancelText='No'
+          >
+            <Tooltip title='Delete'>
+              <Button color='danger' variant='outlined' icon={<DeleteOutlined />} />
+            </Tooltip>
+          </Popconfirm>
+        </div>
+      )
+    }
+  ]
 
   return (
     <>
