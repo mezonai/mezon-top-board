@@ -83,7 +83,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
         <div className='flex items-start justify-between mb-6 gap-4 flex-wrap'>
           <div className='flex items-center gap-3'>
             <div>
-              <MtbTypography variant='h3' customClassName='!text-primary-hover !mb-0'>
+              <MtbTypography variant='h2' customClassName='!text-primary-hover !mb-0'>
                 Profile Information
               </MtbTypography>
               <MtbTypography variant='p' customClassName='text-gray-500 text-sm !mt-0'>
@@ -152,7 +152,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
             loading={isUpdating}
             disabled={isUpdating}
             onClick={() => handleSubmit(onSubmit)()}
-            className='hover:!bg-primary-hover'
+            className='hover:!bg-primary-hover !text-sm !p-5'
           >
             Save & Continue
           </MtbButton>

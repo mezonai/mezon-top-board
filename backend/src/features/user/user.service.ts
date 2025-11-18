@@ -50,6 +50,12 @@ export class UserService {
   async getUserDetails(userId: string) {
     const user = await this.userRepository.findById(userId);
     if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
+
+    const firstLoginFlag = user.isFirstLogin;
+    if (firstLoginFlag) {
+      await this.userRepository.update(userId, { isFirstLogin: false });
+      user.isFirstLogin = true;
+    }
     return new Result({ data: Mapper(GetUserDetailsResponse, user) });
   }
 

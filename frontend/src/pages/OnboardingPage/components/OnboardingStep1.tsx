@@ -11,8 +11,8 @@ interface Props {
 function OnboardingStep1({ onSkip, onNext }: Props) {
     return (
         <div className='flex flex-col items-center py-10 px-6 w-full'>
-            <RocketOutlined className='text-5xl !text-primary-hover mb-4' />
-            <MtbTypography variant='h2' customClassName='mt-4 !text-primary-hover'>
+            <RocketOutlined className='text-8xl !text-primary-hover mb-4' />
+            <MtbTypography variant='h1' customClassName='mt-4 !text-primary-hover'>
                 Welcome to Mezon Top Board
             </MtbTypography>
 
@@ -37,18 +37,18 @@ function OnboardingStep1({ onSkip, onNext }: Props) {
                 </FeatureCard>
             </div>
 
-            <MtbTypography variant='h2' customClassName='mt-20 !text-primary-hover'>
+            <MtbTypography variant='h1' customClassName='mt-20 !text-primary-hover'>
                 Ready to get started?
             </MtbTypography>
-            <MtbTypography variant='p' customClassName='mt-1'>
+            <MtbTypography variant='p' customClassName='mt-1 text-center'>
                 Let's set up your profile to personalize your experience.
             </MtbTypography>
 
             <div className='flex justify-center gap-4 mt-6'>
-                <MtbButton color='default' variant='outlined' className='hover:!text-primary-hover' onClick={onSkip}>
+                <MtbButton color='default' variant='outlined' className='hover:!text-primary-hover !p-5 !text-sm' onClick={onSkip}>
                     Skip for now
                 </MtbButton>
-                <MtbButton color='primary' variant='solid' className='hover:!bg-primary-hover' onClick={onNext}>
+                <MtbButton color='primary' variant='solid' className='hover:!bg-primary-hover !p-5 !text-sm' onClick={onNext}>
                     Get Started
                 </MtbButton>
             </div>
