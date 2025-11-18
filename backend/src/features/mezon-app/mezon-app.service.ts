@@ -196,6 +196,12 @@ export class MezonAppService {
       });
     }
 
+    if(query?.hasNewUpdate){
+      whereCondition.andWhere("app.hasNewUpdate = :hasNewUpdate", {
+        hasNewUpdate: query.hasNewUpdate,
+      });
+    }
+
     const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
     const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
@@ -478,9 +484,7 @@ export class MezonAppService {
   }
 
   async listAdminMezonApp(query: SearchMezonAppRequest) {
-    const { apps, total } = query.hasNewUpdate 
-      ? await this.buildSearchQuery(query, "app.hasNewUpdate = :hasNewUpdate", { hasNewUpdate: query.hasNewUpdate }) 
-      : await this.buildSearchQuery(query);
+    const { apps, total } = await this.buildSearchQuery(query);
     const data = await apps.getMany();
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
