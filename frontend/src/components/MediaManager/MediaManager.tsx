@@ -22,9 +22,9 @@ const MediaManagerModal = ({
   onChoose: (path: File | string) => void
   onClose: () => void
 }) => {
+  const [selectedFileToCrop, setSelectedFileToCrop] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
@@ -58,9 +58,7 @@ const MediaManagerModal = ({
       onError(new Error('Invalid file type'))
       return
     }
-    setSelectedFile(file);
-    setSelectedImage(URL.createObjectURL(file))
-    setSelectedPath(null)
+    setSelectedFileToCrop(file)
     onSuccess('ok')
     setIsCropModalOpen(true)
   }
@@ -104,9 +102,9 @@ const MediaManagerModal = ({
                   alt=''
                   className='w-[6.5rem] h-[6.5rem] object-cover cursor-pointer'
                   style={{
-                    border: selectedPath === item.filePath ? '2px solid blue' : '1px solid #ccc'
+                    border: selectedImage === url ? '2px solid blue' : '1px solid #ccc'
                   }}
-                  onClick={() => { setSelectedImage(url); setSelectedPath(item.filePath); }}
+                  onClick={() => setSelectedImage(url)}
                 />
               );
             })}
@@ -127,24 +125,22 @@ const MediaManagerModal = ({
   const handleChoose = async () => {
     try {
       if (selectedFile) {
-        onChoose(selectedFile);
+        onChoose(selectedFile)
       }
-      else if (selectedPath) {
-        onChoose(selectedPath);
-      }
-      else {
-        toast.error('Please select an image');
-        return;
+      else if (selectedImage) {
+        onChoose(selectedImage)
+      } else {
+        toast.error('Please select an image')
+        return
       }
 
-      setSelectedImage(null);
-      setSelectedFile(null);
-      setSelectedPath(null);
-      setActiveTab('1');
-      setPage(1);
-      onClose();
+      setSelectedImage(null)
+      setSelectedFile(null)
+      setActiveTab('1')
+      setPage(1)
+      onClose()
     } catch (error) {
-      toast.error('Upload failed!');
+      toast.error('Upload failed!')
     }
   }
 
@@ -153,17 +149,18 @@ const MediaManagerModal = ({
     setPage(1)
     setSelectedFile(null)
     setSelectedImage(null)
-    setSelectedPath(null)
     onClose()
   }
 
   const handleCloseModal = () => {
     setIsCropModalOpen(false)
+    setSelectedFileToCrop(null)
     setSelectedFile(null)
     setSelectedImage(null)
   }
 
   const handleChooseCroppedImage = (file: File) => {
+    setSelectedFileToCrop(null)
     setSelectedFile(file)
     setSelectedImage(URL.createObjectURL(file))
     setIsCropModalOpen(false)
@@ -210,8 +207,8 @@ const MediaManagerModal = ({
       </Modal>
       <CropImageModal
         open={isCropModalOpen}
-        imgSrc={selectedImage || ''}
-        originalFileName={selectedFile?.name}
+        imgSrc={selectedFileToCrop ? URL.createObjectURL(selectedFileToCrop) : ''}
+        originalFileName={selectedFileToCrop?.name}
         aspect={1}
         onCancel={handleCloseModal}
         onConfirm={handleChooseCroppedImage}
