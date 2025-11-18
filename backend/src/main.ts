@@ -17,10 +17,14 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
   app.enableCors({
     origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
       const allowedOrigins = [
         /^https?:\/\/([a-zA-Z0-9-]+\.)*nccsoft\.vn$/,
         /^https?:\/\/([a-zA-Z0-9-]+\.)*mezon\.ai$/,
-        /^http?:\/\/localhost(:\d+)?$/,
+        /^https?:\/\/localhost(:\d+)?$/,
       ];
 
       const isAllowed = allowedOrigins.some((pattern) => pattern.test(origin));
