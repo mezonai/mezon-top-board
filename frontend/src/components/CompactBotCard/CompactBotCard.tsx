@@ -14,24 +14,36 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setMouseDownPos({ x: e.clientX, y: e.clientY })
+    setIsDragging(false)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!mouseDownPos) return
+
+    const dx = Math.abs(e.clientX - mouseDownPos.x)
+    const dy = Math.abs(e.clientY - mouseDownPos.y)
+
+    if (dx > 3 || dy > 3) {
+      setIsDragging(true)
+    }
   }
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!mouseDownPos) return
 
+    if (isDragging) {
+      setMouseDownPos(null)
+      return
+    }
+
     const target = e.target as HTMLElement
     if (target.closest('.owner-actions')) return
 
-    const dx = Math.abs(e.clientX - mouseDownPos.x)
-    const dy = Math.abs(e.clientY - mouseDownPos.y)
-    const distance = Math.sqrt(dx * dx + dy * dy)
-
-    if (distance < 5) {
-      handleNavigateDetail(e)
-    }
+    handleNavigateDetail(e)
     setMouseDownPos(null)
   }
 
@@ -55,6 +67,7 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
       className='shadow-sm rounded-2xl p-4 bg-white cursor-pointer relative z-1 select-none'
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
     >
       {!isPublic && <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)} />}
       <div className='relative'>
