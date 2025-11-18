@@ -196,7 +196,7 @@ export class MezonAppService {
       });
     }
 
-    if(query?.hasNewUpdate){
+    if(query?.hasNewUpdate !== undefined){
       whereCondition.andWhere("app.hasNewUpdate = :hasNewUpdate", {
         hasNewUpdate: query.hasNewUpdate,
       });
