@@ -3,8 +3,7 @@ import { App, AppVersion } from '@app/types';
 import { User } from '@app/types/user.types';
 import { Tag } from '@app/types/tag.types';
 import { Link } from '@app/types/link.types';
-import { MezonAppType } from '@app/enums/mezonAppType.enum';
-import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
+import { SearchMezonAppRequest } from '@app/types/common.types';
 import { RequestWithId } from '@app/types/API.types';
 import { LinkTypeResponse } from '../linkType/linkType.types';
 import { SocialLink } from '@app/types/link.types';
@@ -92,14 +91,12 @@ export type UpdateMezonAppRequest = Partial<CreateMezonAppRequest> & {
   id: string;
 };
 
-export type MezonAppControllerListAdminMezonAppApiArg = BaseListApiArg & SearchableApiArg;
+export type MezonAppControllerListAdminMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerListAdminMezonAppApiResponse = unknown; // TODO: define type
 
-export type MezonAppControllerGetMyAppApiArg = BaseListApiArg & SearchableApiArg & {
-  tags?: string[];
-  type?: MezonAppType;
-};
+export type MezonAppControllerGetMyAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerGetMyAppApiResponse = unknown; // TODO: define type
+
 export type MezonAppControllerGetMezonAppDetailApiArg = { id: string };
 export type MezonAppControllerGetMezonAppDetailApiResponse = HttpResponse<GetMezonAppDetailsResponse>;
 
@@ -115,10 +112,5 @@ export type MezonAppControllerUpdateMezonAppApiResponse = App;
 export type MezonAppControllerGetRelatedMezonAppApiArg = { id: string };
 export type MezonAppControllerGetRelatedMezonAppApiResponse = HttpResponse<GetRelatedMezonAppResponse[]>;
 
-export type MezonAppControllerSearchMezonAppApiArg = BaseListApiArg &
-  SearchableApiArg & {
-    ownerId?: string;
-    type?: MezonAppType;
-    tags?: string[];
-  };
+export type MezonAppControllerSearchMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerSearchMezonAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>;
