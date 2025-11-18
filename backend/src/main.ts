@@ -1,4 +1,4 @@
-import { ValidationPipe } from "@nestjs/common";
+import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import { json, urlencoded } from "express";
@@ -16,9 +16,27 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
   app.enableCors({
-    origin: [config().APP_CLIENT_URL],
-    credentials: true,
-  });
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const allowedOrigins = [
+      /^https?:\/\/([a-zA-Z0-9-]+\.)*nccsoft\.vn$/,
+      /^https?:\/\/([a-zA-Z0-9-]+\.)*mezon\.ai$/,
+      /^http?:\/\/localhost(:\d+)?$/,
+    ];
+
+    const isAllowed = allowedOrigins.some((pattern) => pattern.test(origin));
+
+    if (isAllowed) {
+      return callback(null, true);
+    } else {
+      return callback(new BadRequestException(`Origin ${origin} not allowed by CORS`), false);
+    }
+  },
+  credentials: true,
+});
   app.use(json({ limit: '26mb' }));
   app.use(urlencoded({ limit: '26mb', extended: true }));
   app.useGlobalPipes(
