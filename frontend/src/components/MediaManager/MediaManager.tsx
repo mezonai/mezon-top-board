@@ -11,6 +11,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
 import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
+import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 
 const MediaManagerModal = ({
   isVisible,
@@ -21,10 +22,12 @@ const MediaManagerModal = ({
   onChoose: (path: File | string) => void
   onClose: () => void
 }) => {
+  const [selectedFileToCrop, setSelectedFileToCrop] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
+  const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
@@ -55,9 +58,9 @@ const MediaManagerModal = ({
       onError(new Error('Invalid file type'))
       return
     }
-    setSelectedFile(file);
-    setSelectedImage(URL.createObjectURL(file))
+    setSelectedFileToCrop(file)
     onSuccess('ok')
+    setIsCropModalOpen(true)
   }
 
   const tabItems = [
@@ -122,8 +125,6 @@ const MediaManagerModal = ({
   const handleChoose = async () => {
     try {
       if (selectedFile) {
-        const formData = new FormData()
-        formData.append('file', selectedFile)
         onChoose(selectedFile)
       }
       else if (selectedImage) {
@@ -151,43 +152,68 @@ const MediaManagerModal = ({
     onClose()
   }
 
-  return (
-    <Modal zIndex={3}
-      width={'59rem'}
-      centered
-      title='Choose Icon'
-      open={isVisible}
-      onCancel={handleCancel}
-      onOk={handleChoose}
-      footer={
-        <div className="flex justify-between items-center">
-          {activeTab === '2' && (
-            <div className="text-sm text-gray-500 pl-2">
-              Total {mediaList?.totalCount || 0} image(s)
-            </div>
-          )}
+  const handleCloseModal = () => {
+    setIsCropModalOpen(false)
+    setSelectedFileToCrop(null)
+    setSelectedFile(null)
+    setSelectedImage(null)
+  }
 
-          <div className="ml-auto flex gap-2">
-            <Button onClick={handleCancel} color="default">
-              Cancel
-            </Button>
-            <Button onClick={handleChoose}>OK</Button>
+  const handleChooseCroppedImage = (file: File) => {
+    setSelectedFileToCrop(null)
+    setSelectedFile(file)
+    setSelectedImage(URL.createObjectURL(file))
+    setIsCropModalOpen(false)
+  }
+
+  return (
+    <>
+      <Modal zIndex={3}
+        width={'59rem'}
+        centered
+        title='Choose Icon'
+        open={isVisible}
+        onCancel={handleCancel}
+        onOk={handleChoose}
+        footer={
+          <div className="flex justify-between items-center">
+            {activeTab === '2' && (
+              <div className="text-sm text-gray-500 pl-2">
+                Total {mediaList?.totalCount || 0} image(s)
+              </div>
+            )}
+
+            <div className="ml-auto flex gap-2">
+              <Button onClick={handleCancel} color="default">
+                Cancel
+              </Button>
+              <Button onClick={handleChoose}>OK</Button>
+            </div>
           </div>
-        </div>
-      }
-    >
-      <Tabs className=''
-        activeKey={activeTab}
-        onChange={(key) => {
-          setActiveTab(key)
-          if (key === '2') {
-            setSelectedFile(null)
-          }
-        }}
-        type='card'
-        items={tabItems}
+        }
+      >
+        <Tabs className=''
+          activeKey={activeTab}
+          onChange={(key) => {
+            setActiveTab(key)
+            if (key === '2') {
+              setSelectedFile(null)
+              setIsCropModalOpen(false)
+            }
+          }}
+          type='card'
+          items={tabItems}
+        />
+      </Modal>
+      <CropImageModal
+        open={isCropModalOpen}
+        imgSrc={selectedFileToCrop ? URL.createObjectURL(selectedFileToCrop) : ''}
+        originalFileName={selectedFileToCrop?.name}
+        aspect={1}
+        onCancel={handleCloseModal}
+        onConfirm={handleChooseCroppedImage}
       />
-    </Modal>
+    </>
   )
 }
 
