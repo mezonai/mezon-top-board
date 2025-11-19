@@ -4,7 +4,7 @@ import { EntityManager, IsNull, Not } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
-import { User } from "@domain/entities";
+import { App, Rating, User } from "@domain/entities";
 
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -22,8 +22,13 @@ import { GetUserDetailsResponse, GetPublicProfileResponse, SearchUserResponse } 
 @Injectable()
 export class UserService {
   private readonly userRepository: GenericRepository<User>;
+  private readonly appRepository: GenericRepository<App>;
+  private readonly ratingRepository: GenericRepository<Rating>;
+
   constructor(private manager: EntityManager) {
     this.userRepository = new GenericRepository(User, manager);
+    this.appRepository = new GenericRepository(App, manager);
+    this.ratingRepository = new GenericRepository(Rating, manager);
   }
 
   async searchUser(query: SearchUserRequest) {
@@ -40,6 +45,7 @@ export class UserService {
         this.userRepository.findMany({
           ...query,
           where: () => whereCondition,
+          withDeleted: true,
         }),
       query.pageSize,
       query.pageNumber,
@@ -65,19 +71,45 @@ export class UserService {
   }
 
   async deactivateUser(req: RequestWithId) {
-    // TODO: implement deactivate user logic
-    await this.userRepository.softDelete(req.id);
+    const user = await this.userRepository.findOne({
+      where: { id: req.id },
+      relations: ["apps", "ratings"],
+    });
+
+    if (!user) throw new Error("User not found");
+
+    await this.userRepository.update(req.id, { deactive: true });
+
+    await this.userRepository.getRepository().softRemove(user);
+
     return new Result();
   }
 
   async activateUser(req: RequestWithId) {
-    // TODO: implement activate user logic
-    const user = await this.userRepository.getRepository().findOne({
+    const user = await this.userRepository.findOne({
       where: { id: req.id, deletedAt: Not(IsNull()) },
+      relations: ['apps', 'ratings'],
       withDeleted: true,
     });
+
     if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
+
     await this.userRepository.getRepository().restore(req.id);
+
+    for (const app of user.apps) {
+      if (app.deletedAt) {
+        await this.appRepository.getRepository().restore(app.id);
+      }
+    }
+
+    for (const rating of user.ratings) {
+      if (rating.deletedAt) {
+        await this.ratingRepository.getRepository().restore(rating.id);
+      }
+    }
+
+    await this.userRepository.update(req.id, { deactive: false });
+
     return new Result();
   }
 

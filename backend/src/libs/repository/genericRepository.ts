@@ -33,7 +33,8 @@ export class GenericRepository<T extends ObjectLiteral> {
         sortField: string;
         sortOrder: string;
         where?: () => FindOptionsWhere<T> | FindOptionsWhere<T>[]; // Accepts single or multiple conditions
-        relations?: string[]
+        relations?: string[];
+        withDeleted?: boolean;
     }): Promise<[T[], number]> {
         const {
             pageNumber,
@@ -41,14 +42,15 @@ export class GenericRepository<T extends ObjectLiteral> {
             sortField = SortField.NAME,
             sortOrder = SortOrder.ASC,
             where,
-            relations
+            relations,
+            withDeleted = false,
         } = req;
 
         return await this.repository.findAndCount({
             skip: (pageNumber - 1) * pageSize,
             take: pageSize,
             where: where ? where() : {},
-            withDeleted: false,
+            withDeleted,
             order: { [sortField]: sortOrder } as FindOptionsOrder<T>,
             relations
         });
