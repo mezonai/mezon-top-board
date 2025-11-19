@@ -93,7 +93,7 @@ function UsersList() {
 
   const handleDeactivate = async (userId: string) => {
     try {
-      await deactivateUser({ requestWithId: { id: userId } }).unwrap()
+      await deactivateUser({ requestWithId: { id: userId } })
       toast.success('User deactivated successfully')
       searchUserList(); // Refresh the list after deactivation
     } catch (error) {
@@ -103,7 +103,7 @@ function UsersList() {
 
   const handleActivate = async (userId: string) => {
     try {
-      await activateUser({ requestWithId: { id: userId } }).unwrap()
+      await activateUser({ requestWithId: { id: userId } })
       toast.success('User activated successfully')
       searchUserList(); // Refresh the list after activation
     } catch (error) {
@@ -141,6 +141,13 @@ function UsersList() {
       key: 'role',
       width: 100,
       render: (role: string) => <Tag color={userRoleColors[role] || 'default'}>{role}</Tag>
+    },
+    {
+      title: 'Status',
+      dataIndex: 'deletedAt',
+      key: 'deletedAt',
+      width: 100,
+      render: (deletedAt: string) => <Tag color={deletedAt ? 'red' : 'green'}>{deletedAt ? 'Blocked' : 'Active'}</Tag>
     },
     {
       title: 'Actions',
