@@ -22,7 +22,7 @@ function AppReviewPage() {
     const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
     const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery()
     const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin)
-    const { data: tableData } = dataAPI || { data: [] }
+    const { totalCount, data: tableData } = dataAPI || { totalCount: 0, data: [] }
 
     const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery) => {
         listAdminMezonApp({
@@ -31,12 +31,9 @@ function AppReviewPage() {
             pageNumber: page,
             sortField: 'updatedAt',
             sortOrder: 'DESC',
+            hasNewUpdate: true,
         })
     }
-
-    const filteredApps = useMemo(() => {
-        return (tableData || []).filter((app: GetMezonAppDetailsResponse) => app.hasNewUpdate === true);
-    }, [tableData]);
 
     const latestVersion = useMemo((): AppVersionDetailsDto | undefined => 
         detailAppData?.versions?.[0], 
@@ -174,15 +171,13 @@ function AppReviewPage() {
 
     return (
         <>
-            {tableData && tableData.length > 0 && (() => {
-                const pendingCount = filteredApps.length;
-
-                if (pendingCount > 0) {
+            {totalCount && (() => {
+                if (totalCount > 0) {
                     return (
                         <Alert
                             message={
                                 <span className='text-amber-800 font-semibold'>
-                                    {`${pendingCount} app${pendingCount > 1 ? 's' : ''} pending review`}
+                                    {`${totalCount} app${totalCount > 1 ? 's' : ''} pending review`}
                                 </span>
                             }
                             type='warning'
@@ -209,13 +204,13 @@ function AppReviewPage() {
                 <Spin size='large' className='text-center mt-5' />
             ) : (
                 <Table
-                    dataSource={filteredApps}
+                    dataSource={tableData}
                     columns={columns}
                     rowKey='id'
                     pagination={{
                         current: pageNumber,
                         pageSize,
-                        total: filteredApps.length,
+                        total: totalCount,
                         showSizeChanger: true,
                         pageSizeOptions: ['5', '10', '15'],
                         onChange: (page, size) => {

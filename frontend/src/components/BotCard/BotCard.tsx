@@ -24,7 +24,7 @@ import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
-  const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(100%-150px)]' : 'md:max-w-[calc(100%-100px)]';
+  const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(80%-150px)]' : 'md:max-w-[calc(70%-100px)]';
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
   // Share to social media

@@ -98,17 +98,21 @@ export class MezonAppService {
       profileImage: owner.profileImage,
     };
     detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name }));
-    detail.socialLinks = mezonApp.socialLinks.map((link) => ({
-      id: link.id,
-      url: link.url,
-      linkTypeId: link.type.id,
-      type: {
-        id: link.type.id,
-        name: link.type.name,
-        icon: link.type.icon,
-        prefixUrl: link.type.prefixUrl,
-      },
-    }));
+    detail.socialLinks = mezonApp.socialLinks
+      .filter((link) => !!link)
+      .map((link) => ({
+        id: link.id,
+        url: link.url,
+        linkTypeId: link.type?.id || null,
+        type: link.type
+          ? {
+              id: link.type.id,
+              name: link.type.name,
+              icon: link.type.icon,
+              prefixUrl: link.type.prefixUrl,
+            }
+          : null,
+      }));
     detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version)
 
     return new Result({
@@ -196,6 +200,12 @@ export class MezonAppService {
       });
     }
 
+    if(query?.hasNewUpdate !== undefined){
+      whereCondition.andWhere("app.hasNewUpdate = :hasNewUpdate", {
+        hasNewUpdate: query.hasNewUpdate,
+      });
+    }
+
     const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
     const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
@@ -221,7 +231,7 @@ export class MezonAppService {
       .leftJoinAndSelect("version.tags", "versionTag")
       .leftJoinAndSelect("version.socialLinks", "versionSocialLink")
       .leftJoinAndSelect("versionSocialLink.type", "versionLinkType")
-      .where("app.id IN (:...ids)", { ids });
+      .where("app.id IN (:...ids)", { ids: ids.length ? ids : ["00000000-0000-0000-0000-000000000000"] });
 
     if (query.sortField === SortField.NAME) {
       apps
