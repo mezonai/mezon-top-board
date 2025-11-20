@@ -23,15 +23,14 @@ const MediaManagerModal = ({
   onChoose: (path: string) => void
   onClose: () => void
 }) => {
-  const [selectedFileToCrop, setSelectedFileToCrop] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
-  const [isUploading, setIsUploading] = useState(false)
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
-  const [uploadImage] = useMediaControllerCreateMediaMutation()
+  const [uploadImage, { isLoading: isUploading}] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
   const pageSize = 24
 
@@ -60,29 +59,29 @@ const MediaManagerModal = ({
       onError(new Error('Invalid file type'))
       return
     }
-    setSelectedFileToCrop(file)
+    setSelectedFile(file)
     onSuccess('ok')
     setIsCropModalOpen(true)
   }
 
   const handleUploadFileToServer = async (file: File) => {
-    setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await uploadImage(formData).unwrap(); 
-      const serverPath = response.data.filePath; 
-      toast.success("Image uploaded successfully!");
-      getMediasList();
-      setSelectedImage(getUrlMedia(serverPath));
-      setIsCropModalOpen(false);
-      setSelectedFileToCrop(null);
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await uploadImage(formData).unwrap()
+      const serverPath = response.data.filePath
+      getMediasList()
+      setSelectedImage(getUrlMedia(serverPath))
+      return getUrlMedia(serverPath)
     } catch (error) {
-      toast.error('Upload failed. Please try again.');
-    } finally {
-      setIsUploading(false);
-    }
+      return ''
+    } 
+  }
+
+  const handleCropConfirm = (file: File) => {
+    setSelectedFile(file)
+    setSelectedImage(URL.createObjectURL(file))
+    setIsCropModalOpen(false)
   }
 
   const tabItems = [
@@ -145,8 +144,16 @@ const MediaManagerModal = ({
   ]
 
   const handleChoose = async () => {
+    if (activeTab === '1' && selectedFile) {
+      const uploadedUrl = await handleUploadFileToServer(selectedFile)
+      if (uploadedUrl) {
+        onChoose(uploadedUrl)
+        handleCancel()
+      }
+      return
+    }
     if (selectedImage) {
-      onChoose(selectedImage) 
+      onChoose(selectedImage)
       handleCancel()
     } else {
       toast.error('Please select an image first')
@@ -156,7 +163,7 @@ const MediaManagerModal = ({
   const handleCancel = () => {
     setActiveTab('1')
     setPage(1)
-    setSelectedFileToCrop(null)
+    setSelectedFile(null)
     setSelectedImage(null)
     onClose()
   }
@@ -164,8 +171,14 @@ const MediaManagerModal = ({
   const handleCloseModal = () => {
     if (!isUploading) {
       setIsCropModalOpen(false)
-      setSelectedFileToCrop(null)
+      setSelectedFile(null)
     }
+  }
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key)
+    setSelectedImage(null)
+    setSelectedFile(null)
   }
 
   return (
@@ -194,20 +207,20 @@ const MediaManagerModal = ({
           </div>
         }
       >
-        <Tabs 
+        <Tabs
           activeKey={activeTab}
-          onChange={(key) => setActiveTab(key)}
+          onChange={handleTabChange}
           type='card'
           items={tabItems}
         />
       </Modal>
       <CropImageModal
         open={isCropModalOpen}
-        imgSrc={selectedFileToCrop ? URL.createObjectURL(selectedFileToCrop) : ''}
-        originalFileName={selectedFileToCrop?.name}
+        imgSrc={selectedFile ? URL.createObjectURL(selectedFile) : ''}
+        originalFileName={selectedFile?.name}
         aspect={1}
         onCancel={handleCloseModal}
-        onConfirm={handleUploadFileToServer}
+        onConfirm={handleCropConfirm}
         parentLoading={isUploading}
       />
     </>
