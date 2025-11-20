@@ -4,7 +4,7 @@ import { EntityManager, IsNull, Not } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
-import { App, Rating, User } from "@domain/entities";
+import { App, AppReviewHistory, Rating, User } from "@domain/entities";
 
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -18,17 +18,20 @@ import {
   UpdateUserRequest,
 } from "./dtos/request";
 import { GetUserDetailsResponse, GetPublicProfileResponse, SearchUserResponse } from "./dtos/response";
+import { Role } from "@domain/common/enum/role";
 
 @Injectable()
 export class UserService {
   private readonly userRepository: GenericRepository<User>;
   private readonly appRepository: GenericRepository<App>;
   private readonly ratingRepository: GenericRepository<Rating>;
+  private readonly appReviewHistoryRepository: GenericRepository<AppReviewHistory>;
 
   constructor(private manager: EntityManager) {
     this.userRepository = new GenericRepository(User, manager);
     this.appRepository = new GenericRepository(App, manager);
     this.ratingRepository = new GenericRepository(Rating, manager);
+    this.appReviewHistoryRepository = new GenericRepository(AppReviewHistory, manager);
   }
 
   async searchUser(query: SearchUserRequest) {
@@ -65,8 +68,19 @@ export class UserService {
     return new Result({ data: Mapper(GetPublicProfileResponse, user) });
   }
 
-  async deleteUser(req: RequestWithId) {
-    await this.userRepository.softDelete(req.id);
+  async deleteUser(req: RequestWithId, userId: string) {
+    const reviewHistories = await this.appReviewHistoryRepository.find({
+      where: { reviewerId: req.id },
+    });
+
+    for (const history of reviewHistories) {
+      await this.appReviewHistoryRepository.update(history.id,
+        { reviewerId: userId }
+      );
+    }
+
+    await this.userRepository.delete(userId);
+
     return new Result();
   }
 
@@ -76,7 +90,7 @@ export class UserService {
       relations: ["apps", "ratings"],
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
 
     await this.userRepository.update(req.id, { deactive: true });
 

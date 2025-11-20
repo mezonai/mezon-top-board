@@ -3,11 +3,13 @@ import {
   EditOutlined,
   UnlockOutlined,
   SearchOutlined,
+  LockOutlined,
 } from '@ant-design/icons'
 import {
   useLazyUserControllerSearchUserQuery,
   useUserControllerActivateUserMutation,
   useUserControllerDeactivateUserMutation,
+  useUserControllerDeleteUserMutation,
 } from '@app/services/api/user/user'
 import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
@@ -36,6 +38,7 @@ function UsersList() {
   const [getUserControllerSearchUser, { error, isLoading }] = useLazyUserControllerSearchUserQuery()
   const [deactivateUser] = useUserControllerDeactivateUserMutation()
   const [activateUser] = useUserControllerActivateUserMutation()
+  const [deleteUser] = useUserControllerDeleteUserMutation()
   const users = useSelector((state: RootState) => state.user.adminUserList);
   const [selectedUser, setSelectedUser] = useState<UpdateUserRequest | null>(null)
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
@@ -111,6 +114,21 @@ function UsersList() {
     }
   }
 
+  const handleDelete = async (userId: string) => {
+    try {
+      await deleteUser({ requestWithId: { id: userId } })
+      toast.success('User deleted successfully')
+      searchUserList(); // Refresh the list after deletion
+    } catch (error) {
+      toast.error('Failed to delete user')
+    }
+  }
+
+  const onCloseEditForm = () => {
+    setSelectedUser(null);
+    searchUserList();
+  }
+
   const userTableColumns = [
     {
       title: 'Name',
@@ -159,11 +177,12 @@ function UsersList() {
           <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
           {
             !record.deletedAt ? (
-              <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <Button icon={<LockOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
             ) : (
               <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
             )
           }
+          <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}></Button >
         </div>
       )
     }
@@ -263,7 +282,7 @@ function UsersList() {
       
       {selectedUser && (
         <div className='bg-opacity-50'>
-          <EditUserForm user={selectedUser} onClose={() => setSelectedUser(null)} />
+          <EditUserForm user={selectedUser} onClose={onCloseEditForm} />
         </div>
       )}
     </div>

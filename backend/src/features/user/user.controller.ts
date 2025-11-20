@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
@@ -71,8 +71,8 @@ export class UserController {
   @Delete()
   @ApiBearerAuth()
   @RoleRequired([Role.ADMIN])
-  async deleteUser(@Body() body: RequestWithId) {
-    return this.userService.deleteUser(body);
+  async deleteUser(@Body() body: RequestWithId, @Req() req) {
+    return this.userService.deleteUser(body, req.user.id);
   }
 
   @Delete("/deactivate")

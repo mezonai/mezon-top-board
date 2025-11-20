@@ -16,6 +16,6 @@ export class Media extends BaseSoftDelete {
   @Column({ nullable: true })
   public ownerId: string;
 
-  @ManyToOne(() => User, (user) => user.medias)
+  @ManyToOne(() => User, (user) => user.medias, { onDelete: "CASCADE" })
   public owner: User;
 }

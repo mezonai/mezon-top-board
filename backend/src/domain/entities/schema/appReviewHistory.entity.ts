@@ -15,8 +15,8 @@ export class AppReviewHistory extends BaseSoftDelete {
     @Column({ default: false })
     public isApproved: boolean;
 
-    @Column()
-    public reviewerId: string;
+    @Column({ nullable: true })
+    public reviewerId: string | null;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     public reviewedAt: Date;
@@ -32,7 +32,7 @@ export class AppReviewHistory extends BaseSoftDelete {
     @JoinColumn({ name: "appVersionId" })
     appVersion: AppVersion;
 
-    @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
+    @ManyToOne(() => User, (user) => user.id, { onDelete: "SET NULL" })
     @JoinColumn({ name: "reviewerId" })
     reviewer: User;
 }

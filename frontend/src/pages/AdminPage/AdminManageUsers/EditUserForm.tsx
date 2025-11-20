@@ -12,7 +12,7 @@ const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () 
   // Handle form submission
   const handleSubmit = async (values: UpdateUserRequest) => {
     try {
-      await updateUser({ updateUserRequest: { ...values, id: user.id } }).unwrap()
+      await updateUser({ updateUserRequest: { ...values, id: user.id } })
       toast.success('User updated successfully!')
       onClose()
     } catch (err) {

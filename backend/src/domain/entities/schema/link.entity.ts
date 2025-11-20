@@ -25,7 +25,7 @@ export class Link extends BaseSoftDelete {
     @ManyToMany(() => App, (app) => app.socialLinks)
     public apps: App[];
 
-    @ManyToOne(() => User, (user) => user.links)
+    @ManyToOne(() => User, (user) => user.links, { onDelete: "CASCADE" })
     public owner: User;
 }
 
