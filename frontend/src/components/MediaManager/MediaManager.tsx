@@ -30,7 +30,7 @@ const MediaManagerModal = ({
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
-  const [uploadImage, { isLoading: isUploading}] = useMediaControllerCreateMediaMutation()
+  const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
   const pageSize = 24
 
@@ -76,7 +76,7 @@ const MediaManagerModal = ({
     } catch (error) {
       toast.error('Upload failed. Please try again.')
       return ''
-    } 
+    }
   }
 
   const handleCropConfirm = (file: File) => {
@@ -146,20 +146,23 @@ const MediaManagerModal = ({
 
   const handleChoose = async () => {
     if (selectedFile) {
-      const uploadedUrl = await handleUploadFileToServer(selectedFile)
+      const uploadedUrl = await handleUploadFileToServer(selectedFile);
       if (uploadedUrl) {
-        onChoose(uploadedUrl)
-        handleCancel()
+        onChoose(uploadedUrl);
+        handleCancel();
       }
-      return
+      return; 
     }
+
     if (selectedImage) {
-      onChoose(selectedImage)
-      handleCancel()
-    } else {
-      toast.error('Please select an image first')
+      onChoose(selectedImage);
+      handleCancel();
+      return;
     }
-  }
+    
+    toast.error('Please select an image first');
+  };
+
 
   const handleCancel = () => {
     setActiveTab('1')
