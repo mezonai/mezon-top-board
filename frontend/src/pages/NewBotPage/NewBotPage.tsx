@@ -47,13 +47,6 @@ function NewBotPage() {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
-
-  const imgUrl = useMemo(() => {
-    return botId && mezonAppDetail.featuredImage
-      ? getUrlMedia(mezonAppDetail.featuredImage)
-      : avatarBotDefault
-  }, [botId, mezonAppDetail.featuredImage])
-  const [avatar, setAvatar] = useState<string>(imgUrl)
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const methods = useForm<CreateMezonAppRequest>({
@@ -81,7 +74,14 @@ function NewBotPage() {
   const { setValue, reset, watch, trigger, handleSubmit } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
+  const featuredImageValue = watch('featuredImage')
 
+  const imgUrl = useMemo(() => {
+    return botId && featuredImageValue
+      ? getUrlMedia(featuredImageValue)
+      : avatarBotDefault
+  }, [botId, featuredImageValue])
+  const [avatar, setAvatar] = useState<string>(imgUrl)
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getSocialLink] = useLazyLinkTypeControllerGetAllLinksQuery()
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
