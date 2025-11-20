@@ -74,6 +74,7 @@ const MediaManagerModal = ({
       setSelectedImage(getUrlMedia(serverPath))
       return getUrlMedia(serverPath)
     } catch (error) {
+      toast.error('Upload failed. Please try again.')
       return ''
     } 
   }
@@ -96,7 +97,7 @@ const MediaManagerModal = ({
             </Button>
           </Upload>
           <i>Choose an image in your browser</i>
-          {selectedImage && (
+          {selectedFile && (
             <img
               src={selectedImage || ''}
               alt=''
@@ -144,7 +145,7 @@ const MediaManagerModal = ({
   ]
 
   const handleChoose = async () => {
-    if (activeTab === '1' && selectedFile) {
+    if (selectedFile) {
       const uploadedUrl = await handleUploadFileToServer(selectedFile)
       if (uploadedUrl) {
         onChoose(uploadedUrl)
