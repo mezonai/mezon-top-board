@@ -35,24 +35,24 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
       state.publicProfile = payload.data
       state.publicProfile.name = payload.data.name || "User"
     })
-    .addMatcher(userService.endpoints.userControllerDeactivateUser.matchFulfilled, (state, action) => {
-      const deactiveId = action.meta.arg.originalArgs.requestWithId.id
+    // .addMatcher(userService.endpoints.userControllerDeactivateUser.matchFulfilled, (state, action) => {
+    //   const deactiveId = action.meta.arg.originalArgs.requestWithId.id
 
-      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
-        if (user.id === deactiveId) {
-          return { ...user, deletedAt: new Date() } // Set deletedAt to current date
-        }
-        return user
-      })
-    })
-    .addMatcher(userService.endpoints.userControllerActivateUser.matchFulfilled, (state, action) => {
-      const activeId = action.meta.arg.originalArgs.requestWithId.id
+    //   state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+    //     if (user.id === deactiveId) {
+    //       return { ...user, deletedAt: new Date() } // Set deletedAt to current date
+    //     }
+    //     return user
+    //   })
+    // })
+    // .addMatcher(userService.endpoints.userControllerActivateUser.matchFulfilled, (state, action) => {
+    //   const activeId = action.meta.arg.originalArgs.requestWithId.id
 
-      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
-        if (user.id === activeId) {
-          return { ...user, deletedAt: null } // Set deletedAt to null
-        }
-        return user
-      })
-    })
+    //   state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+    //     if (user.id === activeId) {
+    //       return { ...user, deletedAt: null } // Set deletedAt to null
+    //     }
+    //     return user
+    //   })
+    // })
 }

@@ -3,6 +3,7 @@ import {
   EditOutlined,
   UnlockOutlined,
   SearchOutlined,
+  LockOutlined,
 } from '@ant-design/icons'
 import {
   useLazyUserControllerSearchUserQuery,
@@ -11,13 +12,15 @@ import {
 } from '@app/services/api/user/user'
 import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Alert, Breakpoint, Button, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
+import { Alert, Breakpoint, Button, Form, Input, InputRef, Popconfirm, Select, Spin, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
+import { ApiError } from '@app/types/API.types'
+import MtbButton from '@app/mtb-ui/Button'
 
 const { Option } = Select
 const pageOptions = [5, 10, 15]
@@ -93,17 +96,21 @@ function UsersList() {
 
   const handleDeactivate = async (userId: string) => {
     try {
-      await deactivateUser({ requestWithId: { id: userId } })
+      await deactivateUser({ requestWithId: { id: userId } }).unwrap()
       toast.success('User deactivated successfully')
       searchUserList(); // Refresh the list after deactivation
-    } catch (error) {
-      toast.error('Failed to deactivate user')
+    } catch (err: unknown) {
+      const error = err as ApiError
+      const message = Array.isArray(error?.data?.message)
+        ? error.data.message.join('\n')
+        : error?.data?.message || 'Something went wrong'
+      toast.error(message)
     }
   }
 
   const handleActivate = async (userId: string) => {
     try {
-      await activateUser({ requestWithId: { id: userId } })
+      await activateUser({ requestWithId: { id: userId } }).unwrap()
       toast.success('User activated successfully')
       searchUserList(); // Refresh the list after activation
     } catch (error) {
@@ -159,23 +166,27 @@ function UsersList() {
           <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
           {
             !record.deletedAt ? (
-              <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <Popconfirm title='Lock this user?' onConfirm={() => handleDeactivate(record.id)} okText='Yes' cancelText='No'>
+                <MtbButton color='purple' icon={<LockOutlined />} />
+              </Popconfirm>
             ) : (
-              <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
+              <Popconfirm title='Unlock this user?' onConfirm={() => handleActivate(record.id)} okText='Yes' cancelText='No'>
+                <MtbButton color='pink' icon={<UnlockOutlined />} />
+              </Popconfirm>
             )
           }
         </div>
       )
     }
   ]
-  
+
   return (
     <div className='p-4 bg-white rounded-md shadow-md'>
       <h2 className='text-lg font-semibold mb-4'>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
-        <Form 
+        <Form
           form={form}
           onFinish={handleSubmit}
           initialValues={initialValues}
@@ -192,9 +203,9 @@ function UsersList() {
               className='w-full'
             />
           </Form.Item>
-          
+
           <Form.Item name='sortField' className='mb-0 w-30'>
-            <Select 
+            <Select
               className='w-30'
               placeholder='Sort Field'
             >
@@ -204,7 +215,7 @@ function UsersList() {
           </Form.Item>
 
           <Form.Item name='sortOrder' className='mb-0 w-30'>
-            <Select 
+            <Select
               className='w-40'
               placeholder='Sort Order'
             >
@@ -214,8 +225,8 @@ function UsersList() {
           </Form.Item>
 
           <Form.Item className='mb-0'>
-            <Button 
-              type='primary' 
+            <Button
+              type='primary'
               htmlType='submit'
               icon={<SearchOutlined />}
             >
@@ -224,7 +235,7 @@ function UsersList() {
           </Form.Item>
         </Form>
       </div>
-      
+
       {/* Loading Spinner */}
       {isLoading && (
         <div className='flex justify-center my-4'>
@@ -260,7 +271,7 @@ function UsersList() {
           <p>Không tìm thấy người dùng</p>
         </div>
       )}
-      
+
       {selectedUser && (
         <div className='bg-opacity-50'>
           <EditUserForm user={selectedUser} onClose={() => setSelectedUser(null)} />
