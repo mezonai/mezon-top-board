@@ -6,7 +6,7 @@ export type OAuth2TokenResponse = {
 }
 
 export type OAuth2UserInfoResponse = {
-    sub: string;
+    email: string;
     aud: string[];
     auth_time: number;
     avatar?: string;

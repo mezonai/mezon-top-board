@@ -38,7 +38,7 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
     .addMatcher(userService.endpoints.userControllerDeactivateUser.matchFulfilled, (state, action) => {
       const deactiveId = action.meta.arg.originalArgs.requestWithId.id
 
-      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+      state.adminUserList = state.adminUserList?.data?.map((user: GetUserDetailsResponse) => {
         if (user.id === deactiveId) {
           return { ...user, deletedAt: new Date() } // Set deletedAt to current date
         }
@@ -48,7 +48,7 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
     .addMatcher(userService.endpoints.userControllerActivateUser.matchFulfilled, (state, action) => {
       const activeId = action.meta.arg.originalArgs.requestWithId.id
 
-      state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
+      state.adminUserList = state.adminUserList?.data?.map((user: GetUserDetailsResponse) => {
         if (user.id === activeId) {
           return { ...user, deletedAt: null } // Set deletedAt to null
         }

@@ -1,5 +1,5 @@
 import {
-  DeleteOutlined,
+  LockOutlined,
   EditOutlined,
   UnlockOutlined,
   SearchOutlined,
@@ -11,13 +11,15 @@ import {
 } from '@app/services/api/user/user'
 import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Alert, Breakpoint, Button, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
+import { Alert, Breakpoint, Button, Form, Input, InputRef, Popconfirm, Select, Spin, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
+import MtbButton from '@app/mtb-ui/Button'
+import { ApiError } from '@app/types/API.types'
 
 const { Option } = Select
 const pageOptions = [5, 10, 15]
@@ -94,17 +96,21 @@ function UsersList() {
   const handleDeactivate = async (userId: string) => {
     try {
       await deactivateUser({ requestWithId: { id: userId } }).unwrap()
-      toast.success('User deactivated successfully')
+      toast.success('Deactivate account successfully')
       searchUserList(); // Refresh the list after deactivation
-    } catch (error) {
-      toast.error('Failed to deactivate user')
+    } catch (err: unknown) {
+      const error = err as ApiError
+      const message = Array.isArray(error?.data?.message)
+        ? error.data.message.join('\n')
+        : error?.data?.message || 'Something went wrong'
+      toast.error(message)
     }
   }
 
   const handleActivate = async (userId: string) => {
     try {
       await activateUser({ requestWithId: { id: userId } }).unwrap()
-      toast.success('User activated successfully')
+      toast.success('Activate account successfully')
       searchUserList(); // Refresh the list after activation
     } catch (error) {
       toast.error('Failed to activate user')
@@ -143,18 +149,31 @@ function UsersList() {
       render: (role: string) => <Tag color={userRoleColors[role] || 'default'}>{role}</Tag>
     },
     {
+      title: 'Status',
+      dataIndex: 'deletedAt',
+      key: 'deletedAt',
+      width: 100,
+      render: (deletedAt: string) => <Tag color={deletedAt ? 'red' : 'green'}>{deletedAt ? 'Blocked' : 'Active'}</Tag>
+    },
+    {
       title: 'Actions',
       key: 'actions',
       width: 100,
       fixed: 'right' as const,
       render: (_: any, record: GetUserDetailsResponse) => (
         <div className='flex gap-2'>
-          <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          {!record.deletedAt && (
+            <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          )}
           {
             !record.deletedAt ? (
-              <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <Popconfirm title='Lock this user?' onConfirm={() => handleDeactivate(record.id)} okText='Yes' cancelText='No'>
+                <MtbButton color='primary' icon={<LockOutlined />} />
+              </Popconfirm>
             ) : (
-              <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
+              <Popconfirm title='Unlock this user?' onConfirm={() => handleActivate(record.id)} okText='Yes' cancelText='No'>
+                <MtbButton color='primary' variant='outlined' icon={<UnlockOutlined />} />
+              </Popconfirm>
             )
           }
         </div>

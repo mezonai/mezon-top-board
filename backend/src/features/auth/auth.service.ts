@@ -20,6 +20,7 @@ import { EntityManager } from "typeorm";
 import { BasicAuthRequest, OAuth2Request } from "./dtos/request";
 import { OAuth2Service } from "./oauth2.service";
 import { OAuth2TokenResponse, OAuth2UserInfoResponse } from "./types/OAuth2.types";
+import { UserService } from "@features/user/user.service";
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
     private manager: EntityManager,
     private readonly jwtService: JwtService,
     private readonly oauth2Service: OAuth2Service,
+    private readonly userService: UserService,
   ) {
     this.userRepository = new GenericRepository(User, manager);
   }
@@ -40,16 +42,23 @@ export class AuthService {
         data.access_token,
       );
 
-      if (!isEmail(oryInfo.sub)) {
+      if (!isEmail(oryInfo.email)) {
         throw new BadRequestException(ErrorMessages.INVALID_EMAIL);
       }
 
-      const user = await this.findUserByEmail(oryInfo.sub);
+
+      const user = await this.findUserByEmail(oryInfo.email, true);
 
       if (user) {
+        if (user.deactiveBy === Role.ADMIN) throw new BadRequestException('Your account has been locked by admin');
+
+        if (user.deactiveBy === Role.DEVELOPER) {
+          await this.userService.activateUser({ id: user.id });
+        }
+
         if (user.willSyncFromMezon) {
           await this.userRepository.update(user.id, {
-            name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+            name: oryInfo.display_name || oryInfo.username || oryInfo.email.split('@')[0],
             profileImage: oryInfo.avatar,
             willSyncFromMezon: false,
           });
@@ -65,8 +74,8 @@ export class AuthService {
       }
 
       const newUser = await this.userRepository.create({
-        email: oryInfo.sub,
-        name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+        email: oryInfo.email,
+        name: oryInfo.display_name || oryInfo.username || oryInfo.email.split('@')[0],
         profileImage: oryInfo.avatar,
         role: Role.DEVELOPER,
         mezonUserId: oryInfo.user_id
@@ -82,13 +91,13 @@ export class AuthService {
     }
   }
 
-  async findUserByEmail(email: string): Promise<User> {
+  async findUserByEmail(email: string, withDeleted: boolean): Promise<User> {
     try {
       const user = await this.userRepository.findOne({
         where: {
           email: email,
         },
-        withDeleted: false,
+        withDeleted,
       });
       return user;
     } catch {
@@ -143,7 +152,7 @@ export class AuthService {
         throw new UnauthorizedException(ErrorMessages.INVALID_EMAIL);
       }
 
-      const user = await this.findUserByEmail(email);
+      const user = await this.findUserByEmail(email, false);
 
       if (!user) {
         throw new UnauthorizedException(ErrorMessages.NOT_FOUND_MSG);
