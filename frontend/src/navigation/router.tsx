@@ -4,15 +4,19 @@ import { RootState } from '@app/store'
 import { IAuthStore } from '@app/store/auth'
 import { RoutePath } from '@app/types/RoutePath.types'
 import { useSelector } from 'react-redux'
-import { Route, useLocation } from 'react-router'
+import { Route, useLocation, useNavigate } from 'react-router'
 import { adminRoutePaths } from './adminRoutePaths'
 import { routePaths } from './routePaths'
 import { useEffect } from 'react'
 import { useLazyUserControllerGetUserDetailsQuery } from '@app/services/api/user/user'
 import { Dropdown, MenuProps } from 'antd'
+import { removeAccessTokens } from '@app/utils/storage'
+import { useAuth } from '@app/hook/useAuth'
 
 export const renderRoutes = () => {
-  const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
+  const navigate = useNavigate()
+  const { postLogout } = useAuth()
+  const [getUserInfo, { isError }] = useLazyUserControllerGetUserDetailsQuery()
   const { isLogin } = useSelector<RootState, IAuthStore>((s) => s.auth)
 
   useEffect(() => {
@@ -20,7 +24,16 @@ export const renderRoutes = () => {
       getUserInfo()
     }
   }, [isLogin])
-  
+
+  useEffect(() => {
+    if (isError) {
+      removeAccessTokens()
+      postLogout()
+      navigate('/')
+      window.scrollTo(0, 0)
+    }
+  }, [isError])
+
 
   const getRouteCompact = (route: RoutePath) => {
     const getRouteSingular = (route: RoutePath, key?: string) => <Route key={key || route.path} path={route.path} element={route.element} index={route.index} />

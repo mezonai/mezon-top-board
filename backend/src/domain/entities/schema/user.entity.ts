@@ -38,10 +38,13 @@ export class User extends BaseSoftDelete {
     @Column({ nullable: true, default: null })
     public mezonUserId: string;
 
-    @OneToMany(() => Rating, (rating) => rating.user)
+    @Column({ type: "enum", enum: Object.keys(Role), nullable: true })
+    public deactiveBy: Role | null;
+
+    @OneToMany(() => Rating, (rating) => rating.user, { cascade: ['soft-remove'] })
     public ratings: Rating[];
 
-    @OneToMany(() => App, (app) => app.owner)
+    @OneToMany(() => App, (app) => app.owner, { cascade: ['soft-remove'] })
     public apps: App[];
 
     @OneToMany(() => Link, (link) => link.owner)

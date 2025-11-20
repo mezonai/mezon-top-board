@@ -17,7 +17,9 @@ import type {
   UserControllerSelfUpdateUserApiResponse,
   UserControllerSelfUpdateUserApiArg,
   UserControllerSyncMezonApiResponse,
-  UserControllerSyncMezonApiArg
+  UserControllerSyncMezonApiArg,
+  UserControllerSelfDeactivateUserApiResponse,
+  UserControllerSelfDeactivateUserApiArg
 } from './user.types'
 
 const injectedRtkApi = api.injectEndpoints({
@@ -42,6 +44,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     userControllerDeactivateUser: build.mutation<UserControllerDeactivateUserApiResponse, UserControllerDeactivateUserApiArg>({
       query: (queryArg) => ({ url: `/api/user/deactivate`, method: 'DELETE', body: queryArg.requestWithId })
+    }),
+    userControllerSelfDeactivateUser: build.mutation<UserControllerSelfDeactivateUserApiResponse, UserControllerSelfDeactivateUserApiArg>({
+      query: () => ({ url: `/api/user/self-deactivate`, method: 'DELETE'})
     }),
     userControllerActivateUser: build.mutation<UserControllerActivateUserApiResponse, UserControllerActivateUserApiArg>({
       query: (queryArg) => ({ url: `/api/user/activate`, method: 'POST', body: queryArg.requestWithId })
@@ -77,6 +82,7 @@ export const {
   useUserControllerUpdateUserMutation,
   useUserControllerDeleteUserMutation,
   useUserControllerDeactivateUserMutation,
+  useUserControllerSelfDeactivateUserMutation,
   useUserControllerActivateUserMutation,
   useUserControllerGetUserDetailsQuery,
   useLazyUserControllerGetUserDetailsQuery,

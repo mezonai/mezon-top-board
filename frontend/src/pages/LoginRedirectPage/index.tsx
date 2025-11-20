@@ -1,5 +1,6 @@
 import { useAuth } from '@app/hook/useAuth'
 import { useAuthControllerVerifyOAuth2Mutation } from '@app/services/api/auth/auth'
+import { ApiError } from '@app/types/API.types'
 import { storeAccessTokens } from '@app/utils/storage'
 import { Flex, Spin } from 'antd'
 import { useEffect, useMemo } from 'react'
@@ -31,16 +32,16 @@ export const LoginRedirectPage = () => {
     }
 
     try {
-      const { data } = await verifyOauth2Service({ oAuth2Request: { code, scope: scope || 'openid' } })
-      if (!data) {
-        toast.error('Login failed!')
-        return
-      }
+      const data = await verifyOauth2Service({ oAuth2Request: { code, scope: scope || 'openid' } }).unwrap()
       storeAccessTokens(data.data)
       postLogin()
       toast.success('Login successfully!')
-    } catch (_) {
-      toast.error('Login failed!')
+    } catch (err: unknown) {
+      const error = err as ApiError
+      const message = Array.isArray(error?.data?.message)
+        ? error.data.message.join('\n')
+        : error?.data?.message || 'Login failed!'
+      toast.error(message)
     } finally {
       navigate('/', { replace: true })
     }

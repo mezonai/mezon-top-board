@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
       throw new UnauthorizedException(ErrorMessages.INVALID_EMAIL);
     }
 
-    const user = await this.authService.findUserByEmail(email);
+    const user = await this.authService.findUserByEmail(email, false);
     if (!user) {
       throw new UnauthorizedException(ErrorMessages.NOT_FOUND_MSG);
     }

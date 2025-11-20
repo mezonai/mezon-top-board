@@ -37,6 +37,9 @@ export type UserControllerDeleteUserApiArg = { requestWithId: RequestWithId };
 export type UserControllerDeactivateUserApiResponse = unknown; // TODO: define proper response type
 export type UserControllerDeactivateUserApiArg = { requestWithId: RequestWithId };
 
+export type UserControllerSelfDeactivateUserApiResponse = unknown; // TODO: define proper response type
+export type UserControllerSelfDeactivateUserApiArg = void;
+
 export type UserControllerActivateUserApiResponse = unknown; // TODO: define proper response type
 export type UserControllerActivateUserApiArg = { requestWithId: RequestWithId };
 

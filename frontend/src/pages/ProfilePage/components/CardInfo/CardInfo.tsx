@@ -1,6 +1,7 @@
 import {
   CreditCardOutlined,
   InfoCircleOutlined,
+  LockOutlined,
   SettingOutlined,
   SyncOutlined,
   UserAddOutlined
@@ -11,6 +12,7 @@ import { TypographyStyle } from '@app/enums/typography.enum'
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import {
+  useUserControllerSelfDeactivateUserMutation,
   useUserControllerSelfUpdateUserMutation,
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
@@ -20,12 +22,18 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
+import { useAuth } from '@app/hook/useAuth'
+import { useNavigate } from 'react-router-dom'
+import { removeAccessTokens } from '@app/utils/storage'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selfDeactivate] = useUserControllerSelfDeactivateUserMutation()
+  const { postLogout } = useAuth()
+  const navigate = useNavigate()
 
   const cardInfoLink = [
     {
@@ -84,6 +92,20 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   }
 
+  const handleLockAccount = async () => {
+    if (isPublic) return
+
+    try {
+      await selfDeactivate().unwrap()
+      removeAccessTokens()
+      postLogout()
+      navigate('/')
+      toast.success('Account locked successfully')
+    } catch (error) {
+      toast.error('Failed to lock account')
+    }
+  }
+
   return (
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
       <div className='flex items-center gap-4 w-full max-lg:flex-col max-2xl:flex-col'>
@@ -137,6 +159,24 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             icon={<SyncOutlined />}
           >
             Sync from Mezon
+          </Button>
+        </Popconfirm>
+      }
+      {!isPublic &&
+        <Popconfirm
+          title='Lock Account'
+          description='Are you sure to lock this account? Login again will unlock your account.'
+          onConfirm={handleLockAccount}
+          okText='Yes'
+          cancelText='No'
+        >
+          <Button
+            color='danger'
+            size='large'
+            variant='solid'
+            icon={<LockOutlined />}
+          >
+            Lock Account
           </Button>
         </Popconfirm>
       }
