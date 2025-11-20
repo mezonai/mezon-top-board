@@ -98,17 +98,21 @@ export class MezonAppService {
       profileImage: owner.profileImage,
     };
     detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name }));
-    detail.socialLinks = mezonApp.socialLinks.map((link) => ({
-      id: link.id,
-      url: link.url,
-      linkTypeId: link.type.id,
-      type: {
-        id: link.type.id,
-        name: link.type.name,
-        icon: link.type.icon,
-        prefixUrl: link.type.prefixUrl,
-      },
-    }));
+    detail.socialLinks = mezonApp.socialLinks
+      .filter((link) => !!link)
+      .map((link) => ({
+        id: link.id,
+        url: link.url,
+        linkTypeId: link.type?.id || null,
+        type: link.type
+          ? {
+              id: link.type.id,
+              name: link.type.name,
+              icon: link.type.icon,
+              prefixUrl: link.type.prefixUrl,
+            }
+          : null,
+      }));
     detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version)
 
     return new Result({
