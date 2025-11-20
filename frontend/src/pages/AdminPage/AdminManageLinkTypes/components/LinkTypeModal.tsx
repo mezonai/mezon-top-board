@@ -11,7 +11,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 export interface LinkTypeFormValues {
   name: string
   prefixUrl: string
-  icon: string | File
+  icon: string
 }
 
 interface CreateLinkTypeModalProps {
@@ -61,16 +61,12 @@ const LinkTypeModal = ({ open, onClose, onSubmit, editingData, isUpdate }: Creat
     }
   }, [open, isUpdate, editingData, reset])
 
-  const handleChooseImage = (image: File | string) => {
+  const handleChooseImage = (image: string) => {
     if (!image) return
     setValue('icon', image, { shouldValidate: true })
     setIsMediaModalVisible(false)
   }
-  const displayedImage = useMemo(() => {
-    if (icon instanceof File) return URL.createObjectURL(icon);
-    if (typeof icon === 'string' && icon.trim()) return getUrlMedia(icon);
-    return null;
-  }, [icon]);
+  const displayedImage = useMemo(() => (icon?.trim() ? getUrlMedia(icon) : ''), [icon])
 
   const Submit = (data: LinkTypeFormValues) => {
     onSubmit({

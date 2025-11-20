@@ -10,7 +10,6 @@ import { AppEvent } from '@app/enums/AppEvent.enum'
 import { TypographyStyle } from '@app/enums/typography.enum'
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import {
   useUserControllerSelfUpdateUserMutation,
   useUserControllerSyncMezonMutation,
@@ -25,7 +24,6 @@ import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
-  const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -56,52 +54,21 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   ]
 
-  const handleUpload = async (file: File) => {
-    if (isPublic) return
-
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const response = await uploadImage(formData).unwrap()
-
-      if (response?.statusCode === 200) {
-        await selfUpdate({
-          selfUpdateUserRequest: {
-            profileImage: response?.data?.filePath
-          }
-        }).unwrap()
-      }
-
-      toast.success('Upload Success')
-    } catch (error) {
-      toast.error('Upload failed!')
-    }
+  const handleCancel = () => {
+    setIsModalVisible(false)
   }
 
-  const handleUpdateProfilePath = async (filePath: string) => {
-    if (isPublic) return;
+  const handleMediaSelect = async (selection: string) => {
+    setIsModalVisible(false); 
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
-          profileImage: filePath
+          profileImage: selection
         }
       }).unwrap();
       toast.success('Update Success');
     } catch (error) {
       toast.error('Update failed!');
-    }
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-
-  const handleMediaSelect = async (selection: File | string) => {
-    setIsModalVisible(false); 
-    if (typeof selection === 'string') {
-      await handleUpdateProfilePath(selection);
-    } else {
-      await handleUpload(selection);
     }
   }
 
@@ -128,7 +95,6 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             <MTBAvatar
               imgUrl={imgUrl}
               isAllowUpdate={!isPublic}
-              isUpdatingAvatar={isUpdatingAvatar}
             />
           </div>
         </div>

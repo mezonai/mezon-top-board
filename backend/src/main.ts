@@ -15,7 +15,28 @@ configHbsPartials();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
-  app.enableCors();
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const allowedOrigins = [
+        /^https?:\/\/([a-zA-Z0-9-]+\.)*nccsoft\.vn$/,
+        /^https?:\/\/([a-zA-Z0-9-]+\.)*mezon\.ai$/,
+        /^https?:\/\/localhost(:\d+)?$/,
+      ];
+
+      const isAllowed = allowedOrigins.some((pattern) => pattern.test(origin));
+
+      if (isAllowed) {
+        return callback(null, true);
+      } else {
+        return callback(new Error(`Origin ${origin} not allowed by CORS`), false);
+      }
+    },
+    credentials: true,
+  });
   app.use(json({ limit: '26mb' }));
   app.use(urlencoded({ limit: '26mb', extended: true }));
   app.useGlobalPipes(

@@ -21,7 +21,6 @@ import {
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
-import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
 import { ITagStore } from '@app/store/tag'
@@ -48,13 +47,6 @@ function NewBotPage() {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
-
-  const imgUrl = useMemo(() => {
-    return botId && mezonAppDetail.featuredImage
-      ? getUrlMedia(mezonAppDetail.featuredImage)
-      : avatarBotDefault
-  }, [botId, mezonAppDetail.featuredImage])
-  const [avatar, setAvatar] = useState<string>(imgUrl)
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const methods = useForm<CreateMezonAppRequest>({
@@ -82,10 +74,16 @@ function NewBotPage() {
   const { setValue, reset, watch, trigger, handleSubmit } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
+  const featuredImageValue = watch('featuredImage')
 
+  const imgUrl = useMemo(() => {
+    return botId && featuredImageValue
+      ? getUrlMedia(featuredImageValue)
+      : avatarBotDefault
+  }, [botId, featuredImageValue])
+  const [avatar, setAvatar] = useState<string>(imgUrl)
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getSocialLink] = useLazyLinkTypeControllerGetAllLinksQuery()
-  const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submittedBotId, setSubmittedBotId] = useState<string>('')
@@ -130,31 +128,13 @@ function NewBotPage() {
     setIsModalVisible(true)
   }
 
-  const handleMediaSelect = async (selection: File | string) => {
+  const handleMediaSelect = async (selection: string) => {
     setIsModalVisible(false);
-
-    try {
-      let filePath: string | undefined;
-
-      if (typeof selection === 'string') {
-        filePath = selection;
-      } else {
-        const formData = new FormData();
-        formData.append('file', selection);
-
-        const response = await uploadImage(formData).unwrap();
-        filePath = response.data.filePath;
-      }
-
-      if (filePath) {
-        setAvatar(getUrlMedia(filePath));
-        setValue('featuredImage', filePath);
-        toast.success('Upload Success');
-      } else {
-        toast.error('Could not get file path.');
-      }
-    } catch (error) {
-      toast.error('Upload failed!');
+    if (selection) {
+      setValue('featuredImage', selection)
+      setAvatar(getUrlMedia(selection))
+    } else {
+      toast.error('No image selected')
     }
   }
 
@@ -263,7 +243,7 @@ function NewBotPage() {
         <div className='flex gap-6'>
           <div className='w-[80px] object-cover flex-shrink-0'>
             <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
-              <MTBAvatar imgUrl={avatar} isAllowUpdate={true} isUpdatingAvatar={isUpdatingAvatar} />
+              <MTBAvatar imgUrl={avatar} isAllowUpdate={true} />
             </div>
             <MediaManagerModal
               isVisible={isModalVisible}

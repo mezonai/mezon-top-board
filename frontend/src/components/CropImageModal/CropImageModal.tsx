@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import { Modal } from 'antd'
@@ -33,6 +33,15 @@ const CropImageModal: React.FC<Props> = ({
   const [isProcessing, setIsProcessing] = useState(false)
   const [zoom, setZoom] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
+
+  useEffect(() => {
+    if (open) {
+      setZoom(1)
+      setRotation(0)
+      setCrop(undefined)
+      setCompletedCrop(undefined)
+    }
+  }, [open, imgSrc])
 
   function onImageLoad() {
     if (!imgRef.current) return;
