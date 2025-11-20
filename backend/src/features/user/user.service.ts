@@ -70,13 +70,17 @@ export class UserService {
     return new Result();
   }
 
-  async deactivateUser(req: RequestWithId) {
+  async deactivateUser(req: RequestWithId, userId: string) {
+    if (req.id === userId) {
+      throw new BadRequestException("You cannot deactivate your own account");
+    }
+
     const user = await this.userRepository.findOne({
       where: { id: req.id },
       relations: ["apps", "ratings"],
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
 
     await this.userRepository.update(req.id, { deactive: true });
 
