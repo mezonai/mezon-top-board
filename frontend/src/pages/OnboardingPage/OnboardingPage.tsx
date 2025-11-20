@@ -7,10 +7,6 @@ function OnboardingPage() {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
-  const handleOnboardingComplete = () => {
-    navigate('/', { replace: true });
-  };
-
   const handleSkip = () => {
     navigate('/', { replace: true });
   };
@@ -26,7 +22,7 @@ function OnboardingPage() {
         )}
         {step === 2 && (
           <OnboardingStep2 
-            onSubmitSuccess={handleOnboardingComplete} 
+            onSubmitSuccess={handleSkip} 
           />
         )}
       </div>

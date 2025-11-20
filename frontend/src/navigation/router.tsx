@@ -10,7 +10,6 @@ import { routePaths } from './routePaths'
 import { useEffect } from 'react'
 import { useLazyUserControllerGetUserDetailsQuery } from '@app/services/api/user/user'
 import { Dropdown, MenuProps } from 'antd'
-import OnboardingLayout from '@app/components/layouts/OnboardingLayout'
 
 export const renderRoutes = () => {
   const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
@@ -39,10 +38,8 @@ export const renderRoutes = () => {
  
   return (
     <>
-      <Route element={<OnboardingLayout />}>
-        <Route path='/' element={<RootLayout />}>
-          {routePaths.map((route) => getRouteCompact(route))}
-        </Route>
+      <Route path='/' element={<RootLayout />}>
+        {routePaths.map((route) => getRouteCompact(route))}
       </Route>
 
       {/* ROUTE FOR ADMIN */}

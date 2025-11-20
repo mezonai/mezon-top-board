@@ -55,22 +55,9 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
     }
   };
 
-  const handleChooseMedia = async (chosen: File | string) => {
-    try {
-      if (chosen instanceof File) {
-        const formData = new FormData();
-        formData.append('file', chosen);
-        const response = await uploadImage(formData).unwrap();
-        const filePath = response?.data?.filePath;
-        if (filePath) setValue('profileImage', filePath, { shouldDirty: true, shouldValidate: true });
-      } else {
-        setValue('profileImage', chosen, { shouldDirty: true, shouldValidate: true });
-      }
-    } catch (e) {
-      toast.error('Failed to select image');
-    } finally {
-      setIsMediaManagerOpen(false);
-    }
+  const handleChooseMedia = (chosen: string) => {
+    setValue('profileImage', chosen, { shouldDirty: true, shouldValidate: true });
+    setIsMediaManagerOpen(false);
   };
 
   if (isLoadingUser) {
