@@ -38,6 +38,7 @@ import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
+import { AppStatus } from '@app/enums/AppStatus.enum'
 
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
@@ -50,9 +51,23 @@ function NewBotPage() {
   const { checkOwnership } = useOwnershipCheck()
 
   const imgUrl = useMemo(() => {
-    return botId && mezonAppDetail.featuredImage
-      ? getUrlMedia(mezonAppDetail.featuredImage)
-      : avatarBotDefault
+    if (!botId || !mezonAppDetail?.versions) return avatarBotDefault
+
+    let targetVersion = null
+    if (mezonAppDetail.hasNewUpdate) {
+      targetVersion = mezonAppDetail.versions[0]
+    } else {
+      const approved = mezonAppDetail.versions.filter(v => v.status === AppStatus.APPROVED)
+      if (approved.length > 0) {
+        targetVersion = approved[0]
+      } else {
+        targetVersion = mezonAppDetail.versions[0]
+      }
+    }
+
+    if (targetVersion?.featuredImage) return getUrlMedia(targetVersion.featuredImage)
+
+    return avatarBotDefault
   }, [botId, mezonAppDetail.featuredImage])
   const [avatar, setAvatar] = useState<string>(imgUrl)
   const [isModalVisible, setIsModalVisible] = useState(false)
