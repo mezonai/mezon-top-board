@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import {
   useLazyMediaControllerGetAllMediaQuery,
+  useMediaControllerCreateMediaMutation
 } from '@app/services/api/media/media'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
@@ -19,17 +20,18 @@ const MediaManagerModal = ({
   onClose
 }: {
   isVisible: boolean
-  onChoose: (path: File | string) => void
+  onChoose: (path: string) => void
   onClose: () => void
 }) => {
   const [selectedFileToCrop, setSelectedFileToCrop] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
+  const [uploadImage] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
   const pageSize = 24
 
@@ -63,6 +65,26 @@ const MediaManagerModal = ({
     setIsCropModalOpen(true)
   }
 
+  const handleUploadFileToServer = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await uploadImage(formData).unwrap(); 
+      const serverPath = response.data.filePath; 
+      toast.success("Image uploaded successfully!");
+      getMediasList();
+      setSelectedImage(getUrlMedia(serverPath));
+      setIsCropModalOpen(false);
+      setSelectedFileToCrop(null);
+    } catch (error) {
+      toast.error('Upload failed. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
   const tabItems = [
     {
       label: 'Upload from device',
@@ -75,7 +97,7 @@ const MediaManagerModal = ({
             </Button>
           </Upload>
           <i>Choose an image in your browser</i>
-          {selectedFile && (
+          {selectedImage && (
             <img
               src={selectedImage || ''}
               alt=''
@@ -123,47 +145,27 @@ const MediaManagerModal = ({
   ]
 
   const handleChoose = async () => {
-    try {
-      if (selectedFile) {
-        onChoose(selectedFile)
-      }
-      else if (selectedImage) {
-        onChoose(selectedImage)
-      } else {
-        toast.error('Please select an image')
-        return
-      }
-
-      setSelectedImage(null)
-      setSelectedFile(null)
-      setActiveTab('1')
-      setPage(1)
-      onClose()
-    } catch (error) {
-      toast.error('Upload failed!')
+    if (selectedImage) {
+      onChoose(selectedImage) 
+      handleCancel()
+    } else {
+      toast.error('Please select an image first')
     }
   }
 
   const handleCancel = () => {
     setActiveTab('1')
     setPage(1)
-    setSelectedFile(null)
+    setSelectedFileToCrop(null)
     setSelectedImage(null)
     onClose()
   }
 
   const handleCloseModal = () => {
-    setIsCropModalOpen(false)
-    setSelectedFileToCrop(null)
-    setSelectedFile(null)
-    setSelectedImage(null)
-  }
-
-  const handleChooseCroppedImage = (file: File) => {
-    setSelectedFileToCrop(null)
-    setSelectedFile(file)
-    setSelectedImage(URL.createObjectURL(file))
-    setIsCropModalOpen(false)
+    if (!isUploading) {
+      setIsCropModalOpen(false)
+      setSelectedFileToCrop(null)
+    }
   }
 
   return (
@@ -192,15 +194,9 @@ const MediaManagerModal = ({
           </div>
         }
       >
-        <Tabs className=''
+        <Tabs 
           activeKey={activeTab}
-          onChange={(key) => {
-            setActiveTab(key)
-            if (key === '2') {
-              setSelectedFile(null)
-              setIsCropModalOpen(false)
-            }
-          }}
+          onChange={(key) => setActiveTab(key)}
           type='card'
           items={tabItems}
         />
@@ -211,7 +207,8 @@ const MediaManagerModal = ({
         originalFileName={selectedFileToCrop?.name}
         aspect={1}
         onCancel={handleCloseModal}
-        onConfirm={handleChooseCroppedImage}
+        onConfirm={handleUploadFileToServer}
+        parentLoading={isUploading}
       />
     </>
   )
