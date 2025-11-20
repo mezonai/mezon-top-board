@@ -179,14 +179,14 @@ function UsersList() {
       )
     }
   ]
-
+  
   return (
     <div className='p-4 bg-white rounded-md shadow-md'>
       <h2 className='text-lg font-semibold mb-4'>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
-        <Form
+        <Form 
           form={form}
           onFinish={handleSubmit}
           initialValues={initialValues}
@@ -203,9 +203,9 @@ function UsersList() {
               className='w-full'
             />
           </Form.Item>
-
+          
           <Form.Item name='sortField' className='mb-0 w-30'>
-            <Select
+            <Select 
               className='w-30'
               placeholder='Sort Field'
             >
@@ -215,7 +215,7 @@ function UsersList() {
           </Form.Item>
 
           <Form.Item name='sortOrder' className='mb-0 w-30'>
-            <Select
+            <Select 
               className='w-40'
               placeholder='Sort Order'
             >
@@ -225,8 +225,8 @@ function UsersList() {
           </Form.Item>
 
           <Form.Item className='mb-0'>
-            <Button
-              type='primary'
+            <Button 
+              type='primary' 
               htmlType='submit'
               icon={<SearchOutlined />}
             >
@@ -235,7 +235,7 @@ function UsersList() {
           </Form.Item>
         </Form>
       </div>
-
+      
       {/* Loading Spinner */}
       {isLoading && (
         <div className='flex justify-center my-4'>
@@ -271,7 +271,7 @@ function UsersList() {
           <p>Không tìm thấy người dùng</p>
         </div>
       )}
-
+      
       {selectedUser && (
         <div className='bg-opacity-50'>
           <EditUserForm user={selectedUser} onClose={() => setSelectedUser(null)} />

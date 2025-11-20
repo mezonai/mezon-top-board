@@ -47,7 +47,6 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
     // })
     // .addMatcher(userService.endpoints.userControllerActivateUser.matchFulfilled, (state, action) => {
     //   const activeId = action.meta.arg.originalArgs.requestWithId.id
-
     //   state.adminUserList = state.adminUserList?.map((user: GetUserDetailsResponse) => {
     //     if (user.id === activeId) {
     //       return { ...user, deletedAt: null } // Set deletedAt to null
