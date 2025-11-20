@@ -78,8 +78,8 @@ export class UserController {
   @Delete("/deactivate")
   @ApiBearerAuth()
   @RoleRequired([Role.ADMIN])
-  async deactivateUser(@Body() body: RequestWithId) {
-    return this.userService.deactivateUser(body);
+  async deactivateUser(@Body() body: RequestWithId, @Req() req) {
+    return this.userService.deactivateUser(body, req.user.id);
   }
 
   @Post("/activate")
