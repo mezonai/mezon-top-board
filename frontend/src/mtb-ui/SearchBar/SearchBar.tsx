@@ -199,12 +199,12 @@ const SearchBar = ({
           )
         )}
         {selectedTagIds.length > 0 && (
-            <Tag 
-                className="!border-red-200 !text-red-500 hover:!bg-red-50 flex items-center gap-1" 
-                onClick={handleClearTags}
-            >
-                <CloseCircleOutlined /> Clear tags
-            </Tag>
+          <Tag 
+            className="!border-red-200 !text-red-500 hover:!bg-red-50 !cursor-pointer !inline-flex !items-center !gap-1 !mb-2" 
+            onClick={handleClearTags}
+          >
+            <CloseCircleOutlined /> Clear tags
+          </Tag>
         )}
       </div>
     </>
