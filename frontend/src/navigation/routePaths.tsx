@@ -9,6 +9,7 @@ import NewBotPage from '@app/pages/NewBotPage/NewBotPage'
 import NotFoundPage from '@app/pages/NotFoundPage/NotFoundPage'
 import ProfilePage from '@app/pages/ProfilePage/ProfilePage'
 import SettingPage from '@app/pages/ProfilePage/SettingPage'
+import GalleryPage from '@app/pages/ProfilePage/GalleryPage'
 import SearchPage from '@app/pages/SearchPage/SearchPage'
 import TermsPage from '@app/pages/TermsPage/TermsPage'
 import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
@@ -60,6 +61,14 @@ export const routePaths: RoutePath[] = [
     path: '/profile/setting',
     element: <SettingPage></SettingPage>,
     strLabel: 'Personal Settings',
+    isShowMenu: false,
+    requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/profile/gallery',
+    element: <GalleryPage />,
+    strLabel: 'My Media Gallery',
     isShowMenu: false,
     requireAuth: true,
   },

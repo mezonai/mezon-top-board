@@ -1,7 +1,7 @@
 import { User } from '@app/types'
 
 export type Media = {
-    is: string
+    id: string
     fileName: string
     mimeType: string
     filePath: string

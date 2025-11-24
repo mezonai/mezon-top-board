@@ -38,6 +38,21 @@ export class MediaService {
     );
   }
 
+  async getMyMedia(ownerId: string, query: GetMediaRequest) {
+    const inValidateSortField = query.sortField === 'name' ? 'fileName' : query.sortField;
+    return paginate<Media, GetMediaResponse>(
+      () =>
+        this.mediaRepository.findMany({
+          ...query,
+          sortField: inValidateSortField,
+          where: () => ({ ownerId })
+        }),
+      query.pageSize,
+      query.pageNumber,
+      (entity) => Mapper(GetMediaResponse, entity),
+    );
+  }
+
   async getMedia(query: RequestWithId) {
     const media = await this.mediaRepository.findById(query.id)
     return new Result({ data: media })
