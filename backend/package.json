@@ -30,6 +30,7 @@
     "db:revert:prod": "cross-env ENV=prod yarn typeorm migration:revert"
   },
   "dependencies": {
+    "@n0xgg04/nezon": "^1.1.6",
     "@nestjs-modules/mailer": "1.8.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.0",

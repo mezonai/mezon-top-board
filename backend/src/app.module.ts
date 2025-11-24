@@ -25,7 +25,7 @@ import { UserModule } from "@features/user/user.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
-import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
+import { NezonModule } from "@n0xgg04/nezon";
 
 @Module({
   imports: [
@@ -33,6 +33,10 @@ import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
       load: [config],
       isGlobal: true,
       envFilePath: envFilePath,
+    }),
+    NezonModule.forRoot({
+      token: config().MEZON_TOKEN,
+      botId: config().MEZON_BOT_ID,
     }),
     TypeOrmModule.forRoot(dataSourceOption),
     MailerModule.forRoot({
@@ -58,9 +62,6 @@ import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
       },
     }),
     ScheduleModule.forRoot(),
-    MezonModule.forRootAsync({
-      imports: [ConfigModule],
-    }),
     LoggerModule,
     MediaModule,
     MezonAppModule,

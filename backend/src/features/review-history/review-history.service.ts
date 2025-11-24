@@ -23,8 +23,9 @@ import {
   UpdateAppReviewRequest,
 } from "./dtos/request";
 import { AppReviewResponse } from "./dtos/response";
-import { MezonClientService } from "@features/mezon-noti-bot/mezon-client.service";
 import { EMarkdownType } from "mezon-sdk";
+import { NezonUtilsService } from "@n0xgg04/nezon";
+import { ReplyMezonMessage } from "@domain/common/dtos/MezonReplyMessageDto";
 
 @Injectable()
 export class ReviewHistoryService {
@@ -37,13 +38,32 @@ export class ReviewHistoryService {
   constructor(
     private manager: EntityManager,
     private readonly appVersionService: AppVersionService,
-    private readonly mezonClientService: MezonClientService
+    private readonly utils: NezonUtilsService
   ) {
     this.appRepository = new GenericRepository(App, manager);
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
     this.appReviewRepository = new GenericRepository(AppReviewHistory, manager);
     this.userRepository = new GenericRepository(User, manager);
     this.ratingRepository = new GenericRepository(Rating, manager);
+  }
+
+  async sendMessageToUser(message: ReplyMezonMessage): Promise<any> {
+    const client = this.utils['client'];
+    const dmClan = await client.clans.fetch('0');
+    const user = await dmClan.users.fetch(message.userId);
+
+    if (!user) return;
+    try {
+      return await user.sendDM(
+        {
+          t: message?.textContent ?? '',
+          ...(message?.messOptions ?? {}),
+        },
+        message?.code,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
@@ -75,15 +95,14 @@ export class ReviewHistoryService {
     if (mezonApp.ownerId) {
       const user = await this.userRepository.findById(mezonApp.ownerId);
       const statusText = body.isApproved ? "APPROVED" : "REJECTED";
-      
-      const text =`Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
 
-      await this.mezonClientService.sendMessageToUser({
+      const text = `Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+      await this.sendMessageToUser({
         userId: user.mezonUserId,
         textContent: text,
         messOptions: {
           mk: [{ s: text.indexOf(mezonApp.name), e: text.indexOf(mezonApp.name) + mezonApp.name.length, type: EMarkdownType.BOLD },
-               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
+          { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
           mention_everyone: false,
           anonymous_message: false,
         },
@@ -166,7 +185,7 @@ export class ReviewHistoryService {
       .leftJoinAndSelect('review.app', 'app')
       .leftJoinAndSelect('review.reviewer', 'reviewer')
       .leftJoinAndSelect('review.appVersion', 'appVersion');
-  
+
     if (query.search) {
       qb.andWhere(
         new Brackets((qb) => {
@@ -176,7 +195,7 @@ export class ReviewHistoryService {
         }),
       );
     }
-  
+
     if (query.appId) {
       qb.andWhere('review.appId = :appId', { appId: query.appId });
     }
@@ -189,7 +208,7 @@ export class ReviewHistoryService {
     const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
 
     qb.orderBy(`review.${sortField}`, sortOrder);
-    
+
 
     return paginate<AppReviewHistory, AppReviewResponse>(
       () =>
@@ -202,5 +221,5 @@ export class ReviewHistoryService {
       (entity) => Mapper(AppReviewResponse, entity),
     );
   }
-  
+
 }
