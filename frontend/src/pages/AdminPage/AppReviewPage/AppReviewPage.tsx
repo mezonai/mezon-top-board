@@ -32,6 +32,7 @@ function AppReviewPage() {
             sortField: 'updatedAt',
             sortOrder: 'DESC',
             hasNewUpdate: true,
+            isAdmin: true,
         })
     }
 
@@ -109,7 +110,7 @@ function AppReviewPage() {
             key: 'owner',
             render: (owner: OwnerInMezonAppDetailResponse) => (
                 <div className='line-clamp-5 break-words max-w-[80px] 2xl:max-w-[120px]'>
-                    {owner?.name || '—'}
+                    {owner?.name || 'Blocked User'}
                 </div>
             )
         },

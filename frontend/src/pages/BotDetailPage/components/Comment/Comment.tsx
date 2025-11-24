@@ -9,7 +9,7 @@ function Comment({ rating }: { rating: RatingResponse }) {
   return (
     <>
       <div className='flex gap-10 p-4 shadow-sm rounded-2xl'>
-        <Link to={`/profile/${rating.user.id}`} className='w-15 flex-shrink-0'>
+        <Link to={`${rating.user?.id ? `/profile/${rating.user.id}` : ''}`} className='w-15 flex-shrink-0'>
           <img
             src={rating.user?.profileImage ? getUrlMedia(rating.user?.profileImage) : avatar}
             alt=''
@@ -18,9 +18,9 @@ function Comment({ rating }: { rating: RatingResponse }) {
         </Link>
         <div className='flex flex-col gap-5'>
           <div>
-            <Link to={`/profile/${rating.user.id}`} className='inline-block'>
+            <Link to={`${rating.user?.id ? `/profile/${rating.user.id}` : ''}`} className='inline-block'>
               <MtbTypography variant='h4' customClassName='!mt-1'>
-                {rating.user.name}
+                {rating.user?.name ? rating.user.name : 'Anonymous'}
               </MtbTypography>
             </Link>
             <MtbTypography variant='p' weight='italic'>

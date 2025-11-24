@@ -21,4 +21,5 @@ export type SearchMezonAppRequest = BaseListApiArg & SearchableApiArg & {
   ownerId?: string;
   type?: MezonAppType;
   hasNewUpdate?: boolean;
+  isAdmin?: boolean;
 }

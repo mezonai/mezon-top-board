@@ -41,10 +41,10 @@ export class User extends BaseSoftDelete {
     @Column({ type: "enum", enum: Object.keys(Role), nullable: true })
     public deactiveBy: Role | null;
 
-    @OneToMany(() => Rating, (rating) => rating.user, { cascade: ['soft-remove'] })
+    @OneToMany(() => Rating, (rating) => rating.user)
     public ratings: Rating[];
 
-    @OneToMany(() => App, (app) => app.owner, { cascade: ['soft-remove'] })
+    @OneToMany(() => App, (app) => app.owner)
     public apps: App[];
 
     @OneToMany(() => Link, (link) => link.owner)

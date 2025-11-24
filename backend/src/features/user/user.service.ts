@@ -75,32 +75,18 @@ export class UserService {
     if (req.id === userId) {
       throw new BadRequestException("You cannot deactivate your own account");
     }
-    
-    const user = await this.userRepository.findOne({
-      where: { id: req.id },
-      relations: ["apps", "ratings"],
-    });
-
-    if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
 
     await this.userRepository.update(req.id, { deactiveBy: Role.ADMIN });
 
-    await this.userRepository.getRepository().softRemove(user);
+    await this.userRepository.softDelete(req.id);
 
     return new Result();
   }
 
   async selfDeactivateUser(userId: string) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ["apps", "ratings"],
-    });
-
-    if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
-
     await this.userRepository.update(userId, { deactiveBy: Role.DEVELOPER });
 
-    await this.userRepository.getRepository().softRemove(user);
+    await this.userRepository.softDelete(userId);
 
     return new Result();
   }
@@ -108,25 +94,12 @@ export class UserService {
   async activateUser(req: RequestWithId) {
     const user = await this.userRepository.findOne({
       where: { id: req.id, deletedAt: Not(IsNull()) },
-      relations: ['apps', 'ratings'],
       withDeleted: true,
     });
 
     if (!user) throw new BadRequestException(ErrorMessages.NOT_FOUND_MSG);
 
     await this.userRepository.getRepository().restore(req.id);
-
-    for (const app of user.apps) {
-      if (app.deletedAt) {
-        await this.appRepository.getRepository().restore(app.id);
-      }
-    }
-
-    for (const rating of user.ratings) {
-      if (rating.deletedAt) {
-        await this.ratingRepository.getRepository().restore(rating.id);
-      }
-    }
 
     await this.userRepository.update(req.id, { deactiveBy: null });
 

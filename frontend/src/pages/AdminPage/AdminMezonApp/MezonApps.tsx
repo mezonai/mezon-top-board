@@ -41,6 +41,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       pageNumber: currentPageNumber,
       sortField: "createdAt",
       sortOrder: "DESC",
+      isAdmin: true,
     });
   }
 
@@ -85,7 +86,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       key: "owner",
       render: (owner: { name: string }) => (
         <div className="line-clamp-5 break-words max-w-[80px] 2xl:max-w-[120px]">
-          {owner.name}
+          {owner?.name ? owner.name : 'Blocked User'}
         </div>
       ),
     },

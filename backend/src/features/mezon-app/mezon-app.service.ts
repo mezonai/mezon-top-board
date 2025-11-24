@@ -130,16 +130,17 @@ export class MezonAppService {
     const tagIds = mezonApp.tags.map((tag) => tag.id);
     if (tagIds.length === 0) return new Result({ data: [] });
 
-    const relatedMezonApps = await this.appRepository.getRepository().find({
-      where: {
-        tags: { id: In(tagIds) },
-        id: Not(query.id),
-        status: AppStatus.PUBLISHED,
-      },
-      withDeleted: false,
-      relations: ["tags", "ratings"],
-      take: 5,
-    });
+    const relatedMezonApps = await this.appRepository
+      .getRepository()
+      .createQueryBuilder("app")
+      .innerJoin("app.owner", "owner")
+      .leftJoinAndSelect("app.tags", "tag")
+      .leftJoinAndSelect("app.ratings", "rating")
+      .where("tag.id IN (:...tagIds)", { tagIds })
+      .andWhere("app.id != :id", { id: query.id })
+      .andWhere("app.status = :status", { status: AppStatus.PUBLISHED })
+      .take(5)
+      .getMany();
 
     const res = relatedMezonApps.map((mezonApp) => {
       const mappedMezonApp = Mapper(GetRelatedMezonAppResponse, mezonApp);
@@ -161,9 +162,14 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .select("app.id")
-      .skip(skip)
-      .take(take);
+      .select(["app.id", "app.createdAt"])
+
+      if(!query.isAdmin){
+        whereCondition.innerJoin("app.owner", "owner")
+      }
+    
+      whereCondition.skip(skip)
+      whereCondition.take(take)
 
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
@@ -200,7 +206,7 @@ export class MezonAppService {
       });
     }
 
-    if(query?.hasNewUpdate !== undefined){
+    if (query?.hasNewUpdate !== undefined) {
       whereCondition.andWhere("app.hasNewUpdate = :hasNewUpdate", {
         hasNewUpdate: query.hasNewUpdate,
       });

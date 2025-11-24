@@ -64,6 +64,10 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({ description: "Filter by has new update" })
   @IsOptional()
   hasNewUpdate?: boolean;
+
+  @ApiPropertyOptional({ description: "Indicates if the requester is an admin" })
+  @IsOptional()
+  isAdmin?: boolean;
 }
 
 export class CreateMezonAppRequest extends CreateAppInfoRequest {
