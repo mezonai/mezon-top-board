@@ -41,17 +41,12 @@ export const LoginRedirectPage = () => {
       }
       storeAccessTokens(data.data)
       postLogin()
-      try {
-        const userResp = await getUserInfo().unwrap()
-        const isFirstLogin = !!userResp?.data?.isFirstLogin
-        toast.success('Login successfully!')
-        navigate(isFirstLogin ? '/welcome' : '/', { replace: true })
-        return
-      } catch (_) {
-        toast.success('Login successfully!')
-        navigate('/', { replace: true })
-        return
-      }
+
+      const userResp = await getUserInfo().unwrap().catch(() => null)
+      const isFirstLogin = !!userResp?.data?.isFirstLogin
+
+      toast.success('Login successfully!')
+      navigate(isFirstLogin ? '/welcome' : '/', { replace: true })
     } catch (_) {
       toast.error('Login failed!')
       navigate('/', { replace: true })
