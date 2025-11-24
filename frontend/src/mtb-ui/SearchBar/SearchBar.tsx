@@ -44,12 +44,17 @@ const SearchBar = ({
 
   const handleClear = () => {
     setSearchText('')
-    setSelectedTagIds([])
-    setSearchParams({})
-    setSelectedType(undefined)
     if (isResultPage) {
-      onSearch('', [])
+      updateSearchParams('', selectedTagIds, selectedType)
+      onSearch('', selectedTagIds, selectedType)
     }
+  }
+
+  const handleClearTags = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedTagIds([]);
+    handleSearch([], selectedType); 
   }
 
   const updateSearchParams = (q: string, tags: string[], type?: MezonAppType) => {
@@ -123,7 +128,7 @@ const SearchBar = ({
             placeholder={placeholder}
             prefix={<SearchOutlined style={{ color: '#bbb' }} />}
             suffix={
-              allowClear && (searchText || selectedTagIds.length) ? (
+              allowClear && searchText ? (
                 <button onClick={handleClear} className='cursor-pointer flex align-middle'>
                   <CloseCircleOutlined className='text-sm' />
                 </button>
@@ -192,6 +197,14 @@ const SearchBar = ({
               }))}
             />
           )
+        )}
+        {selectedTagIds.length > 0 && (
+          <Tag 
+            className="!border-red-200 !text-red-500 hover:!bg-red-50 !cursor-pointer !inline-flex !items-center !gap-1 !mb-2" 
+            onClick={handleClearTags}
+          >
+            <CloseCircleOutlined /> Clear tags
+          </Tag>
         )}
       </div>
     </>
