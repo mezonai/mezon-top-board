@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Divider, Pagination, Flex, Spin } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { useLazyMediaControllerGetMyMediaQuery } from '@app/services/api/media/media'
+import { useLazyMediaControllerGetAllMediaQuery } from '@app/services/api/media/media'
 import { MediaResponse } from '@app/services/api/media/media.types'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
@@ -21,7 +21,7 @@ const pageOptions = [
 function GalleryPage() {
     useAuthRedirect()
     const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
-    const [getMyMedia, { isLoading }] = useLazyMediaControllerGetMyMediaQuery()
+    const [getAllMedia, { isLoading }] = useLazyMediaControllerGetAllMediaQuery()
 
     const [page, setPage] = useState<number>(1)
     const [pageSize, setPageSize] = useState<number>(pageOptions[0].value)
@@ -31,11 +31,12 @@ function GalleryPage() {
 
     const loadData = async (pageNumber: number = page, pageSizeParam: number = pageSize) => {
         try {
-            const resp = await getMyMedia({
+            const resp = await getAllMedia({
                 pageNumber,
                 pageSize: pageSizeParam,
                 sortField: 'createdAt',
-                sortOrder: 'DESC'
+                sortOrder: 'DESC',
+                ownerId: userInfo?.id
             }).unwrap()
             setMediaList(resp?.data ?? [])
             setTotalCount(resp?.totalCount ?? 0)

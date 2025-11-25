@@ -1,7 +1,13 @@
 import { PaginationQuery, RequestWithId } from '@domain/common/dtos/request.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
-export class GetMediaRequest extends PaginationQuery { }
+export class GetMediaRequest extends PaginationQuery {
+    @IsOptional()
+    @IsString()
+    @ApiProperty({ required: false })
+    ownerId?: string;
+}
 
 export class CreateMediaRequest {
     @ApiProperty({ type: String, format: 'binary', required: true })

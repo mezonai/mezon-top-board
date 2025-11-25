@@ -28,24 +28,13 @@ export class MediaService {
 
   async getAll(query: GetMediaRequest) {
     const inValidateSortField = query.sortField === 'name' ? 'fileName' : query.sortField;
-
-    return paginate<Media, GetMediaResponse>(
-      () =>
-        this.mediaRepository.findMany({ ...query, sortField: inValidateSortField }),
-      query.pageSize,
-      query.pageNumber,
-      (entity) => Mapper(GetMediaResponse, entity),
-    );
-  }
-
-  async getMyMedia(ownerId: string, query: GetMediaRequest) {
-    const inValidateSortField = query.sortField === 'name' ? 'fileName' : query.sortField;
+    const ownerFilter = query.ownerId ? { ownerId: query.ownerId } : {};
     return paginate<Media, GetMediaResponse>(
       () =>
         this.mediaRepository.findMany({
           ...query,
           sortField: inValidateSortField,
-          where: () => ({ ownerId })
+          where: () => ownerFilter
         }),
       query.pageSize,
       query.pageNumber,

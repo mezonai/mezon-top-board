@@ -2,8 +2,6 @@ import { api } from '../../apiInstance'
 import type {
   MediaControllerGetAllMediaApiResponse,
   MediaControllerGetAllMediaApiArg,
-  MediaControllerGetMyMediaApiResponse,
-  MediaControllerGetMyMediaApiArg,
   MediaControllerGetMediaApiResponse,
   MediaControllerGetMediaApiArg,
   MediaControllerCreateMediaApiResponse,
@@ -20,18 +18,8 @@ const injectedRtkApi = api.injectEndpoints({
           pageSize: queryArg.pageSize,
           pageNumber: queryArg.pageNumber,
           sortField: queryArg.sortField,
-          sortOrder: queryArg.sortOrder
-        }
-      })
-    }),
-    mediaControllerGetMyMedia: build.query<MediaControllerGetMyMediaApiResponse, MediaControllerGetMyMediaApiArg>({
-      query: (queryArg) => ({
-        url: `/api/media/me`,
-        params: {
-          pageSize: queryArg.pageSize,
-          pageNumber: queryArg.pageNumber,
-          sortField: queryArg.sortField,
-          sortOrder: queryArg.sortOrder
+          sortOrder: queryArg.sortOrder,
+          ownerId: queryArg.ownerId
         }
       })
     }),
@@ -58,8 +46,6 @@ export { injectedRtkApi as mediaService }
 export const {
   useMediaControllerGetAllMediaQuery,
   useLazyMediaControllerGetAllMediaQuery,
-  useMediaControllerGetMyMediaQuery,
-  useLazyMediaControllerGetMyMediaQuery,
   useMediaControllerGetMediaQuery,
   useLazyMediaControllerGetMediaQuery,
   useMediaControllerCreateMediaMutation,

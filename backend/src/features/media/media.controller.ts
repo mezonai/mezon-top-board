@@ -32,17 +32,6 @@ export class MediaController {
     }
   }
 
-  @Get("me")
-  @ApiBearerAuth()
-  getMyMedia(@GetUserFromHeader() user: User, @Query() query: GetMediaRequest) {
-    try {
-      return this.mediaService.getMyMedia(user.id, query);
-    } catch (error) {
-      this.logger.error("An error occured", error);
-      throw error;
-    }
-  }
-
   @Get()
   @ApiBearerAuth()
   getMedia(@Query() query: RequestWithId) {

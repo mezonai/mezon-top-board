@@ -5,13 +5,14 @@ import { Modal, Spin, Tabs, Upload, Pagination } from 'antd'
 import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import {
-  useLazyMediaControllerGetMyMediaQuery,
+  useLazyMediaControllerGetAllMediaQuery,
   useMediaControllerCreateMediaMutation
 } from '@app/services/api/media/media'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
 import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
+import { IUserStore } from '@app/store/user'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 
 const MediaManagerModal = ({
@@ -29,9 +30,10 @@ const MediaManagerModal = ({
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
 
-  const [getMyMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetMyMediaQuery()
+  const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const pageSize = 24
 
   useEffect(() => {
@@ -39,11 +41,12 @@ const MediaManagerModal = ({
   }, [page])
 
   const getMediasList = () => {
-    getMyMedia({
+    getAllMedia({
       pageNumber: page,
       pageSize: pageSize,
       sortField: 'createdAt',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      ownerId: userInfo?.id
     })
   }
 
