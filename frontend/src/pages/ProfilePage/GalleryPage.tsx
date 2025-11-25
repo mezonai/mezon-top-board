@@ -30,13 +30,14 @@ function GalleryPage() {
     const [totalPages, setTotalPages] = useState<number>(0)
 
     const loadData = async (pageNumber: number = page, pageSizeParam: number = pageSize) => {
+        if (!userInfo?.id) return; 
         try {
             const resp = await getAllMedia({
                 pageNumber,
                 pageSize: pageSizeParam,
                 sortField: 'createdAt',
                 sortOrder: 'DESC',
-                ownerId: userInfo?.id
+                ownerId: userInfo.id
             }).unwrap()
             setMediaList(resp?.data ?? [])
             setTotalCount(resp?.totalCount ?? 0)
@@ -45,8 +46,9 @@ function GalleryPage() {
     }
 
     useEffect(() => {
+        if (!userInfo?.id) return; 
         loadData(1, pageSize)
-    }, [pageSize])
+    }, [pageSize, userInfo?.id])
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage)

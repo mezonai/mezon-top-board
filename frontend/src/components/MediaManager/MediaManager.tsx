@@ -37,15 +37,17 @@ const MediaManagerModal = ({
   const pageSize = 24
 
   useEffect(() => {
+    if (!isVisible) return; 
+    if (!userInfo?.id) return; 
     getMediasList()
-  }, [page])
+  }, [page, isVisible, userInfo?.id])
 
   const getMediasList = () => {
     getAllMedia({
       pageNumber: page,
       pageSize: pageSize,
       sortField: 'createdAt',
-      sortOrder: 'ASC',
+      sortOrder: 'DESC',
       ownerId: userInfo?.id
     })
   }
