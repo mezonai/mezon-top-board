@@ -47,7 +47,7 @@ const MediaManagerModal = ({
       pageNumber: page,
       pageSize: pageSize,
       sortField: 'createdAt',
-      sortOrder: 'DESC',
+      sortOrder: 'ASC',
       ownerId: userInfo?.id
     })
   }
