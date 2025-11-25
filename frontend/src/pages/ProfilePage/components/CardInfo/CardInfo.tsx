@@ -1,5 +1,6 @@
 import {
   CreditCardOutlined,
+  FileImageOutlined,
   InfoCircleOutlined,
   SettingOutlined,
   SyncOutlined,
@@ -33,6 +34,12 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       name: 'Overview',
       path: isPublic ? `/profile/${userInfo?.id}` : `/profile`,
       isPublic: true
+    },
+    {
+      icon: <FileImageOutlined />,
+      name: 'Gallery',
+      path: '/profile/gallery',
+      isPublic: false
     },
     {
       icon: <UserAddOutlined />,

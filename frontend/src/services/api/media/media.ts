@@ -18,7 +18,8 @@ const injectedRtkApi = api.injectEndpoints({
           pageSize: queryArg.pageSize,
           pageNumber: queryArg.pageNumber,
           sortField: queryArg.sortField,
-          sortOrder: queryArg.sortOrder
+          sortOrder: queryArg.sortOrder,
+          ownerId: queryArg.ownerId
         }
       })
     }),

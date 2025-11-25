@@ -12,6 +12,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
 import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
+import { IUserStore } from '@app/store/user'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 
 const MediaManagerModal = ({
@@ -32,18 +33,22 @@ const MediaManagerModal = ({
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const pageSize = 24
 
   useEffect(() => {
+    if (!isVisible) return; 
+    if (!userInfo?.id) return; 
     getMediasList()
-  }, [page])
+  }, [page, isVisible, userInfo?.id])
 
   const getMediasList = () => {
     getAllMedia({
       pageNumber: page,
       pageSize: pageSize,
       sortField: 'createdAt',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      ownerId: userInfo?.id
     })
   }
 

@@ -6,7 +6,7 @@ export type MediaResponse = Omit<Media, 'owner'>
 
 export type DeleteMediaRequest = RequestWithId;
 
-export type MediaControllerGetAllMediaApiArg = BaseListApiArg; 
+export type MediaControllerGetAllMediaApiArg = BaseListApiArg & { ownerId?: string }; 
 export type MediaControllerGetAllMediaApiResponse = HttpResponse<MediaResponse[]>;
 
 export type MediaControllerGetMediaApiResponse = unknown; // TODO: define type
