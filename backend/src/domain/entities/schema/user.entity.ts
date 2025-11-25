@@ -38,7 +38,7 @@ export class User extends BaseSoftDelete {
     @Column({ nullable: true, default: null })
     public mezonUserId: string;
 
-    @Column({ nullable: false, default: true })
+    @Column({ nullable: false, default: false })
     public isFirstLogin: boolean;
 
     @OneToMany(() => Rating, (rating) => rating.user)

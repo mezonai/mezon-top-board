@@ -69,7 +69,8 @@ export class AuthService {
         name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
         profileImage: oryInfo.avatar,
         role: Role.DEVELOPER,
-        mezonUserId: oryInfo.user_id
+        mezonUserId: oryInfo.user_id,
+        isFirstLogin: true 
       });
       const tokens = await this.generateAccessAndRefreshTokens(newUser);
       return new Result({ data: tokens });
