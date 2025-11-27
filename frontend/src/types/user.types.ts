@@ -9,6 +9,7 @@ export type User = {
     bio: string
     profileImage: string
     willSyncFromMezon: boolean
+    isFirstLogin: boolean
     ratings: Rating[]
     apps: App[]
     links: Link[]
