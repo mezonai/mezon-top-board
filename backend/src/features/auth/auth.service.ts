@@ -40,16 +40,16 @@ export class AuthService {
         data.access_token,
       );
 
-      if (!isEmail(oryInfo.sub)) {
+      if (!isEmail(oryInfo.email)) {
         throw new BadRequestException(ErrorMessages.INVALID_EMAIL);
       }
 
-      const user = await this.findUserByEmail(oryInfo.sub);
+      const user = await this.findUserByEmail(oryInfo.email);
 
       if (user) {
         if (user.willSyncFromMezon) {
           await this.userRepository.update(user.id, {
-            name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+            name: oryInfo.display_name || oryInfo.username || oryInfo.email.split('@')[0],
             profileImage: oryInfo.avatar,
             willSyncFromMezon: false,
           });
@@ -65,8 +65,8 @@ export class AuthService {
       }
 
       const newUser = await this.userRepository.create({
-        email: oryInfo.sub,
-        name: oryInfo.display_name || oryInfo.username || oryInfo.sub.split('@')[0],
+        email: oryInfo.email,
+        name: oryInfo.display_name || oryInfo.username || oryInfo.email.split('@')[0],
         profileImage: oryInfo.avatar,
         role: Role.DEVELOPER,
         mezonUserId: oryInfo.user_id,
