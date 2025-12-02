@@ -21,12 +21,14 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
+import { useBotGeneratorGenerateMutation } from '@app/services/api/botGenerator/botGenerator'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [generateBot] = useBotGeneratorGenerateMutation();
 
   const cardInfoLink = [
     {
@@ -91,6 +93,26 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   }
 
+    const handleDownloadSource = async () => {
+    const blob = await generateBot({
+      payload: {
+        botName: 'TestBot',
+        templateName: 'default',
+        commands: [
+          { "command": "test1", "className": "Test1Command", "description": "test1 command", "category": "Utility", "aliases": ["t1"] },
+          { "command": "test2", "className": "Test2Command", "description": "test2 command", "category": "Utility", "aliases": ["t2"] }
+        ],
+      }
+    }).unwrap();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mezon-bot.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
       <div className='flex items-center gap-4 w-full max-lg:flex-col max-2xl:flex-col'>
@@ -147,6 +169,15 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           </Button>
         </Popconfirm>
       }
+
+      <Button
+            color='primary'
+            size='large'
+            variant='outlined'
+            onClick={handleDownloadSource}
+          >
+            Download bot source
+          </Button>
       <MediaManagerModal
         isVisible={isModalVisible}
         onChoose={handleMediaSelect}
