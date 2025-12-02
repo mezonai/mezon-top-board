@@ -1,13 +1,13 @@
 import { useLocation } from 'react-router-dom'
 import { ReactNode } from 'react'
-import { UnorderedListOutlined, HistoryOutlined } from '@ant-design/icons'
+import { UnorderedListOutlined, PlusOutlined } from '@ant-design/icons'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 
 type WizardLink = { name: string; path: string; icon: ReactNode }
 
 const links: WizardLink[] = [
     { name: 'Requests', path: '/bot-wizard', icon: <UnorderedListOutlined /> },
-    { name: 'History', path: '/bot-wizard/history', icon: <HistoryOutlined /> },
+    { name: 'Bot Wizard', path: '/bot-wizard/new', icon: <PlusOutlined /> },
 ]
 
 export default function BotWizardSidebar() {
@@ -23,8 +23,8 @@ export default function BotWizardSidebar() {
                         <li
                             key={l.path}
                             className={`p-2 cursor-pointer align-middle transition-all rounded-md border ${isActive
-                                    ? 'bg-red-50 border-primary-active text-primary-active font-semibold'
-                                    : 'border-transparent hover:bg-red-400 hover:text-white'
+                                ? 'bg-red-50 border-primary-active text-primary-active font-semibold'
+                                : 'border-transparent hover:bg-red-400 hover:text-white'
                                 }`}
                         >
                             <a href={l.path} className='w-full inline-block font-medium'>
