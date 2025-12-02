@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 import { Role } from "@domain/common/enum/role";
-import { App, Link, Media, Rating } from "@domain/entities";
+import { App, Link, Media, Rating, TempSourceFile } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 
@@ -53,4 +53,7 @@ export class User extends BaseSoftDelete {
 
     @OneToMany(() => Media, (media) => media.owner)
     public medias: Media[];
+
+    @OneToMany(() => TempSourceFile, (file) => file.owner)
+    public tempSourceFiles: TempSourceFile[];
 }
