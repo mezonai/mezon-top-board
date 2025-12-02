@@ -22,8 +22,10 @@ A modern, scalable chat bot built with NestJS and TypeScript for the Mezon chat 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Duke3108/cuctask-mezon-bot.git
-   cd cuctask-mezon-bot
+   git clone https://github.com/hoangduy0610/mezon-bot-template.git
+   ``` 
+   ```bash
+   cd mezon-bot-template
    ```
 
 2. **Install dependencies**
@@ -70,10 +72,7 @@ yarn start:debug
 
 | Command | Description | Usage |
 |---------|-------------|-------|
-| `!help` | Show available commands | `!help [command]` |
 | `!ping` | Check bot latency | `!ping` |
-| `!about`| Bot information | `!about` |
-| `!task` | Bot main feature | `!task` |
 
 ## 🏗️ Project Structure
 
@@ -81,10 +80,7 @@ yarn start:debug
 src/
 ├── command/           # Bot commands
 │   ├── common/       # Command abstractions
-│   ├── help.command.ts
-│   ├── ping.command.ts
-│   ├── about.command.ts
-|   └── task.command.ts
+|   └── ping.command.ts
 ├── common/           # Shared constants and utilities
 ├── config/           # Configuration files
 ├── decorators/       # Custom decorators
@@ -147,13 +143,13 @@ yarn format
 
 ```bash
 # Build image
-docker build -t cuctask-mezon-bot .
+docker build -t mezon-bot-template .
 
 # Run container
-docker run -d --name cuctask-mezon-bot \
+docker run -d --name mezon-bot-template \
   --env-file .env.production \
   -p 3000:3000 \
-  cuctask-mezon-bot
+  mezon-bot-template
 ```
 
 ### Manual Deployment
@@ -165,11 +161,6 @@ yarn build
 # Run production
 NODE_ENV=production yarn start:prod
 ```
-
-## 👤 Author
-
-**Khuu Tien Tuoc**
-- GitHub: [@Duke3108](https://github.com/Duke3108)
 
 ## 🙏 Acknowledgments
 

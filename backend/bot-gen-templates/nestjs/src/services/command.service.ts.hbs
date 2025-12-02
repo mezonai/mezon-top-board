@@ -1,6 +1,5 @@
 import { CommandMessage } from '@app/command/common/command.abstract';
 import { CommandStorage } from '@app/command/common/command.storage';
-import { HelpCommand } from '@app/command/help.command';
 import { CommandInterface } from '@app/types/command.types';
 import { extractMessage } from '@app/utils/message';
 import { Injectable } from '@nestjs/common';
