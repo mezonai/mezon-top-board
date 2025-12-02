@@ -15,6 +15,7 @@ import TermsPage from '@app/pages/TermsPage/TermsPage'
 import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
 import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
+import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 
 export const routePaths: RoutePath[] = [
   {
@@ -125,6 +126,22 @@ export const routePaths: RoutePath[] = [
         path: '/contact-us',
       },
     ]
+  },
+  {
+    index: false,
+    path: '/bot-wizard',
+    element: <BotWizardPage />,
+    strLabel: 'Bot Wizard',
+    isShowMenu: true,
+    requireAuth: true,
+  },
+  {
+    index: false,
+    path: 'bot-wizard/history',
+    element: <BotWizardPage />,
+    strLabel: 'Bot Wizard History',
+    isShowMenu: false,
+    requireAuth: true,
   },
   {
     index: false,
