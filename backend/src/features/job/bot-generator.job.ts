@@ -9,6 +9,7 @@ import * as path from 'path';
 import * as archiver from 'archiver';
 import * as Handlebars from 'handlebars';
 import { TempSourceFileStatus } from '@domain/common/enum/tempSourceFileStatus';
+import { WizardProcessorFactory } from '@libs/processor/wizardProcessorFactory';
 
 @Injectable()
 export class BotGeneratorJob implements OnModuleInit {
@@ -36,15 +37,17 @@ export class BotGeneratorJob implements OnModuleInit {
     const tempSourceFile = await this.tempSourceFileRepository.findById(tempFileId);
     if (!tempSourceFile) throw new BadRequestException("Temp file not found");
 
-    const templateRoot = path.join(process.cwd(), "bot-gen-templates", payload.templateName);
-    const tempOutput = path.join('/tmp', `bot-${Date.now()}`);
+    // const templateRoot = path.join(process.cwd(), "bot-gen-templates", payload.templateName);
+    // const tempOutput = path.join('/tmp', `bot-${Date.now()}`);
 
-    await fs.mkdirp(tempOutput);
-    await this.renderDirectory(templateRoot, tempOutput, payload);
+    // await fs.mkdirp(tempOutput);
+    // await this.renderDirectory(templateRoot, tempOutput, payload);
 
-    const zipBuffer = await this.zipFolder(tempOutput);
-    await fs.remove(tempOutput);
-
+    // const zipBuffer = await this.zipFolder(tempOutput);
+    // await fs.remove(tempOutput);
+    const processor = WizardProcessorFactory.create(payload.templateName, payload);
+    const zipBuffer = await processor.process();
+    
     const tempFolder = path.join('/tmp/bot-source-files', tempFileId);
     await fs.mkdirp(tempFolder);
 
@@ -76,19 +79,6 @@ export class BotGeneratorJob implements OnModuleInit {
       let destPath = path.join(destDir, item);
 
       const stat = await fs.stat(srcPath);
-
-      if (stat.isDirectory() && item === 'command') {
-        await fs.mkdirp(destPath);
-
-        await this.renderDirectory(srcPath, destPath, payload);
-
-        if (Array.isArray(payload.commands)) {
-          for (const cmd of payload.commands) {
-            await this.generateCommandFile(destPath, cmd);
-          }
-        }
-        continue;
-      }
 
       if (stat.isDirectory()) {
         await fs.mkdirp(destPath);

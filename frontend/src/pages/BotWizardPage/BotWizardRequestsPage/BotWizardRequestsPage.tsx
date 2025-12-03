@@ -87,10 +87,9 @@ export default function BotWizardRequestsPage() {
             ) : (
                 <>
                     <div className='grid grid-cols-1 gap-6'>
-                        <BotWizardCard item={jobs![0]} />
-                        {/* {(data?.data ?? []).map((item: BotWizardResponse) => (
+                        {(jobs ?? []).map((item: BotWizardResponse) => (
                             <BotWizardCard key={item.id} item={item} />
-                        ))} */}
+                        ))}
                     </div>
                     <div className='flex flex-col items-center gap-5 pt-10'>
                         <div className='flex flex-col items-center relative w-full'>

@@ -46,7 +46,7 @@ export default function BotWizardCard({ item }: { item: BotWizardResponse }) {
             <div className='rounded-xl p-5 shadow-sm hover:shadow-lg transition-shadow bg-white border border-gray-100 flex flex-col gap-3'>
                 <div className='flex items-start justify-between gap-3'>
                     <div className='min-w-0'>
-                        <MtbTypography variant='h3' customClassName='truncate'>{item.name || ''}</MtbTypography>
+                        <MtbTypography variant='h3' customClassName='truncate'>{item.fileName}</MtbTypography>
                         <MtbTypography variant='p' customClassName='!pl-0 text-gray-500 truncate'>
                             {item.description || ''}
                         </MtbTypography>
