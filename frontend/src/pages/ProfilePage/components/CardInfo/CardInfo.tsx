@@ -95,7 +95,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
 
   const handleDownloadSource = async () => {
     const res = await createJob({
-      botName: 'TestBot-9',
+      botName: 'TestBot-11',
       templateName: 'nestjs',
       commands: [
         { command: "test1", description: "Test command 1", category: "General", className: "TestCommand1", aliases: ["t1", "testone"] },

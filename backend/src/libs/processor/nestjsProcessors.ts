@@ -10,7 +10,6 @@ export class NestJSProcessor extends BaseWizardProcessor {
     const templateRoot = path.join(process.cwd(), 'bot-gen-templates', 'nestjs');
     await this.renderDirectory(templateRoot, outputDir);
 
-    // luôn generate vào src/command
     await this.generateCommandFiles(outputDir);
 
     return this.zipFolder(outputDir);
