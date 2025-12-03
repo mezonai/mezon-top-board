@@ -20,7 +20,7 @@ export class TempSourceFile extends BaseSoftDelete {
     @Column({ type: "enum", enum: Object.keys(TempSourceFileStatus),default: TempSourceFileStatus.PROCESSING, })
     public status: TempSourceFileStatus;
 
-    @Column({ type: "timestamp", nullable: true })
+    @Column({ type: "timestamptz", nullable: true })
     public completedAt: Date | null;
 
     @Column({ nullable: true })
