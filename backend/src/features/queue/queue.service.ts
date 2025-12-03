@@ -12,7 +12,7 @@ export class QueueService {
     await this.boss.createQueue(queue);
   }
 
-  async send(queue: string, data: JobData) {
+  async send<T extends object>(queue: string, data: T) {
     return this.boss.send(queue, data);
   }
 
