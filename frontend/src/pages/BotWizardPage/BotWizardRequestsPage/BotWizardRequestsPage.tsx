@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Divider, Flex, Pagination } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import MtbButton from '@app/mtb-ui/Button'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
-import { BotWizardResponse, WizardStatus, useMockBotWizardRecentRequests } from './MockData'
+import { BotWizardResponse, WizardStatus, useMockBotWizardRecentRequests } from '../MockData'
 import BotWizardCard from './components/BotWizardCard'
 import { LoadingOutlined } from '@ant-design/icons'
 
@@ -72,10 +71,6 @@ export default function BotWizardRequestsPage() {
                             dropdownStyle={{ fontWeight: 'normal' }}
                         />
                     </div>
-
-                    <MtbButton color='primary' size='large' className='ml-auto'>
-                        New Bot Wizard
-                    </MtbButton>
                 </Flex>
             </div>
             <Divider className='bg-gray-100' />
