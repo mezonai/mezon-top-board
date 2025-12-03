@@ -137,9 +137,9 @@ export const routePaths: RoutePath[] = [
   },
   {
     index: false,
-    path: 'bot-wizard/history',
+    path: '/bot-wizard/new',
     element: <BotWizardPage />,
-    strLabel: 'Bot Wizard History',
+    strLabel: 'Bot Wizard',
     isShowMenu: false,
     requireAuth: true,
   },
