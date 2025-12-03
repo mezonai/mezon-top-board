@@ -65,6 +65,7 @@ export type BotWizardResponse = {
   envPairs: WizardENVPair[];
   status: WizardStatus;
   createdAt: string;
+  fileName?: string;
 }
 
 // Helpers to generate mock arrays

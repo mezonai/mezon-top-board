@@ -21,14 +21,14 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
-import { useBotGeneratorGenerateMutation } from '@app/services/api/botGenerator/botGenerator'
+import { useBotGeneratorCreateJobMutation } from '@app/services/api/botGenerator/botGenerator'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [generateBot] = useBotGeneratorGenerateMutation();
+  const [createJob] = useBotGeneratorCreateJobMutation();
 
   const cardInfoLink = [
     {
@@ -68,7 +68,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleMediaSelect = async (selection: string) => {
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
@@ -93,24 +93,17 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     }
   }
 
-    const handleDownloadSource = async () => {
-    const blob = await generateBot({
-      payload: {
-        botName: 'TestBot',
-        templateName: 'default',
-        commands: [
-          { "command": "test1", "className": "Test1Command", "description": "test1 command", "category": "Utility", "aliases": ["t1"] },
-          { "command": "test2", "className": "Test2Command", "description": "test2 command", "category": "Utility", "aliases": ["t2"] }
-        ],
-      }
+  const handleDownloadSource = async () => {
+    const res = await createJob({
+      botName: 'TestBot',
+      templateName: 'default',
+      commands: [
+        { command: "test1", className: "Test1Command", description: "xx", category: "Utility", aliases: ["t1"] },
+        { command: "test2", className: "Test2Command", description: "xx", category: "Utility", aliases: ["t2"] },
+      ]
     }).unwrap();
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'mezon-bot.zip';
-    a.click();
-    URL.revokeObjectURL(url);
+    console.log("Created job:", res);
   };
 
   return (
@@ -171,13 +164,13 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       }
 
       <Button
-            color='primary'
-            size='large'
-            variant='outlined'
-            onClick={handleDownloadSource}
-          >
-            Download bot source
-          </Button>
+        color='primary'
+        size='large'
+        variant='outlined'
+        onClick={handleDownloadSource}
+      >
+        Download bot source
+      </Button>
       <MediaManagerModal
         isVisible={isModalVisible}
         onChoose={handleMediaSelect}

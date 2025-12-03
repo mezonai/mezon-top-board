@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import PgBoss, { Job } from 'pg-boss';
 
-import { JobData } from '@features/job/data.job';
 
 @Injectable()
 export class QueueService {
@@ -12,7 +11,7 @@ export class QueueService {
     await this.boss.createQueue(queue);
   }
 
-  async send(queue: string, data: JobData) {
+  async send<T extends object>(queue: string, data: T) {
     return this.boss.send(queue, data);
   }
 

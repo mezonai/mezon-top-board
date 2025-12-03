@@ -5,6 +5,7 @@ import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
 import { BotWizardResponse, WizardStatus, useMockBotWizardRecentRequests } from '../MockData'
 import BotWizardCard from './components/BotWizardCard'
 import { LoadingOutlined } from '@ant-design/icons'
+import { useBotGeneratorGetListQuery } from '@app/services/api/botGenerator/botGenerator'
 
 const statusOptions: IOption[] = [
     { label: 'All', value: 'all' },
@@ -36,6 +37,9 @@ export default function BotWizardRequestsPage() {
         pageSize,
     })
 
+    const { data: jobs } = useBotGeneratorGetListQuery();
+
+    console.log(jobs)
     useEffect(() => {
         setPage(1)
     }, [status])
@@ -83,9 +87,10 @@ export default function BotWizardRequestsPage() {
             ) : (
                 <>
                     <div className='grid grid-cols-1 gap-6'>
-                        {(data?.data ?? []).map((item: BotWizardResponse) => (
+                        <BotWizardCard item={jobs![0]} />
+                        {/* {(data?.data ?? []).map((item: BotWizardResponse) => (
                             <BotWizardCard key={item.id} item={item} />
-                        ))}
+                        ))} */}
                     </div>
                     <div className='flex flex-col items-center gap-5 pt-10'>
                         <div className='flex flex-col items-center relative w-full'>

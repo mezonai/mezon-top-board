@@ -2,26 +2,49 @@ import {
   Controller,
   Post,
   Body,
-  Res,
+  Param,
+  Get,
+  NotFoundException,
+  Req,
+  Res
 } from '@nestjs/common';
-import { BotGeneratorService } from './bot-generator.service';
-import { ApiTags } from '@nestjs/swagger';
-import { Public } from '@libs/decorator/authorization.decorator';
-import { FastifyReply } from 'fastify';
+import { BotGeneratorService } from '@features/bot-generator/bot-generator.service';
+import { GenericRepository } from '@libs/repository/genericRepository';
+import { TempSourceFile } from '@domain/entities';
+import { EntityManager } from 'typeorm';
+import * as path from 'path';
 
 @Controller('bot-generator')
-@ApiTags("Bot-Generator")
 export class BotGeneratorController {
-  constructor(private readonly botGeneratorService: BotGeneratorService) {}
+  private readonly tempSourceFileRepository: GenericRepository<TempSourceFile>;
 
-  @Public()
-  @Post('generate')
-  async generateProject(@Body() payload, @Res() reply: FastifyReply) {
-    const zipBuffer = await this.botGeneratorService.generateBotProject(payload);
+  constructor(
+    private readonly service: BotGeneratorService,
+    private readonly manager: EntityManager,
+  ) {
+    this.tempSourceFileRepository = new GenericRepository(TempSourceFile, manager);
+  }
 
-    reply
-      .header('Content-Type', 'application/zip')
-      .header('Content-Disposition', 'attachment; filename="mezon-bot.zip"')
-      .send(zipBuffer);
+  @Post()
+  async createJob(@Body() payload: any, @Req() req,) {
+    return await this.service.createJob(payload, req.user.id);
+  }
+
+  @Get()
+  async getListByOwner(@Req() req) {
+    return await this.service.getListByOwner(req.user.id);
+  }
+
+  @Get(':id')
+  async download(@Param('id') id: string, @Req() req, @Res() res) {
+    const filePath = await this.service.getfilePathById(id, req.user.id);
+    if (!filePath) throw new NotFoundException('File not found');
+
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="${path.basename(filePath)}"`,
+    });
+
+    return res.download(filePath);
   }
 }
