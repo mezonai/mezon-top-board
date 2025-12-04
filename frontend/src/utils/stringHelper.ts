@@ -102,3 +102,7 @@ export const transformMediaSrc = (html: string): string => {
 
   return doc.body.innerHTML
 }
+
+export const getPluralSuffix = (base: string, count?: number) => {
+  return `${base}${count && count > 1 ? 's' : ''}`
+}

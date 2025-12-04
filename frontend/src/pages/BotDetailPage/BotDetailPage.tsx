@@ -31,6 +31,7 @@ import Button from '@app/mtb-ui/Button'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
+import { getPluralSuffix } from '@app/utils/stringHelper'
 
 function BotDetailPage() {
   const navigate = useNavigate()
@@ -220,11 +221,9 @@ function BotDetailPage() {
                   <p className='text-6xl'>{mezonAppDetail.rateScore}</p>
                   <div>
                     <MtbRate readonly={true} value={mezonAppDetail.rateScore}></MtbRate>
-                    {(ratings?.totalCount ?? 0) > 1 ? (
-                      <p className='pt-2'>{ratings?.totalCount ?? 0} reviews</p>
-                    ) : (
-                      <p className='pt-2'>{ratings?.totalCount ?? 0} review</p>
-                    )}
+                    <p className='pt-2'>
+                      {ratings?.totalCount ?? 0} {getPluralSuffix('review', ratings?.totalCount)}
+                    </p>
                   </div>
                 </div>
                 <p className='pt-5 max-lg:pt-7 max-2xl:pt-7'>
