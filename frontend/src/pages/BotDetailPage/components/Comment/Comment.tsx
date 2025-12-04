@@ -16,7 +16,7 @@ function Comment({ rating }: { rating: RatingResponse }) {
             className='rounded-full w-full aspect-square object-cover'
           />
         </Link>
-        <div className='flex flex-col gap-5'>
+        <div className='flex flex-col gap-5 mt-2'>
           <div>
             <Link to={`/profile/${rating.user.id}`} className='inline-block'>
               <MtbTypography variant='h4' customClassName='!mt-1'>

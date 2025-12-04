@@ -220,7 +220,11 @@ function BotDetailPage() {
                   <p className='text-6xl'>{mezonAppDetail.rateScore}</p>
                   <div>
                     <MtbRate readonly={true} value={mezonAppDetail.rateScore}></MtbRate>
-                    <p className='pt-2'>{ratings?.totalCount} reviews</p>
+                    {(ratings?.totalCount ?? 0) > 1 ? (
+                      <p className='pt-2'>{ratings?.totalCount ?? 0} reviews</p>
+                    ) : (
+                      <p className='pt-2'>{ratings?.totalCount ?? 0} review</p>
+                    )}
                   </div>
                 </div>
                 <p className='pt-5 max-lg:pt-7 max-2xl:pt-7'>
