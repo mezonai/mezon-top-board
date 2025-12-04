@@ -6,7 +6,7 @@ import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
 export type SearchUserResponse = Pick<User, 'id' | 'name' | 'email' | 'bio' | 'role'>;
 export type GetUserDetailsResponse = Pick<
   User,
-  'id' | 'name' | 'email' | 'bio' | 'role' | 'profileImage' | 'deletedAt'
+  'id' | 'name' | 'email' | 'bio' | 'role' | 'profileImage' | 'isFirstLogin' | 'deletedAt'
 >;
 export type GetPublicProfileResponse = Pick<User, 'id' | 'email' | 'name' | 'bio' | 'profileImage'>;
 
