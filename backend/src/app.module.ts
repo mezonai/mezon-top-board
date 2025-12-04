@@ -26,6 +26,7 @@ import { UserModule } from "@features/user/user.module";
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
 import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
+import { TempStorageModule } from './features/temp-storage/temp-storage.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
     MailTemplateModule,
     JobModule,
     AppVersionModule,
+    TempStorageModule,
   ],
   controllers: [],
   providers: [],
