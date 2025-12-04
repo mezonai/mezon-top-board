@@ -9,5 +9,6 @@ import { CleanupService } from '@features/temp-storage/cleanup.service';
   imports: [TypeOrmModule.forFeature([TempSourceFile]),],
   controllers: [TempStorageController],
   providers: [TempStorageService, CleanupService],
+  exports: [TempStorageService],
 })
 export class TempStorageModule {}

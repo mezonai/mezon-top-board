@@ -4,3 +4,8 @@ export type JobData = {
     template?: string;
     context: Record<string, string | number | boolean>
 }
+
+export type BotGeneratorJobData = {
+  tempFileId: string;
+  payload: any;
+};
