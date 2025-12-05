@@ -31,21 +31,21 @@ const multerConfig = {
   fileFilter: (req, file, cb) => {
     const isImage = isMimeTypeValid(file.mimetype, imageMimeTypes);
     const isVideo = isMimeTypeValid(file.mimetype, videoMimeTypes);
-
+    
     if (!isImage && !isVideo) {
       return cb(new Error('Only images and videos are allowed...'), false);
     }
 
     const fileSize = parseInt(req.headers['content-length']);
-
+    
     if (isImage && fileSize > maxImageFileSize) {
       return cb(new Error(`Image size must be less than 4MB`), false);
     }
-
+    
     if (isVideo && fileSize > maxVideoFileSize) {
       return cb(new Error(`Video size must be less than 25MB`), false);
     }
-
+    
     cb(null, true);
   },
   limits: {
