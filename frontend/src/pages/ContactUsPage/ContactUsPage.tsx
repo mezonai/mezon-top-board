@@ -22,18 +22,18 @@ function HelpPage() {
         </header>
         <section className='flex flex-col lg:flex-row lg:gap-36 xl:mx-12 xl:mr-20'>
           {/* Form */}
-          <form action='' className='bg-[#EEEEEE] p-6 w-full lg:w-1/2 rounded-xl shadow-md'>
+          <form action='' className='bg-gray-100 dark:bg-[var(--bg-container)] p-6 w-full lg:w-1/2 rounded-xl shadow-md border border-transparent dark:border-[var(--border-color)] transition-colors duration-300'>
             <h2 className='mb-4 text-[18px]'>Send us a message</h2>
             <div className='flex gap-4 mb-4'>
-              <input type='text' placeholder='Your name' className='w-1/2 p-2 rounded-xs bg-white' required />
-              <input type='email' placeholder='Your email' className='w-1/2 p-2 rounded-xs bg-white' required />
+              <input type='text' placeholder='Your name' className='w-1/2 p-2 rounded bg-white dark:bg-[var(--bg-container-secondary)] text-[var(--text-primary)] border border-transparent dark:border-[var(--border-color)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-blue-500' required />
+              <input type='email' placeholder='Your email' className='w-1/2 p-2 rounded bg-white dark:bg-[var(--bg-container-secondary)] text-[var(--text-primary)] border border-transparent dark:border-[var(--border-color)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-blue-500' required />
             </div>
-            <textarea placeholder='Information' className='w-full p-2 rounded-xs mb-4 h-24 bg-white' required></textarea>
+            <textarea placeholder='Information' className='w-full p-2 rounded bg-white dark:bg-[var(--bg-container-secondary)] text-[var(--text-primary)] border border-transparent dark:border-[var(--border-color)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-blue-500 mb-4 h-24' required></textarea>
             <div className="flex items-center gap-2 mb-4">
               <input
                 type="text"
                 placeholder="Verification code"
-                className="p-2 rounded-xs w-2/3 bg-white"
+                className="p-2 rounded w-2/3 bg-white dark:bg-[var(--bg-container-secondary)] text-[var(--text-primary)] border border-transparent dark:border-[var(--border-color)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-blue-500"
                 required
                 value={captchaInput}
                 onChange={(e) => setCaptchaInput(e.target.value)}

@@ -2,10 +2,49 @@
     :global(.ant-drawer-header-title) {
         flex-direction: row-reverse;
     }
+
+    :global(.ant-drawer-content),
+    :global(.ant-drawer-body),
+    :global(.ant-drawer-header) {
+        background: var(--bg-container) !important;
+        color: var(--text-primary) !important;
+    }
+    :global(.ant-drawer-header) {
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+    :global(.ant-drawer-title),
+    :global(.ant-drawer-close) {
+        color: var(--text-primary) !important;
+    }
+
+    :global(.ant-drawer-body) a {
+        color: var(--text-primary) !important;
+    }
 }
 
 .custom-switch {
     :global(.ant-switch[aria-checked="true"]) {
         background-color: #1E1E1E !important;
+    }
+}
+
+.dropdown-override {
+    :global(.ant-dropdown-menu) {
+        background: var(--bg-container) !important;
+        color: var(--text-primary) !important;
+    }
+    :global(.ant-dropdown-menu-item),
+    :global(.ant-dropdown-menu-title-content) {
+        color: var(--text-primary) !important;
+    }
+}
+
+:global(.dark) .dropdown-override {
+    :global(.ant-dropdown-menu) {
+        background: var(--bg-container) !important;
+    }
+    :global(.ant-dropdown-menu-item),
+    :global(.ant-dropdown-menu-title-content) {
+        color: #ffffff !important;
     }
 }

@@ -14,11 +14,14 @@ import MtbTypography from '../Typography/Typography'
 import styles from './Header.module.scss'
 import { useAuth } from '@app/hook/useAuth'
 import { AppEvent } from '@app/enums/AppEvent.enum'
+import { Switch } from 'antd'; 
+import { MoonOutlined, SunOutlined } from '@ant-design/icons';
+import { useTheme } from '@app/hook/useTheme';
 
 function Header() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  // const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { isLogin, postLogout } = useAuth()
 
@@ -68,7 +71,7 @@ function Header() {
   const renderHeaderItems = () => {
     return (
       <>
-        {/* <div className={`flex items-center ${styles['custom-switch']}`}>
+        <div className={`flex items-center ${styles['custom-switch']} mb-10 lg:mb-0`}>
           <Switch
             checked={theme === 'dark'}
             onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
@@ -76,13 +79,14 @@ function Header() {
             unCheckedChildren={<SunOutlined />}
             className='!align-middle'
           />
-        </div> */}
-        <ul className='flex flex-col lg:flex-row gap-5 flex-none text-sm mb-2'>{renderMenu(true)}</ul>
+        </div>
+        <ul className='flex flex-col lg:flex-row gap-5 flex-none text-sm mb-2 text-text-primary'>{renderMenu(true)}</ul>
         <div className='flex flex-col lg:flex-row gap-3 mt-5 lg:mt-0 w-full'>
           {isLogin ? (
             <Dropdown
               menu={{ items: itemsDropdown }}
-              className={`z-2 !text-black text-sm pb-2 lg:pb-0 transition-all duration-300 border-b-3 border-b-transparent max-w-xs`}
+              overlayClassName={styles['dropdown-override']}
+              className={`z-2 text-text-primary text-sm pb-2 lg:pb-0 transition-all duration-300 border-b-3 border-b-transparent max-w-xs`}
             >
               <a onClick={(e) => e.preventDefault()} className=''>
                 <div className="flex flex-row items-center gap-2 cursor-pointer">
@@ -109,13 +113,13 @@ function Header() {
 
   return (
     <div
-      className={`flex bg-white z-2 items-center justify-between py-4 px-5 lg:px-20 border-t-1 border-b-1 border-gray-200 cursor-pointer sticky top-0`}
+      className={`flex bg-bg container dark:bg-bg-container z-2 items-center justify-between py-4 px-5 lg:px-20 border-t-1 border-b-1 border-[var(--border-color)] cursor-pointer sticky top-0`}
     >
       <div className='flex items-center gap-3' onClick={handleLogoClick}>
         <div className='h-[50px]'>
           <img src={logo} alt='' style={{ height: '100%', objectFit: 'contain' }} />
         </div>
-        <MtbTypography variant='h5' customClassName='!mb-0'>
+        <MtbTypography variant='h5' customClassName='!mb-0 dark:text-white'>
           Mezon Top Board
         </MtbTypography>
       </div>
@@ -137,6 +141,11 @@ function Header() {
         onClose={() => setOpen(false)}
         open={open}
         width={400}
+        styles={{
+          body: { background: 'var(--bg-container)', color: 'var(--text-primary)' },
+          header: { background: 'var(--bg-container)', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' },
+          content: { background: 'var(--bg-container)', color: 'var(--text-primary)' }
+        }}
       >
         {renderHeaderItems()}
       </Drawer>

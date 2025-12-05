@@ -47,7 +47,8 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
   return (
     <div
-      className='shadow-md pb-8 pt-8 px-8 border border-gray-300 relative rounded-xl cursor-pointer'
+      className='pb-8 pt-8 px-8 border rounded-xl cursor-pointer bg-[var(--bg-body)] dark:bg-[var(--bg-container)] text-[var(--text-primary)] relative'
+      style={{ boxShadow: 'var(--card-shadow, 0 1px 3px rgba(0,0,0,0.06))', borderColor: 'var(--border-color)' }}
       onClick={canNavigateOnClick ? () => navigate(`/bot/${data?.id}`) : undefined}
     >
       <div className='flex flex-col md:flex-row items-start gap-6 w-full'>
@@ -118,7 +119,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             </Popover>
           </div>
           <div
-            className='text-gray-700 break-words max-w-full'
+            className='break-words max-w-full text-[var(--text-secondary)]'
             style={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',

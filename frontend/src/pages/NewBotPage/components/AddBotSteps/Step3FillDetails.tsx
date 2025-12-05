@@ -19,6 +19,7 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import styles from './Step3FillDetails.module.scss'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -87,7 +88,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
     const newLink: SocialLink = {
       url: trimmedUrl,
       linkTypeId: selected.value,
-      type: { 
+      type: {
         id: selected.value,
         name: selected.name,
         prefixUrl: selected.siteName,
@@ -125,7 +126,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   }, [socialLinksData, setError, clearErrors])
 
   return (
-    <>
+    <div className={styles.container}>
       <FormField label='Name' description='Name your bot' errorText={errors.name?.message}>
         <Controller
           control={control}
@@ -136,30 +137,30 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField 
+      <FormField
         label='Headline'
-        description='Provide a short and catchy phrase that describes your bot.' 
+        description='Provide a short and catchy phrase that describes your bot.'
         errorText={errors.headline?.message}
       >
         <Controller
           control={control}
           name='headline'
           render={({ field }) => (
-            <TextArea {...field} placeholder='A powerful and multi-functional role bot' 
+            <TextArea {...field} placeholder='A powerful and multi-functional role bot'
               status={errorStatus(errors.headline)} />
           )}
         />
       </FormField>
 
       <FormField
-          label='Full Description'
-          description='Tell us what your bot can do. We want to hear the whole story!'
-          errorText={errors.description?.message}>
+        label='Full Description'
+        description='Tell us what your bot can do. We want to hear the whole story!'
+        errorText={errors.description?.message}>
         <Controller
           control={control}
           name='description'
           render={({ field }) => (
-            <RichTextEditor value={field.value || ''} onChange={field.onChange} customClass='custom-editor' />
+            <RichTextEditor value={field.value || ''} onChange={field.onChange} />
           )}
         />
       </FormField>
@@ -169,35 +170,34 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           control={control}
           name='isAutoPublished'
           render={() => (
-            //TODO: isAutoPublished will be implemented later
             <Checkbox checked={true} disabled />
           )}
         />
       </FormField>
 
       <FormField label='Install Link' description='A place where users can install your bot on their Mezon server.'>
-        <Input value={inviteURL} disabled />
+        <Input value={inviteURL} disabled className="!bg-[var(--bg-container-secondary)] !text-[var(--text-secondary)] !border-transparent" />
       </FormField>
       {
         type === MezonAppType.BOT &&
-          <FormField
-              label='Prefix'
-              description='What keyword or phrase does your bot react to?'
-              errorText={errors.prefix?.message}>
-            <Controller
-              control={control}
-              name='prefix'
-              render={({ field }) => (
-                <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
-              )}
-            />
-          </FormField>
+        <FormField
+          label='Prefix'
+          description='What keyword or phrase does your bot react to?'
+          errorText={errors.prefix?.message}>
+          <Controller
+            control={control}
+            name='prefix'
+            render={({ field }) => (
+              <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
+            )}
+          />
+        </FormField>
       }
-
       <FormField
-          label='Tags'
-          description='Select the top 12 categories that best represent your community.'
-          errorText={errors.tagIds?.message}>
+        label='Tags'
+        description='Select the top 12 categories that best represent your community.'
+        errorText={errors.tagIds?.message}
+      >
         <Controller
           control={control}
           name='tagIds'
@@ -217,8 +217,11 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                   field.onChange(value)
                   setDropdownOpen(false)
                 }}
+                className={styles.themedSelect}
+                popupClassName={styles.selectDropdown}
               />
-              <div className='mt-2 flex flex-wrap'>
+
+              <div className='mt-2 flex flex-wrap gap-2'>
                 {(field.value ?? []).map((tagId: string) => {
                   const tag = tagOptions.find(t => t.value === tagId)
                   return (
@@ -228,6 +231,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                       onClose={() =>
                         field.onChange(field.value.filter((id: string) => id !== tagId))
                       }
+                      className={styles.customTag}
                     >
                       {tag?.label}
                     </Tag>
@@ -249,11 +253,13 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
               allowClear
               placeholder='Select tag price'
               status={errors?.pricingTag?.message ? 'error' : ''}
-              options={ Object.values(AppPricing).map(value => ({
+              options={Object.values(AppPricing).map(value => ({
                 label: value,
                 value,
               }))}
               onChange={(value) => field.onChange(value)}
+              className={styles.themedSelect}
+              popupClassName={styles.selectDropdown}
             />
           )}
         />
@@ -283,9 +289,9 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           control={control}
           name='remark'
           render={({ field }) => (
-            <TextArea {...field} rows={3} 
-              placeholder="Please share any important information or details about your bot that our reviewers should know" 
-              status={errorStatus(errors.remark)} 
+            <TextArea {...field} rows={3}
+              placeholder="Please share any important information or details about your bot that our reviewers should know"
+              status={errorStatus(errors.remark)}
             />
           )}
         />
@@ -298,7 +304,8 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
             value={selectedSocialLink}
             onChange={setSelectedSocialLink}
             placeholder='Link Type'
-            className='w-full sm:w-1/3'
+            className={`w-full sm:w-1/3 ${styles.themedSelect}`}
+            popupClassName={styles.selectDropdown}
           />
           <Form.Item
             validateStatus={addLinkError ? 'error' : ''}
@@ -343,7 +350,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           />
         ))}
       </FormField>
-    </>
+    </div>
   )
 }
 

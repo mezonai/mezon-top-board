@@ -15,7 +15,7 @@ function DetailCard() {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
 
   return (
-    <div className='shadow-sm rounded-2xl bg-white p-4 '>
+    <div className='shadow-sm rounded-2xl bg-[var(--bg-container)] p-4 border border-transparent dark:border-[var(--border-color)]'>
       <div className='pb-4'>
         <MtbTypography label={<InfoCircleOutlined className='text-xl !text-pink-500' />} variant='h3'>
           Details
@@ -35,14 +35,24 @@ function DetailCard() {
         <div>
           {mezonAppDetail?.supportUrl && (
             <MtbTypography variant='h5' weight='normal' label={<QuestionCircleTwoTone twoToneColor="#FF0000" />}>
-              <a href={mezonAppDetail?.supportUrl} target='_blank' rel='noopener noreferrer' className='!text-black'>
+              <a 
+                href={mezonAppDetail?.supportUrl} 
+                target='_blank' 
+                rel='noopener noreferrer' 
+                className='text-[var(--text-primary)] hover:text-pink-500 transition-colors'
+              >
                 <u>{mezonAppDetail.name}'s Support link</u>
               </a>
             </MtbTypography>
           )}
           {mezonAppDetail?.socialLinks?.map((link: SocialLinkInMezonAppDetailResponse) => (
             <MtbTypography key={link.id} variant='h5' weight='normal' label={<ImgIcon src={getUrlMedia(link.type.icon)} width={17} />}>
-              <a href={`${link.type.prefixUrl}${link.url}`} target='_blank' rel='noopener noreferrer' className='!text-black'>
+              <a 
+                href={`${link.type.prefixUrl}${link.url}`} 
+                target='_blank' 
+                rel='noopener noreferrer' 
+                className='text-[var(--text-primary)] hover:text-pink-500 transition-colors'
+              >
                 {link.type.prefixUrl}{link.url}
               </a>
             </MtbTypography>
@@ -55,7 +65,10 @@ function DetailCard() {
         </MtbTypography>
         <div className='pt-1'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-            <Tag key={tag.id} className='!cursor-pointer'>
+            <Tag 
+              key={tag.id} 
+              className='cursor-pointer !bg-white !text-gray-700 dark:!bg-[var(--bg-container-secondary)] dark:!text-[var(--text-primary)]'
+            >
               {tag?.name}
             </Tag>
           ))}
@@ -67,16 +80,16 @@ function DetailCard() {
         </MtbTypography>
         <div className={`pt-2`}>
           <a href={`/profile/${userInfo.id === mezonAppDetail?.owner?.id ? '' : mezonAppDetail?.owner?.id}`}>
-            <Tag className='!rounded-lg !pr-6 !py-3 !shadow-md !bg-white flex items-center w-full'>
+            <Tag className='!rounded-lg !pr-6 !py-3 !shadow-md !bg-[var(--bg-container)] dark:!bg-[var(--bg-container-secondary)] dark:!border-[var(--border-color)] flex items-center w-full !border-0 dark:!border'>
               <div className='flex gap-4 items-center'>
-                <div className='w-[40px] h-[40px] overflow-hidden rounded-xl flex-shrink-0'>
+                <div className='w-[40px] h-[40px] overflow-hidden rounded-xl flex-shrink-0 bg-gray-200 dark:bg-gray-700'>
                   <img
                     src={mezonAppDetail?.owner?.profileImage ? getUrlMedia(mezonAppDetail?.owner.profileImage) : avatar}
                     alt=''
                     className='w-full h-full object-cover'
                   />
                 </div>
-                <MtbTypography variant='p' customClassName='!text-dark truncate' ellipsis={true}>
+                <MtbTypography variant='p' customClassName='text-[var(--text-primary)] truncate' ellipsis={true}>
                   {mezonAppDetail?.owner?.name}
                 </MtbTypography>
               </div>

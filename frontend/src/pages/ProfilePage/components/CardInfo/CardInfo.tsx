@@ -16,7 +16,8 @@ import {
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { Button, Popconfirm } from 'antd'
+import { Popconfirm } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'

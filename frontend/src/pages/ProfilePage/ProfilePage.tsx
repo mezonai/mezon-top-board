@@ -145,7 +145,7 @@ function ProfilePage() {
   return (
     <div className='pt-8 pb-12 w-[75%] m-auto'>
       <MtbTypography variant='h1'>Your Profile</MtbTypography>
-      <Divider className='bg-gray-100'></Divider>
+      <Divider className='bg-[var(--border-color)]'></Divider>
       <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
           <CardInfo userInfo={userInfo} isPublic={Boolean(userId)}></CardInfo>

@@ -38,7 +38,7 @@ const MtbButton: FC<IButtonProps> = ({
       <AntdButton
         color={color}
         variant={variant}
-        className={`${getDefaultOutlinedHoverClass()} ${customClassName}`.trim()}
+        className={`${getDefaultOutlinedHoverClass()} !shadow-none ${customClassName}`.trim()}
         {...rest}
       >
       </AntdButton>

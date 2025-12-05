@@ -252,17 +252,37 @@ function NewBotPage() {
             />
           </div>
           <div>
-            <MtbTypography variant='h4'>{nameValue || 'Name'}</MtbTypography>
-            <MtbTypography variant='p'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
+            <MtbTypography variant='h4' customClassName="text-[var(--text-primary)]">{nameValue || 'Name'}</MtbTypography>
+            <MtbTypography variant='p' customClassName="text-[var(--text-secondary)]">{headlineValue || 'Headline (Short description)'}</MtbTypography>
           </div>
         </div>
       </div>
 
       <div className='pt-8'>
         <FormProvider {...methods}>
-          <div className='bg-white p-6 rounded-md shadow-md'>
-            <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
+          <div className='bg-[var(--bg-container)] p-6 rounded-md shadow-md border border-transparent dark:border-[var(--border-color)]'>
+             <style>
+               {`
+                 .ant-steps-item-title, .ant-steps-item-description {
+                    color: var(--text-secondary) !important;
+                 }
+                 .ant-steps-item-process .ant-steps-item-title {
+                    color: var(--text-primary) !important;
+                 }
+                 .ant-steps-item-finish .ant-steps-item-title {
+                    color: var(--text-primary) !important;
+                 }
+               `}
+             </style>
+            
+            <Steps 
+              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} 
+              current={currentStep} 
+              items={steps.map(step => ({ title: step.title }))} 
+            />
+            
             <div className='pt-6'>{steps[currentStep].content}</div>
+            
             <div
               className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
                 ? 'justify-end'
