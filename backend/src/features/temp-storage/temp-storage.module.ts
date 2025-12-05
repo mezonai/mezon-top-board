@@ -8,5 +8,6 @@ import { TempFile } from '@domain/entities';
   imports: [TypeOrmModule.forFeature([TempFile]),],
   controllers: [TempStorageController],
   providers: [TempStorageService],
+  exports: [TempStorageService],
 })
 export class TempStorageModule {}

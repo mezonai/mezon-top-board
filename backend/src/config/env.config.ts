@@ -22,6 +22,8 @@ export default () => ({
   JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES || 60,
   JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN_MINUTES || 10080,
   UPLOAD_RELATIVE_DIR: process.env.UPLOAD_RELATIVE_DIR || "uploads",
+  TEMP_FILE_DIR: process.env.TEMP_FILE_DIR || "tmp",
+  BOT_GENERATED_FILE_DIR: process.env.BOT_GENERATED_FILE_DIR || "bot-generated-files",
   SMTP_PASSWORD: process.env.SMTP_PASSWORD || "",
   SMTP_EMAIL: process.env.SMTP_EMAIL || "",
   SMTP_PORT: process.env.SMTP_PORT || 587,
