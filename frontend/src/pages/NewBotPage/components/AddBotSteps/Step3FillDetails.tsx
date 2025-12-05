@@ -126,7 +126,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
   return (
     <>
-      <FormField label='Name' description='Name your bot' errorText={errors.name?.message}>
+      <FormField label='Name' required description='Name your bot' errorText={errors.name?.message}>
         <Controller
           control={control}
           name='name'
@@ -138,6 +138,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
       <FormField 
         label='Headline'
+        required
         description='Provide a short and catchy phrase that describes your bot.' 
         errorText={errors.headline?.message}
       >
@@ -153,6 +154,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
       <FormField
           label='Full Description'
+          required
           description='Tell us what your bot can do. We want to hear the whole story!'
           errorText={errors.description?.message}>
         <Controller
@@ -182,6 +184,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         type === MezonAppType.BOT &&
           <FormField
               label='Prefix'
+              required
               description='What keyword or phrase does your bot react to?'
               errorText={errors.prefix?.message}>
             <Controller
@@ -196,6 +199,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
       <FormField
           label='Tags'
+          required
           description='Select the top 12 categories that best represent your community.'
           errorText={errors.tagIds?.message}>
         <Controller
@@ -268,7 +272,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label='Support URL' description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
+      <FormField label='Support URL' required description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
         <Controller
           control={control}
           name='supportUrl'
