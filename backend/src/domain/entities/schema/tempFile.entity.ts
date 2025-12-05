@@ -7,26 +7,25 @@ import {
 
 import { BaseSoftDelete } from "../base";
 import { User } from "@domain/entities/schema/user.entity";
-import { TempSourceFileStatus } from "@domain/common/enum/tempSourceFileStatus";
 
 @Entity()
-export class TempSourceFile extends BaseSoftDelete {
+export class TempFile extends BaseSoftDelete {
     @Column()
     public fileName: string;
 
     @Column({ nullable: true })
     public filePath: string;
 
-    @Column({ type: "enum", enum: Object.keys(TempSourceFileStatus),default: TempSourceFileStatus.PROCESSING, })
-    public status: TempSourceFileStatus;
+    @Column({ nullable: true })
+    public mimeType: string;
 
     @Column({ type: "timestamptz", nullable: true })
-    public completedAt: Date | null;
+    public expiredAt: Date | null;
 
     @Column({ nullable: true })
     public ownerId: string;
 
-    @ManyToOne(() => User, (user) => user.tempSourceFiles, { onDelete: "CASCADE" })
+    @ManyToOne(() => User, (user) => user.tempFiles, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     public owner: User;
 }
