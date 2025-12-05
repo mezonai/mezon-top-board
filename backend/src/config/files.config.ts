@@ -12,6 +12,7 @@ import { createUploadPath, generateFilename, isMimeTypeValid } from "@libs/utils
 import envConfig from "./env.config";
 
 const uploadDir = join(process.cwd(), envConfig().UPLOAD_RELATIVE_DIR);
+const tempBotGeneratedDir = join(process.cwd(), envConfig().TEMP_FILE_DIR, envConfig().BOT_GENERATED_FILE_DIR);
 
 const multerConfig = {
   storage: diskStorage({
@@ -29,21 +30,21 @@ const multerConfig = {
   fileFilter: (req, file, cb) => {
     const isImage = isMimeTypeValid(file.mimetype, imageMimeTypes);
     const isVideo = isMimeTypeValid(file.mimetype, videoMimeTypes);
-    
+
     if (!isImage && !isVideo) {
       return cb(new Error('Only images and videos are allowed...'), false);
     }
 
     const fileSize = parseInt(req.headers['content-length']);
-    
+
     if (isImage && fileSize > maxImageFileSize) {
       return cb(new Error(`Image size must be less than 4MB`), false);
     }
-    
+
     if (isVideo && fileSize > maxVideoFileSize) {
       return cb(new Error(`Video size must be less than 25MB`), false);
     }
-    
+
     cb(null, true);
   },
   limits: {
@@ -55,7 +56,11 @@ const configStaticFiles = (app: INestApplication) => {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir);
   }
+  if (!existsSync(tempBotGeneratedDir)) {
+    mkdirSync(tempBotGeneratedDir, { recursive: true });
+  }
   app.use('/api/uploads', express.static(uploadDir));
+  app.use('/api/temp-bot-generated-files', express.static(tempBotGeneratedDir));
 };
 
 export {
