@@ -1,7 +1,6 @@
-import { TempSourceFileStatus } from "@domain/common/enum/tempSourceFileStatus";
 import { Expose } from "class-transformer";
 
-export class GetTempSourceFileResponse {
+export class GetTempFileResponse {
   @Expose()
   public id: string;
   @Expose()
@@ -9,9 +8,9 @@ export class GetTempSourceFileResponse {
   @Expose()
   public filePath: string;
   @Expose()
-  public status: TempSourceFileStatus;
+  public mimeType: string;
   @Expose()
-  public completedAt: Date;
+  public expiredAt: Date;
   @Expose()
   public ownerId: string;
 }
