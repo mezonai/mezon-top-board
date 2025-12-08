@@ -9,7 +9,7 @@ import { paginate } from '@libs/utils/paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import moment from 'moment';
-import {join} from 'path';
+import { join } from 'path';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
