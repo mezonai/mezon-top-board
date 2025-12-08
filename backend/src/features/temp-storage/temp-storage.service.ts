@@ -2,7 +2,7 @@ import envConfig from '@config/env.config';
 import { RequestWithId } from '@domain/common/dtos/request.dto';
 import { Result } from '@domain/common/dtos/result.dto';
 import { TempFile } from '@domain/entities';
-import { GetOwnTempFileRequest, GetTempFileRequest } from '@features/temp-storage/dtos/request';
+import { GetOwnTempFileRequest, GetTempFileRequest, SaveTempFileRequest } from '@features/temp-storage/dtos/request';
 import { GetTempFileResponse } from '@features/temp-storage/dtos/response';
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
@@ -22,37 +22,37 @@ export class TempStorageService {
     this.tempFileRepository = new GenericRepository(TempFile, manager);
   }
 
-  //Implement in job queue later
-  async saveTemp(id: string | null, buffer: Buffer) {
+  async saveTemp(saveTempFileRequest: SaveTempFileRequest) {
     let tempFile;
 
-    if (id) {
-      tempFile = await this.tempFileRepository.findById(id);
-      if (!tempFile) throw new BadRequestException('Temp file not found');
-    } else {
-      tempFile = await this.tempFileRepository.create({
-        fileName: `bot-template-${Date.now()}.zip`,
+    if (!saveTempFileRequest.id) {
+      tempFile = await this.tempFileRepository.getRepository().create({
+        fileName: saveTempFileRequest.fileName,
+        mimeType: saveTempFileRequest.mimeType,
+        expiredAt: new Date(Date.now() + 24 * 3600 * 1000),
       });
+      saveTempFileRequest.id = tempFile.id;
+    } else {
+      tempFile = await this.tempFileRepository.findById(saveTempFileRequest.id);
+      if (!tempFile) throw new BadRequestException('Temp file not found');
 
-      id = tempFile.id;
+      tempFile.fileName = saveTempFileRequest.fileName;
+      tempFile.mimeType = saveTempFileRequest.mimeType;
+      tempFile.expiredAt = new Date(Date.now() + 24 * 3600 * 1000);
     }
 
-    const dirPath = path.join(process.cwd(), envConfig().TEMP_FILE_DIR, envConfig().BOT_GENERATED_FILE_DIR);
+    const finalPath = path.join(saveTempFileRequest.dir, saveTempFileRequest.fileName);
+    await fs.mkdirp(saveTempFileRequest.dir);
 
-    const filePath = path.join(dirPath, tempFile.fileName);
+    await fs.writeFile(finalPath, saveTempFileRequest.buffer);
 
-    await fs.mkdirp(dirPath);
-    await fs.writeFile(filePath, buffer);
+    tempFile.filePath = finalPath;
 
-    return await this.tempFileRepository.update(id, {
-      filePath: `/${envConfig().BOT_GENERATED_FILE_DIR}/${tempFile.fileName}`,
-      mimeType: 'application/zip',
-      expiredAt: new Date(),
-    });
+    return await this.tempFileRepository.getRepository().save(tempFile);
   }
 
-  async getTempFile(query: RequestWithId) {
-    const tempFile = await this.tempFileRepository.findById(query.id)
+  async getTempFile(id: string) {
+    const tempFile = await this.tempFileRepository.findById(id)
     return new Result({ data: tempFile })
   }
 
