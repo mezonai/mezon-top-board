@@ -46,8 +46,8 @@ const ShareButton = ({ text, url }: ShareButtonProps) => {
     };
 
     return (
-        <div onClick={(e) => e.stopPropagation()} className="p-2 w-full max-w-[250px]">
-            <h3 className="text-base font-semibold mb-2">Share now</h3>
+        <div onClick={(e) => e.stopPropagation()} className="p-2 w-full max-w-[250px]" style={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}>
+            <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Share now</h3>
             <div className="flex flex-col gap-2 py-2">
                 {shareOptions.map(({ label, icon, bgColor, hoverColor, getUrl }) => (
                     <button

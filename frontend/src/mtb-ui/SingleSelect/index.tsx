@@ -1,6 +1,7 @@
 import { Select as AntSelect, SelectProps } from 'antd'
-import { CheckOutlined } from '@ant-design/icons'
+import { CheckOutlined, DownOutlined } from '@ant-design/icons'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import styles from './SingleSelect.module.scss'
 
 export interface IOption {
   value: string | number
@@ -32,7 +33,7 @@ const SingleSelect = (props: ISelectProps & SelectProps<IOption>) => {
   [props.onChange])
 
   const _className = useMemo(() => {
-    return `text-base font-medium rounded-lg ${props.className} `
+    return `text-base font-medium ${styles.singleSelect} ${props.className} `
   }, [props.className])
 
   return (
@@ -43,33 +44,28 @@ const SingleSelect = (props: ISelectProps & SelectProps<IOption>) => {
       onDropdownVisibleChange={(visible) => setOpen(visible)}
       title=''
       className={_className}
+      popupClassName={styles.popupReset}  
+      suffixIcon={<DownOutlined className={styles.arrowIcon} />}
       dropdownRender={() => (
-        <div className='p-2' style={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}>
-          <div className='text-xs pb-2 uppercase' style={{ color: 'var(--text-secondary)' }}>{dropDownTitle}</div>
+        <div className={styles.dropdown}>
+          {dropDownTitle && <div className={styles.dropdownTitle}>{dropDownTitle}</div>}
           {options.map((option) => {
             const isSelected = selectedValue?.value === option.value
             return (
               <div
                 key={option.value}
                 onClick={() => handleChange(option)}
-                className={`flex items-center justify-between px-3 py-2 rounded-md cursor-pointer hover:bg-[var(--bg-container-secondary)]`}
-                style={{ background: isSelected ? 'var(--bg-container-secondary)' : 'transparent', color: 'var(--text-primary)' }}
+                className={`${styles.option} ${isSelected ? styles.selected : ''}`}
               >
-                <span className='text-base' style={{ color: 'var(--text-primary)' }}>{option.label}</span>
-                {isSelected && <CheckOutlined className='!text-[var(--text-primary)]' />}
+                <span className={styles.optionLabel}>{option.label}</span>
+                {isSelected && <CheckOutlined className={styles.checkIcon} />}
               </div>
             )
           })}
         </div>
       )}
       options={options.map((item) => ({ label: item.label, value: item.value }))}
-      variant='borderless'
-      style={{
-        background: 'var(--bg-container)',
-        borderRadius: 10,
-        height: '3rem',
-        border: '1px solid var(--border-color)'
-      }}
+      variant='filled'
       {...rest}
     />
   )
