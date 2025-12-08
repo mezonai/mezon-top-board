@@ -64,7 +64,7 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   }
   return (
     <div
-      className='shadow-sm rounded-2xl p-4 bg-white cursor-pointer relative z-1 select-none'
+      className='shadow-sm rounded-2xl p-4 bg-[var(--bg-container)] cursor-pointer relative z-1 select-none border border-transparent dark:border-[var(--border-color)] transition-colors duration-300'
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -72,14 +72,14 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
       {!isPublic && <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)} />}
       <div className='relative'>
         <div className='w-20 m-auto'>
-          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full' width={'100%'} />
+          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-[var(--bg-container-secondary)]' width={'100%'} />
         </div>
         {!isPublic && (<div className='owner-actions'>
           <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
         </div>)}
       </div>
-      <div className='pt-3 pb-3 font-black truncate'>{data?.name || 'Name'}</div>
-      <div className='flex justify-between items-center'>
+      <div className='pt-3 pb-3 font-black truncate text-[var(--text-primary)]'>{data?.name || 'Name'}</div>
+      <div className='flex justify-between items-center text-[var(--text-secondary)] text-sm font-medium'>
         <p>
           <StarOutlined /> {data?.rateScore || 0}
         </p>

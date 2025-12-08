@@ -1,0 +1,65 @@
+.rich-text-container {
+  :global {
+    .ql-toolbar.ql-snow,
+    .ql-container.ql-snow {
+      background-color: var(--bg-container) !important;
+      border-color: var(--border-color) !important;
+      font-family: 'Open Sans', sans-serif !important; 
+    }
+
+    .ql-editor {
+      color: var(--text-primary) !important;
+      min-height: 120px;
+    }
+
+    .ql-editor.ql-blank::before {
+      color: var(--text-secondary) !important;
+      font-style: italic;
+    }
+
+    .ql-snow .ql-stroke {
+      stroke: var(--text-primary) !important;
+    }
+    .ql-snow .ql-fill,
+    .ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-fill {
+      fill: var(--text-primary) !important;
+    }
+    
+    .ql-snow .ql-picker {
+      color: var(--text-primary) !important;
+    }
+
+    .ql-snow .ql-picker-options {
+      background-color: var(--bg-container) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .ql-snow .ql-tooltip {
+      background-color: var(--bg-container) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 100; 
+    }
+
+    .ql-snow .ql-tooltip input[type=text] {
+      background-color: var(--bg-container-secondary) !important;
+      color: var(--text-primary) !important;
+      border: 1px solid var(--border-color) !important;
+      outline: none;
+    }
+    
+    .ql-snow .ql-tooltip a.ql-action::after {
+       color: var(--text-primary) !important;
+    }
+    
+    .ql-editor::-webkit-scrollbar {
+        width: 6px;
+    }
+    .ql-editor::-webkit-scrollbar-thumb {
+        background-color: var(--border-color);
+        border-radius: 4px;
+    }
+  }
+}

@@ -3,4 +3,7 @@
         font-size: var(--rate-size);
         color: var(--rate-color);
     }
+    :global(.ant-rate-star-second) { 
+        color: #9d9d9d; 
+    }
 }

@@ -67,11 +67,11 @@ export const renderMenu = (isHasActive: boolean) => {
           return {
             key,
             label: isExternal ? (
-              <a href={child.path} target="_blank" rel="noopener noreferrer">
+              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-[var(--text-primary)] dark:!text-white">
                 {child.strLabel}
               </a>
             ) : (
-              <a href={child.path}>
+              <a href={child.path} className="text-[var(--text-primary)] dark:!text-white">
                 {child.strLabel}
               </a>
             ),
@@ -80,9 +80,9 @@ export const renderMenu = (isHasActive: boolean) => {
 
         return (
           <li key={`${route.path}-${index}`}>
-            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']}>
+            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} overlayClassName="menu-dropdown-overlay">
               <a
-                className={`!text-black pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
+                className={`text-[var(--text-primary)] dark:!text-white pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
                   isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
                 }`}
               >
@@ -97,7 +97,7 @@ export const renderMenu = (isHasActive: boolean) => {
         <li key={`${route.path}-${index}`}>
           <a
             href={route.path}
-            className={`!text-black pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
+            className={`text-[var(--text-primary)] dark:!text-white pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
               isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
             }`}
           >

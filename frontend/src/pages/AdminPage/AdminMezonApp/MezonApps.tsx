@@ -166,7 +166,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           placeholder='Search by name or headline'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+          prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
           onPressEnter={handleSearchSubmit}
           className='w-full rounded-[8px] h-[40px]'
         />

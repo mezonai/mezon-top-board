@@ -193,7 +193,7 @@ function AppReviewPage() {
                     placeholder='Search apps'
                     value={searchQuery}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                    prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+                    prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
                     onPressEnter={handleSearch}
                     className='w-full rounded-[8px] h-[40px]'
                 />

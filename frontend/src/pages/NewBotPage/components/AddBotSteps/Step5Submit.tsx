@@ -20,6 +20,11 @@ const Step5Submit = ({
   const type = useWatch({ control, name: 'type' })
   const formattedType = capitalize(type)
 
+  const resultStyle = `
+    .ant-result-title { color: var(--text-primary) !important; }
+    .ant-result-subtitle { color: var(--text-secondary) !important; }
+  `
+
   if (isSuccess) {
     const title = isEdit ? `${formattedType} updated successfully!` : `${formattedType} submitted successfully!`
     const subTitle = isEdit
@@ -27,33 +32,39 @@ const Step5Submit = ({
       : `Your ${formattedType} has been submitted for review. You can now view it or return to homepage.`
 
     return (
-      <Result
-        status="success"
-        title={title}
-        subTitle={subTitle}
-        extra={[
-          <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
-            {isEdit ? 'View Bot' : 'Go to Bot'}
-          </Button>,
-          <Button color="default" variant='outlined' key="go-home" onClick={() => navigate('/')}>
-            Go Home
-          </Button>
-        ]}
-      />
+      <>
+        <style>{resultStyle}</style>
+        <Result
+          status="success"
+          title={title}
+          subTitle={subTitle}
+          extra={[
+            <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
+              {isEdit ? 'View Bot' : 'Go to Bot'}
+            </Button>,
+            <Button color="default" variant='outlined' key="go-home" onClick={() => navigate('/')}>
+              Go Home
+            </Button>
+          ]}
+        />
+      </>
     )
   }
 
   return (
-    <Result
-      status="error"
-      title={isEdit ? 'Update Failed' : 'Submission Failed'}
-      subTitle="Something went wrong. Please go back and check your input before trying again."
-      extra={[
-        <Button key="back" onClick={() => navigate(-1)}>
-          Go Back
-        </Button>
-      ]}
-    />
+    <>
+      <style>{resultStyle}</style>
+      <Result
+        status="error"
+        title={isEdit ? 'Update Failed' : 'Submission Failed'}
+        subTitle="Something went wrong. Please go back and check your input before trying again."
+        extra={[
+          <Button key="back" onClick={() => navigate(-1)}>
+            Go Back
+          </Button>
+        ]}
+      />
+    </>
   )
 }
 

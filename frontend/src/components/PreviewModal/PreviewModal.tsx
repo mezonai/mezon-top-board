@@ -115,8 +115,8 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         title="Latest version"
                         bordered size="small"
                         column={1}
-                        labelStyle={{ backgroundColor: '#f3f5f7', color: '#374151', fontWeight: 700 }}
-                        contentStyle={{ backgroundColor: '#ffffff', color: '#111827' }}
+                        labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
+                        contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
                     >
                         {latestVersion ? (
                             <>

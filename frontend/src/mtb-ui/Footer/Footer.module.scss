@@ -2,7 +2,7 @@
     &-bottom {
         a {
             cursor: pointer;
-            border-right: 1px solid black;
+            border-right: 1px solid var(--border-color);
             padding: 0 20px;
         }
         a:last-child{

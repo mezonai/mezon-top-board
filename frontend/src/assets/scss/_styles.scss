@@ -1,8 +1,87 @@
+:root {
+  --bg-body: #ffffff;
+  --bg-container: #ffffff;
+  --bg-container-secondary: #e5e7eb;
+  --bg-content: #f0f2f5;
+  --bg-sidebar: #001529;
+  --bg-sidebar-divider: #ffffff;
+  --bg-table-header: #fafafa;
+  --text-primary: #000000;
+  --text-secondary: #4b5563;
+  --text-breadcrumb: #6b7280;
+  --text-sidebar: #ffffff;
+  --border-color: #e5e7eb;
+  --border-footer: #dddddd;
+  --border-table: #f0f0f0;
+}
+
+[data-theme='dark'], .dark {
+  --bg-body: #0b0d15; 
+  --bg-container: #13151f;
+  --bg-container-secondary: #1a1d2e;
+  --bg-elevated: #21243a;
+  --bg-content: #0b0d15;
+  --bg-sidebar: #13151f;
+  --bg-sidebar-divider: #2d3548;
+  --bg-table-header: #1a1d2e;
+  
+  --text-primary: #f0f4f9;
+  --text-secondary: #9ca3b4;
+  --text-tertiary: #6b7280;
+  --text-breadcrumb: #8b92a8;
+  --text-sidebar: #ffffff;
+  
+  --border-color: #1e2235;
+  --border-footer: #2d3548;
+  --border-table: #2d3548;
+  --border-subtle: #161927;
+  --border-emphasis: #2d3548;
+  
+  --accent-primary: #5b67ea;
+  --accent-secondary: #7c3aed;
+  --accent-glow: rgba(91, 103, 234, 0.15);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+  
+  body {
+    background: linear-gradient(180deg, #0b0d15 0%, #0d0f19 100%);
+    color: var(--text-primary);
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #0a0c13;
+    border-left: 1px solid #161927;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg, 
+      rgba(91, 103, 234, 0.4) 0%, 
+      rgba(124, 58, 237, 0.4) 100%
+    );
+    border-radius: 10px;
+    border: 2px solid #13151f;
+    box-shadow: 0 0 10px rgba(91, 103, 234, 0.3);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg, 
+      rgba(91, 103, 234, 0.6) 0%, 
+      rgba(124, 58, 237, 0.6) 100%
+    );
+    box-shadow: 0 0 15px rgba(91, 103, 234, 0.5);
+  }
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  background-color: var(--bg-body); 
+  color: var(--text-primary);
 }
 .description h1 {
   font-size: 2em;

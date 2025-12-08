@@ -68,14 +68,14 @@ function Footer() {
     }
   }
   return (
-    <div className='pt-10 pb-5 bg-gray-100'>
+    <div className='pt-10 pb-5 bg-bg-secondary transition-colors'>
       <div className={`flex flex-col md:flex-row justify-around items-center gap-6 md:gap-0 pb-8 px-4`}>
         {/* Follow us section */}
         <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
-          <MtbTypography variant='h5' customClassName='!mb-0 !text-gray-600'>Follow us</MtbTypography>
+          <MtbTypography variant='h5' customClassName='!mb-0 !text-text-secondary'>Follow us</MtbTypography>
           <div className="flex gap-2">
           {footerLink.map((item, index) => (
-            <Tag key={index} className='!rounded-full !w-12 !h-12 !flex !items-center !justify-center !bg-gray-300 !text-lg cursor-pointer hover:!bg-gray-100' onClick={() => window.open(item.link, '_blank')}>
+            <Tag key={index} className='!rounded-full !w-12 !h-12 !flex !items-center !justify-center !bg-[var(--bg-container-secondary)] !text-lg cursor-pointer hover:!bg-[var(--bg-container)]' onClick={() => window.open(item.link, '_blank')}>
               {item.icon}
             </Tag>
           ))}
@@ -85,14 +85,14 @@ function Footer() {
        <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-center md:text-left">
           <MtbTypography
             variant="h5"
-            customClassName="!mb-0 !text-gray-600"
+            customClassName="!mb-0 !text-text-secondary"
           >
             Get Newsletter
           </MtbTypography>
           <div className="flex items-center justify-center gap-2 w-full md:w-auto">
             <Form className="flex-grow max-w-sm">
               <Form.Item className="!mb-0">
-                <Input className="text-center md:text-left" readOnly disabled value={userInfo?.email || ""} />
+                <Input className="text-center md:text-left !bg-[var(--bg-container)] !text-[var(--text-primary)] !border-transparent dark:!border-[var(--border-color)]" readOnly disabled value={userInfo?.email || ""} />
               </Form.Item>
             </Form>
             <Button
@@ -105,11 +105,11 @@ function Footer() {
           </div>
         </div>
       </div>
-      <Divider className='bg-gray-400' />
+      <Divider className='bg-[var(--border-color)]' />
       <ul className='flex justify-center pt-10 gap-6'>{renderMenu(false)}</ul>
       <div className='flex flex-col items-center pt-8 gap-2 '>
-        <MtbTypography variant='p' customClassName='!mb-0 !text-gray-600 text-center max-md:mx-12' weight='normal'>Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam</MtbTypography>
-        <MtbTypography variant='p' customClassName='!mb-0 !text-gray-600' weight='normal'>(+84) 2466874606</MtbTypography>
+        <MtbTypography variant='p' customClassName='!mb-0 !text-text-secondary text-center max-md:mx-12' weight='normal'>Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam</MtbTypography>
+        <MtbTypography variant='p' customClassName='!mb-0 !text-text-secondary' weight='normal'>(+84) 2466874606</MtbTypography>
       </div>
     </div>
   )

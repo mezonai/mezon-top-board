@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
+import styles from './SearchBar.module.scss'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
@@ -113,15 +114,7 @@ const SearchBar = ({
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div className="flex flex-1 w-full items-center !rounded-full my-select-container">
-          <style>
-            {`
-              .my-select-container .ant-select .ant-select-selector {
-                border-radius:0 100px 100px 0 !important;
-                border-left: none !important;
-              }
-            `}
-          </style>
+        <div className={`flex flex-1 w-full items-center !rounded-full ${styles.container}`}>
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -134,7 +127,7 @@ const SearchBar = ({
                 </button>
               ) : null
             }
-            className="!rounded-l-full h-[50px] "
+            className="!rounded-l-full h-[50px] !bg-[var(--bg-container)] !text-[var(--text-primary)] !border-[var(--border-color)] hover:!border-[var(--border-color)] focus:!border-[var(--border-color)]"
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
@@ -142,6 +135,7 @@ const SearchBar = ({
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder="All Types"
+            popupClassName="custom-search-dropdown"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
             data-e2e="selectType"
           />
@@ -158,7 +152,7 @@ const SearchBar = ({
           <Tag.CheckableTag
             key={tag.id}
             checked={selectedTagIds.includes(tag.id)}
-            className='!border !border-gray-300'
+            className='!border !border-gray-300 dark:!border-gray-600 dark:!text-gray-300 !bg-[var(--bg-container)]'
             onClick={() => handleSearchTag(tag.id)}
           >
             {tag.name}
@@ -186,6 +180,7 @@ const SearchBar = ({
               onBlur={() => setIsSelectVisible(false)}
               style={{ width: '120px', marginTop: '8px' }}
               dropdownStyle={{ width: '200px' }}
+              popupClassName="custom-search-dropdown"
               maxTagCount={0}
               maxTagPlaceholder={() => `+${remainingHiddenTagCount} tags`}
               filterOption={(input, option) =>

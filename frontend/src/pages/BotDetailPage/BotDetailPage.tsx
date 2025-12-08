@@ -184,11 +184,11 @@ function BotDetailPage() {
           <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>
             Overview
           </MtbTypography>
-          <Divider className='bg-gray-200'></Divider>
+          <Divider className='bg-[var(--border-color)]'></Divider>
           <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
           <div className='pt-5'>
             <MtbTypography variant='h3'>More like this</MtbTypography>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-[var(--border-color)]'></Divider>
             {relatedMezonApp?.length > 0 ? (
               <Carousel
                 arrows={!isMobile}
@@ -214,7 +214,7 @@ function BotDetailPage() {
           </div>
           <div className='pt-8'>
             <MtbTypography variant='h3'>Ratings & Reviews</MtbTypography>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-[var(--border-color)]'></Divider>
             <div className='flex justify-between gap-4 max-lg:flex-col max-2xl:flex-col'>
               <div className='flex-1'>
                 <div className='flex items-center gap-10 max-lg:justify-between max-2xl:justify-between'>
@@ -250,7 +250,7 @@ function BotDetailPage() {
                   })}
               </div>
             </div>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-[var(--border-color)]'></Divider>
               {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
                 <RatingForm
                   onSubmitted={() => {
@@ -261,7 +261,7 @@ function BotDetailPage() {
                   }}
                 />
               )}
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-[var(--border-color)]'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
                 <Spin size='large' />

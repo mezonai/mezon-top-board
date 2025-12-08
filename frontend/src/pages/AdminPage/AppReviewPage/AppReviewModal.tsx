@@ -83,8 +83,8 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
         bordered
         size="small"
         column={1}
-        labelStyle={{ backgroundColor: '#f3f5f7', color: '#374151', fontWeight: 700 }}
-        contentStyle={{ backgroundColor: '#ffffff', color: '#111827' }}
+        labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
+        contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
       >
         <Descriptions.Item label="Version">
           {latestVersion?.version ?? '0'}
@@ -93,7 +93,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
           {formatDate(appData?.versions?.[0]?.updatedAt)}
         </Descriptions.Item>
         <Descriptions.Item label="Change Log">
-          <div style={{ backgroundColor: '#ffffff', borderRadius: 6 }}>
+          <div style={{ backgroundColor: 'var(--bg-container)', borderRadius: 6 }}>
             {latestVersion?.changelog || '-'}
           </div>
         </Descriptions.Item>

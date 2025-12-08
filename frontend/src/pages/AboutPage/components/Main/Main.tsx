@@ -49,13 +49,13 @@ function Main() {
         </p>
       </div>
       <StatsSection stats={stats}></StatsSection>
-      <Divider className='bg-gray-200'></Divider>
+      <Divider className='bg-[var(--border-color)]'></Divider>
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Why Mezon Top Board? Here's Everything!</MtbTypography>
         <p className='text-gray-500'>Hear from our trusted partners - our customers say it best</p>
       </div>
       <TestimonialsSection testimonials={testimonials}></TestimonialsSection>
-      <Divider className='bg-gray-200'></Divider>
+      <Divider className='bg-[var(--border-color)]'></Divider>
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Have we got your attention?</MtbTypography>
         <p className='text-gray-500'>

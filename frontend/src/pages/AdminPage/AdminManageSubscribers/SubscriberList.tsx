@@ -182,7 +182,7 @@ function EmailSubscriberList() {
             <Input
               ref={searchRef}
               placeholder='Search by email'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
               onPressEnter={() => searchForm.submit()}
               style={{ borderRadius: '8px', height: '40px' }}
               className='w-full'

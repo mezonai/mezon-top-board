@@ -242,7 +242,7 @@ function TagsList() {
             <Input
               ref={searchRef}
               placeholder='Search by name or slug'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
               onPressEnter={() => searchForm.submit()}
             />
           </Form.Item>

@@ -5,6 +5,15 @@ const tailwindPreset: Config = {
   theme: {
     extend: {
       colors: {
+        bg: {
+            DEFAULT: 'var(--bg-body)',
+            container: 'var(--bg-container)',
+            secondary: 'var(--bg-container-secondary)',
+        },
+        text: {
+            primary: 'var(--text-primary)',
+            secondary: 'var(--text-secondary)',
+        },
         primary: {
           default: '#F2385A',
           hover: new TinyColor('#F2385A').lighten(5).toString(),
