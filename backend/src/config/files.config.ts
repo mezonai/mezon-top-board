@@ -12,7 +12,10 @@ import { createUploadPath, generateFilename, isMimeTypeValid } from "@libs/utils
 import envConfig from "./env.config";
 
 const uploadDir = join(process.cwd(), envConfig().UPLOAD_RELATIVE_DIR);
-const tempBotGeneratedDir = join(process.cwd(), envConfig().TEMP_FILE_DIR, envConfig().BOT_GENERATED_FILE_DIR);
+
+const tempFilesRootDir = join(process.cwd(), envConfig().TEMP_FILE_DIR);
+
+const botGeneratedDir = join(tempFilesRootDir, envConfig().BOT_GENERATED_FILE_DIR);
 
 const multerConfig = {
   storage: diskStorage({
@@ -56,11 +59,16 @@ const configStaticFiles = (app: INestApplication) => {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir);
   }
-  if (!existsSync(tempBotGeneratedDir)) {
-    mkdirSync(tempBotGeneratedDir, { recursive: true });
+
+  if (!existsSync(tempFilesRootDir)) {
+    mkdirSync(tempFilesRootDir, { recursive: true });
+  }
+
+  if (!existsSync(botGeneratedDir)) {
+    mkdirSync(botGeneratedDir, { recursive: true });
   }
   app.use('/api/uploads', express.static(uploadDir));
-  app.use('/api/temp-bot-generated-files', express.static(tempBotGeneratedDir));
+  app.use('/api/temp-files', express.static(tempFilesRootDir));
 };
 
 export {
