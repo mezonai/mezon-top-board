@@ -1,36 +1,45 @@
-import envConfig from '@config/env.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as fs from 'fs';
+import { join } from 'path';
+import { tempFilesRootDir } from '@config/files.config';
+import { EntityManager, LessThan } from 'typeorm';
+import { GenericRepository } from '@libs/repository/genericRepository';
+import { TempFile } from '@domain/entities';
 
 @Injectable()
 export class CleanupTempFileService {
   private readonly logger = new Logger(CleanupTempFileService.name);
+  private readonly tempFileRepository: GenericRepository<TempFile>;
 
-  private readonly EXPIRE_TIME = 24 * 3600 * 1000;
+  constructor(
+    private manager: EntityManager,
+  ) {
+    this.tempFileRepository = new GenericRepository(TempFile, manager);
+  }
 
   @Cron('0 */6 * * *')
   async cleanupTempFiles() {
-    const rootDir = path.join(process.cwd(), envConfig().TEMP_FILE_DIR, envConfig().BOT_GENERATED_FILE_DIR);
+    const now = new Date();
 
-    const exists = await fs.pathExists(rootDir);
-    if (!exists) return;
+    const expiredFiles = await this.tempFileRepository.find({
+      where: { expiredAt: LessThan(now) },
+    });
 
-    const now = Date.now();
-    const files = await fs.readdir(rootDir);
+    for (const file of expiredFiles) {
+      try {
+        if (file.filePath) {
+          const absolutePath = join(tempFilesRootDir, file.filePath);
 
-    for (const fileName of files) {
-      const filePath = path.join(rootDir, fileName);
-      const stats = await fs.stat(filePath);
-
-      if (now - stats.mtimeMs > this.EXPIRE_TIME) {
-        try {
-          await fs.remove(filePath);
-          this.logger.log(`Deleted temp file: ${fileName}`);
-        } catch (err) {
-          this.logger.error(`Failed to delete ${fileName}`, err);
+          if (fs.existsSync(absolutePath)) {
+            fs.rmSync(absolutePath, { recursive: true, force: true });
+            this.logger.log(`Deleted temp: ${file.filePath}`);
+          }
         }
+
+        await this.tempFileRepository.delete(file.id);
+      } catch (err) {
+        this.logger.error(`Failed to delete temp ${file.id}`, err);
       }
     }
   }
