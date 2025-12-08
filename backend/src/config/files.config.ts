@@ -13,7 +13,7 @@ import envConfig from "./env.config";
 
 const uploadDir = join(process.cwd(), envConfig().UPLOAD_RELATIVE_DIR);
 
-const tempFilesRootDir = join(process.cwd(), envConfig().TEMP_FILE_DIR);
+export const tempFilesRootDir = join(process.cwd(), envConfig().TEMP_FILE_DIR);
 
 const multerConfig = {
   storage: diskStorage({
