@@ -119,7 +119,7 @@ function UsersList() {
       ellipsis: true,
       width: 100,
       responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[],
-      render: (text: string) => text || <span className='text-gray-400'>No name</span>
+      render: (text: string) => text || <span style={{ color: 'var(--text-secondary)' }}>No name</span>
     },
     {
       title: 'Email',
@@ -163,8 +163,8 @@ function UsersList() {
   ]
   
   return (
-    <div className='p-4 bg-white rounded-md shadow-md'>
-      <h2 className='text-lg font-semibold mb-4'>Users List</h2>
+    <div className='p-4 rounded-md shadow-md' style={{ background: 'var(--bg-container)' }}>
+      <h2 className='text-lg font-semibold mb-4' style={{ color: 'var(--text-primary)' }}>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
@@ -179,7 +179,7 @@ function UsersList() {
             <Input
               ref={searchRef}
               placeholder='Search by name or email'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
               onPressEnter={() => form.submit()}
               style={{ borderRadius: '8px', height: '40px' }}
               className='w-full'
@@ -249,7 +249,7 @@ function UsersList() {
       )}
 
       {!isLoading && !error && (!users || users.totalCount === 0) && (
-        <div className='text-center p-8 text-gray-500'>
+        <div className='text-center p-8' style={{ color: 'var(--text-secondary)' }}>
           <p>Không tìm thấy người dùng</p>
         </div>
       )}

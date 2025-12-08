@@ -152,7 +152,7 @@ function MailScheduleList() {
             <Input
               ref={searchRef}
               placeholder='Search by subject'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
               onPressEnter={() => searchForm.submit()}
               style={{ borderRadius: '8px', height: '40px' }}
               className='w-full'

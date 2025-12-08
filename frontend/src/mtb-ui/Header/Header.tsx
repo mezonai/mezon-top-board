@@ -16,7 +16,7 @@ import { useAuth } from '@app/hook/useAuth'
 import { AppEvent } from '@app/enums/AppEvent.enum'
 import { Switch } from 'antd'; 
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
-import { useTheme } from '@app/hook/useTheme';
+import { useTheme } from '@app/hook/useTheme'
 
 function Header() {
   const navigate = useNavigate()
@@ -39,6 +39,29 @@ function Header() {
   }
 
   const itemsDropdown: MenuProps['items'] = [
+    {
+      key: 'theme-switch',
+      label: (
+        <div 
+          className="flex justify-between items-center gap-4 min-w-[120px]" 
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span className="text-[var(--text-primary)] font-medium">Theme</span>
+          <div className={`${styles['custom-switch']}`}>
+            <Switch
+              checked={theme === 'dark'}
+              onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+              checkedChildren={<MoonOutlined />}
+              unCheckedChildren={<SunOutlined />}
+              className='!align-middle'
+            />
+          </div>
+        </div>
+      )
+    },
+    {
+      type: 'divider', 
+    },
     {
       key: '1',
       label: 'Logout',
@@ -71,15 +94,6 @@ function Header() {
   const renderHeaderItems = () => {
     return (
       <>
-        <div className={`flex items-center ${styles['custom-switch']} mb-10 lg:mb-0`}>
-          <Switch
-            checked={theme === 'dark'}
-            onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-            checkedChildren={<MoonOutlined />}
-            unCheckedChildren={<SunOutlined />}
-            className='!align-middle'
-          />
-        </div>
         <ul className='flex flex-col lg:flex-row gap-5 flex-none text-sm mb-2 text-text-primary'>{renderMenu(true)}</ul>
         <div className='flex flex-col lg:flex-row gap-3 mt-5 lg:mt-0 w-full'>
           {isLogin ? (

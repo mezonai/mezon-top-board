@@ -27,12 +27,12 @@ function AdminLayout() {
           <div className='h-[30px]'>
             <img src={logo} alt='' style={{ height: '100%', objectFit: 'contain' }} />
           </div>
-          <MtbTypography variant='p' style={{ color: '#fff' }} weight='bold'>
+          <MtbTypography variant='p' style={{ color: 'var(--text-sidebar)' }} weight='bold'>
             MTB Management
           </MtbTypography>
         </div>
         <div className={styles['sider-divider']} />
-        <Menu theme='dark' mode='vertical' defaultSelectedKeys={['/admin']} selectedKeys={[location.pathname]}>
+        <Menu mode='vertical' defaultSelectedKeys={['/admin']} selectedKeys={[location.pathname]}>
           {adminRoutePaths.filter((route) => route.isShowMenu).map((route) => (
             <Menu.Item key={route.path} icon={route.icon}>
               <NavLink to={route.path}>{route.label || route.strLabel}</NavLink>
@@ -43,7 +43,7 @@ function AdminLayout() {
       <Layout>
         <Header className={styles.header}>
           <div className={styles.breadcrumbContainer}>
-            <Breadcrumb style={{ color: '#fff' }}>
+            <Breadcrumb>
               {pathSnippets.map((snippet, index) => {
                 const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
                 return (

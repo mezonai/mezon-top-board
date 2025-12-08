@@ -8,6 +8,7 @@ import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
 import MailScheduleList from '@app/pages/AdminPage/AdminManageMailSchedule/MailScheduleList';
 import EmailSubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
 import AppReviewPage from '@app/pages/AdminPage/AppReviewPage/AppReviewPage';
+import SettingsPage from '@app/pages/AdminPage/AdminSettings/SettingsPage';
 
 export const adminRoutePaths: RoutePath[] = [
   {
@@ -69,7 +70,7 @@ export const adminRoutePaths: RoutePath[] = [
   },
   {
     path: '/manage/settings',
-    element: <h1>Settings</h1>,
+    element: <SettingsPage />,
     strLabel: 'Settings',
     icon: <SettingOutlined />,
     isShowMenu: true

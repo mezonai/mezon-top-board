@@ -48,3 +48,19 @@
         color: #ffffff !important;
     }
 }
+
+:global(.menu-dropdown-overlay) {
+    :global(.ant-dropdown-menu) {
+        background-color: var(--bg-container) !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    :global(.ant-dropdown-menu-item) {
+        color: var(--text-primary) !important;
+    }
+    :global(.ant-dropdown-menu-item-active),
+    :global(.ant-dropdown-menu-item:hover) {
+        background-color: var(--bg-container-secondary) !important;
+        color: #d1006b !important;
+    }
+}

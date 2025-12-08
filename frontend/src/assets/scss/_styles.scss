@@ -1,10 +1,18 @@
 :root {
   --bg-body: #ffffff;
   --bg-container: #ffffff;
-  --bg-container-secondary: #e5e7eb; 
+  --bg-container-secondary: #e5e7eb;
+  --bg-content: #f0f2f5;
+  --bg-sidebar: #001529;
+  --bg-sidebar-divider: #ffffff;
+  --bg-table-header: #fafafa;
   --text-primary: #000000;
-  --text-secondary: #4b5563; 
+  --text-secondary: #4b5563;
+  --text-breadcrumb: #6b7280;
+  --text-sidebar: #ffffff;
   --border-color: #e5e7eb;
+  --border-footer: #dddddd;
+  --border-table: #f0f0f0;
 }
 
 [data-theme='dark'], .dark {
@@ -12,12 +20,20 @@
   --bg-container: #13151f;
   --bg-container-secondary: #1a1d2e;
   --bg-elevated: #21243a;
+  --bg-content: #0b0d15;
+  --bg-sidebar: #13151f;
+  --bg-sidebar-divider: #2d3548;
+  --bg-table-header: #1a1d2e;
   
   --text-primary: #f0f4f9;
   --text-secondary: #9ca3b4;
-  --text-tertiary: #6b7280; 
+  --text-tertiary: #6b7280;
+  --text-breadcrumb: #8b92a8;
+  --text-sidebar: #ffffff;
   
   --border-color: #1e2235;
+  --border-footer: #2d3548;
+  --border-table: #2d3548;
   --border-subtle: #161927;
   --border-emphasis: #2d3548;
   
@@ -65,8 +81,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   background-color: var(--bg-body); 
-  color: var(--text-primary);       
-  transition: background-color 0.3s, color 0.3s;
+  color: var(--text-primary);
 }
 .description h1 {
   font-size: 2em;

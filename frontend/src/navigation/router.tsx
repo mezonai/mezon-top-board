@@ -80,7 +80,7 @@ export const renderMenu = (isHasActive: boolean) => {
 
         return (
           <li key={`${route.path}-${index}`}>
-            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']}>
+            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} overlayClassName="menu-dropdown-overlay">
               <a
                 className={`text-[var(--text-primary)] dark:!text-white pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
                   isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
