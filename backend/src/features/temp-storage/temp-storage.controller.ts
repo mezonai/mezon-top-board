@@ -18,17 +18,6 @@ export class TempStorageController {
     this.logger.setContext(TempStorageController.name);
   }
 
-  @Get(":id")
-  @ApiBearerAuth()
-  getTempFile(@Param('id') id : string) {
-    try {
-      return this.tempStorageService.getTempFile(id);
-    } catch (error) {
-      this.logger.error("An error occured", error);
-      throw error;
-    }
-  }
-
   @Get("search")
   @RoleRequired([Role.ADMIN])
   @ApiBearerAuth()
@@ -46,6 +35,17 @@ export class TempStorageController {
   async getOwnTempFiles(@GetUserFromHeader() user: User, @Query() query: GetOwnTempFileRequest) {
     try {
       return this.tempStorageService.getOwnListTempFiles(user.id, query);
+    } catch (error) {
+      this.logger.error("An error occured", error);
+      throw error;
+    }
+  }
+  
+  @Get(":id")
+  @ApiBearerAuth()
+  getTempFile(@Param('id') id : string) {
+    try {
+      return this.tempStorageService.getTempFile(id);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;
