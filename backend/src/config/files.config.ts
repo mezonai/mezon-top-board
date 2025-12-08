@@ -13,6 +13,8 @@ import envConfig from "./env.config";
 
 const uploadDir = join(process.cwd(), envConfig().UPLOAD_RELATIVE_DIR);
 
+const tempFilesRootDir = join(process.cwd(), envConfig().TEMP_FILE_DIR);
+
 const multerConfig = {
   storage: diskStorage({
     destination: (req, file, cb) => {
@@ -55,7 +57,13 @@ const configStaticFiles = (app: INestApplication) => {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir);
   }
+
+  if (!existsSync(tempFilesRootDir)) {
+    mkdirSync(tempFilesRootDir, { recursive: true });
+  }
+
   app.use('/api/uploads', express.static(uploadDir));
+  app.use('/api/temp-files', express.static(tempFilesRootDir));
 };
 
 export {
