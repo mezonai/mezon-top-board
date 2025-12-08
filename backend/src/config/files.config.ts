@@ -15,8 +15,6 @@ const uploadDir = join(process.cwd(), envConfig().UPLOAD_RELATIVE_DIR);
 
 const tempFilesRootDir = join(process.cwd(), envConfig().TEMP_FILE_DIR);
 
-const botGeneratedDir = join(tempFilesRootDir, envConfig().BOT_GENERATED_FILE_DIR);
-
 const multerConfig = {
   storage: diskStorage({
     destination: (req, file, cb) => {
@@ -64,9 +62,6 @@ const configStaticFiles = (app: INestApplication) => {
     mkdirSync(tempFilesRootDir, { recursive: true });
   }
 
-  if (!existsSync(botGeneratedDir)) {
-    mkdirSync(botGeneratedDir, { recursive: true });
-  }
   app.use('/api/uploads', express.static(uploadDir));
   app.use('/api/temp-files', express.static(tempFilesRootDir));
 };
