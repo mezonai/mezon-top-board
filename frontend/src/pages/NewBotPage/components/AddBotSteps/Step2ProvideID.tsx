@@ -9,7 +9,7 @@ const Step2ProvideID = ({ type }: { type: MezonAppType }) => {
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
   const formattedType = capitalize(type)
   return (
-    <FormField label={`${formattedType} ID`} errorText={errors.mezonAppId?.message}>
+    <FormField label={`${formattedType} ID`} required errorText={errors.mezonAppId?.message}>
       <Controller
         control={control}
         name="mezonAppId"

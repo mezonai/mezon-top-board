@@ -126,8 +126,8 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   }, [socialLinksData, setError, clearErrors])
 
   return (
-    <div className={styles.container}>
-      <FormField label='Name' description='Name your bot' errorText={errors.name?.message}>
+    <>
+      <FormField label='Name' required description='Name your bot' errorText={errors.name?.message}>
         <Controller
           control={control}
           name='name'
@@ -139,7 +139,8 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
       <FormField
         label='Headline'
-        description='Provide a short and catchy phrase that describes your bot.'
+        required
+        description='Provide a short and catchy phrase that describes your bot.' 
         errorText={errors.headline?.message}
       >
         <Controller
@@ -153,9 +154,10 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
 
       <FormField
-        label='Full Description'
-        description='Tell us what your bot can do. We want to hear the whole story!'
-        errorText={errors.description?.message}>
+          label='Full Description'
+          required
+          description='Tell us what your bot can do. We want to hear the whole story!'
+          errorText={errors.description?.message}>
         <Controller
           control={control}
           name='description'
@@ -180,24 +182,25 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
       {
         type === MezonAppType.BOT &&
-        <FormField
-          label='Prefix'
-          description='What keyword or phrase does your bot react to?'
-          errorText={errors.prefix?.message}>
-          <Controller
-            control={control}
-            name='prefix'
-            render={({ field }) => (
-              <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
-            )}
-          />
-        </FormField>
+          <FormField
+              label='Prefix'
+              required
+              description='What keyword or phrase does your bot react to?'
+              errorText={errors.prefix?.message}>
+            <Controller
+              control={control}
+              name='prefix'
+              render={({ field }) => (
+                <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
+              )}
+            />
+          </FormField>
       }
       <FormField
-        label='Tags'
-        description='Select the top 12 categories that best represent your community.'
-        errorText={errors.tagIds?.message}
-      >
+          label='Tags'
+          required
+          description='Select the top 12 categories that best represent your community.'
+          errorText={errors.tagIds?.message}>
         <Controller
           control={control}
           name='tagIds'
@@ -274,7 +277,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label='Support URL' description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
+      <FormField label='Support URL' required description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
         <Controller
           control={control}
           name='supportUrl'
@@ -350,7 +353,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           />
         ))}
       </FormField>
-    </div>
+    </>
   )
 }
 
