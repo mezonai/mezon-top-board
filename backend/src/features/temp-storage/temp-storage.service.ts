@@ -1,3 +1,4 @@
+import { tempFilesRootDir } from '@config/files.config';
 import { Result } from '@domain/common/dtos/result.dto';
 import { SaveTempFileArgs } from '@domain/common/types/temp-file.types';
 import { TempFile } from '@domain/entities';
@@ -38,18 +39,18 @@ export class TempStorageService {
     tempFile.mimeType = saveTempFileArgs.mimeType;
     tempFile.expiredAt = moment().add(saveTempFileArgs.expiredHours || this.DEFAULT_EXPIRED_HOURS, 'hours').toDate();
 
-    const finalPath = join(saveTempFileArgs.path || '', saveTempFileArgs.fileName);
-    if (!fs.existsSync(finalPath)) {
-      fs.mkdirSync(finalPath, { recursive: true });
+    const absoluteDir = join(tempFilesRootDir, saveTempFileArgs.path || '');
+    
+    if (!fs.existsSync(absoluteDir)) {
+      fs.mkdirSync(absoluteDir, { recursive: true });
     }
 
-    await fs.writeFile(finalPath, saveTempFileArgs.buffer, (err) => {
-      if (err) {
-        throw new BadRequestException(`Error saving temp file: ${err.message}`);
-      }
-    });
+    const relativeFilePath = `${saveTempFileArgs.path || ''}/${saveTempFileArgs.fileName}`;
+    const normalizedPath = relativeFilePath.replace(/^\/+/, '');
+    const absoluteFilePath = join(tempFilesRootDir, normalizedPath);
+    await fs.promises.writeFile(absoluteFilePath, saveTempFileArgs.buffer);
 
-    tempFile.filePath = finalPath;
+    tempFile.filePath = normalizedPath;
 
     return await this.tempFileRepository.getRepository().save(tempFile);
   }
