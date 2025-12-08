@@ -6,6 +6,7 @@ import {
 import { AppVersion } from '@app/types/appVersion.types'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import styles from './OwnerActions.module.scss'
 
 function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBotCard?: boolean; onNewVersionClick?: (version?: AppVersion) => void }) {
   const navigate = useNavigate()
@@ -76,19 +77,21 @@ function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBot
     onClick: handleMenuClick
   }
   return (
-    <Dropdown.Button
-      style={{ display: 'contents' }}
-      size={isBotCard ? 'large' : 'middle'}
-      getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
-      buttonsRender={([_, rightBtn]) => [
-        null,
-        <span onClick={(e) => e.stopPropagation()} className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
-          {rightBtn}
-        </span>
-      ]}
-      trigger={['click']}
-      menu={menuProps}
-    />
+    <div className={styles.ownerActions}>
+      <Dropdown.Button
+        style={{ display: 'contents' }}
+        size={isBotCard ? 'large' : 'middle'}
+        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
+        buttonsRender={([_, rightBtn]) => [
+          null,
+          <span onClick={(e) => e.stopPropagation()} className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
+            {rightBtn}
+          </span>
+        ]}
+        trigger={['click']}
+        menu={menuProps}
+      />
+    </div>
   )
 }
 
