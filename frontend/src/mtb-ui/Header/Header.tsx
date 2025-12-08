@@ -127,7 +127,7 @@ function Header() {
 
   return (
     <div
-      className={`flex bg-bg container dark:bg-bg-container z-2 items-center justify-between py-4 px-5 lg:px-20 border-t-1 border-b-1 border-[var(--border-color)] cursor-pointer sticky top-0`}
+      className={`flex bg-bg dark:bg-bg-container z-2 items-center justify-between py-4 px-5 lg:px-20 border-t-1 border-b-1 border-[var(--border-color)] cursor-pointer sticky top-0 w-full`}
     >
       <div className='flex items-center gap-3' onClick={handleLogoClick}>
         <div className='h-[50px]'>

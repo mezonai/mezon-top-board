@@ -214,3 +214,27 @@ pre {
 .ant-carousel .slick-arrow {
   color: #d1006b !important;
 }
+
+.ant-popover {
+  .ant-popover-inner {
+    background: var(--bg-container) !important;
+    border: none !important;
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  .ant-popover-inner-content {
+    color: var(--text-primary) !important;
+  }
+  
+  .ant-popover-arrow {
+    display: none !important;
+  }
+}
+
+[data-theme='dark'] {
+  .ant-popover {
+    .ant-popover-inner {
+      box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+}

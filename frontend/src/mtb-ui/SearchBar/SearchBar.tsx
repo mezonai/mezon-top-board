@@ -152,7 +152,6 @@ const SearchBar = ({
           <Tag.CheckableTag
             key={tag.id}
             checked={selectedTagIds.includes(tag.id)}
-            className='!border !border-gray-300 dark:!border-gray-600 dark:!text-gray-300 !bg-[var(--bg-container)]'
             onClick={() => handleSearchTag(tag.id)}
           >
             {tag.name}
@@ -195,7 +194,7 @@ const SearchBar = ({
         )}
         {selectedTagIds.length > 0 && (
           <Tag 
-            className="!border-red-200 !text-red-500 hover:!bg-red-50 !cursor-pointer !inline-flex !items-center !gap-1 !mb-2" 
+            className="clear-tags-btn !cursor-pointer !items-center !gap-1" 
             onClick={handleClearTags}
           >
             <CloseCircleOutlined /> Clear tags
