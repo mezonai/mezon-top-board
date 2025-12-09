@@ -5,67 +5,59 @@ import { BotWizardResponse, WizardStatus } from '../../MockData'
 import { useState } from 'react'
 import BotWizardDetailModal from './BotWizardDetailModal'
 import IntegrationTags from './IntegrationTags'
+import { TempFileResponse } from '@app/services/api/tempStorage/tempStorage.types'
+import moment from 'moment'
 
 const statusColor: Record<WizardStatus, string> = {
-    PROCESSING: 'blue',
-    COMPLETED: 'green',
-    EXPIRED: 'red',
+  PROCESSING: 'blue',
+  COMPLETED: 'green',
+  EXPIRED: 'red',
 }
 
-export default function BotWizardCard({ item }: { item: BotWizardResponse }) {
-    const [open, setOpen] = useState(false)
-    const created = new Date(item.createdAt)
-    const actions = (
-        <>
-            <MtbButton size='large' color='primary' variant='outlined' onClick={() => setOpen(true)}>View Details</MtbButton>
-            {item.status === WizardStatus.Completed && (
-                <MtbButton size='large' color='primary' variant='solid' className='ml-2'>Download .zip</MtbButton>
-            )}
-        </>
-    )
 
-    return (
-        <>
-            <div className='rounded-xl p-5 shadow-sm hover:shadow-lg transition-shadow bg-white border border-gray-100 flex flex-col gap-3'>
-                <div className='flex items-start justify-between gap-3'>
-                    <div className='min-w-0'>
-                        <MtbTypography variant='h3' customClassName='truncate'>{item.name}</MtbTypography>
-                        <MtbTypography variant='p' customClassName='!pl-0 text-gray-500 truncate'>
-                            {item.description}
-                        </MtbTypography>
-                    </div>
-                    <Tag color={statusColor[item.status]} className='text-sm capitalize'>{item.status}</Tag>
-                </div>
+export default function BotWizardCard({ item }: { item: TempFileResponse }) {
 
-                <div className='grid grid-cols-2 gap-3 text-sm text-gray-600'>
-                    {item.prefix && (
-                        <div>
-                            <span className='text-gray-400'>Prefix:</span> <span className='font-medium'>{item.prefix}</span>
-                        </div>
-                    )}
-                    <div>
-                        <span className='text-gray-400'>Commands:</span> <span className='font-medium'>{item.commands.length}</span>
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>Events:</span> <span className='font-medium'>{item.events.length}</span>
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>Integrations:</span>
-                        <IntegrationTags integrations={item.integrations} className='ml-2' />
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>.env pairs:</span> <span className='font-medium'>{item.envPairs.length}</span>
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>Created:</span> <span className='font-medium'>{created.toLocaleString()}</span>
-                    </div>
-                </div>
+  const handleDownload = () => {
+    const url = `http://localhost:8123/api/temp-files/${item.filePath}`;
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = item.fileName;
+    link.click();
+  };
 
-                <div className='pt-2'>
-                    {actions}
-                </div>
-            </div>
-            <BotWizardDetailModal open={open} onClose={() => setOpen(false)} item={item} />
-        </>
-    )
+
+  const [open, setOpen] = useState(false)
+  const created = new Date(item.createdAt)
+  const actions = (
+    <>
+      <MtbButton size='large' color='primary' variant='outlined' onClick={() => setOpen(true)}>View Details</MtbButton>
+      <MtbButton size='large' color='primary' variant='solid' onClick={handleDownload} className='ml-2'>Download .zip</MtbButton>
+    </>
+  )
+
+  return (
+    <>
+      <div className='rounded-xl p-5 shadow-sm hover:shadow-lg transition-shadow bg-white border border-gray-100 flex flex-col gap-3'>
+        <div className='flex items-start justify-between gap-3'>
+          <div className='min-w-0'>
+            <MtbTypography variant='h3' customClassName='truncate'>{item.fileName}</MtbTypography>
+
+          </div>
+          <Tag className='text-sm capitalize'>{item.expiredAt < new Date() ? 'Expired' : 'Active'}</Tag>
+        </div>
+
+        <div className='grid grid-cols-2 gap-3 text-sm text-gray-600'>
+
+          <div>
+            <span className='text-gray-400'>Created:</span> <span className='font-medium'>{moment(created).format('DD/MM/YYYY : HH:mm:ss')}</span>
+          </div>
+        </div>
+
+        <div className='pt-2'>
+          {actions}
+        </div>
+      </div>
+
+    </>
+  )
 }

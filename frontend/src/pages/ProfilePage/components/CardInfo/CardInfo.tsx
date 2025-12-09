@@ -21,12 +21,14 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
+import { useBotGeneratorCreateJobMutation } from '@app/services/api/botGenerator/botGenerator'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [createJob] = useBotGeneratorCreateJobMutation();
 
   const cardInfoLink = [
     {
@@ -66,7 +68,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleMediaSelect = async (selection: string) => {
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
@@ -90,6 +92,19 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       toast.error('Sync failed!')
     }
   }
+
+  const handleGenerate = async () => {
+    const result = await createJob({
+      botName: "MyBot5",
+      language: "python",
+      commands: [
+        { command: "test1", description: "Test command 1", category: "General", className: "TestCommand1", aliases: ["t1", "testone"] },
+        { command: "test2", description: "Test command 2", category: "General", className: "TestCommand2", aliases: ["t2", "testtwo"] },
+      ]
+    }).unwrap();
+
+    console.log("Generated:", result);
+  };
 
   return (
     <div className='flex flex-col gap-7 p-4 shadow-sm rounded-2xl'>
@@ -132,7 +147,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
         <Popconfirm
           title='Confirm Sync from Mezon'
           description='Are you sure to sync name and avatar for this user? This action cannot be undone!'
-          onConfirm={handleSyncMezon}
+          onConfirm={handleGenerate}
           okText='Yes'
           cancelText='No'
         >

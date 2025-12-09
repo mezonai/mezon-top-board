@@ -5,6 +5,8 @@ import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
 import { BotWizardResponse, WizardStatus, useMockBotWizardRecentRequests } from '../MockData'
 import BotWizardCard from './components/BotWizardCard'
 import { LoadingOutlined } from '@ant-design/icons'
+import { useTempStorageGetOwnTempFilesQuery } from '@app/services/api/tempStorage/tempStorage'
+import { TempFileResponse } from '@app/services/api/tempStorage/tempStorage.types'
 
 const statusOptions: IOption[] = [
     { label: 'All', value: 'all' },
@@ -30,11 +32,18 @@ export default function BotWizardRequestsPage() {
     }
 
     // TODO: Replace with real hook later
-    const { data, isLoading } = useMockBotWizardRecentRequests({
-        status: toStatusFilter(status.value),
-        page,
-        pageSize,
-    })
+    // const { data, isLoading } = useMockBotWizardRecentRequests({
+    //     status: toStatusFilter(status.value),
+    //     page,
+    //     pageSize,
+    // })
+
+    const { data, isLoading } = useTempStorageGetOwnTempFilesQuery({
+        pageSize: pageSize,
+        pageNumber: page,
+        sortField: "createdAt",
+        sortOrder: "DESC",
+    });
 
     useEffect(() => {
         setPage(1)
@@ -83,7 +92,7 @@ export default function BotWizardRequestsPage() {
             ) : (
                 <>
                     <div className='grid grid-cols-1 gap-6'>
-                        {(data?.data ?? []).map((item: BotWizardResponse) => (
+                        {(data?.data ?? []).map((item: TempFileResponse) => (
                             <BotWizardCard key={item.id} item={item} />
                         ))}
                     </div>
