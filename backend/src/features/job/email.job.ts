@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import { MailerService } from '@nestjs-modules/mailer';
 
-import { JobData } from '@features/job/data.job';
+import { MarketingMailJobData } from '@features/job/job-data.types';
 
 import { QueueService } from '../queue/queue.service';
 
@@ -17,7 +17,7 @@ export class EmailJob implements OnModuleInit {
 
   async onModuleInit() {
     await this.boss.create(this.queueName);
-    await this.boss.work<JobData>(this.queueName, async (jobs) => {
+    await this.boss.work<MarketingMailJobData>(this.queueName, async (jobs) => {
       const jobList = Array.isArray(jobs) ? jobs : [jobs];
       for (const job of jobList) {
         await this.handleJob(job);
@@ -41,7 +41,7 @@ export class EmailJob implements OnModuleInit {
 
   }
 
-  async addToQueue(data: JobData) {
-    return await this.boss.send(this.queueName, data);
+  async addToQueue(data: MarketingMailJobData) {
+    return await this.boss.send<MarketingMailJobData>(this.queueName, data);
   }
 }
