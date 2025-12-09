@@ -9,7 +9,7 @@ import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
-import moment from 'moment';
+import * as moment from 'moment';
 import { join } from 'path';
 import { EntityManager } from 'typeorm';
 
@@ -24,9 +24,10 @@ export class TempStorageService {
     this.tempFileRepository = new GenericRepository(TempFile, manager);
   }
 
-  async saveTemp(saveTempFileArgs: SaveTempFileArgs) {
+  async saveTemp(saveTempFileArgs: SaveTempFileArgs, ownerId: string) {
     let tempFile = await this.tempFileRepository.getRepository().create({
       fileName: saveTempFileArgs.fileName,
+      ownerId
     })
 
     if (saveTempFileArgs.id) {

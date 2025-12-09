@@ -13,4 +13,6 @@ export class GetTempFileResponse {
   public expiredAt: Date;
   @Expose()
   public ownerId: string;
+  @Expose()
+  public createdAt: Date;
 }
