@@ -1,7 +1,9 @@
-import { TypographyVariant, TypographyWeight } from '@app/enums/typography.enum'
+import { TypographyVariant } from '@app/enums/typography.enum'
 import { AntdTypographyComponent, levelTitle, MtbTypographyProps } from './Typography.types'
 import { ConfigProvider, Typography } from 'antd'
 import { useMemo } from 'react'
+import { cn } from '@app/utils/cn'
+import { typographyClasses } from './Typography.styles'
 
 function MtbTypography({
   variant = 'h1',
@@ -24,26 +26,10 @@ function MtbTypography({
     [TypographyVariant.P]: { Component: Typography.Text, className: 'text-md' }
   }
 
-  const { Component, className: fontSize } = levelMap[variant]
-
-  const weightClasses: Record<string, string> = {
-    [TypographyWeight.BOLD]: '!font-bold',
-    [TypographyWeight.NORMAL]: '!font-normal',
-    [TypographyWeight.ITALIC]: '!italic',
-    [TypographyWeight.SEMIBOLD]: '!font-semibold',
-    [TypographyWeight.LIGHT]: '!font-light',
-    [TypographyWeight.EXTRABOLD]: '!font-extrabold'
-  }
-
-  const fontWeight = useMemo(() => {
-    return weight
-      ? weightClasses[weight]
-      : variant === TypographyVariant.P
-        ? weightClasses[TypographyWeight.NORMAL]
-        : weightClasses[TypographyWeight.BOLD]
-  }, [weight, variant])
+  const { Component } = levelMap[variant]
 
   const TypographyStyle = useMemo(() => ({ ...style, fontSize: size ? `${size}px` : undefined }), [style, size])
+  const computedClassName = cn(typographyClasses({ variant: variant as any, weight: weight as any }), customClassName, ...(textStyle || []))
 
   return (
     <ConfigProvider
@@ -61,9 +47,7 @@ function MtbTypography({
     >
       <Component
         level={variant !== TypographyVariant.P ? (parseInt(variant.replace('h', ''), 10) as levelTitle) : undefined}
-        className={['flex items-center', fontSize, fontWeight, customClassName, ...textStyle]
-          .filter(Boolean)
-          .join(' ')}
+        className={computedClassName}
         style={TypographyStyle}
         ellipsis={ellipsis}
       >

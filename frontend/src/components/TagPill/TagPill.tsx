@@ -3,6 +3,7 @@ import { Tag } from 'antd'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { TagPillProps } from './TagPill.types'
+import { cn } from '@app/utils/cn'
 
 const getLabel = (value?: string | number) => {
   if (value === undefined || value === null) return '-'
@@ -10,26 +11,33 @@ const getLabel = (value?: string | number) => {
 }
 
 const getClassName = (value?: MezonAppType | AppPricing) => {
-  const baseClass = '!bg-bg-container dark:!bg-bg-secondary !border'
+  const baseClass = "bg-bg-container dark:bg-bg-secondary border font-medium"
+
   switch (value) {
     case MezonAppType.BOT:
-      return `${baseClass} !border-primary-default !text-primary-default`
+      return cn(baseClass, "!border-red-400 !text-red-400 dark:border-red-400 dark:text-red-400")
     case MezonAppType.APP:
-      return `${baseClass} !border-sky-500 !text-sky-500 dark:!border-sky-400 dark:!text-sky-400`
+      return cn(baseClass, "!border-sky-500 !text-sky-500 dark:border-sky-400 dark:text-sky-400")
     case AppPricing.FREE:
-      return `${baseClass} !border-green-500 !text-green-500 dark:!border-green-400 dark:!text-green-400`
+      return cn(baseClass, "!border-green-500 !text-green-500 dark:border-green-500 dark:text-green-500")
     case AppPricing.PAID:
-      return `${baseClass} !border-purple-500 !text-purple-500 dark:!border-purple-400 dark:!text-purple-400`
+      return cn(baseClass, "!border-purple-500 !text-purple-500 dark:border-purple-400 dark:text-purple-400")
     default:
-      return `${baseClass} !border-gray-300 !text-gray-500 dark:!border-gray-600 dark:!text-gray-400`
+      return cn(baseClass, "!border-border !text-text-secondary")
   }
 }
 
 const TagPill: React.FC<TagPillProps> = ({ value, className = '' }) => {
-  const cls = getClassName(value)
+  const variantClass = getClassName(value)
 
   return (
-    <Tag className={`${cls} ${className} uppercase`}>
+    <Tag 
+      className={cn(
+        "uppercase rounded-md px-2 py-0.5", 
+        variantClass, 
+        className
+      )}
+    >
       {getLabel(value)}
     </Tag>
   )

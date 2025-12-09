@@ -1,4 +1,5 @@
 @config "../tailwind.config.ts";
 @import "tailwindcss";
 @import "@app/assets/scss/_styles.scss";
+@import "@app/assets/scss/_shared.scss";
 @custom-variant dark (&:where(.dark, .dark *));

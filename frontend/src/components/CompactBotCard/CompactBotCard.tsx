@@ -9,6 +9,7 @@ import type { AppVersion } from '@app/types/appVersion.types'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
+import { cn } from '@app/utils/cn'
 
 function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   const navigate = useNavigate()
@@ -64,7 +65,12 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   }
   return (
     <div
-      className='shadow-sm rounded-2xl p-4 bg-[var(--bg-container)] cursor-pointer relative z-1 select-none border border-transparent dark:border-[var(--border-color)] transition-colors duration-300'
+      className={cn(
+        'card-base',
+        'shadow-sm rounded-2xl p-4 relative select-none',
+        'cursor-pointer transition-all duration-300',
+        'hover:shadow-md hover:border-primary-border'
+      )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -72,19 +78,23 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
       {!isPublic && <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)} />}
       <div className='relative'>
         <div className='w-20 m-auto'>
-          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-[var(--bg-container-secondary)]' width={'100%'} />
+          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-bg-secondary' width={'100%'} />
         </div>
-        {!isPublic && (<div className='owner-actions'>
+        {!isPublic && (<div className='owner-actions absolute top-2 right-2'>
           <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
         </div>)}
       </div>
-      <div className='pt-3 pb-3 font-black truncate text-[var(--text-primary)]'>{data?.name || 'Name'}</div>
-      <div className='flex justify-between items-center text-[var(--text-secondary)] text-sm font-medium'>
-        <p>
-          <StarOutlined /> {data?.rateScore || 0}
+      <div className='pt-3 pb-3 font-black truncate text-text-primary'>
+        {data?.name || 'Name'}
+      </div>
+      <div className='flex justify-between items-center text-text-secondary text-sm font-medium'>
+        <p className='flex items-center gap-1'>
+          <StarOutlined className="text-warning" /> 
+          <span className='text-text-primary'>{data?.rateScore || 0}</span>
         </p>
-        <p>
-          <RiseOutlined /> 841,999
+        <p className='flex items-center gap-1'>
+          <RiseOutlined className="text-success" />
+          <span className='text-text-primary'>841,999</span>
         </p>
       </div>
       <PreviewModal

@@ -1,4 +1,5 @@
 import { IStatsSectionProps } from "./StatsSection.types"
+import { cn } from "@app/utils/cn"
 
 function StatsSection({ stats }: IStatsSectionProps) {
   return (
@@ -6,10 +7,14 @@ function StatsSection({ stats }: IStatsSectionProps) {
       {stats.map((stat, index) => (
         <div
           key={index}
-          className='bg-[var(--bg-container)] shadow-xl rounded-xl p-8 w-90 text-center flex flex-col justify-center min-h-[180px] border border-transparent dark:border-[var(--border-color)] transition-all duration-300'
+          className={cn(
+            'card-base',
+            'shadow-xl rounded-xl p-8 w-90 text-center flex flex-col justify-center min-h-[180px] transition-all duration-300',
+            'border border-transparent dark:border-border'
+          )}
         >
-          <div className='text-pink-500 text-5xl font-bold mb-2'>{stat.number}</div>
-          <div className='text-[var(--text-secondary)] text-sm'>{stat.description}</div>
+          <div className='text-primary text-5xl font-bold mb-2'>{stat.number}</div>
+          <div className='text-text-secondary text-sm'>{stat.description}</div>
         </div>
       ))}
     </div>

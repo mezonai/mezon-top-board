@@ -6,11 +6,12 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import { redirectToOAuth } from '@app/utils/auth'
 import { removeAccessTokens } from '@app/utils/storage'
-import { Drawer, Dropdown, MenuProps, Space } from 'antd'
+import { Drawer, Dropdown, MenuProps } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import MtbTypography from '../Typography/Typography'
+import { cn } from '@app/utils/cn'
 import styles from './Header.module.scss'
 import { useAuth } from '@app/hook/useAuth'
 import { AppEvent } from '@app/enums/AppEvent.enum'
@@ -42,12 +43,12 @@ function Header() {
     {
       key: 'theme-switch',
       label: (
-        <div 
-          className="flex justify-between items-center gap-4 min-w-[120px]" 
+        <div
+          className='flex justify-between items-center gap-4 min-w-[120px]'
           onClick={(e) => e.stopPropagation()}
         >
-          <span className="text-[var(--text-primary)] font-medium">Theme</span>
-          <div className={`${styles['custom-switch']}`}>
+          <span className='text-text-primary font-medium'>Theme</span>
+          <div className={cn(styles['custom-switch'], 'flex items-center p-1 rounded')}>
             <Switch
               checked={theme === 'dark'}
               onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
@@ -99,8 +100,8 @@ function Header() {
           {isLogin ? (
             <Dropdown
               menu={{ items: itemsDropdown }}
-              overlayClassName={styles['dropdown-override']}
-              className={`z-2 text-text-primary text-sm pb-2 lg:pb-0 transition-all duration-300 border-b-3 border-b-transparent max-w-xs`}
+              overlayClassName={cn(styles['dropdown-override'], 'rounded-md shadow-lg p-3')}
+              className='z-20 text-text-primary text-sm pb-2 lg:pb-0 transition-all duration-300 border-b border-transparent max-w-xs'
             >
               <a onClick={(e) => e.preventDefault()} className=''>
                 <div className="flex flex-row items-center gap-2 cursor-pointer">
@@ -127,17 +128,20 @@ function Header() {
 
   return (
     <div
-      className={`flex bg-bg dark:bg-bg-container z-2 items-center justify-between py-4 px-5 lg:px-20 border-t-1 border-b-1 border-[var(--border-color)] cursor-pointer sticky top-0 w-full`}
+      className={cn(
+        'flex items-center justify-between py-4 px-5 lg:px-20 cursor-pointer sticky top-0 w-full',
+        'bg-bg dark:bg-bg-container',
+        'z-20',
+        'border-t border-b border-border'
+      )}
     >
       <div className='flex items-center gap-3' onClick={handleLogoClick}>
         <div className='h-[50px]'>
           <img src={logo} alt='' style={{ height: '100%', objectFit: 'contain' }} />
         </div>
-        <MtbTypography variant='h5' customClassName='!mb-0 dark:text-white'>
-          Mezon Top Board
-        </MtbTypography>
+        <MtbTypography variant='h5' customClassName='!mb-0 dark:text-white' label='Mezon Top Board' />
       </div>
-      <div className='flex items-center justify-between gap-12.5 max-lg:hidden max-2xl:hidden'>
+      <div className={cn('flex items-center justify-between gap-12.5 max-lg:hidden max-2xl:hidden')}>
         {renderHeaderItems()}
       </div>
       <div className='2xl:hidden'>
@@ -147,9 +151,7 @@ function Header() {
         className={styles['custom-drawer']}
         zIndex={9999}
         title={
-          <MtbTypography variant='h4' customClassName='!mb-0'>
-            Menu
-          </MtbTypography>
+          <MtbTypography variant='h4' customClassName='!mb-0' label='Menu' />
         }
         placement='right'
         onClose={() => setOpen(false)}

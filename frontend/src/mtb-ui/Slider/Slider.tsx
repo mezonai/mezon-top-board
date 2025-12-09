@@ -1,7 +1,7 @@
 import React from 'react'
 import { Slider } from 'antd'
-import './Slider.module.scss'
 import styles from './Slider.module.scss'
+import { cn } from '@app/utils/cn'
 
 interface MtbSliderProps {
     min?: number;
@@ -27,7 +27,7 @@ const MtbSlider: React.FC<MtbSliderProps> = ({
             step={step}
             value={value}
             onChange={onChange}
-            className={`${styles['custom-slider']} ${className}`}
+            className={cn(styles['custom-slider'], className)}
         />
     )
 }

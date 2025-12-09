@@ -20,6 +20,7 @@ import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
 import TagPill from '@app/components/TagPill/TagPill';
 import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { cn } from '@app/utils/cn'
 
 function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -27,7 +28,6 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(80%-150px)]' : 'md:max-w-[calc(70%-100px)]';
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
-  // Share to social media
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
   const title = data?.name || 'Check out this app!'
   const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
@@ -47,8 +47,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
 
   return (
     <div
-      className='pb-8 pt-8 px-8 border rounded-xl cursor-pointer bg-[var(--bg-body)] dark:bg-[var(--bg-container)] text-[var(--text-primary)] relative'
-      style={{ boxShadow: 'var(--card-shadow, 0 1px 3px rgba(0,0,0,0.06))', borderColor: 'var(--border-color)' }}
+      className={cn(
+        'card-base',
+        'flex flex-col gap-6 p-8 relative',
+        'cursor-pointer transition-all',
+        'hover:shadow-md hover:border-primary-border'
+      )}
       onClick={canNavigateOnClick ? () => navigate(`/bot/${data?.id}`) : undefined}
     >
       <div className='flex flex-col md:flex-row items-start gap-6 w-full'>
@@ -64,27 +68,21 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             {data?.pricingTag && (
               <TagPill value={data.pricingTag} />
             )}
-            <div className='truncate-title flex-1'>
-              <style>
-                {`
-                  .truncate-title .ant-typography {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    -webkit-line-clamp: 1;
-                  }
-                `}
-              </style>
+            
+            <div className='flex-1 min-w-0'>
               <MtbTypography
                 variant='h4'
-                customClassName={`${titleMaxWidth} !mb-0`}
-              >
-                {data?.name}
-              </MtbTypography>
+                customClassName={cn(
+                  titleMaxWidth, 
+                  "!mb-0 text-text-primary",
+                  "truncate" 
+                )}
+                label={data?.name} 
+              />
             </div>
           </div>
-          <div className='flex gap-1'>
+
+          <div className='flex gap-1 flex-wrap'>
             {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
             {userInfo?.id && data?.owner?.id === userInfo?.id && data?.hasNewUpdate && (
               <Tag color='blue'>
@@ -93,9 +91,10 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
             )}
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
           </div>
-          <div className='flex-wrap gap-2'>
+
+          <div className='flex flex-wrap'>
             {data?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-              <Tag key={tag?.id} color={randomColor('normal', uuidToNumber(tag?.id))} style={{ marginBottom: '0.2rem' }} >
+              <Tag key={tag?.id} color={randomColor('normal', uuidToNumber(tag?.id))} className="mb-[0.2rem]">
                 {tag?.name}
               </Tag>
             ))}
@@ -113,21 +112,12 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               trigger='click'
               placement='bottomRight'
               arrow={false}
-              overlayInnerStyle={{ marginTop: '8px', minWidth: '200px', maxWidth: '300px' }}
+              overlayClassName={cn('mt-8', 'min-w-[200px]', 'max-w-[300px]')}
             >
               <Button size='large' color='default' variant='outlined' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
-          <div
-            className='break-words max-w-full text-[var(--text-secondary)]'
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 3
-            }}
-          >
+          <div className='break-words max-w-full text-text-secondary line-clamp-3'>
             {data?.headline}
           </div>
         </div>

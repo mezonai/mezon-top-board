@@ -1,21 +1,50 @@
 :root {
+  /* --- Backgrounds --- */
   --bg-body: #ffffff;
   --bg-container: #ffffff;
   --bg-container-secondary: #e5e7eb;
+  --bg-elevated: #ffffff;
   --bg-content: #f0f2f5;
   --bg-sidebar: #001529;
   --bg-sidebar-divider: #ffffff;
   --bg-table-header: #fafafa;
+
+  /* --- Text --- */
   --text-primary: #000000;
   --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
   --text-breadcrumb: #6b7280;
   --text-sidebar: #ffffff;
+
+  /* --- Borders --- */
   --border-color: #e5e7eb;
   --border-footer: #dddddd;
   --border-table: #f0f0f0;
+  --border-subtle: #f3f4f6;
+  --border-emphasis: #d1d5db;
+
+  /* --- Accents --- */
+  --accent-primary: #F2385A;
+  --accent-secondary: #F25E86;
+  --accent-glow: rgba(242, 56, 90, 0.15);
+  
+  /* --- Semantic Colors --- */
+  --color-success: #52c41a;
+  --color-success-bg: #f6ffed;
+  --color-success-border: #b7eb8f;
+  --color-warning: #faad14;
+  --color-warning-bg: #fffbe6;
+  --color-warning-border: #ffe58f;
+  --color-danger: #ff4d4f;
+  --color-danger-bg: #fff1f0;
+  --color-danger-border: #ffccc7;
+  --color-info: #1890ff;
+  --color-info-bg: #e6f7ff;
+  --color-info-border: #91d5ff;
 }
 
 [data-theme='dark'], .dark {
+  /* --- Backgrounds --- */
   --bg-body: #0b0d15; 
   --bg-container: #13151f;
   --bg-container-secondary: #1a1d2e;
@@ -25,22 +54,40 @@
   --bg-sidebar-divider: #2d3548;
   --bg-table-header: #1a1d2e;
   
+  /* --- Text --- */
   --text-primary: #f0f4f9;
   --text-secondary: #9ca3b4;
   --text-tertiary: #6b7280;
   --text-breadcrumb: #8b92a8;
   --text-sidebar: #ffffff;
   
+  /* --- Borders --- */
   --border-color: #1e2235;
   --border-footer: #2d3548;
   --border-table: #2d3548;
   --border-subtle: #161927;
   --border-emphasis: #2d3548;
   
+  /* --- Accents --- */
   --accent-primary: #5b67ea;
   --accent-secondary: #7c3aed;
   --accent-glow: rgba(91, 103, 234, 0.15);
   
+  /* --- Semantic Colors --- */
+  --color-success: #73d13d;
+  --color-success-bg: #162312;
+  --color-success-border: #274916;
+  --color-warning: #d89614;
+  --color-warning-bg: #2b2111;
+  --color-warning-border: #594214;
+  --color-danger: #ff7875;
+  --color-danger-bg: #2a1215;
+  --color-danger-border: #58181c;
+  --color-info: #40a9ff;
+  --color-info-bg: #111d2c;
+  --color-info-border: #15395b;
+  
+  /* --- Shadows --- */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);

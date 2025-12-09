@@ -1,3 +1,5 @@
+import { cn } from '@app/utils/cn'
+
 export type ImgIconProps = {
     src: string;
     alt?: string;
@@ -18,15 +20,20 @@ export const ImgIcon = (props: ImgIconProps) => {
         square,
         rounded,
     } = props
+    const style: React.CSSProperties = {
+        width: typeof width === 'number' ? `${width}px` : width || 'auto',
+        height: typeof height === 'number' ? `${height}px` : height || 'auto',
+    }
+
     return (
         <div
-            style={{ width: width || 'auto', height: height || 'auto' }}
-            className={`overflow-hidden ${className} ${square ? 'aspect-square' : ''} ${rounded ? 'rounded-full' : ''}`}
+            style={style}
+            className={cn('overflow-hidden', square && 'aspect-square', rounded && 'rounded-full', className)}
         >
             <img
                 src={src}
-                alt={alt}
-                className={`w-full h-full object-cover ${className}`}
+                alt={alt ?? ''}
+                className={cn('w-full h-full object-cover')}
             />
         </div>
     )
