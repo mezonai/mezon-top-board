@@ -6,7 +6,6 @@ import { tempFilesRootDir } from '@config/files.config';
 export class NestJSProcessor extends BaseWizardProcessor {
   async process(): Promise<Buffer> {
     const outputDir = join(tempFilesRootDir, `nestjs-${Date.now()}`);
-
     await fs.promises.mkdir(outputDir, { recursive: true });
 
     const templateRoot = join(process.cwd(), 'bot-gen-templates', 'nestjs');
