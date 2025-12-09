@@ -34,8 +34,7 @@ export class MezonClientService {
   }
 
   async sendMessageToUser(message: ReplyMezonMessage): Promise<any> {
-    const dmClan = await this.client.clans.fetch('0');
-    const user = await dmClan.users.fetch(message.userId);
+    const user = await  this.client.users.fetch(message.userId);
 
     if (!user) return;
     try {
