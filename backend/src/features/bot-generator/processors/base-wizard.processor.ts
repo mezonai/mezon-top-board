@@ -11,7 +11,7 @@ export abstract class BaseWizardProcessor {
   abstract process(): Promise<Buffer>;
 
   protected async renderDirectory(srcDir: string, destDir: string) {
-    await BotTemplateBuilder.renderDirectory(srcDir, destDir, this.payload, this.getFileExtension(''));
+    await BotTemplateBuilder.renderDirectory(srcDir, destDir, this.payload);
   }
 
   protected async generateCommandFiles(baseOutputDir: string) {
@@ -27,15 +27,7 @@ export abstract class BaseWizardProcessor {
     return BotTemplateBuilder.zipFolder(folderPath);
   }
 
-  protected getFileExtension(item: string): string {
-    return '.ts';
-  }
+  protected abstract getCommandTemplate(): string;
 
-  protected getCommandTemplate(): string {
-    return '';
-  }
-
-  protected getCommandExtension(): string {
-    return 'ts';
-  }
+  protected abstract getCommandExtension(): string;
 }

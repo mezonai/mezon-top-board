@@ -1,4 +1,4 @@
-import { BaseWizardProcessor } from './BaseWizardProcessor';
+import { BaseWizardProcessor } from './base-wizard.processor';
 import { join } from 'path';
 import * as fs from 'fs';
 
@@ -28,9 +28,5 @@ export class PythonProcessor extends BaseWizardProcessor {
 
   protected getCommandExtension(): string {
     return 'py';
-  }
-
-  protected getFileExtension(): string {
-    return '.py';
   }
 }

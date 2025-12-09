@@ -5,7 +5,7 @@ import * as Handlebars from 'handlebars';
 import { BotWizardRequest, CommandWizardRequest } from '@features/bot-generator/dtos/request';
 
 export class BotTemplateBuilder {
-  static async renderDirectory(srcDir: string, destDir: string, payload: BotWizardRequest, defaultExt = '.ts') {
+  static async renderDirectory(srcDir: string, destDir: string, payload: BotWizardRequest) {
     const items = await fs.promises.readdir(srcDir);
 
     for (const item of items) {
@@ -15,19 +15,21 @@ export class BotTemplateBuilder {
 
       if (stat.isDirectory()) {
         await fs.promises.mkdir(destPath, { recursive: true });
-        await this.renderDirectory(srcPath, destPath, payload, defaultExt);
-      } else if (item.endsWith('.hbs')) {
+        await this.renderDirectory(srcPath, destPath, payload);
+        continue;
+      } 
+      
+      if (item.endsWith('.hbs')) {
         const content = await fs.promises.readFile(srcPath, 'utf8');
         const template = Handlebars.compile(content);
         const rendered = template(payload);
 
-        const ext = defaultExt;
-        destPath = join(destDir, basename(item, '.hbs') + ext);
+        destPath = join(destDir, basename(item, '.hbs'));
 
         await fs.promises.writeFile(destPath, rendered);
-      } else {
-        await fs.promises.copyFile(srcPath, destPath);
-      }
+        continue;
+      } 
+      await fs.promises.copyFile(srcPath, destPath);
     }
   }
 

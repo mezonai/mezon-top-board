@@ -1,6 +1,6 @@
 import { BotWizardRequest } from "@features/bot-generator/dtos/request";
 
-export type JobData = {
+export type MarketingMailJobData = {
     to: string | string[];
     subject: string;
     template?: string;
