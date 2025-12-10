@@ -1,4 +1,6 @@
+{{#includes integrations "typeorm"}}
 import { dataSourceOption } from '@app/integrations/typeorm/data-source.config';
+{{/includes}}
 import config, { envFilePath } from '@app/config/env.config';
 import * as Joi from '@hapi/joi';
 import { BotModule } from '@app/modules/bot.module';
@@ -8,7 +10,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
+{{#includes integrations "redis"}}
 import { RedisModule } from '@app/integrations/redis/redis.module';
+{{/includes}}
 
 @Module({
     imports: [

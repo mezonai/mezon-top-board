@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { REDIS_CLIENT, REDIS_MODULE_OPTIONS } from './redis.constant';
+import { REDIS_CLIENT, REDIS_MODULE_OPTIONS } from '@app/integrations/redis/redis.constants';
 import { RedisModuleOptions } from './redis.interface';
 import Redis from 'ioredis';
 import { RedisService } from './redis.service';
