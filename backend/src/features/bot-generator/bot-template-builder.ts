@@ -13,6 +13,11 @@ export class BotTemplateBuilder {
       let destPath = join(destDir, item);
       const stat = await fs.promises.stat(srcPath);
 
+      if (item === 'integrations' && stat.isDirectory()) {
+        await this.renderIntegrationFiles(srcPath, destPath, payload);
+        continue;
+      }
+
       if (stat.isDirectory()) {
         await fs.promises.mkdir(destPath, { recursive: true });
         await this.renderDirectory(srcPath, destPath, payload);
@@ -36,6 +41,26 @@ export class BotTemplateBuilder {
         continue;
       }
       await fs.promises.copyFile(srcPath, destPath);
+    }
+  }
+
+  static async renderIntegrationFiles(srcIntegrationDir: string, destIntegrationDir: string, payload: BotWizardRequest) {
+    const allowedIntegrations = payload.integrations ?? [];
+
+    if (allowedIntegrations.length === 0) {
+      return;
+    }
+
+    await fs.promises.mkdir(destIntegrationDir, { recursive: true });
+
+    for (const integration of allowedIntegrations) {
+      const srcPath = join(srcIntegrationDir, integration);
+      const destPath = join(destIntegrationDir, integration);
+
+      if (!fs.existsSync(srcPath)) continue;
+
+      await fs.promises.mkdir(destPath, { recursive: true });
+      await this.renderDirectory(srcPath, destPath, payload);
     }
   }
 
