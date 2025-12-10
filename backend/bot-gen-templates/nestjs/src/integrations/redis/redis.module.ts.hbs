@@ -1,0 +1,34 @@
+import { DynamicModule, Module } from '@nestjs/common';
+import { REDIS_CLIENT, REDIS_MODULE_OPTIONS } from '@app/integrations/redis/redis.constants';
+import { RedisModuleOptions } from './redis.interface';
+import Redis from 'ioredis';
+import { RedisService } from './redis.service';
+
+@Module({})
+export class RedisModule {
+  static forRoot(options: RedisModuleOptions): DynamicModule {
+    return {
+      module: RedisModule,
+      providers: [
+        {
+          provide: REDIS_MODULE_OPTIONS,
+          useValue: options,
+        },
+        {
+          provide: REDIS_CLIENT,
+          useFactory: (opts: RedisModuleOptions) => {
+            return new Redis({
+              host: opts.host,
+              port: opts.port,
+              db: opts.db ?? 0,
+              password: opts.password,
+            });
+          },
+          inject: [REDIS_MODULE_OPTIONS],
+        },
+        RedisService,
+      ],
+      exports: [RedisService, REDIS_CLIENT],
+    };
+  }
+}

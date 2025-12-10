@@ -1,5 +1,5 @@
 import { BotWizardRequest } from "@features/bot-generator/dtos/request";
-import { BotTemplateBuilder } from "@features/bot-generator/templateGenerator";
+import { BotTemplateBuilder } from "@features/bot-generator/bot-template-builder";
 
 export abstract class BaseWizardProcessor {
   protected payload: BotWizardRequest;
