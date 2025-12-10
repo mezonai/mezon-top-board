@@ -1,4 +1,4 @@
-import { dataSourceOption } from '@app/config/data-source.config';
+import { dataSourceOption } from '@app/integrations/typeorm/data-source.config';
 import config, { envFilePath } from '@app/config/env.config';
 import * as Joi from '@hapi/joi';
 import { BotModule } from '@app/modules/bot.module';
@@ -8,27 +8,43 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisModule } from '@app/integrations/redis/redis.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             load: [config],
             validationSchema: Joi.object({
+                {{#includes integrations "typeorm"}}
                 POSTGRES_HOST: Joi.string().required(),
                 POSTGRES_PORT: Joi.number().required(),
                 POSTGRES_USER: Joi.string().required(),
                 POSTGRES_PASSWORD: Joi.string().required(),
                 POSTGRES_DB: Joi.string().required(),
+                {{/includes}}
+                {{#includes integrations "redis"}}
+                REDIS_HOST: Joi.string().required(),
+                REDIS_PORT: Joi.number().required(),
+                {{/includes}}
                 MEZON_TOKEN: Joi.string().required(),
+                MEZON_BOT_ID: Joi.string().required(),
             }),
             isGlobal: true,
             envFilePath: envFilePath,
         }),
+        {{#includes integrations "typeorm"}}
         TypeOrmModule.forRoot(dataSourceOption),
+        {{/includes}}
         EventEmitterModule.forRoot(),
         MezonModule.forRootAsync({
             imports: [ConfigModule],
         }),
+        {{#includes integrations "redis"}}
+        RedisModule.forRoot({
+            host: config().REDIS_HOST,
+            port: config().REDIS_PORT,
+        }),
+        {{/includes}}
         BotModule,
     ],
     controllers: [HealthController],
