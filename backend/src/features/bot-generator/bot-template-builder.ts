@@ -17,10 +17,16 @@ export class BotTemplateBuilder {
         await fs.promises.mkdir(destPath, { recursive: true });
         await this.renderDirectory(srcPath, destPath, payload);
         continue;
-      } 
-      
+      }
+
       if (item.endsWith('.hbs')) {
         const content = await fs.promises.readFile(srcPath, 'utf8');
+        Handlebars.registerHelper('includes', function (array, value, options) {
+          if (Array.isArray(array) && array.includes(value)) {
+            return options.fn(this);
+          }
+          return options.inverse(this);
+        });
         const template = Handlebars.compile(content);
         const rendered = template(payload);
 
@@ -28,7 +34,7 @@ export class BotTemplateBuilder {
 
         await fs.promises.writeFile(destPath, rendered);
         continue;
-      } 
+      }
       await fs.promises.copyFile(srcPath, destPath);
     }
   }
