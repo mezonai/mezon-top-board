@@ -6,7 +6,8 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
-import { Button, Input, Popconfirm, Table, Tag, Tooltip, Typography } from 'antd'
+import { Input, Popconfirm, Table, Tag, Tooltip, Typography } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { formatDate } from '@app/utils/date'
@@ -177,8 +178,8 @@ function ReviewHistoryPage() {
           </Tooltip>
           <Tooltip title='Edit'>
             <Button
-              color='default'
-              variant='outlined'
+              color='blue'
+              variant='solid'
               icon={<EditOutlined />}
               onClick={() => handleEdit(record.id || '')}
             />
@@ -191,7 +192,7 @@ function ReviewHistoryPage() {
             cancelText='No'
           >
             <Tooltip title='Delete'>
-              <Button color='danger' variant='outlined' icon={<DeleteOutlined />} />
+              <Button color='danger' variant='solid' icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
         </div>
@@ -206,12 +207,13 @@ function ReviewHistoryPage() {
           placeholder='Search by name or email'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
+          prefix={<SearchOutlined className='text-text-secondary' />}
           onPressEnter={handleSearchSubmit}
           className='w-full'
           style={{ borderRadius: '8px', height: '40px' }}
         />
         <Button className="w-50"
+          size="large"
           type='primary'
           onClick={handleSearchSubmit}
           icon={<SearchOutlined />}

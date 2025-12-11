@@ -117,10 +117,10 @@ const LinkTypeModal = ({ open, onClose, onSubmit, editingData, isUpdate }: Creat
                 <img
                   src={displayedImage }
                   alt='Selected Icon'
-                  className='w-[60px] h-[60px] object-cover rounded border'
+                  className='w-[60px] h-[60px] object-cover rounded border border-border'
                 />
               ) : (
-                <div className='w-[60px] h-[60px] bg-gray-100 border-dashed border rounded border-red-500' />
+                <div className='w-[60px] h-[60px] bg-bg-container-secondary border-dashed border border-border rounded' />
               )}
               <MtbButton icon={<EditOutlined />} variant='outlined' onClick={() => setIsMediaModalVisible(true)}>
                 Choose Image

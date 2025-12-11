@@ -178,7 +178,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
 
       <FormField label='Install Link' description='A place where users can install your bot on their Mezon server.'>
-        <Input value={inviteURL} disabled className="!bg-[var(--bg-container-secondary)] !text-[var(--text-secondary)] !border-transparent" />
+        <Input value={inviteURL} disabled className="!text-primary !border-transparent" />
       </FormField>
       {
         type === MezonAppType.BOT &&

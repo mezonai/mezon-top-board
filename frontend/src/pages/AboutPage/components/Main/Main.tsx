@@ -44,21 +44,25 @@ function Main() {
     <div className='flex flex-col justify-center pt-8 pb-12 w-[80%] m-auto'>
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Power your discovery and growth with Mezon Bots</MtbTypography>
-        <p className='text-gray-500'>
+        <p className='text-text-secondary'>
           Gain millions of impressions for your app or community on the #1 platform for bot and server discovery
         </p>
       </div>
-      <StatsSection stats={stats}></StatsSection>
-      <Divider className='bg-[var(--border-color)]'></Divider>
+
+      <StatsSection stats={stats} />
+      <Divider className='bg-border' />
+
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Why Mezon Top Board? Here's Everything!</MtbTypography>
-        <p className='text-gray-500'>Hear from our trusted partners - our customers say it best</p>
+        <p className='text-text-secondary'>Hear from our trusted partners - our customers say it best</p>
       </div>
-      <TestimonialsSection testimonials={testimonials}></TestimonialsSection>
-      <Divider className='bg-[var(--border-color)]'></Divider>
+
+      <TestimonialsSection testimonials={testimonials} />
+      <Divider className='bg-border' />
+
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Have we got your attention?</MtbTypography>
-        <p className='text-gray-500'>
+        <p className='text-text-secondary'>
           Join us in exploring the future of applications built on Mezon. Discover, engage, and innovate with Mezon Top
           Board!
         </p>
@@ -71,9 +75,8 @@ function Main() {
       <div className='flex flex-col items-center pt-10'>
         <img
           src={mezonScreenshot}
-          alt=''
-          width='60%'
-          className='w-[100%] max-w-[600px] object-cover rounded-xl shadow-xl max-md:w-[100%]'
+          alt='Mezon screenshot'
+          className='w-full max-w-[600px] object-cover rounded-xl shadow-xl'
         />
       </div>
     </div>

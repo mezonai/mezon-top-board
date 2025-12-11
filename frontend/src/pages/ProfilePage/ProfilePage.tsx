@@ -145,7 +145,7 @@ function ProfilePage() {
   return (
     <div className='pt-8 pb-12 w-[75%] m-auto'>
       <MtbTypography variant='h1'>Your Profile</MtbTypography>
-      <Divider className='bg-[var(--border-color)]'></Divider>
+      <Divider className='bg-border'></Divider>
       <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
           <CardInfo userInfo={userInfo} isPublic={Boolean(userId)}></CardInfo>
@@ -182,7 +182,7 @@ function ProfilePage() {
                     options={pageOptions}
                     placeholder='Select'
                     size='large'
-                    className='w-[10rem]'
+                    className='w-[10rem] text-text-primary'
                     dropDownTitle='Bots per page'
                     value={pageOptions.find(o => o.value === pageSize)}
                   />
@@ -193,7 +193,7 @@ function ProfilePage() {
 
           {totalPages === 0 ? (
             <div className='pt-8'>
-              <div className='text-center py-12 text-gray-500'>No Result</div>
+              <div className='text-center py-12 text-text-secondary'>No Result</div>
             </div>
           ) : (
             <>

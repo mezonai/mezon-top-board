@@ -70,15 +70,15 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
         <div className='flex items-start justify-between mb-6 gap-4 flex-wrap'>
           <div className='flex items-center gap-3'>
             <div>
-              <MtbTypography variant='h2' customClassName='!text-primary-hover !mb-0'>
+              <MtbTypography variant='h2' customClassName='text-primary mb-0'>
                 Profile Information
               </MtbTypography>
-              <MtbTypography variant='p' customClassName='text-gray-500 text-sm !mt-0'>
+              <MtbTypography variant='p' customClassName='text-text-secondary text-sm mt-0'>
                 Your information has been pre-filled from your Mezon account
               </MtbTypography>
             </div>
           </div>
-          <span className='px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 h-fit'>From Mezon</span>
+          <span className='px-3 py-1 text-xs rounded-full bg-primary-100 text-primary h-fit'>From Mezon</span>
         </div>
 
         <div className='flex flex-col items-center mb-4'>
@@ -94,7 +94,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <button
                 type='button'
                 onClick={() => setIsMediaManagerOpen(true)}
-                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-gray-200 hover:border-primary-hover hover:text-primary-hover transition-colors'
+                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors'
               >
                 <CameraOutlined />
               </button>
@@ -110,7 +110,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <Input {...field} placeholder='Alex Johnson' status={errorStatus(errors.name)} />
             )}
           />
-          <p className='text-xs text-gray-500 mt-1'>3-50 characters. This is how others will see your name.</p>
+          <p className='text-xs text-text-secondary mt-1'>3-50 characters. This is how others will see your name.</p>
         </FormField>
         
         <FormField label='Email'>
@@ -125,7 +125,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <Input.TextArea {...field} rows={3} placeholder='Tell us about yourself...' />
             )}
           />
-          <div className='flex justify-between text-xs text-gray-500 mt-1'>
+          <div className='flex justify-between text-xs text-text-secondary mt-1'>
             <span>Share a short introduction.</span>
             <span>{bioValue?.length}/500 characters</span>
           </div>
@@ -139,7 +139,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
             loading={isUpdating}
             disabled={isUpdating}
             onClick={() => handleSubmit(onSubmit)()}
-            className='hover:!bg-primary-hover !text-sm !p-5'
+            className='hover:bg-primary text-sm p-5'
           >
             Save & Continue
           </MtbButton>

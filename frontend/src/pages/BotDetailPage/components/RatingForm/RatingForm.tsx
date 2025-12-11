@@ -39,15 +39,15 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
   }
 
   return (
-    <div className='flex items-start gap-8 p-4 rounded-lg bg-[var(--bg-container)] border border-transparent dark:border-[var(--border-color)]'>
-      <img 
-        src={userInfo?.profileImage ? getUrlMedia(userInfo?.profileImage) : avatar} 
-        alt={userInfo.name} 
-        className='w-15 h-15 rounded-full object-cover mt-1 bg-[var(--bg-container-secondary)]' 
+    <div className='flex items-start gap-8 p-4 rounded-lg bg-bg-container border border-transparent dark:border-border'>
+      <img
+        src={userInfo?.profileImage ? getUrlMedia(userInfo?.profileImage) : avatar}
+        alt={userInfo.name}
+        className='w-15 h-15 rounded-full object-cover mt-1 bg-bg-container-secondary'
       />
-      
+
       <div className='flex-1 flex flex-col gap-2 mt-4'>
-        <MtbTypography variant='h4' customClassName="!text-[var(--text-primary)]">
+        <MtbTypography variant='h4' customClassName='!text-text-primary'>
           {userInfo.name}
         </MtbTypography>
         
@@ -65,11 +65,12 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
                 {...field}
                 rows={3}
                 placeholder='Write your comment...'
-                className='rounded-md mt-3 !bg-[var(--bg-container)] !text-[var(--text-primary)] !border-gray-300 dark:!border-[var(--border-color)] focus:!border-primary focus:!ring-primary placeholder:!text-[var(--text-secondary)]'
+                className='rounded-md mt-3 !bg-bg-container !text-text-primary !border-border dark:!border-border focus:!border-primary focus:!ring-primary placeholder:!text-text-secondary'
               />
             )}
           />
-          <Button htmlType='submit' customClassName='self-start bg-primary hover:bg-primary-dark text-white rounded-md px-4 py-2' size='large'>
+
+          <Button htmlType='submit' customClassName='self-start bg-primary hover:bg-primary/90 text-white rounded-md px-4 py-2' size='large'>
             Post Rating
           </Button>
         </Form>

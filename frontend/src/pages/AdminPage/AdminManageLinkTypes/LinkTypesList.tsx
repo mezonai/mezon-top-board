@@ -213,7 +213,7 @@ function LinkTypesList() {
       {linkTypeList?.data?.length ? (
         <Table dataSource={linkTypeList.data} columns={columns} rowKey='id' pagination={false} />
       ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
+        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-text-secondary'>
           No result
         </MtbTypography>
       )}

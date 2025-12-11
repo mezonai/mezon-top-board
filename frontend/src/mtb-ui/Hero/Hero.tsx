@@ -18,7 +18,7 @@ function Hero() {
             technology, helping users and developers explore innovative solutions with ease.
           </p>
           <div className='mt-6'>
-            <Button color='default' variant='solid' size='large'>
+            <Button variant='solid' color='default' size='large'>
               Get Started
             </Button>
           </div>

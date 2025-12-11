@@ -9,27 +9,6 @@ const Step1ChooseType = () => {
 
   return (
     <FormField label="Select Type" errorText={errors.type?.message}>
-      <style>
-        {`
-          .custom-select .ant-select-selector {
-            background-color: var(--bg-container) !important;
-            color: var(--text-primary) !important;
-            border-color: var(--border-color) !important;
-          }
-          .custom-select-dropdown {
-             background-color: var(--bg-container) !important;
-             border: 1px solid var(--border-color) !important;
-          }
-          .custom-select-dropdown .ant-select-item {
-             color: var(--text-primary) !important;
-          }
-          .custom-select-dropdown .ant-select-item-option-active,
-          .custom-select-dropdown .ant-select-item-option-selected {
-             background-color: var(--bg-container-secondary) !important;
-             color: var(--text-primary) !important;
-          }
-        `}
-      </style>
       <Controller
         control={control}
         name="type"
@@ -37,8 +16,9 @@ const Step1ChooseType = () => {
           <Select
             {...field}
             placeholder="Choose Bot or App"
-            className="w-full custom-select"
+            className="w-full bg-bg-container text-text-primary"
             popupClassName="custom-select-dropdown"
+            dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
             options={[
               { label: 'Bot', value: MezonAppType.BOT },
               { label: 'App', value: MezonAppType.APP },

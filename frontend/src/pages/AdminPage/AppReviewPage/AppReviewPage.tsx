@@ -1,5 +1,6 @@
 import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
-import { Button, Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
+import { Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
@@ -162,7 +163,7 @@ function AppReviewPage() {
                         <Button color='blue' variant='outlined' icon={<EyeOutlined />} onClick={() => handleView(record)} />
                     </Tooltip>
                     <Tooltip title='Review'>
-                        <Button color='cyan' variant='outlined' icon={<LockOutlined />} onClick={() => handleOpenReview(record)} />
+                        <Button color='cyan' variant='solid' icon={<LockOutlined />} onClick={() => handleOpenReview(record)} />
                     </Tooltip>
                 </div>
             )
@@ -197,7 +198,7 @@ function AppReviewPage() {
                     onPressEnter={handleSearch}
                     className='w-full rounded-[8px] h-[40px]'
                 />
-                <Button className="w-50" size="large" type='primary' onClick={handleSearch} icon={<SearchOutlined />}>Search</Button>
+                <Button className="w-50" size="large" variant='solid' type='primary' onClick={handleSearch} icon={<SearchOutlined />}>Search</Button>
             </div>
 
             {isLoading ? (

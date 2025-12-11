@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { Modal, Button, Input, Descriptions, Form, Space } from 'antd'
+import { Modal, Input, Descriptions, Form, Space } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { formatDate } from '@app/utils/date'
@@ -58,13 +59,13 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
 
   const renderFooter = () => (
     <Space>
-      <Button onClick={onClose} disabled={isCreatingReviewHistory}>
+      <Button variant='outlined' onClick={onClose} disabled={isCreatingReviewHistory}>
         Cancel
       </Button>
-      <Button danger loading={isCreatingReviewHistory} onClick={() => submit(AppStatus.REJECTED)}>
+      <Button danger variant='outlined' loading={isCreatingReviewHistory} onClick={() => submit(AppStatus.REJECTED)}>
         Reject
       </Button>
-      <Button type='primary' onClick={() => submit(AppStatus.APPROVED)} loading={isCreatingReviewHistory}>
+      <Button type='primary' variant='solid' onClick={() => submit(AppStatus.APPROVED)} loading={isCreatingReviewHistory}>
         Approve
       </Button>
     </Space>

@@ -6,7 +6,8 @@ import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
 import { getMezonInstallLink, mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
 import { getUrlMedia } from "@app/utils/stringHelper";
-import { Button, Input, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
+import { Input, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
+import Button from "@app/mtb-ui/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -142,7 +143,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             />
           </Tooltip>
           <Tooltip title="Edit">
-            <Button type="primary" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+            <Button type="primary" color="blue" icon={<EditOutlined />} onClick={() => onEdit(record)} />
           </Tooltip>
           <Popconfirm
             title="Are you sure you want to delete this app?"
@@ -166,7 +167,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           placeholder='Search by name or headline'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
+          prefix={<SearchOutlined className="text-text-secondary" />}
           onPressEnter={handleSearchSubmit}
           className='w-full rounded-[8px] h-[40px]'
         />

@@ -252,43 +252,30 @@ function NewBotPage() {
             />
           </div>
           <div>
-            <MtbTypography variant='h4' customClassName="text-[var(--text-primary)]">{nameValue || 'Name'}</MtbTypography>
-            <MtbTypography variant='p' customClassName="text-[var(--text-secondary)]">{headlineValue || 'Headline (Short description)'}</MtbTypography>
+            <MtbTypography variant='h4' customClassName='text-text-primary'>{nameValue || 'Name'}</MtbTypography>
+            <MtbTypography variant='p' customClassName='text-text-secondary'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
           </div>
         </div>
       </div>
 
       <div className='pt-8'>
         <FormProvider {...methods}>
-          <div className='bg-[var(--bg-container)] p-6 rounded-md shadow-md border border-transparent dark:border-[var(--border-color)]'>
-             <style>
-               {`
-                 .ant-steps-item-title, .ant-steps-item-description {
-                    color: var(--text-secondary) !important;
-                 }
-                 .ant-steps-item-process .ant-steps-item-title {
-                    color: var(--text-primary) !important;
-                 }
-                 .ant-steps-item-finish .ant-steps-item-title {
-                    color: var(--text-primary) !important;
-                 }
-               `}
-             </style>
-            
-            <Steps 
-              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} 
-              current={currentStep} 
-              items={steps.map(step => ({ title: step.title }))} 
+          <div className='bg-bg-container p-6 rounded-md shadow-md border border-transparent dark:border-border'>
+            <Steps
+              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'}
+              current={currentStep}
+              items={steps.map((step, idx) => ({
+                title: (
+                  <span className={idx <= currentStep ? 'text-text-primary' : 'text-text-secondary'}>
+                    {step.title}
+                  </span>
+                )
+              }))}
             />
-            
+
             <div className='pt-6'>{steps[currentStep].content}</div>
-            
-            <div
-              className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
-                ? 'justify-end'
-                : 'justify-between'
-                }`}
-            >
+
+            <div className={`flex pt-8 ${((!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)) ? 'justify-end' : 'justify-between'}`}>
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
                 <Button color="default" variant="outlined" onClick={prev} >
                   Back
@@ -296,7 +283,7 @@ function NewBotPage() {
               )}
 
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
-                <Button variant="outlined" onClick={next}>
+                <Button variant='outlined' onClick={next}>
                   Next
                 </Button>
               )}

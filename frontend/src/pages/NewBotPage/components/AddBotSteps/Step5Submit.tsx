@@ -20,11 +20,6 @@ const Step5Submit = ({
   const type = useWatch({ control, name: 'type' })
   const formattedType = capitalize(type)
 
-  const resultStyle = `
-    .ant-result-title { color: var(--text-primary) !important; }
-    .ant-result-subtitle { color: var(--text-secondary) !important; }
-  `
-
   if (isSuccess) {
     const title = isEdit ? `${formattedType} updated successfully!` : `${formattedType} submitted successfully!`
     const subTitle = isEdit
@@ -33,11 +28,10 @@ const Step5Submit = ({
 
     return (
       <>
-        <style>{resultStyle}</style>
         <Result
           status="success"
-          title={title}
-          subTitle={subTitle}
+          title={<div className="text-text-primary">{title}</div>}
+          subTitle={<div className="text-text-secondary">{subTitle}</div>}
           extra={[
             <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
               {isEdit ? 'View Bot' : 'Go to Bot'}
@@ -53,11 +47,10 @@ const Step5Submit = ({
 
   return (
     <>
-      <style>{resultStyle}</style>
       <Result
         status="error"
-        title={isEdit ? 'Update Failed' : 'Submission Failed'}
-        subTitle="Something went wrong. Please go back and check your input before trying again."
+        title={<div className="text-text-primary">{isEdit ? 'Update Failed' : 'Submission Failed'}</div>}
+        subTitle={<div className="text-text-secondary">Something went wrong. Please go back and check your input before trying again.</div>}
         extra={[
           <Button key="back" onClick={() => navigate(-1)}>
             Go Back

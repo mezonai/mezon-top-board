@@ -10,6 +10,7 @@ import { routePaths } from './routePaths'
 import { useEffect } from 'react'
 import { useLazyUserControllerGetUserDetailsQuery } from '@app/services/api/user/user'
 import { Dropdown, MenuProps } from 'antd'
+import { cn } from '@app/utils/cn'
 
 export const renderRoutes = () => {
   const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
@@ -59,6 +60,14 @@ export const renderMenu = (isHasActive: boolean) => {
     .map((route, index) => {
       const isActive = location.pathname === route.path && isHasActive
 
+      const linkClasses = cn(
+        "py-2 transition-all duration-300 border-b-[3px] block", 
+        "text-text-primary dark:text-white", 
+        isActive 
+          ? "border-primary text-primary" 
+          : "border-transparent hover:text-primary hover:border-primary/50" 
+      )
+
       if (route.children && route.children.length > 0) {
         const dropdownItems: MenuProps['items'] = route.children.map((child, childIndex) => {
           const isExternal = !!child.isExternal
@@ -67,11 +76,11 @@ export const renderMenu = (isHasActive: boolean) => {
           return {
             key,
             label: isExternal ? (
-              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-[var(--text-primary)] dark:!text-white">
+              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-text-primary dark:!text-white hover:text-primary">
                 {child.strLabel}
               </a>
             ) : (
-              <a href={child.path} className="text-[var(--text-primary)] dark:!text-white">
+              <a href={child.path} className="text-text-primary dark:!text-white hover:text-primary">
                 {child.strLabel}
               </a>
             ),
@@ -81,11 +90,7 @@ export const renderMenu = (isHasActive: boolean) => {
         return (
           <li key={`${route.path}-${index}`}>
             <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} overlayClassName="menu-dropdown-overlay">
-              <a
-                className={`text-[var(--text-primary)] dark:!text-white pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
-                  isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
-                }`}
-              >
+              <a className={linkClasses}>
                 {route.label || route.strLabel} 
               </a>
             </Dropdown>
@@ -95,12 +100,7 @@ export const renderMenu = (isHasActive: boolean) => {
 
       return (
         <li key={`${route.path}-${index}`}>
-          <a
-            href={route.path}
-            className={`text-[var(--text-primary)] dark:!text-white pb-2 transition-all duration-300 border-b-3 max-lg:block max-2xl:block ${
-              isActive ? 'border-b-primary-hover' : 'border-b-transparent hover:border-b-primary-hover'
-            }`}
-          >
+          <a href={route.path} className={linkClasses}>
             {route.label || route.strLabel}
           </a>
         </li>

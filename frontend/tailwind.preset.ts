@@ -12,6 +12,7 @@ const tailwindPreset: Config = {
           elevated: 'var(--bg-elevated)',
           content: 'var(--bg-content)',
           sidebar: 'var(--bg-sidebar)',
+          body: 'var(--bg-body)',
           'table-header': 'var(--bg-table-header)',
         },
         text: {

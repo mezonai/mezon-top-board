@@ -40,7 +40,7 @@ const ConfirmSubscribePage = () => {
   }, [userInfo?.email, data]);
 
   return (
-    <Flex align='center' justify='center' vertical flex={1} className='!bg-gray-300 fixed inset-0 z-[9999]'>
+    <Flex align='center' justify='center' vertical flex={1} className='fixed inset-0 z-[9999] bg-bg-content'>
       <Spin size='large' />
     </Flex>
   )

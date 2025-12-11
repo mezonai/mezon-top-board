@@ -33,8 +33,8 @@ function OnboardingPage() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100 p-6'>
-      <div className={`bg-white p-8 rounded-xl shadow-lg w-full ${step === 1 ? 'max-w-4xl' : 'max-w-2xl'}`}>
+    <div className='min-h-screen flex items-center justify-center bg-bg-content p-6'>
+      <div className={`bg-bg-container p-8 rounded-xl shadow-lg w-full ${step === 1 ? 'max-w-4xl' : 'max-w-2xl'}`}>
         {step === 1 && (
           <OnboardingStep1
             onSkip={handleSkip}
