@@ -46,13 +46,8 @@ export class CommandWizardRequest {
 
   @ApiProperty()
   @IsArray()
-  @IsOptional()
-  aliases: string[];
-
-  @ApiProperty()
-  @IsString()
   @IsNotEmpty()
-  className: string;
+  aliases: string[];
 }
 
 export class EventWizardRequest {
@@ -61,13 +56,8 @@ export class EventWizardRequest {
   @IsNotEmpty()
   eventName: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   eventType: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  eventClass: string;
 }

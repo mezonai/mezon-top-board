@@ -3,7 +3,6 @@ import { join, basename } from 'path';
 import * as archiver from 'archiver';
 import * as Handlebars from 'handlebars';
 import { BotWizardRequest, CommandWizardRequest, EventWizardRequest } from '@features/bot-generator/dtos/request';
-import { toEventListenerName } from '@libs/utils/string';
 
 export class BotTemplateBuilder {
   static async renderDirectory(srcDir: string, destDir: string, payload: BotWizardRequest) {
@@ -76,9 +75,19 @@ export class BotTemplateBuilder {
     await fs.promises.mkdir(listenersDir, { recursive: true });
 
     for (const event of events) {
+      const eventNameCutSuffix = event.eventName.replace(/Event$/, "");
+      const eventListenerFileName = eventNameCutSuffix
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+        .toLowerCase();
+      const context = {
+        eventName: event.eventName,
+        eventType: event.eventType,
+        eventClass: `EventListener${eventNameCutSuffix}`
+      }
       const compile = Handlebars.compile(template);
-      const rendered = compile(event);
-      const filePath = join(listenersDir, `${toEventListenerName(event.eventName)}.listener.${ext}`);
+      const rendered = compile(context);
+      const filePath = join(listenersDir, `${eventListenerFileName}.listener.${ext}`);
       await fs.promises.writeFile(filePath, rendered);
     }
   }
@@ -90,8 +99,15 @@ export class BotTemplateBuilder {
     await fs.promises.mkdir(commandsDir, { recursive: true });
 
     for (const cmd of commands) {
+      const context = {
+        command: cmd.command,
+        description: cmd.description,
+        category: cmd.category,
+        aliases: cmd.aliases,
+        className: `${cmd.command.charAt(0).toUpperCase() + cmd.command.slice(1)}Command`
+      }
       const compile = Handlebars.compile(template);
-      const rendered = compile(cmd);
+      const rendered = compile(context);
       const filePath = join(commandsDir, `${cmd.command}.command.${ext}`);
       await fs.promises.writeFile(filePath, rendered);
     }

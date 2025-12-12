@@ -34,14 +34,14 @@ export class BotGateway {
     }
 
     initEvent() {
+        this.client.onNotification((data) => {
+        });
         {{#hasEvent events "TokenSend"}}
+
         this.client.onTokenSend((data: TokenSentEvent) => {
             this.eventEmitter.emit(Events.TokenSend, data);
         });
-
         {{/hasEvent}}
-        this.client.onNotification((data) => {
-        });
         {{#hasEvent events "MessageButtonClicked"}}
 
         this.client.onMessageButtonClicked((data) => {
