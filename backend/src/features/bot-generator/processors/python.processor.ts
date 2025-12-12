@@ -26,7 +26,14 @@ export class PythonProcessor extends BaseWizardProcessor {
     `;
   }
 
-  protected getCommandExtension(): string {
+  protected getListenerTemplate(): string {
+    return `
+      def on_{{eventName}}(event):
+          print("{{eventName}} event received:", event)
+    `;
+  }
+
+  protected getFileExtension(): string {
     return 'py';
   }
 }

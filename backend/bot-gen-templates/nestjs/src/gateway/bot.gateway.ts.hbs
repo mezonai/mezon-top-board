@@ -34,122 +34,122 @@ export class BotGateway {
     }
 
     initEvent() {
-        {{#includes events "TokenSend"}}
+        {{#hasEvent events "TokenSend"}}
         this.client.onTokenSend((data: TokenSentEvent) => {
             this.eventEmitter.emit(Events.TokenSend, data);
         });
 
-        {{/includes}}
+        {{/hasEvent}}
         this.client.onNotification((data) => {
         });
-        {{#includes events "MessageButtonClicked"}}
+        {{#hasEvent events "MessageButtonClicked"}}
 
         this.client.onMessageButtonClicked((data) => {
             this.eventEmitter.emit(Events.MessageButtonClicked, data);
         });
-        {{/includes}}
-        {{#includes events "StreamingJoinedEvent"}}
+        {{/hasEvent}}
+        {{#hasEvent events "StreamingJoinedEvent"}}
 
         this.client.onStreamingJoinedEvent((data: StreamingJoinedEvent) => {
             this.eventEmitter.emit(Events.StreamingJoinedEvent, data);
         });
-        {{/includes}}
-        {{#includes events "StreamingLeavedEvent"}}
+        {{/hasEvent}}
+        {{#hasEvent events "StreamingLeavedEvent"}}
 
         this.client.onStreamingLeavedEvent((data: StreamingLeavedEvent) => {
             this.eventEmitter.emit(Events.StreamingLeavedEvent, data);
         });
-        {{/includes}}
-        {{#includes events "ClanEventCreated"}}
+        {{/hasEvent}}
+        {{#hasEvent events "ClanEventCreated"}}
 
         this.client.onClanEventCreated((data) => {
             this.eventEmitter.emit(Events.ClanEventCreated, data);
         });
-        {{/includes}}
-        {{#includes events "MessageReaction"}}
+        {{/hasEvent}}
+        {{#hasEvent events "MessageReaction"}}
 
         this.client.onMessageReaction((msg: ApiMessageReaction) => {
             this.eventEmitter.emit(Events.MessageReaction, msg);
         });
-        {{/includes}}
-        {{#includes events "ChannelCreated"}}
+        {{/hasEvent}}
+        {{#hasEvent events "ChannelCreated"}}
         
         this.client.onChannelCreated((channel: ChannelCreatedEvent) => {
             this.eventEmitter.emit(Events.ChannelCreated, channel);
         });
-        {{/includes}}
-        {{#includes events "UserClanRemoved"}}
+        {{/hasEvent}}
+        {{#hasEvent events "UserClanRemoved"}}
 
         this.client.onUserClanRemoved((user: UserClanRemovedEvent) => {
             this.eventEmitter.emit(Events.UserClanRemoved, user);
         });
-        {{/includes}}
-        {{#includes events "RoleEvent"}}
+        {{/hasEvent}}
+        {{#hasEvent events "RoleEvent"}}
 
         this.client.onRoleEvent((data) => {
             this.eventEmitter.emit(Events.RoleEvent, data);
         });
-        {{/includes}}
-        {{#includes events "RoleAssign"}}
+        {{/hasEvent}}
+        {{#hasEvent events "RoleAssign"}}
 
         this.client.onRoleAssign((data) => {
             this.eventEmitter.emit(Events.RoleAssign, data);
         });
-        {{/includes}}
-        {{#includes events "UserChannelAdded"}}
+        {{/hasEvent}}
+        {{#hasEvent events "UserChannelAdded"}}
 
         this.client.onUserChannelAdded((user: UserChannelAddedEvent) => {
             this.eventEmitter.emit(Events.UserChannelAdded, user);
         });
-        {{/includes}}
-        {{#includes events "ChannelDeleted"}}
+        {{/hasEvent}}
+        {{#hasEvent events "ChannelDeleted"}}
 
         this.client.onChannelDeleted((channel: ChannelDeletedEvent) => {
             this.eventEmitter.emit(Events.ChannelDeleted, channel);
         });
-        {{/includes}}
-        {{#includes events "ChannelUpdated"}}
+        {{/hasEvent}}
+        {{#hasEvent events "ChannelUpdated"}}
 
         this.client.onChannelUpdated((channel: ChannelUpdatedEvent) => {
             this.eventEmitter.emit(Events.ChannelUpdated, channel);
         });
-        {{/includes}}
-        {{#includes events "UserChannelRemoved"}}
+        {{/hasEvent}}
+        {{#hasEvent events "UserChannelRemoved"}}
 
         this.client.onUserChannelRemoved((msg: UserChannelRemoved) => {
             this.eventEmitter.emit(Events.UserChannelRemoved, msg);
         });
-        {{/includes}}
-        {{#includes events "GiveCoffee"}}
+        {{/hasEvent}}
+        {{#hasEvent events "GiveCoffee"}}
 
         this.client.onGiveCoffee((data: GiveCoffeeEvent) => {
             this.eventEmitter.emit(Events.GiveCoffee, data);
         });
-        {{/includes}}
-        {{#includes events "AddClanUser"}}
+        {{/hasEvent}}
+        {{#hasEvent events "AddClanUser"}}
 
         this.client.onAddClanUser((data: AddClanUserEvent) => {
             this.eventEmitter.emit(Events.AddClanUser, data);
         });
-        {{/includes}}
-        {{#includes events "RoleAssign"}}
+        {{/hasEvent}}
+        {{#hasEvent events "RoleAssign"}}
 
         this.client.onRoleAssign((data: RoleAssignedEvent) => {
             this.eventEmitter.emit(Events.RoleAssign, data);
         });
-        {{/includes}}
-        {{#includes events "VoiceJoinedEvent"}}
+        {{/hasEvent}}
+        {{#hasEvent events "VoiceJoinedEvent"}}
 
         this.client.onVoiceJoinedEvent((data: VoiceJoinedEvent) => {
             this.eventEmitter.emit(Events.VoiceJoinedEvent, data);
         });
-        {{/includes}}
-        {{#includes events "VoiceLeavedEvent"}}
+        {{/hasEvent}}
+        {{#hasEvent events "VoiceLeavedEvent"}}
 
         this.client.onVoiceLeavedEvent((data: VoiceLeavedEvent) => {
             this.eventEmitter.emit(Events.VoiceLeavedEvent, data);
         });
-        {{/includes}}
+        {{/hasEvent}}
 
         this.client.onChannelMessage(async (message) => {
             ['attachments', 'mentions', 'references'].forEach((key) => {

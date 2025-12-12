@@ -13,6 +13,8 @@ export class NestJSProcessor extends BaseWizardProcessor {
 
     await this.generateCommandFiles(outputDir);
 
+    await this.generateEventListeners(outputDir);
+
     const zipBuffer = await this.zipFolder(outputDir);
     await fs.promises.rm(outputDir, { recursive: true, force: true });
     
@@ -38,7 +40,43 @@ export class {{className}} extends CommandMessage {
 }`;
   }
 
-  protected getCommandExtension(): string {
+  protected getListenerTemplate(): string {
+    return `import { ClientConfigService } from '@app/config/client.config';
+import { CommandService } from '@app/services/command.service';
+import { MessageQueue } from '@app/services/message-queue.service';
+import { MezonClientService } from '@app/services/mezon-client.service';
+import { Injectable, Logger } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
+import { Events, MezonClient{{#if eventType}}, {{eventType}}{{/if}} } from 'mezon-sdk';
+import { ERROR_MESSAGES } from '@app/common/constants';
+
+@Injectable()
+export class {{eventClass}} {
+  private readonly client: MezonClient;
+  private readonly logger = new Logger({{eventClass}}.name);
+
+  constructor(
+      private readonly clientService: MezonClientService,
+      private readonly clientConfigService: ClientConfigService,
+      private readonly commandService: CommandService,
+      private readonly messageQueue: MessageQueue,
+  ) {
+      this.client = clientService.getClient();
+  }
+
+  @OnEvent(Events.{{eventName}})
+  async handleCommand(data{{#if eventType}}: {{eventType}}{{/if}}): Promise<void> {
+      try {
+
+      } catch (error) {
+          this.logger.error(ERROR_MESSAGES.CHANNEL_MESSAGE_PROCESSING, error);
+      }
+  }
+}
+`;
+  }
+
+  protected getFileExtension(): string {
     return 'ts';
   }
 }

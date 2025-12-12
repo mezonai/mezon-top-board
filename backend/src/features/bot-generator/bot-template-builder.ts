@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import { join, basename } from 'path';
 import * as archiver from 'archiver';
 import * as Handlebars from 'handlebars';
-import { BotWizardRequest, CommandWizardRequest } from '@features/bot-generator/dtos/request';
+import { BotWizardRequest, CommandWizardRequest, EventWizardRequest } from '@features/bot-generator/dtos/request';
+import { toEventListenerName } from '@libs/utils/string';
 
 export class BotTemplateBuilder {
   static async renderDirectory(srcDir: string, destDir: string, payload: BotWizardRequest) {
@@ -31,6 +32,10 @@ export class BotTemplateBuilder {
             return options.fn(this);
           }
           return options.inverse(this);
+        });
+        Handlebars.registerHelper('hasEvent', function (events, name, options) {
+          if (!Array.isArray(events)) return false;
+          return events.some(e => e.eventName === name) ? options.fn(this) : '';
         });
         const template = Handlebars.compile(content);
         const rendered = template(payload);
@@ -64,6 +69,20 @@ export class BotTemplateBuilder {
     }
   }
 
+  static async generateEventListeners(baseOutputDir: string, events: EventWizardRequest[], template: string, ext = "ts") {
+    if (!Array.isArray(events) || events.length === 0) return;
+
+    const listenersDir = join(baseOutputDir, "src", "listeners");
+    await fs.promises.mkdir(listenersDir, { recursive: true });
+
+    for (const event of events) {
+      const compile = Handlebars.compile(template);
+      const rendered = compile(event);
+      const filePath = join(listenersDir, `${toEventListenerName(event.eventName)}.listener.${ext}`);
+      await fs.promises.writeFile(filePath, rendered);
+    }
+  }
+
   static async generateCommandFiles(baseOutputDir: string, commands: CommandWizardRequest[], template: string, ext = 'ts') {
     if (!Array.isArray(commands) || commands.length === 0) return;
 
@@ -73,7 +92,7 @@ export class BotTemplateBuilder {
     for (const cmd of commands) {
       const compile = Handlebars.compile(template);
       const rendered = compile(cmd);
-      const filePath = join(commandsDir, `${cmd.className}.${ext}`);
+      const filePath = join(commandsDir, `${cmd.command}.command.${ext}`);
       await fs.promises.writeFile(filePath, rendered);
     }
   }
