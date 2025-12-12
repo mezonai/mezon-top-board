@@ -81,8 +81,7 @@ export class BotTemplateBuilder {
         .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
         .toLowerCase();
       const context = {
-        eventName: event.eventName,
-        eventType: event.eventType,
+        ...event,
         eventClass: `EventListener${eventNameCutSuffix}`
       }
       const compile = Handlebars.compile(template);
@@ -100,10 +99,7 @@ export class BotTemplateBuilder {
 
     for (const cmd of commands) {
       const context = {
-        command: cmd.command,
-        description: cmd.description,
-        category: cmd.category,
-        aliases: cmd.aliases,
+        ...cmd,
         className: `${cmd.command.charAt(0).toUpperCase() + cmd.command.slice(1)}Command`
       }
       const compile = Handlebars.compile(template);
