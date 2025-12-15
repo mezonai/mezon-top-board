@@ -18,7 +18,7 @@ export class AppReviewHistory extends BaseSoftDelete {
     @Column()
     public reviewerId: string;
 
-    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
     public reviewedAt: Date;
 
     @Column()
