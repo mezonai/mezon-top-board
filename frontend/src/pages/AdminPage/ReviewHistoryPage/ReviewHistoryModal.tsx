@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Button, Form, Input, Descriptions, Space, Spin, Typography } from 'antd'
+import { Modal, Form, Input, Descriptions, Space, Spin, Typography } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
 import { formatDate } from '@app/utils/date'
 
@@ -43,7 +44,7 @@ const ReviewHistoryModal: React.FC<Props> = ({ open, isEdit, data, initialRemark
 
     const renderFooter = () => (
         <Space>
-            <Button onClick={onClose} disabled={isUpdating}>
+            <Button onClick={onClose} disabled={isUpdating} variant='outlined'>
                 {isEdit ? 'Cancel' : 'Close'}
             </Button>
             {isEdit && (

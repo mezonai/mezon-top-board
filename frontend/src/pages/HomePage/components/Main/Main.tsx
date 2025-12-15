@@ -167,8 +167,8 @@ function Main({ isSearchPage = false }: IMainProps) {
 
 
   return (
-    <div ref={mainRef} className={`flex flex-col justify-center pt-8 pb-12 w-[75%] m-auto relative z-1`}>
-      <Divider variant='solid' style={{ borderColor: 'gray' }}>
+    <div ref={mainRef} className='flex flex-col justify-center pt-8 pb-12 max-w-6xl mx-auto relative z-1'>
+      <Divider variant='solid' className='!border-bg-secondary'>
         <MtbTypography variant='h1' customClassName='max-md:whitespace-normal'>
           Explore millions of Mezon Bots
         </MtbTypography>
@@ -221,7 +221,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotCard key={bot.id} data={bot} />)}
             </div>
           ) : (
-            <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
+            <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-text-secondary'>
               No result
             </MtbTypography>
           )}

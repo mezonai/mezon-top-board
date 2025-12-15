@@ -164,7 +164,7 @@ function BotDetailPage() {
   ]
 
   return (
-    <div className='m-auto pt-10 pb-10 w-[75%]'>
+    <div className='max-w-6xl mx-auto pt-10 pb-10 px-6'>
       <MtbTypography>Explore milions of mezon bots</MtbTypography>
       <div className='pt-5'>
         <SearchBar
@@ -184,11 +184,11 @@ function BotDetailPage() {
           <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>
             Overview
           </MtbTypography>
-          <Divider className='bg-[var(--border-color)]'></Divider>
+          <Divider className='bg-border'></Divider>
           <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
           <div className='pt-5'>
             <MtbTypography variant='h3'>More like this</MtbTypography>
-            <Divider className='bg-[var(--border-color)]'></Divider>
+            <Divider className='bg-border'></Divider>
             {relatedMezonApp?.length > 0 ? (
               <Carousel
                 arrows={!isMobile}
@@ -207,14 +207,14 @@ function BotDetailPage() {
                 ))}
               </Carousel>
             ) : (
-              <MtbTypography variant='h4' weight='normal' customClassName='!text-gray-500 !text-center !block'>
+              <MtbTypography variant='h4' weight='normal' customClassName='!text-text-secondary !text-center !block'>
                 No related bot
               </MtbTypography>
             )}
           </div>
           <div className='pt-8'>
             <MtbTypography variant='h3'>Ratings & Reviews</MtbTypography>
-            <Divider className='bg-[var(--border-color)]'></Divider>
+            <Divider className='bg-border'></Divider>
             <div className='flex justify-between gap-4 max-lg:flex-col max-2xl:flex-col'>
               <div className='flex-1'>
                 <div className='flex items-center gap-10 max-lg:justify-between max-2xl:justify-between'>
@@ -243,14 +243,14 @@ function BotDetailPage() {
                     return (
                       <div key={ratingValue} className='flex items-center gap-2 pb-2'>
                         <p className='whitespace-nowrap'>{ratingValue} stars</p>
-                        <MtbProgress percent={Number(percent)} strokeColor={'red'} showInfo={false}></MtbProgress>
+                        <MtbProgress percent={Number(percent)} strokeColor={'var(--accent-primary)'} showInfo={false}></MtbProgress>
                         <p className='align-middle'>{ratingCount}</p>
                       </div>
                     )
                   })}
               </div>
             </div>
-            <Divider className='bg-[var(--border-color)]'></Divider>
+            <Divider className='bg-border'></Divider>
               {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
                 <RatingForm
                   onSubmitted={() => {
@@ -261,7 +261,7 @@ function BotDetailPage() {
                   }}
                 />
               )}
-            <Divider className='bg-[var(--border-color)]'></Divider>
+            <Divider className='bg-border'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
                 <Spin size='large' />

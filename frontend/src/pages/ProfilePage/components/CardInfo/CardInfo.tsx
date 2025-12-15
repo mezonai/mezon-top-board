@@ -139,7 +139,6 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
         >
           <Button
             className='mt-2'
-            color='danger'
             size='large'
             variant='outlined'
             icon={<SyncOutlined />}

@@ -1,25 +1,33 @@
 import React from 'react'
+import { cn } from '@app/utils/cn'
 
 interface BadgeStatusProps {
   status: string
   color?: string
+  className?: string
 }
 
 const colorMap: Record<string, string> = {
-  red: 'bg-red-500',
-  orange: 'bg-orange-500',
-  blue: 'bg-blue-500',
-  green: 'bg-green-500',
-  gray: 'bg-gray-500'
+  red: 'bg-danger',
+  orange: 'bg-warning',
+  blue: 'bg-info',
+  green: 'bg-success',
+  gray: 'bg-muted',
 }
 
-const BadgeStatus: React.FC<BadgeStatusProps> = ({ status, color }) => {
-   const bgClass = colorMap[color!] || colorMap.gray
+const BadgeStatus: React.FC<BadgeStatusProps> = ({ status, color, className }) => {
+  const bgClass = color ? colorMap[color] || colorMap.gray : colorMap.gray
 
   return (
-    <div className="absolute top-0 left-0 w-[100px] h-[100px] overflow-hidden">
-      <span className={`absolute block w-[200px] text-center ${bgClass} text-white font-bold uppercase text-[8px] py-[3px]
-            shadow-[0_5px_10px_rgba(0,0,0,0.2)] rotate-[-45deg] top-[15px] right-[-25px]`}>
+    <div className={cn('absolute top-0 left-0 w-24 h-24 overflow-hidden pointer-events-none z-10', className)}>
+      <span
+        className={cn(
+          'absolute block w-48 py-1 top-4 -right-6',
+          'text-xs font-bold uppercase tracking-wider text-center text-white',
+          '-rotate-45 shadow-sm',
+          bgClass
+        )}
+      >
         {status}
       </span>
     </div>

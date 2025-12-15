@@ -14,6 +14,7 @@ import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { cn } from '@app/utils/cn'
 
 const MediaManagerModal = ({
   isVisible,
@@ -101,12 +102,12 @@ const MediaManagerModal = ({
               Click to Upload
             </Button>
           </Upload>
-          <i>Choose an image in your browser</i>
+          <i className='text-text-secondary'>Choose an image in your browser</i>
           {selectedFile && (
             <img
               src={selectedImage || ''}
               alt=''
-              className="w-[100px] h-[100px] object-cover mt-[10px]"
+              className="w-[100px] h-[100px] object-cover mt-2"
             />
           )}
         </div>
@@ -127,10 +128,7 @@ const MediaManagerModal = ({
                   key={item.id}
                   src={url}
                   alt=''
-                  className='w-[6.5rem] h-[6.5rem] object-cover cursor-pointer'
-                  style={{
-                    border: selectedImage === url ? '2px solid blue' : '1px solid #ccc'
-                  }}
+                  className={cn('w-[6.5rem] h-[6.5rem] object-cover cursor-pointer', selectedImage === url ? 'border-2 border-primary' : 'border border-border')}
                   onClick={() => setSelectedImage(url)}
                 />
               );
@@ -192,23 +190,25 @@ const MediaManagerModal = ({
 
   return (
     <>
-      <Modal zIndex={3}
+      <Modal
+        zIndex={3}
         width={'59rem'}
         centered
         title='Choose Icon'
         open={isVisible}
         onCancel={handleCancel}
         onOk={handleChoose}
+        wrapClassName={cn('card-base', 'media-manager-modal')}
         footer={
           <div className="flex justify-between items-center">
             {activeTab === '2' && (
-              <div className="text-sm text-gray-500 pl-2">
+              <div className='text-sm text-text-secondary pl-2'>
                 Total {mediaList?.totalCount || 0} image(s)
               </div>
             )}
 
             <div className="ml-auto flex gap-2">
-              <Button onClick={handleCancel} color="default">
+              <Button onClick={handleCancel} color='default'>
                 Cancel
               </Button>
               <Button onClick={handleChoose}>OK</Button>

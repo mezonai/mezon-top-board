@@ -65,7 +65,7 @@ function GalleryPage() {
     return (
         <div className='pt-8 pb-12 w-[75%] m-auto'>
             <MtbTypography variant='h1'>Your Media Gallery</MtbTypography>
-            <Divider className='bg-[var(--border-color)]' />
+            <Divider className='bg-border' />
             <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
                 <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
                     <CardInfo userInfo={userInfo} />
@@ -86,7 +86,7 @@ function GalleryPage() {
                                         options={pageOptions}
                                         placeholder='Select'
                                         size='large'
-                                        className='w-[12rem] text-[var(--text-primary)]'
+                                        className='w-[12rem] text-text-primary'
                                         dropDownTitle='Images per page'
                                         value={pageOptions.find(o => o.value === pageSize)}
                                     />
@@ -100,13 +100,13 @@ function GalleryPage() {
                             <Spin size='large' />
                         </div>
                     ) : totalPages === 0 ? (
-                        <div className='pt-8 text-center text-gray-500'>No media uploaded yet.</div>
+                        <div className='pt-8 text-center text-text-secondary'>No media uploaded yet.</div>
                     ) : (
                         <>
                             <div className='grid grid-cols-2 gap-6 min-lg:grid-cols-3 min-xl:grid-cols-4 pt-4'>
                                 {mediaList.map((item: MediaResponse) => (
-                                    <div key={item.id} className='rounded-xl p-2 flex flex-col gap-2 shadow-sm hover:shadow-xl transition-all duration-300 bg-[var(--bg-container)] cursor-pointer border border-transparent dark:border-[var(--border-color)]'>
-                                        <div className='w-full aspect-square overflow-hidden rounded-md bg-[var(--bg-container-secondary)] relative group'>
+                                    <div key={item.id} className='rounded-xl p-2 flex flex-col gap-2 shadow-sm hover:shadow-xl transition-all duration-300 bg-bg-container cursor-pointer border border-transparent dark:border-border'>
+                                        <div className='w-full aspect-square overflow-hidden rounded-md bg-bg-container-secondary relative group'>
                                             <img
                                                 src={getUrlMedia(item.filePath)}
                                                 alt={item.fileName}
@@ -115,10 +115,10 @@ function GalleryPage() {
                                             />
                                         </div>
                                         <div className='px-1'>
-                                            <MtbTypography variant='p' size={14} customClassName='!pl-0 truncate font-medium'>
+                                            <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate'>
                                                 {item.fileName}
                                             </MtbTypography>
-                                            <MtbTypography variant='p' size={12} customClassName='!pl-0 text-gray-400'>
+                                            <MtbTypography variant='p' size={12} weight='normal' customClassName='!pl-0 text-text-secondary'>
                                                 {item.mimeType}
                                             </MtbTypography>
                                         </div>

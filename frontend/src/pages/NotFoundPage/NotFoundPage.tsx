@@ -10,10 +10,10 @@ const NotFoundPage = () => {
     <div className="flex justify-center items-center min-h-screen">
       <Result
         status="404"
-        title="404"
-        subTitle="This page is not available."
+        title={<div className="text-text-primary">404</div>}
+        subTitle={<div className="text-text-secondary">This page is not available.</div>}
         extra={
-          <Button color='primary' variant='solid' size='large' style={{ height: '50px', minWidth: '130px' }} 
+          <Button color='primary' variant='solid' size='large' 
             onClick={() => {navigate('/'); window.scrollTo(0, 0);} }>
             Back Home
           </Button>

@@ -242,12 +242,12 @@ function TagsList() {
             <Input
               ref={searchRef}
               placeholder='Search by name or slug'
-              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
+              prefix={<SearchOutlined className='text-text-secondary' />}
               onPressEnter={() => searchForm.submit()}
             />
           </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} color='default' variant='outlined' onClick={() => searchForm.submit()}>
+        <MtbButton icon={<SearchOutlined />} variant='solid' onClick={() => searchForm.submit()}>
           Search
         </MtbButton>
         <MtbButton variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
@@ -266,7 +266,7 @@ function TagsList() {
             pageSizeOptions: pageOptions.map(String)
           }}/>
       ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
+        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-text-secondary'>
           No result
         </MtbTypography>
       )}

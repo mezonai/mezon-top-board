@@ -7,6 +7,7 @@ import { RotateLeftOutlined, RotateRightOutlined } from '@ant-design/icons'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { getCroppedImg } from '@app/utils/cropImage'
 import MtbSlider from '@app/mtb-ui/Slider/Slider'
+import { cn } from '@app/utils/cn'
 
 type Props = {
   open: boolean
@@ -125,17 +126,18 @@ const CropImageModal: React.FC<Props> = ({
       cancelText="Cancel"
       confirmLoading={isProcessing || parentLoading}
       cancelButtonProps={{ disabled: parentLoading }}
-      okButtonProps={{ style: { backgroundColor: '#F2385A' } }}
+      okButtonProps={{ className: cn('bg-primary', 'hover:opacity-90') }}
+      wrapClassName={cn('card-base', 'crop-image-modal')}
       maskClosable={false}
       centered
       width={600}
       bodyStyle={{ maxHeight: '70vh' }}
     >
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-1 min-w-[200px] items-center gap-2">
+      <div className={cn("flex-between flex-wrap gap-4 mb-4")}>
+        <div className={cn("flex-1 flex items-center gap-2", "min-w-[200px]")}>
           <MtbTypography
             variant='p'
-            customClassName='!text-xs !whitespace-nowrap'
+            customClassName='text-caption whitespace-nowrap'
           >
             Zoom:
           </MtbTypography>
@@ -149,10 +151,10 @@ const CropImageModal: React.FC<Props> = ({
           />
         </div>
 
-        <div className="flex flex-1 min-w-[200px] justify-end items-center gap-2">
+        <div className={cn("flex-1 flex items-center justify-end gap-2", "min-w-[200px]")}>
           <MtbTypography
             variant='p'
-            customClassName='!text-xs mr-2'
+            customClassName='text-caption mr-2'
           >
             Rotate:
           </MtbTypography>
@@ -168,7 +170,7 @@ const CropImageModal: React.FC<Props> = ({
       </div>
 
       {imgSrc && (
-        <div className="flex justify-center items-center">
+        <div className="flex-center">
           <ReactCrop
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}

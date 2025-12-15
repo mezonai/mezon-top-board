@@ -3,6 +3,7 @@ import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
+import { cn } from '@app/utils/cn'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -31,7 +32,7 @@ const SearchBar = ({
 
   const defaultTags = searchParams.get('tags')?.split(',') || []
 
-  const [showAllTags, setShowAllTags] = useState(false)
+  const [showAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
   const [selectedType, setSelectedType] = useState<MezonAppType>()
@@ -88,7 +89,6 @@ const SearchBar = ({
   }
 
   const totalTags = tagList?.data?.length || 0
-  const hiddenTagsCount = totalTags - MAX_VISIBLE_TAGS
   const visibleTags = tagList?.data?.filter((tag, index) =>
     showAllTags ||
     index < MAX_VISIBLE_TAGS ||
@@ -114,7 +114,7 @@ const SearchBar = ({
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div className={`flex flex-1 w-full items-center !rounded-full ${styles.container}`}>
+        <div className={cn('flex flex-1 w-full items-center !rounded-full', styles.container)}>
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -127,7 +127,7 @@ const SearchBar = ({
                 </button>
               ) : null
             }
-            className="!rounded-l-full h-[50px] !bg-[var(--bg-container)] !text-[var(--text-primary)] !border-[var(--border-color)] hover:!border-[var(--border-color)] focus:!border-[var(--border-color)]"
+            className='!rounded-l-full h-[50px] !bg-bg-container !text-text-primary !border-border hover:!border-border focus:!border-border'
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select

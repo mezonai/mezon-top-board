@@ -86,7 +86,7 @@
     }
   }
 
-  .ant-tag:not(.ant-tag-checkable) {
+  .ant-tag:not(.ant-tag-checkable):not([class*="ant-tag-"]):not(.clear-tags-btn) {
     background: transparent !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color) !important;

@@ -17,7 +17,7 @@ const Step2ProvideID = ({ type }: { type: MezonAppType }) => {
           <Input  
             {...field} 
             placeholder={`Enter your ${type} ID`} 
-            className="!bg-[var(--bg-container)] !text-[var(--text-primary)] !border-gray-300 dark:!border-[var(--border-color)] placeholder:!text-[var(--text-secondary)]"
+            className='!bg-bg-container !text-text-primary !border-border dark:!border-border placeholder:!text-text-secondary'
           />
         )}
       />

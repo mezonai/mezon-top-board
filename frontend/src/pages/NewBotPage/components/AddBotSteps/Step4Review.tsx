@@ -22,27 +22,27 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const selectedTags = tagList.data?.filter((tag: TagResponse) => tagIds.includes(tag.id)) ?? []
 
   return (
-    <div className="text-[var(--text-primary)]">
+    <div className="text-text-primary">
       <h3 className='text-xl font-semibold mb-4'>{isEdit ? 'Review Your Update Information' : 'Review Your Information'}</h3>
-      <ul className='space-y-2 text-[var(--text-primary)]'>
+      <ul className='space-y-2 text-text-primary'>
         <li><strong>Type:</strong> {values.type}</li>
         <li><strong>Bot/App ID:</strong> {values.mezonAppId}</li>
         <li><strong>Name:</strong> {values.name}</li>
         <li className='break-words'><strong>Headline:</strong> {values.headline}</li>
         {type === MezonAppType.BOT && <li><strong>Prefix:</strong> {values.prefix}</li>}
         <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
-        <li className='break-words'><strong>Install Link:</strong> <span className="text-[var(--text-secondary)]">{getMezonInstallLink(values.type, values.mezonAppId)}</span></li>
+        <li className='break-words'><strong>Install Link:</strong> <span className="text-text-secondary">{getMezonInstallLink(values.type, values.mezonAppId)}</span></li>
         <li>
           <strong>Tags:</strong>
           <div className='gap-2 flex flex-wrap mt-1'>
             {selectedTags.length > 0 ? (
               selectedTags.map((tag: TagResponse) => (
-                <Tag key={tag.id} className="!bg-[var(--bg-container-secondary)] !text-[var(--text-primary)] !border-[var(--border-color)]">
+                <Tag key={tag.id} className="bg-bg-container-secondary text-text-primary border-border">
                   {tag.name}
                 </Tag>
               ))
             ) : (
-              <span className="text-[var(--text-secondary)] italic ml-2">No tags selected</span>
+              <span className="text-text-secondary italic ml-2">No tags selected</span>
             )}
           </div>
         </li>
@@ -63,13 +63,13 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
                     <img src={getUrlMedia(link.type.icon)} alt={link.type?.name || ''} className="w-4 h-4" />
                   )}
                   <span className="font-medium">{link.type?.name || 'Link'}:</span>
-                  <a href={(link.type?.prefixUrl ?? '') + (link.url ?? '')} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  <a href={(link.type?.prefixUrl ?? '') + (link.url ?? '')} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                     {link.url ?? ''}
                   </a>
                 </div>
               ))
             ) : (
-              <span className="text-[var(--text-secondary)] italic ml-2">No social links added</span>
+              <span className="text-text-secondary italic ml-2">No social links added</span>
             )}
           </div>
         </li>
@@ -78,7 +78,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           <li className='break-words'><strong>Changelog: </strong>{values.changelog ? values.changelog : 'None'}</li>
         )}
         <li><strong>Description:</strong></li>
-        <div className='border border-[var(--border-color)] p-3 rounded-md text-sm description break-words bg-[var(--bg-container)]' 
+        <div className='border border-border p-3 rounded-md text-sm description break-words bg-bg-container' 
           dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />
       </ul>
     </div>

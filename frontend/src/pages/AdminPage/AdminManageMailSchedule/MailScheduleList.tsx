@@ -1,7 +1,6 @@
 import { RootState } from '@app/store'
-import { Button, Checkbox, Form, Input, InputRef, Popconfirm, Select, Table} from 'antd'
+import { Checkbox, Form, Input, InputRef, Popconfirm, Select, Table} from 'antd'
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import MtbButton from '@app/mtb-ui/Button'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -104,7 +103,7 @@ function MailScheduleList() {
       dataIndex: 'subject',
       key: 'subject',
       render: (text: string) =>
-        <span>{text}</span>
+        <span className="text-text-primary">{text}</span>
     },
     {
       title: 'Repeatable',
@@ -118,78 +117,103 @@ function MailScheduleList() {
       dataIndex: 'repeatInterval',
       key: 'repeatInterval',
       render: (text: RepeatInterval) =>
-        <span>{text || '-'}</span>
+        <span className="text-text-secondary">{text || '-'}</span>
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: '10%',
+      width: '120px',
       render: (_: any, record: MailTemplate) =>
         <div className='flex gap-2'>
-          <MtbButton color="blue" 
+          <MtbButton 
+            color="blue"
+            variant="outlined"
             icon={<EditOutlined />}
             onClick={() => handleOpenEditModal(record)}
           />
-          <Popconfirm title='Delete this mail?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
-            <MtbButton color='danger'  icon={<DeleteOutlined />} />
+          <Popconfirm 
+            title='Delete this mail?'
+            onConfirm={() => handleDelete(record.id)} 
+            okText='Yes' 
+            cancelText='No'
+            overlayClassName='bg-bg-container text-text-primary'
+          >
+            <MtbButton 
+              color='danger' 
+              variant="outlined"
+              icon={<DeleteOutlined />} 
+            />
           </Popconfirm>
         </div>
     }
   ]
 
   return (
-    <div>
-      <h2 className='font-bold text-lg mb-4'>Manage Mail Schedule Templates</h2>
+    <div className="p-4 rounded-md shadow-md bg-bg-container">
+      <h2 className='font-bold text-lg mb-4 text-text-primary'>Manage Mail Schedule Templates</h2>
+      
+      {/* Search & Filter Section */}
       <div className='mb-4'>
         <Form 
           form={searchForm} 
           onFinish={handleSearch}           
           initialValues={initialValues}
-          layout='inline'
-          className='flex flex-wrap gap-2 items-end'
+          className='w-full'
         >
-         <Form.Item name='search' className='flex-grow w-full lg:max-w-4xl '>
-            <Input
-              ref={searchRef}
-              placeholder='Search by subject'
-              prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
-              onPressEnter={() => searchForm.submit()}
-              style={{ borderRadius: '8px', height: '40px' }}
-              className='w-full'
-            />
-          </Form.Item>
-          <Form.Item name='sortField' className='mb-0 w-40'>
-            <Select 
-              className='w-40 '
-              placeholder='Repeat Interval'
-            >
-              {Object.values(RepeatInterval).map((status) => (
-                <Select.Option key={status} value={status}>
-                  {status}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item className='mb-0'>
-            <Button 
-              type='primary' 
-              htmlType='submit'
-              icon={<SearchOutlined />}
-            >
-              Search
-            </Button>
-          </Form.Item>
-          <Form.Item className='mb-0 ml-auto'>
-            <MtbButton variant='outlined' icon={<PlusOutlined /> } onClick={() => setIsOpenModal(true)}>
-              Add New Mail
-            </MtbButton>
-          </Form.Item>
+          <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
+            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
+              <Input
+                ref={searchRef}
+                placeholder='Search by subject'
+                prefix={<SearchOutlined className='text-text-secondary' />}
+                onPressEnter={() => searchForm.submit()}
+                className='w-full rounded-[8px] h-[40px] bg-bg-container text-text-primary border-border placeholder:text-text-secondary'
+              />
+            </Form.Item>
+            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
+              <Select 
+                className='w-full h-[40px]'
+                placeholder='Repeat Interval'
+                popupClassName='bg-bg-container text-text-primary'
+                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+                allowClear
+              >
+                {Object.values(RepeatInterval).map((status) => (
+                  <Select.Option key={status} value={status} className="text-text-primary hover:bg-bg-secondary">
+                    {status}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item className='w-full md:w-auto mb-0'>
+              <MtbButton
+                variant='solid'
+                htmlType='submit'
+                icon={<SearchOutlined />}
+                customClassName='h-[40px] w-full md:w-auto'
+              >
+                Search
+              </MtbButton>
+            </Form.Item>
+            <Form.Item className='w-full md:w-auto mb-0 md:ml-auto'>
+              <MtbButton 
+                variant='outlined' 
+                icon={<PlusOutlined />} 
+                onClick={() => setIsOpenModal(true)}
+                customClassName="h-[40px] w-full md:w-auto flex items-center justify-center gap-2"
+              >
+                Add New Mail
+              </MtbButton>
+            </Form.Item>
+          </div>
         </Form>
-        
       </div>
 
-       {searchMailsList?.data?.length ? (
-        <Table dataSource={searchMailsList.data} columns={columns} rowKey='id' 
+      {searchMailsList?.data?.length ? (
+        <Table 
+          dataSource={searchMailsList.data} 
+          columns={columns} 
+          rowKey='id' 
           pagination={{
             current: page,
             pageSize: botPerPage,
@@ -198,11 +222,13 @@ function MailScheduleList() {
             showSizeChanger: true,
             pageSizeOptions: pageOptions.map(String)
           }}
-          />
+          scroll={{ x: 'max-content' }}
+          className="admin-table"
+        />
       ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
-          No result
-        </MtbTypography>
+        <div className='text-center p-8 text-text-secondary'>
+          <p>No result found</p>
+        </div>
       )}
       
       <MailScheduleModal

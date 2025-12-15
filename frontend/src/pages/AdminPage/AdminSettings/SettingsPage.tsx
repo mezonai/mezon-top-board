@@ -7,26 +7,16 @@ const SettingsPage = () => {
 
   return (
     <div className='p-4'>
-      <h2 className='text-lg font-semibold mb-4' style={{ color: 'var(--text-primary)' }}>
+      <h2 className='text-lg font-semibold mb-4 text-text-primary'>
         Settings
       </h2>
 
       <Card
-        title="Appearance"
-        style={{
-          background: 'var(--bg-container)',
-          borderColor: 'var(--border-color)'
-        }}
-        headStyle={{
-          color: 'var(--text-primary)',
-          borderBottomColor: 'var(--border-color)'
-        }}
-        bodyStyle={{
-          color: 'var(--text-primary)'
-        }}
+        title={<div className="text-text-primary">Appearance</div>}
+        className="bg-bg-container border border-border"
       >
         <Form layout="horizontal">
-          <Form.Item label={<span style={{ color: 'var(--text-primary)' }}>Theme Mode</span>}>
+          <Form.Item label={<span className="text-text-primary">Theme Mode</span>}>
             <Space align="center" size="large">
               <Switch
                 checked={theme === 'dark'}

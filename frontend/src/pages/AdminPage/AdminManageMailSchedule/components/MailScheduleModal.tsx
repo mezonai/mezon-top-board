@@ -1,4 +1,5 @@
-import { Button, Checkbox, Form, Input, Modal, Select } from 'antd'
+import { Checkbox, Form, Input, Modal, Select } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import RichTextEditor from '@app/components/RichText/RichText'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -114,7 +115,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       open={open}
       onCancel={onClose}
       footer={[
-        <Button key="cancel" onClick={handleCancel}>
+        <Button key="cancel" variant='outlined' onClick={handleCancel}>
           Cancel
         </Button>,
         <Button key="send" type="primary" onClick={selectMail ? handleUpdateMailSchedule : handleCreateMailSchedule} disabled={isLoading}>

@@ -1,7 +1,8 @@
 import RichTextEditor from '@app/components/RichText/RichText'
 import { useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
-import { Button, Form, Input, Modal } from 'antd'
+import { Form, Input, Modal } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
@@ -40,7 +41,7 @@ const EditModal = ({
       open={isVisible}
       onCancel={onClose}
       footer={[
-        <Button key="cancel" onClick={onClose}>
+        <Button key="cancel" variant='outlined' onClick={onClose}>
           Cancel
         </Button>,
         <Button key="save" type="primary" loading={isLoading} onClick={handleSave}>
