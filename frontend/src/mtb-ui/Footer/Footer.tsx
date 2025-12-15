@@ -125,7 +125,7 @@ function Footer() {
           </div>
         </div>
       </div>
-      <Divider className='bg-border' />
+      <Divider className='bg-bg-body dark:bg-border' />
       <ul className='flex justify-center pt-10 gap-6'>{renderMenu(false)}</ul>
       <div className='flex flex-col items-center pt-8 gap-2'>
         <MtbTypography
