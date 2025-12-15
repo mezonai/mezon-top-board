@@ -19,7 +19,16 @@ export abstract class BaseWizardProcessor {
       baseOutputDir,
       this.payload.commands,
       this.getCommandTemplate(),
-      this.getCommandExtension()
+      this.getFileExtension()
+    );
+  }
+
+  protected async generateEventListeners(baseOutputDir: string) {
+    await BotTemplateBuilder.generateEventListeners(
+      baseOutputDir,
+      this.payload.events,
+      this.getListenerTemplate(),
+      this.getFileExtension()
     );
   }
 
@@ -29,5 +38,7 @@ export abstract class BaseWizardProcessor {
 
   protected abstract getCommandTemplate(): string;
 
-  protected abstract getCommandExtension(): string;
+  protected abstract getListenerTemplate(): string;
+
+  protected abstract getFileExtension(): string;
 }

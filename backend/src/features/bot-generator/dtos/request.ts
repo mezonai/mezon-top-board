@@ -20,6 +20,11 @@ export class BotWizardRequest {
   @ApiPropertyOptional()
   @IsOptional()
   @IsArray()
+  events?: EventWizardRequest[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
   commands?: CommandWizardRequest[];
 }
 
@@ -41,11 +46,18 @@ export class CommandWizardRequest {
 
   @ApiProperty()
   @IsArray()
-  @IsOptional()
+  @IsNotEmpty()
   aliases: string[];
+}
 
+export class EventWizardRequest {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  className: string;
+  eventName: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  eventType: string;
 }

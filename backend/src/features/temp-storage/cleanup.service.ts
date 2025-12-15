@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import * as fs from 'fs';
+import { rmSync, existsSync } from 'fs';
 import { join } from 'path';
 import { tempFilesRootDir } from '@config/files.config';
 import { EntityManager, LessThan } from 'typeorm';
@@ -31,8 +31,8 @@ export class CleanupTempFileService {
         if (file.filePath) {
           const absolutePath = join(tempFilesRootDir, file.filePath);
 
-          if (fs.existsSync(absolutePath)) {
-            fs.rmSync(absolutePath, { recursive: true, force: true });
+          if (existsSync(absolutePath)) {
+            rmSync(absolutePath, { recursive: true, force: true });
             this.logger.log(`Deleted temp: ${file.filePath}`);
           }
         }
