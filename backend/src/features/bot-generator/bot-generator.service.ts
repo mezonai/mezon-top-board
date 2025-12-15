@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BotGeneratorJob } from '@features/job/bot-generator.job';
 import { BotWizardRequest } from '@features/bot-generator/dtos/request';
 import { join } from 'path';
-import * as fs from 'fs';
+import { promises } from 'fs';
 
 @Injectable()
 export class BotGeneratorService {
@@ -15,7 +15,7 @@ export class BotGeneratorService {
   async getIntegrationsList(language: string): Promise<string[]> {
     const integrationsPath = join(process.cwd(), 'bot-gen-templates', language, 'src', 'integrations');
 
-    const folders = await fs.promises.readdir(integrationsPath, { withFileTypes: true });
+    const folders = await promises.readdir(integrationsPath, { withFileTypes: true });
 
     const integrations = folders
       .filter((folder) => folder.isDirectory())

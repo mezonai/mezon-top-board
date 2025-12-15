@@ -8,7 +8,7 @@ import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
+import { promises, existsSync, mkdirSync } from 'fs';
 import * as moment from 'moment';
 import { join } from 'path';
 import { EntityManager } from 'typeorm';
@@ -42,14 +42,14 @@ export class TempStorageService {
 
     const absoluteDir = join(tempFilesRootDir, saveTempFileArgs.path || '');
     
-    if (!fs.existsSync(absoluteDir)) {
-      fs.mkdirSync(absoluteDir, { recursive: true });
+    if (!existsSync(absoluteDir)) {
+      mkdirSync(absoluteDir, { recursive: true });
     }
 
     const relativeFilePath = `${saveTempFileArgs.path || ''}/${saveTempFileArgs.fileName}`;
     const normalizedPath = relativeFilePath.replace(/^\/+/, '');
     const absoluteFilePath = join(tempFilesRootDir, normalizedPath);
-    await fs.promises.writeFile(absoluteFilePath, saveTempFileArgs.buffer);
+    await promises.writeFile(absoluteFilePath, saveTempFileArgs.buffer);
 
     tempFile.filePath = normalizedPath;
 

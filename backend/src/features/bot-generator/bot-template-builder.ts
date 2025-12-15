@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { promises, createWriteStream, existsSync } from 'fs';
 import { join, basename } from 'path';
 import * as archiver from 'archiver';
 import * as Handlebars from 'handlebars';
@@ -6,12 +6,12 @@ import { BotWizardRequest, CommandWizardRequest, EventWizardRequest } from '@fea
 
 export class BotTemplateBuilder {
   static async renderDirectory(srcDir: string, destDir: string, payload: BotWizardRequest) {
-    const items = await fs.promises.readdir(srcDir);
+    const items = await promises.readdir(srcDir);
 
     for (const item of items) {
       const srcPath = join(srcDir, item);
       let destPath = join(destDir, item);
-      const stat = await fs.promises.stat(srcPath);
+      const stat = await promises.stat(srcPath);
 
       if (item === 'integrations' && stat.isDirectory()) {
         await this.renderIntegrationFiles(srcPath, destPath, payload);
@@ -19,13 +19,13 @@ export class BotTemplateBuilder {
       }
 
       if (stat.isDirectory()) {
-        await fs.promises.mkdir(destPath, { recursive: true });
+        await promises.mkdir(destPath, { recursive: true });
         await this.renderDirectory(srcPath, destPath, payload);
         continue;
       }
 
       if (item.endsWith('.hbs')) {
-        const content = await fs.promises.readFile(srcPath, 'utf8');
+        const content = await promises.readFile(srcPath, 'utf8');
         Handlebars.registerHelper('includes', function (array, value, options) {
           if (Array.isArray(array) && array.includes(value)) {
             return options.fn(this);
@@ -41,10 +41,10 @@ export class BotTemplateBuilder {
 
         destPath = join(destDir, basename(item, '.hbs'));
 
-        await fs.promises.writeFile(destPath, rendered);
+        await promises.writeFile(destPath, rendered);
         continue;
       }
-      await fs.promises.copyFile(srcPath, destPath);
+      await promises.copyFile(srcPath, destPath);
     }
   }
 
@@ -55,15 +55,15 @@ export class BotTemplateBuilder {
       return;
     }
 
-    await fs.promises.mkdir(destIntegrationDir, { recursive: true });
+    await promises.mkdir(destIntegrationDir, { recursive: true });
 
     for (const integration of allowedIntegrations) {
       const srcPath = join(srcIntegrationDir, integration);
       const destPath = join(destIntegrationDir, integration);
 
-      if (!fs.existsSync(srcPath)) continue;
+      if (!existsSync(srcPath)) continue;
 
-      await fs.promises.mkdir(destPath, { recursive: true });
+      await promises.mkdir(destPath, { recursive: true });
       await this.renderDirectory(srcPath, destPath, payload);
     }
   }
@@ -72,7 +72,7 @@ export class BotTemplateBuilder {
     if (!Array.isArray(events) || events.length === 0) return;
 
     const listenersDir = join(baseOutputDir, "src", "listeners");
-    await fs.promises.mkdir(listenersDir, { recursive: true });
+    await promises.mkdir(listenersDir, { recursive: true });
 
     for (const event of events) {
       const eventNameCutSuffix = event.eventName.replace(/Event$/, "");
@@ -87,7 +87,7 @@ export class BotTemplateBuilder {
       const compile = Handlebars.compile(template);
       const rendered = compile(context);
       const filePath = join(listenersDir, `${eventListenerFileName}.listener.${ext}`);
-      await fs.promises.writeFile(filePath, rendered);
+      await promises.writeFile(filePath, rendered);
     }
   }
 
@@ -95,7 +95,7 @@ export class BotTemplateBuilder {
     if (!Array.isArray(commands) || commands.length === 0) return;
 
     const commandsDir = join(baseOutputDir, 'src', 'command');
-    await fs.promises.mkdir(commandsDir, { recursive: true });
+    await promises.mkdir(commandsDir, { recursive: true });
 
     for (const cmd of commands) {
       const context = {
@@ -105,7 +105,7 @@ export class BotTemplateBuilder {
       const compile = Handlebars.compile(template);
       const rendered = compile(context);
       const filePath = join(commandsDir, `${cmd.command}.command.${ext}`);
-      await fs.promises.writeFile(filePath, rendered);
+      await promises.writeFile(filePath, rendered);
     }
   }
 
@@ -113,12 +113,12 @@ export class BotTemplateBuilder {
     const zipPath = `${folderPath}.zip`;
 
     return new Promise((resolve, reject) => {
-      const output = fs.createWriteStream(zipPath);
+      const output = createWriteStream(zipPath);
       const archive = archiver('zip', { zlib: { level: 9 } });
 
       output.on('close', async () => {
-        const buffer = await fs.promises.readFile(zipPath);
-        await fs.promises.rm(zipPath);
+        const buffer = await promises.readFile(zipPath);
+        await promises.rm(zipPath);
         resolve(buffer);
       });
 

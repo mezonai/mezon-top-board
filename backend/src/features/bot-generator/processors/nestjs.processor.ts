@@ -1,12 +1,12 @@
 import { BaseWizardProcessor } from './base-wizard.processor';
 import { join } from 'path';
-import * as fs from 'fs';
+import { promises } from 'fs';
 import { tempFilesRootDir } from '@config/files.config';
 
 export class NestJSProcessor extends BaseWizardProcessor {
   async process(): Promise<Buffer> {
     const outputDir = join(tempFilesRootDir, `nestjs-${Date.now()}`);
-    await fs.promises.mkdir(outputDir, { recursive: true });
+    await promises.mkdir(outputDir, { recursive: true });
 
     const templateRoot = join(process.cwd(), 'bot-gen-templates', 'nestjs');
     await this.renderDirectory(templateRoot, outputDir);
@@ -16,7 +16,7 @@ export class NestJSProcessor extends BaseWizardProcessor {
     await this.generateEventListeners(outputDir);
 
     const zipBuffer = await this.zipFolder(outputDir);
-    await fs.promises.rm(outputDir, { recursive: true, force: true });
+    await promises.rm(outputDir, { recursive: true, force: true });
     
     return zipBuffer;
   }
