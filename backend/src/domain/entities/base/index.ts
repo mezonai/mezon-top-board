@@ -12,15 +12,15 @@ export class BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 }
 
 @Entity({ name: "BaseSoftDelete" })
 export class BaseSoftDelete extends BaseEntity {
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'timestamptz' })
   public deletedAt: Date;
 }
