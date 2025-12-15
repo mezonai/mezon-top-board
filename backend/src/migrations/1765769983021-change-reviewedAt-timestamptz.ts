@@ -1,71 +1,35 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ChangeReviewedAtTimestamptz1765769983021 implements MigrationInterface {
-    name = 'ChangeReviewedAtTimestamptz1765769983021';
+export class ChangeAllTimestampToTimestamptz1765769983021 implements MigrationInterface {
+    name = "ChangeAllTimestampToTimestamptz1765769983021";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            ALTER TABLE "app_review_history"
-            ALTER COLUMN "reviewedAt"
-            TYPE TIMESTAMPTZ
-            USING "reviewedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh';
-        `);
-        await queryRunner.query(`
-            DO $$
-            DECLARE
-                r RECORD;
-            BEGIN
-                FOR r IN
-                SELECT table_name, column_name
-                FROM information_schema.columns
-                WHERE column_name IN ('createdAt', 'updatedAt', 'deletedAt')
-                    AND data_type = 'timestamp without time zone'
-                    AND table_schema = 'public'
-                LOOP
-                EXECUTE format(
-                    'ALTER TABLE %I
-                    ALTER COLUMN %I
-                    TYPE timestamptz
-                    USING %I AT TIME ZONE ''Asia/Ho_Chi_Minh'';',
-                    r.table_name,
-                    r.column_name,
-                    r.column_name
-                );
-                END LOOP;
-            END $$;
-        `);
+        await queryRunner.query(`ALTER TABLE "app_review_history" ALTER COLUMN "reviewedAt" TYPE timestamptz USING "reviewedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "app" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "app_version" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "link" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "link_type" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "media" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "rating" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "subscriber" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "tag" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "mail_template" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
+        await queryRunner.query(`ALTER TABLE "app_review_history" ALTER COLUMN "createdAt" TYPE timestamptz USING "createdAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "updatedAt" TYPE timestamptz USING "updatedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh', ALTER COLUMN "deletedAt" TYPE timestamptz USING "deletedAt" AT TIME ZONE 'Asia/Ho_Chi_Minh'`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            DO $$
-            DECLARE
-                r RECORD;
-            BEGIN
-                FOR r IN
-                SELECT table_name, column_name
-                FROM information_schema.columns
-                WHERE column_name IN ('createdAt', 'updatedAt', 'deletedAt')
-                    AND data_type = 'timestamp with time zone'
-                    AND table_schema = 'public'
-                LOOP
-                EXECUTE format(
-                    'ALTER TABLE %I
-                    ALTER COLUMN %I
-                    TYPE timestamp
-                    USING %I::timestamp;',
-                    r.table_name,
-                    r.column_name,
-                    r.column_name
-                );
-                END LOOP;
-            END $$;
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "app_review_history"
-            ALTER COLUMN "reviewedAt"
-            TYPE TIMESTAMP
-            USING "reviewedAt";
-        `);
+        await queryRunner.query(`ALTER TABLE "app_review_history" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "mail_template" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "tag" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "subscriber" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "rating" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "media" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "link_type" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "link" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "app_version" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "app" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "user" ALTER COLUMN "createdAt" TYPE timestamp USING "createdAt"::timestamp, ALTER COLUMN "updatedAt" TYPE timestamp USING "updatedAt"::timestamp, ALTER COLUMN "deletedAt" TYPE timestamp USING "deletedAt"::timestamp`);
+        await queryRunner.query(`ALTER TABLE "app_review_history" ALTER COLUMN "reviewedAt" TYPE timestamp USING "reviewedAt"::timestamp`);
     }
 }
