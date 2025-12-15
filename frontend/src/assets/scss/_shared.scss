@@ -7,7 +7,6 @@
     @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border;
   }
 
-
   // Button Styles
   .btn-base {
     @extend %btn-structure;
