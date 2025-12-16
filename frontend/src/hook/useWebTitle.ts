@@ -14,7 +14,6 @@ const useWebTitle = () => {
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-
   const flattenedRoutes = useMemo<RoutePath[]>(() => {
     const flatten = (routes: RoutePath[]): RoutePath[] =>
       routes.flatMap((r) => [
@@ -25,19 +24,8 @@ const useWebTitle = () => {
     return flatten(routePaths)
   }, [])
 
-  const routePath = useMemo(
-    () =>
-      getRouteMatchPath(
-        flattenedRoutes.map((r) => ({ path: r.path })),
-        location.pathname
-      ),
-    [flattenedRoutes, location.pathname]
-  )
-
-  const route = useMemo(
-    () => flattenedRoutes.find((r) => r.path === routePath),
-    [flattenedRoutes, routePath]
-  )
+  const routePath = getRouteMatchPath(flattenedRoutes.map((e) => ({ path: e.path })) || [], location.pathname)
+  const route = flattenedRoutes.find((route) => route.path === routePath);
 
   const path = location.pathname.split('/').filter((i) => i)
   let pageName = route?.strLabel || path[path.length - 1] || 'Home'
