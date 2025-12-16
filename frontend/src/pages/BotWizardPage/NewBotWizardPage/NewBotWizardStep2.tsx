@@ -1,85 +1,86 @@
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
-import { Input, Select } from 'antd'
+import { Input } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { WizardForm, useMockCommandCategories } from '../MockData'
+import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 import { useState } from 'react'
 import CommandPreviewCard from './components/CommandPreviewCard'
 
 export default function NewBotWizardStep2() {
-    const { control } = useFormContext<WizardForm>()
+    const { control } = useFormContext<BotWizardRequest>()
     const { fields, append, remove } = useFieldArray({ control, name: 'commands' })
 
-    const [cmdName, setCmdName] = useState('')
-    const [cmdDesc, setCmdDesc] = useState('')
-    const [cmdUsage, setCmdUsage] = useState('')
-    const [cmdCategory, setCmdCategory] = useState<string | undefined>()
-    const [cmdAliasesRaw, setCmdAliasesRaw] = useState('')
-    const { options: categoryOptions, isLoading: catLoading, isError: catError } = useMockCommandCategories()
+    const [command, setCommand] = useState('')
+    const [description, setDescription] = useState('')
+    const [category, setCategory] = useState('')
+    const [aliasesRaw, setAliasesRaw] = useState('')
 
     const resetBuilder = () => {
-        setCmdName('')
-        setCmdDesc('')
-        setCmdUsage('')
-        setCmdCategory(undefined)
-        setCmdAliasesRaw('')
+        setCommand('')
+        setDescription('')
+        setCategory('')
+        setAliasesRaw('')
     }
 
     const handleAdd = () => {
-        if (!cmdName.trim() || !cmdUsage.trim()) return
-        const aliases = cmdAliasesRaw
+        if (!command.trim()) return
+        const aliases = aliasesRaw
             .split(',')
             .map((s) => s.trim())
             .filter((s) => s.length > 0)
-        append({ name: cmdName.trim(), description: cmdDesc.trim(), usage: cmdUsage.trim(), category: cmdCategory || '', aliases })
+
+        append({
+            command: command.trim(),
+            description: description.trim(),
+            category: category.trim() || 'General',
+            aliases
+        })
         resetBuilder()
     }
 
     return (
         <div className='flex flex-col gap-8'>
-            <div className='p-5 flex flex-col gap-5 bg-white/50'>
-                <FormField label='Command Name' description='Required'>
-                    <Input value={cmdName} onChange={(e) => setCmdName(e.target.value)} placeholder='e.g., greet' />
+
+            <div className='p-5 flex flex-col'>
+                <p className="text-sm text-gray-500 mb-4">
+                    Add commands for your bot.
+                    Fill in the command information below and click <b>Add Command</b> to add it to the list.
+                    You can add multiple commands.
+                </p>
+
+                <FormField label='Command' description='Trigger word (e.g. ping)'>
+                    <Input value={command} onChange={(e) => setCommand(e.target.value)} placeholder='ping' />
                 </FormField>
-                <FormField label='Usage' description='Required'>
-                    <Input value={cmdUsage} onChange={(e) => setCmdUsage(e.target.value)} placeholder='e.g., !greet [name]' />
-                </FormField>
-                <FormField label='Category'>
-                    <Select
-                        value={cmdCategory}
-                        onChange={(v) => setCmdCategory(v)}
-                        allowClear
-                        loading={catLoading}
-                        disabled={catLoading || catError}
-                        placeholder={catLoading ? 'Loading categories…' : (catError ? 'Failed to load categories' : 'Choose category')}
-                        options={categoryOptions}
-                    />
-                </FormField>
-                <FormField label='Aliases (comma-separated)' description='Optional'>
-                    <Input
-                        value={cmdAliasesRaw}
-                        onChange={(e) => setCmdAliasesRaw(e.target.value)}
-                        placeholder='hi, hello'
-                    />
-                </FormField>
-                <FormField label='Description'>
+
+                <FormField label='Description' description="Briefly describe what this command does">
                     <Input.TextArea
-                        value={cmdDesc}
-                        onChange={(e) => setCmdDesc(e.target.value)}
-                        rows={3}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={2}
                         placeholder='Explain this command'
                     />
                 </FormField>
-                <div className='flex justify-end items-center pt-2'>
-                    <div className='flex gap-3'>
-                        <Button variant='outlined' onClick={resetBuilder} disabled={!cmdName && !cmdUsage && !cmdDesc && !cmdAliasesRaw && !cmdCategory}>Clear</Button>
-                        <Button color='primary' onClick={handleAdd} disabled={!cmdName.trim() || !cmdUsage.trim()}>Add Command</Button>
-                    </div>
+
+                <FormField label='Category' description="Used to group commands">
+                    <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder='General' />
+                </FormField>
+
+                <FormField label='Aliases' description="Comma-separated alternative trigger words">
+                    <Input
+                        value={aliasesRaw}
+                        onChange={(e) => setAliasesRaw(e.target.value)}
+                        placeholder='p, pong'
+                    />
+                </FormField>
+
+                <div className='flex justify-end items-center pt-2 gap-3'>
+                    <Button variant='outlined' onClick={resetBuilder}>Clear</Button>
+                    <Button color='primary' onClick={handleAdd} disabled={!command.trim()}>Add Command</Button>
                 </div>
             </div>
 
             <div className='flex flex-col gap-4'>
-                {fields.length === 0 && <div className='text-gray-500'>No commands added yet.</div>}
+                {fields.length === 0 && <div className='text-gray-500 text-center py-4'>No commands added yet.</div>}
                 {fields.map((field, idx) => (
                     <CommandPreviewCard key={field.id} index={idx} data={field} onRemove={() => remove(idx)} />
                 ))}

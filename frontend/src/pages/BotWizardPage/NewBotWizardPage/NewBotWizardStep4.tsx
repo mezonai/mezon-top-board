@@ -1,77 +1,64 @@
 import { useFormContext } from 'react-hook-form'
-import { WizardForm, useMockIntegrationOptions, IntegrationKey } from '../MockData'
-import IntegrationOptionCard from './components/IntegrationOptionCard'
+import { Checkbox, Divider } from 'antd'
+import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
+import { NESTJS_EVENTS } from '@app/constants/botWizard.constant'
 
 export default function NewBotWizardStep4() {
-	const { setValue, watch } = useFormContext<WizardForm>()
-	const { options, isLoading, isError } = useMockIntegrationOptions()
-	const integrations = watch('integrations')
+    const { setValue, watch } = useFormContext<BotWizardRequest>()
+    const selected = watch('events') || []
 
-	const isChecked = (key: IntegrationKey) => {
-		switch (key) {
-			case 'database': return integrations.database 
-			case 'externalApi': return integrations.apiClientEnabled
-			case 'webhook': return integrations.webhookEnabled
-			case 'logging': return integrations.loggingEnabled
-			case 'analytics': return integrations.analyticsEnabled
-			case 'caching': return integrations.cacheEnabled
-		}
-	}
+    const toggle = (key: string, checked: boolean) => {
+        let current = [...selected]
+        
+        if (checked) {
+            current.push({ eventName: key, eventType: '' })
+        } else {
+            current = current.filter((e) => e.eventName !== key)
+        }
+        
+        setValue('events', current, { shouldValidate: true, shouldDirty: true })
+    }
 
-	const toggle = (key: IntegrationKey, checked: boolean) => {
-		switch (key) {
-			case 'database':
-				setValue('integrations.database', checked)
-				break
-			case 'externalApi':
-				setValue('integrations.apiClientEnabled', checked)
-				break
-			case 'webhook':
-				setValue('integrations.webhookEnabled', checked)
-				break
-			case 'logging':
-				setValue('integrations.loggingEnabled', checked)
-				break
-			case 'analytics':
-				setValue('integrations.analyticsEnabled', checked)
-				break
-			case 'caching':
-				setValue('integrations.cacheEnabled', checked)
-				break
-		}
-	}
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const allEvents = NESTJS_EVENTS.map(e => ({ eventName: e.value, eventType: '' }))
+            setValue('events', allEvents, { shouldValidate: true })
+        } else {
+            setValue('events', [], { shouldValidate: true })
+        }
+    }
 
-	return (
-		<div className='flex flex-col gap-4'>
-			{isLoading && <div className='text-gray-500 text-sm'>Loading integrations…</div>}
-			{isError && <div className='text-red-500 text-sm'>Failed to load integrations.</div>}
-			{!isLoading && !isError && (
-				<div className='grid grid-cols-1 gap-4 min-md:grid-cols-2'>
-					{options.map((opt) => {
-						const checked = isChecked(opt.key)
-						if (opt.key === 'database') {
-							return (
-								<IntegrationOptionCard
-									key={opt.key}
-									title={opt.title}
-									description={opt.description}
-									checked={checked}
-									onChange={(checked) => toggle(opt.key, checked)}
-								/>
-							)
-						}
-						return (
-							<IntegrationOptionCard
-								key={opt.key}
-								title={opt.title}
-								description={opt.description}
-								checked={checked}
-								onChange={(checked) => toggle(opt.key, checked)}
-							/>
-						)
-					})}
-				</div>
-			)}
-		</div>
-	)
+    const isSelected = (key: string) => selected.some((e) => e.eventName === key)
+
+    const isAllSelected = selected.length === NESTJS_EVENTS.length && NESTJS_EVENTS.length > 0
+    const isIndeterminate = selected.length > 0 && selected.length < NESTJS_EVENTS.length
+
+    return (
+        <div className='flex flex-col gap-4'>
+            <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">Available Gateway Events</span>
+                <Checkbox 
+                    checked={isAllSelected}
+                    indeterminate={isIndeterminate}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                >
+                    Select All
+                </Checkbox>
+            </div>
+            
+            <Divider />
+
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-4'>
+                {NESTJS_EVENTS.map((ev) => (
+                    <Checkbox
+                        key={ev.value}
+                        checked={isSelected(ev.value)}
+                        onChange={(e) => toggle(ev.value, e.target.checked)}
+                    >
+                        {ev.label}
+                    </Checkbox>
+                ))}
+            </div>
+        </div>
+    )
 }

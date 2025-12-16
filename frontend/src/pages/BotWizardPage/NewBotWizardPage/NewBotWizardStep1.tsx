@@ -1,38 +1,35 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
-import { Input } from 'antd'
-import { WizardForm } from '../MockData'
+import { Input, Select } from 'antd'
+import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
+import { LANGUAGE_OPTIONS } from '@app/constants/botWizard.constant'
 
 export default function NewBotWizardStep1() {
-    const { control, formState: { errors } } = useFormContext<WizardForm>()
+    const { control, formState: { errors } } = useFormContext<BotWizardRequest>()
 
     return (
         <div className='flex flex-col gap-4'>
-            <FormField label='Bot Name' errorText={errors.botName?.message} description='Name your bot'>
-                <Controller
-                    control={control}
-                    name='botName'
-                    rules={{ required: 'Bot name is required' }}
-                    render={({ field }) => <Input {...field} placeholder='MezonBot' />}
-                />
-            </FormField>
+            <div className='grid grid-cols-1'>
+                <FormField label='Bot Name' errorText={errors.botName?.message} description='Name your bot'>
+                    <Controller
+                        control={control}
+                        name='botName'
+                        rules={{ required: 'Bot name is required' }}
+                        render={({ field }) => <Input {...field} placeholder='MezonBot' />}
+                    />
+                </FormField>
 
-            <FormField label='Description' errorText={errors.description?.message} description='Short description'>
-                <Controller
-                    control={control}
-                    name='description'
-                    render={({ field }) => <Input.TextArea {...field} rows={4} placeholder='What does your bot do?' />}
-                />
-            </FormField>
-
-            <FormField label='Prefix' errorText={errors.prefix?.message} description='Command prefix'>
-                <Controller
-                    control={control}
-                    name='prefix'
-                    rules={{ required: 'Prefix is required' }}
-                    render={({ field }) => <Input {...field} placeholder='!bot' />}
-                />
-            </FormField>
+                <FormField label='Language' errorText={errors.language?.message} description='Framework language'>
+                    <Controller
+                        control={control}
+                        name='language'
+                        rules={{ required: 'Language is required' }}
+                        render={({ field }) => (
+                            <Select {...field} options={LANGUAGE_OPTIONS} placeholder="Select language" />
+                        )}
+                    />
+                </FormField>
+            </div>
         </div>
     )
 }

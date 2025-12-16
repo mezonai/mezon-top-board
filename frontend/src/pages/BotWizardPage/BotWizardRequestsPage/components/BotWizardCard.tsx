@@ -1,71 +1,95 @@
-import { Tag } from 'antd'
+import { message, Tag, Tooltip } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import MtbButton from '@app/mtb-ui/Button'
-import { BotWizardResponse, WizardStatus } from '../../MockData'
 import { useState } from 'react'
 import BotWizardDetailModal from './BotWizardDetailModal'
-import IntegrationTags from './IntegrationTags'
+import { WizardStatus } from '@app/enums/botWizard.enum'
+import { TempFile } from '@app/types/tempFile.types'
+import { useLazyTempFilesDownloadQuery } from '@app/services/api/tempFile/tempStorage'
+import { 
+    FileZipOutlined, 
+    CalendarOutlined, 
+    DownloadOutlined, 
+    InfoCircleOutlined 
+} from '@ant-design/icons'
+import { formatDate } from '@app/utils/date'
+import { getFileStatus, getStatusColor } from '../helpers'
 
-const statusColor: Record<WizardStatus, string> = {
-    PROCESSING: 'blue',
-    COMPLETED: 'green',
-    EXPIRED: 'red',
+interface BotWizardCardProps {
+    item: TempFile;
 }
 
-export default function BotWizardCard({ item }: { item: BotWizardResponse }) {
+export default function BotWizardCard({ item }: BotWizardCardProps) {
     const [open, setOpen] = useState(false)
-    const created = new Date(item.createdAt)
-    const actions = (
-        <>
-            <MtbButton size='large' color='primary' variant='outlined' onClick={() => setOpen(true)}>View Details</MtbButton>
-            {item.status === WizardStatus.Completed && (
-                <MtbButton size='large' color='primary' variant='solid' className='ml-2'>Download .zip</MtbButton>
-            )}
-        </>
-    )
+    const [downloadTrigger, { isLoading: isDownloading }] = useLazyTempFilesDownloadQuery()
+    
+    const status = getFileStatus(item);
+    const isExpired = status === WizardStatus.Expired;
+
+    const handleDownload = async () => {
+        if (isExpired) return;
+        try {
+            const blob = await downloadTrigger({ filePath: encodeURIComponent(item.filePath) }).unwrap()
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', item.fileName)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+        } catch (err) {
+            message.error('Failed to download file. Please try again later.')
+        }
+    }
 
     return (
         <>
-            <div className='rounded-xl p-5 shadow-sm hover:shadow-lg transition-shadow bg-white border border-gray-100 flex flex-col gap-3'>
+            <div className='p-5 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col gap-4'>
                 <div className='flex items-start justify-between gap-3'>
-                    <div className='min-w-0'>
-                        <MtbTypography variant='h3' customClassName='truncate'>{item.name}</MtbTypography>
-                        <MtbTypography variant='p' customClassName='!pl-0 text-gray-500 truncate'>
-                            {item.description}
-                        </MtbTypography>
-                    </div>
-                    <Tag color={statusColor[item.status]} className='text-sm capitalize'>{item.status}</Tag>
-                </div>
-
-                <div className='grid grid-cols-2 gap-3 text-sm text-gray-600'>
-                    {item.prefix && (
-                        <div>
-                            <span className='text-gray-400'>Prefix:</span> <span className='font-medium'>{item.prefix}</span>
+                    <div className='flex items-center gap-3 min-w-0'>
+                        <div className='w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500'>
+                            <FileZipOutlined style={{ fontSize: '20px' }} />
                         </div>
-                    )}
-                    <div>
-                        <span className='text-gray-400'>Commands:</span> <span className='font-medium'>{item.commands.length}</span>
+                        <div className='min-w-0 flex flex-col'>
+                            <MtbTypography variant='h4' customClassName='truncate !mb-0' label={item.fileName} />
+                            <span className="text-xs text-gray-400">{item.mimeType}</span>
+                        </div>
                     </div>
-                    <div>
-                        <span className='text-gray-400'>Events:</span> <span className='font-medium'>{item.events.length}</span>
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>Integrations:</span>
-                        <IntegrationTags integrations={item.integrations} className='ml-2' />
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>.env pairs:</span> <span className='font-medium'>{item.envPairs.length}</span>
-                    </div>
-                    <div>
-                        <span className='text-gray-400'>Created:</span> <span className='font-medium'>{created.toLocaleString()}</span>
-                    </div>
+                    <Tag color={getStatusColor(status)} className='m-0 capitalize'>
+                        {status.toLowerCase()}
+                    </Tag>
                 </div>
 
-                <div className='pt-2'>
-                    {actions}
+                <div className='flex items-center gap-2 text-sm text-gray-500 bg-gray-50 p-2 rounded-md'>
+                    <CalendarOutlined />
+                    <span>Created: <span className='font-medium text-gray-700'>{formatDate(item.createdAt)}</span></span>
+                </div>
+
+                <div className='flex flex-wrap gap-2'>
+                    <Tooltip title="View file metadata">
+                        <MtbButton 
+                            variant='outlined' 
+                            onClick={() => setOpen(true)}
+                            icon={<InfoCircleOutlined />}
+                        >
+                            Details
+                        </MtbButton>
+                    </Tooltip>
+
+                    {!isExpired && (
+                        <MtbButton 
+                            color='primary' 
+                            variant='solid' 
+                            onClick={handleDownload}
+                            loading={isDownloading}
+                            icon={<DownloadOutlined />}
+                        >
+                            Download
+                        </MtbButton>
+                    )}
                 </div>
             </div>
-            <BotWizardDetailModal open={open} onClose={() => setOpen(false)} item={item} />
+            <BotWizardDetailModal open={open} onClose={() => setOpen(false)} item={item} status={status} />
         </>
     )
 }
