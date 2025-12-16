@@ -20,10 +20,10 @@ const useWebTitle = () => {
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-
+  
   const routePath = getRouteMatchPath(flattenRoutes(routePaths).map((e) => ({ path: e.path })) || [], location.pathname)
   const route = flattenRoutes(routePaths).find((route) => route.path === routePath);
-
+  
   const path = location.pathname.split('/').filter((i) => i)
   let pageName = route?.strLabel || path[path.length - 1] || 'Home'
 
