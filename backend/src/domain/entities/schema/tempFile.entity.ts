@@ -3,10 +3,12 @@ import {
     Entity,
     ManyToOne,
     JoinColumn,
+    OneToOne,
 } from "typeorm";
 
 import { BaseSoftDelete } from "../base";
 import { User } from "@domain/entities/schema/user.entity";
+import { BotWizard } from "@domain/entities/schema/botWizard.entity";
 
 @Entity()
 export class TempFile extends BaseSoftDelete {
@@ -28,4 +30,11 @@ export class TempFile extends BaseSoftDelete {
     @ManyToOne(() => User, (user) => user.tempFiles, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     public owner: User;
+
+    @Column({ nullable: true, unique: true })
+    public botWizardId: string;
+
+    @OneToOne(() => BotWizard, (bot) => bot.tempFile, { onDelete: "CASCADE", })
+    @JoinColumn({ name: "botWizardId" })
+    public botWizard: BotWizard;
 }

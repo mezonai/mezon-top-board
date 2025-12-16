@@ -10,6 +10,7 @@ import { Role } from "@domain/common/enum/role";
 import { App, Link, Media, Rating, TempFile } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
+import { BotWizard } from "@domain/entities/schema/botWizard.entity";
 
 @Entity()
 @Unique(["email"])
@@ -56,4 +57,7 @@ export class User extends BaseSoftDelete {
 
     @OneToMany(() => TempFile, (file) => file.owner)
     public tempFiles: TempFile[];
+
+    @OneToMany(() => BotWizard, (bot) => bot.owner)
+    public botWizards: BotWizard[];
 }
