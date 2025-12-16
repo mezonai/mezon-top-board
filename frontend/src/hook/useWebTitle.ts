@@ -6,7 +6,7 @@ import { IUserStore } from '@app/store/user'
 import { RoutePath } from '@app/types/RoutePath.types'
 import { fillHbsFormat } from '@app/utils/stringHelper'
 import { getRouteMatchPath } from '@app/utils/uri'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
@@ -20,10 +20,23 @@ const useWebTitle = () => {
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-  
-  const routePath = getRouteMatchPath(flattenRoutes(routePaths).map((e) => ({ path: e.path })) || [], location.pathname)
-  const route = flattenRoutes(routePaths).find((route) => route.path === routePath);
-  
+
+  const flattenedRoutes = useMemo(() => flattenRoutes(routePaths), [])
+
+  const routePath = useMemo(
+    () =>
+      getRouteMatchPath(
+        flattenedRoutes.map((e) => ({ path: e.path })),
+        location.pathname
+      ),
+    [flattenedRoutes, location.pathname]
+  )
+
+  const route = useMemo(
+    () => flattenedRoutes.find((r) => r.path === routePath),
+    [flattenedRoutes, routePath]
+  )
+
   const path = location.pathname.split('/').filter((i) => i)
   let pageName = route?.strLabel || path[path.length - 1] || 'Home'
 
