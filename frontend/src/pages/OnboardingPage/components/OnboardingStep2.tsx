@@ -73,7 +73,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <MtbTypography variant='h2' customClassName='text-primary mb-0'>
                 Profile Information
               </MtbTypography>
-              <MtbTypography variant='p' customClassName='text-text-secondary text-sm mt-0'>
+              <MtbTypography variant='p' customClassName='text-text-secondary text-sm mt-0 !font-normal'>
                 Your information has been pre-filled from your Mezon account
               </MtbTypography>
             </div>
@@ -114,7 +114,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
         </FormField>
         
         <FormField label='Email'>
-          <Input value={userResponse?.data?.email} disabled />
+          <Input value={userResponse?.data?.email} className='!text-text-secondary' disabled />
         </FormField>
         
         <FormField label='Bio (Optional)' errorText={errors.bio?.message}>
