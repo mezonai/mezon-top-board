@@ -14,6 +14,7 @@ const tailwindPreset: Config = {
           sidebar: 'var(--bg-sidebar)',
           body: 'var(--bg-body)',
           'table-header': 'var(--bg-table-header)',
+          hover: 'var(--bg-hover)',
         },
         text: {
           primary: 'var(--text-primary)',

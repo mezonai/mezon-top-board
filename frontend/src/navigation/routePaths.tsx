@@ -62,7 +62,7 @@ export const routePaths: RoutePath[] = [
     path: '/profile',
     element: <ProfilePage></ProfilePage>,
     strLabel: 'My Profile',
-    isShowMenu: true,
+    isShowMenu: false,
     requireAuth: true
   },
   {
