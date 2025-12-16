@@ -10,23 +10,25 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
-const flattenRoutes = (routes: RoutePath[]): RoutePath[] =>
-  routes.flatMap((r) => [
-    r,
-    ...(r.children ? flattenRoutes(r.children) : []),
-  ])
-
 const useWebTitle = () => {
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
 
-  const flattenedRoutes = useMemo(() => flattenRoutes(routePaths), [])
+  const flattenedRoutes = useMemo<RoutePath[]>(() => {
+    const flatten = (routes: RoutePath[]): RoutePath[] =>
+      routes.flatMap((r) => [
+        r,
+        ...(r.children ? flatten(r.children) : []),
+      ])
+
+    return flatten(routePaths)
+  }, [])
 
   const routePath = useMemo(
     () =>
       getRouteMatchPath(
-        flattenedRoutes.map((e) => ({ path: e.path })),
+        flattenedRoutes.map((r) => ({ path: r.path })),
         location.pathname
       ),
     [flattenedRoutes, location.pathname]
