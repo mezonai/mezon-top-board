@@ -23,7 +23,7 @@ const BadgeStatus: React.FC<BadgeStatusProps> = ({ status, color, className }) =
       <span
         className={cn(
           'absolute block w-48 py-1 top-4 -right-6',
-          'text-xs font-bold uppercase tracking-wider text-center text-white',
+          'text-[9px] font-bold uppercase tracking-wider text-center text-white',
           '-rotate-45 shadow-sm',
           bgClass
         )}

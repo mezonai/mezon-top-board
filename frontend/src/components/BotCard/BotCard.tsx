@@ -49,9 +49,9 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
     <div
       className={cn(
         'card-base',
+        'border-border border rounded-lg shadow-md',
         'flex flex-col gap-6 p-8 relative',
         'cursor-pointer transition-all',
-        'hover:shadow-md hover:border-primary-border'
       )}
       onClick={canNavigateOnClick ? () => navigate(`/bot/${data?.id}`) : undefined}
     >
