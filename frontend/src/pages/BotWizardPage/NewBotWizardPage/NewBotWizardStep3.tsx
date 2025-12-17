@@ -1,40 +1,58 @@
 import { useFormContext } from 'react-hook-form'
-import { Checkbox, Divider } from 'antd'
-import { WizardForm, useMockWizardEvents } from '../MockData'
+import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
+import { useBotGeneratorControllerGetIntegrationsQuery } from '@app/services/api/botGenerator/botGenerator'
+import { Checkbox, Card, Spin } from 'antd'
 
 export default function NewBotWizardStep3() {
-    const { setValue, watch } = useFormContext<WizardForm>()
-    const selected = watch('events') || []
-    const { groups, isLoading, isError } = useMockWizardEvents()
+    const { setValue, watch } = useFormContext<BotWizardRequest>()
+    const language = watch('language') || 'nestjs'
+    const selectedIntegrations = watch('integrations') || []
 
-    const toggle = (key: string, checked: boolean) => {
-        const next = new Set(selected)
-        if (checked) next.add(key)
-        else next.delete(key)
-        setValue('events', Array.from(next))
+    const { data: options = [], isLoading, isError } = useBotGeneratorControllerGetIntegrationsQuery(
+        { language },
+        { skip: !language }
+    )
+
+    const toggle = (value: string, checked: boolean) => {
+        const current = new Set(selectedIntegrations)
+        if (checked) current.add(value)
+        else current.delete(value)
+        setValue('integrations', Array.from(current))
     }
 
+    if (isLoading) return <div className="flex justify-center p-10"><Spin tip="Loading integrations..." /></div>
+    if (isError) return <div className="text-red-500">Failed to load integrations for {language}.</div>
+
     return (
-        <div className='flex flex-col gap-6'>
-            {isLoading && <div className='text-gray-500 text-sm'>Loading events…</div>}
-            {isError && <div className='text-red-500 text-sm'>Failed to load events.</div>}
-            {!isLoading && !isError && groups.map((group) => (
-                <div key={group.category}>
-                    <div className='font-semibold mb-2'>{group.category}</div>
-                    <div className='grid grid-cols-1 gap-2 min-md:grid-cols-2'>
-                        {group.events.map((ev) => (
-                            <Checkbox
-                                key={ev.key}
-                                checked={selected.includes(ev.key)}
-                                onChange={(e) => toggle(ev.key, e.target.checked)}
-                            >
-                                {ev.label}
-                            </Checkbox>
-                        ))}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <p className="text-sm mb-8 col-span-2 font-semibold">
+                Select the integrations you want to include in your bot.
+                Click on a card or checkbox to enable or disable an integration.
+            </p>
+            {options.map((opt) => (
+                <Card
+                    key={opt}
+                    hoverable
+                    className={`${selectedIntegrations.includes(opt) ? 'border-blue-500 bg-blue-50' : ''}`}
+                    onClick={() => toggle(opt, !selectedIntegrations.includes(opt))}
+                >
+                    <div className="flex items-center gap-3">
+                        <Checkbox
+                            checked={selectedIntegrations.includes(opt)}
+                            onChange={(e) => toggle(opt, e.target.checked)}
+                        />
+                        <div className="flex flex-col">
+                            <span className="font-semibold capitalize">{opt}</span>
+                            <span className="text-xs text-gray-500">Enable {opt} integration</span>
+                        </div>
                     </div>
-                    <Divider className='bg-gray-100' />
-                </div>
+                </Card>
             ))}
+            {!isLoading && options.length === 0 && (
+                <div className="text-gray-500 col-span-2 text-center">
+                    No integrations available for this language.
+                </div>
+            )}
         </div>
     )
 }

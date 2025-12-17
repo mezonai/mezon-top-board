@@ -1,55 +1,62 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Divider, Steps } from 'antd'
+import { useMemo, useState } from 'react'
+import { Divider, Steps, message } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import Button from '@app/mtb-ui/Button'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import NewBotWizardStep1 from './NewBotWizardStep1'
 import NewBotWizardStep2 from './NewBotWizardStep2'
 import NewBotWizardStep3 from './NewBotWizardStep3'
 import NewBotWizardStep4 from './NewBotWizardStep4'
 import NewBotWizardStep5 from './NewBotWizardStep5'
-import NewBotWizardStep6 from './NewBotWizardStep6'
-import { WizardForm, useMockWizardFormProgress } from '../MockData'
+import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
+import { useBotGeneratorControllerGenerateBotTemplateMutation } from '@app/services/api/botGenerator/botGenerator'
 
-const defaultValues: WizardForm = {
+const defaultValues: BotWizardRequest = {
     botName: '',
-    description: '',
-    prefix: '',
+    language: 'nestjs',
     commands: [],
+    integrations: [],
     events: [],
-    integrations: { 
-        database: false, 
-        cacheEnabled: false, 
-        apiClientEnabled: false,
-        webhookEnabled: false,
-        loggingEnabled: false,
-        analyticsEnabled: false,
-    },
-    envPairs: [],
+    templateJson: '',
 }
 
 function NewBotWizardPage() {
-    const methods = useForm<WizardForm>({ defaultValues, mode: 'onChange' })
+    const methods = useForm<BotWizardRequest>({ defaultValues, mode: 'onChange' })
     const [current, setCurrent] = useState(0)
-    const { isSubmitting, saveDraft, submit } = useMockWizardFormProgress()
+    const navigate = useNavigate()
+    
+    const [isRedirecting, setIsRedirecting] = useState(false)
+    const [generateBot, { isLoading: isSubmitting }] = useBotGeneratorControllerGenerateBotTemplateMutation()
 
     const steps = useMemo(
         () => [
-            { title: 'Bot Information', content: <NewBotWizardStep1 /> },
-            { title: 'Command Builder', content: <NewBotWizardStep2 /> },
-            { title: 'Event Subscription', content: <NewBotWizardStep3 /> },
-            { title: 'Integrations', content: <NewBotWizardStep4 /> },
-            { title: 'Environment', content: <NewBotWizardStep5 /> },
-            { title: 'Preview & Confirm', content: <NewBotWizardStep6 /> },
+            { title: 'Bot Info', content: <NewBotWizardStep1 /> },
+            { title: 'Commands', content: <NewBotWizardStep2 /> },
+            { title: 'Integrations', content: <NewBotWizardStep3 /> },
+            { title: 'Events', content: <NewBotWizardStep4 /> },
+            { title: 'Preview', content: <NewBotWizardStep5 /> },
         ],
         [],
     )
 
     const next = async () => {
-        // TODO(VALIDATION): add per-step validation
+        const isValid = await methods.trigger()
+        if (!isValid) return
+
         if (current === steps.length - 1) {
             const values = methods.getValues()
-            await submit(values)
+            try {
+                await generateBot(values).unwrap()
+                message.success('Request submitted successfully!')
+                setIsRedirecting(true)
+                setTimeout(() => {
+                    navigate('/bot-wizard')
+                }, 1000) 
+            } catch (error) {
+                message.error('Failed to submit request. Please try again.')
+                setIsRedirecting(false) 
+            }
             return
         }
         setCurrent((c) => Math.min(c + 1, steps.length - 1))
@@ -57,29 +64,36 @@ function NewBotWizardPage() {
 
     const prev = () => setCurrent((c) => Math.max(c - 1, 0))
 
-    const watched = methods.watch()
-    useEffect(() => {
-        const t = setTimeout(() => {
-            saveDraft(watched as WizardForm)
-        }, 600)
-        return () => clearTimeout(t)
-    }, [watched, saveDraft])
+    const isLoadingState = isSubmitting || isRedirecting
 
     return (
         <div className='w-full'>
             <MtbTypography variant='h2'>New Bot Wizard</MtbTypography>
-            <Divider className='bg-gray-100' />
+            <Divider className='bg-gray-300' />
 
             <FormProvider {...methods}>
-                <div className='flex flex-col gap-6'>
+                <div className='flex flex-col gap-6 max-w-4xl mx-auto'>
                     <Steps current={current} items={steps.map((s) => ({ title: s.title }))} />
-                    <div className='mt-4'>{steps[current].content}</div>
-                    <div className='flex justify-end gap-3'>
-                        <Button variant='outlined' onClick={prev} disabled={current === 0 || isSubmitting}>
+                    <div className='mt-4 min-h-[200px]'>
+                        {steps[current].content}
+                    </div>
+                    <div className='flex justify-end gap-3 mt-8 pb-10'>
+                        <Button 
+                            variant='outlined' 
+                            onClick={prev} 
+                            disabled={current === 0 || isLoadingState}
+                        >
                             Back
                         </Button>
-                        <Button color='primary' onClick={next} disabled={isSubmitting}>
-                            {current === steps.length - 1 ? (isSubmitting ? 'Submitting…' : 'Finish') : 'Next'}
+                        <Button 
+                            color='primary' 
+                            onClick={next} 
+                            disabled={isLoadingState} 
+                            loading={isLoadingState}
+                        >
+                            {current === steps.length - 1 
+                                ? (isRedirecting ? 'Redirecting...' : 'Finish') 
+                                : 'Next'}
                         </Button>
                     </div>
                 </div>

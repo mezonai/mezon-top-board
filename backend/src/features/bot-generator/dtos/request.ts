@@ -1,5 +1,7 @@
+import { PaginationQuery } from "@domain/common/dtos/request.dto";
+import { BotWizardStatus } from "@domain/common/enum/botWizardStatus";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class BotWizardRequest {
   @ApiProperty()
@@ -26,6 +28,11 @@ export class BotWizardRequest {
   @IsOptional()
   @IsArray()
   commands?: CommandWizardRequest[];
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  templateJson: string;
 }
 
 export class CommandWizardRequest {
@@ -60,4 +67,16 @@ export class EventWizardRequest {
   @IsOptional()
   @IsString()
   eventType: string;
+}
+
+export class GetOwnBotWizardRequest extends PaginationQuery {
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ required: false })
+  botName?: string;
+
+  @IsOptional()
+  @IsEnum(BotWizardStatus)
+  @ApiProperty({ required: false })
+  status?: BotWizardStatus;
 }

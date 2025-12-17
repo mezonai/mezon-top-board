@@ -1,0 +1,5 @@
+export enum WizardStatus {
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  EXPIRED = 'EXPIRED',
+}
