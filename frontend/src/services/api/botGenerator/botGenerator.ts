@@ -4,8 +4,6 @@ import type {
   BotGeneratorControllerGetBotWizardDetailApiArg,
   BotGeneratorControllerGenerateBotTemplateApiArg,
   BotGeneratorControllerGenerateBotTemplateApiResponse,
-  BotGeneratorControllerSearchBotWizardsApiResponse,
-  BotGeneratorControllerSearchBotWizardsApiArg,
   BotGeneratorControllerGetMyBotWizardsApiResponse,
   BotGeneratorControllerGetMyBotWizardsApiArg,
   BotGeneratorControllerGetLanguagesApiResponse,
@@ -32,16 +30,6 @@ export const botGeneratorService = api.injectEndpoints({
         query: (id) => ({
           url: `/api/bot-generator/${id}`,
           method: 'GET',
-        }),
-      }),
-
-    botGeneratorControllerSearchBotWizards: build.query<
-      BotGeneratorControllerSearchBotWizardsApiResponse,
-      BotGeneratorControllerSearchBotWizardsApiArg>({
-        query: (params) => ({
-          url: `/api/bot-generator/search`,
-          method: 'GET',
-          params,
         }),
       }),
 
@@ -81,8 +69,6 @@ export const {
   useBotGeneratorControllerGenerateBotTemplateMutation,
   useBotGeneratorControllerGetBotWizardDetailQuery,
   useLazyBotGeneratorControllerGetBotWizardDetailQuery,
-  useBotGeneratorControllerSearchBotWizardsQuery,
-  useLazyBotGeneratorControllerSearchBotWizardsQuery,
   useBotGeneratorControllerGetMyBotWizardsQuery,
   useLazyBotGeneratorControllerGetMyBotWizardsQuery,
   useBotGeneratorControllerGetIntegrationsQuery,

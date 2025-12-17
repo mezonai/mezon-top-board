@@ -1,6 +1,6 @@
 import { PaginationQuery } from "@domain/common/dtos/request.dto";
 import { BotWizardStatus } from "@domain/common/enum/botWizardStatus";
-import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class BotWizardRequest {
@@ -69,29 +69,14 @@ export class EventWizardRequest {
   eventType: string;
 }
 
-export class GetBotWizardRequest extends PaginationQuery {
-  @IsOptional()
-  @IsString()
-  @ApiProperty({ required: false })
-  ownerId?: string;
-
+export class GetOwnBotWizardRequest extends PaginationQuery {
   @IsOptional()
   @IsString()
   @ApiProperty({ required: false })
   botName?: string;
 
   @IsOptional()
-  @IsString()
-  @ApiProperty({ required: false })
-  language?: string;
-
-  @IsOptional()
   @IsEnum(BotWizardStatus)
   @ApiProperty({ required: false })
   status?: BotWizardStatus;
 }
-
-export class GetOwnBotWizardRequest extends OmitType(
-  GetBotWizardRequest,
-  ['ownerId'] as const,
-) {}

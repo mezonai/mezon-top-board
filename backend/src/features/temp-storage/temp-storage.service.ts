@@ -42,8 +42,8 @@ export class TempStorageService {
       tempFile.fileName = saveTempFileArgs.fileName;
 
       if (botWizardId) {
-      tempFile.botWizardId = botWizardId;
-    }
+        tempFile.botWizardId = botWizardId;
+      }
     }
 
     tempFile.mimeType = saveTempFileArgs.mimeType;
@@ -63,7 +63,7 @@ export class TempStorageService {
     tempFile.filePath = normalizedPath;
 
     await this.tempFileRepository.getRepository().save(tempFile);
-    
+
     return await this.botWizardRepository.update(botWizardId, { status: BotWizardStatus.COMPLETED });
   }
 

@@ -24,18 +24,9 @@ export type EventWizardRequest = {
   eventType?: string;
 };
 
-export type BotGeneratorControllerSearchBotWizardsApiResponse = HttpResponse<BotWizard[]>;
-export type BotGeneratorControllerSearchBotWizardsApiArg = BaseListApiArg & {
-  ownerId?: string;
-  botName?: string;
-  language?: string;
-  status?: string;
-};
-
 export type BotGeneratorControllerGetMyBotWizardsApiResponse = HttpResponse<BotWizard[]>;
 export type BotGeneratorControllerGetMyBotWizardsApiArg = BaseListApiArg & {
   botName?: string;
-  language?: string;
   status?: WizardStatus;
 };
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BotGeneratorJob } from '@features/job/bot-generator.job';
-import { BotWizardRequest, GetBotWizardRequest, GetOwnBotWizardRequest } from '@features/bot-generator/dtos/request';
+import { BotWizardRequest, GetOwnBotWizardRequest } from '@features/bot-generator/dtos/request';
 import { join } from 'path';
 import { promises } from 'fs';
-import { Brackets, EntityManager } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { BotWizard } from '@domain/entities/schema/botWizard.entity';
 import { BotWizardStatus } from '@domain/common/enum/botWizardStatus';
@@ -66,87 +66,15 @@ export class BotGeneratorService {
     return new Result({ data: botWizard })
   }
 
-  private async buildSearchQuery(
-    query: GetBotWizardRequest,
-    ownerCondition?: { ownerId: string },
-  ) {
-    const skip = (query.pageNumber - 1) * query.pageSize;
-    const take = query.pageSize;
-
-    const qb = this.botWizardRepository
-      .getRepository()
-      .createQueryBuilder('botWizard')
-      .select('botWizard.id')
-      .skip(skip)
-      .take(take);
-
-    if (ownerCondition) {
-      qb.andWhere('botWizard.ownerId = :ownerId', ownerCondition);
-    } else if (query.ownerId) {
-      qb.andWhere('botWizard.ownerId = :ownerId', { ownerId: query.ownerId });
-    }
-
-    if (query.botName) {
-      qb.andWhere(
-        'botWizard.botName ILIKE :botName',
-        { botName: `%${query.botName}%` },
-      );
-    }
-
-    if (query.language) {
-      qb.andWhere(
-        'botWizard.language = :language',
-        { language: query.language },
-      );
-    }
-
-    if (query.status) {
-      qb.andWhere(
-        'botWizard.status = :status',
-        { status: query.status },
-      );
-    }
-
-    const sortField =
-      query.sortField === 'name' ? 'botName' : query.sortField || 'createdAt';
-    const sortOrder = query.sortOrder || 'DESC';
-
-    qb.orderBy(`botWizard.${sortField}`, sortOrder as 'ASC' | 'DESC');
-
-    const [ids, total] = await qb.getManyAndCount();
-
-    const botWizardList = this.botWizardRepository
-      .getRepository()
-      .createQueryBuilder('botWizard')
-      .leftJoinAndSelect('botWizard.tempFile', 'tempFile')
-      .where('botWizard.id IN (:...ids)', {
-        ids: ids.length ? ids.map(i => i.id) : ['00000000-0000-0000-0000-000000000000'],
-      })
-      .orderBy(`botWizard.${sortField}`, sortOrder as 'ASC' | 'DESC');
-
-    return { botWizardList, total };
-  }
-
-  async getListbotWizards(query: GetBotWizardRequest) {
-    const { botWizardList, total } = await this.buildSearchQuery(query);
-
-    const data = await botWizardList.getMany();
-
-    return paginate<BotWizard, GetBotWizardResponse>(
-      [data, total],
-      query.pageSize,
-      query.pageNumber,
-      (entity) => Mapper(GetBotWizardResponse, entity),
-    );
-  }
-
   async getOwnListbotWizards(ownerId: string, query: GetOwnBotWizardRequest) {
-    const { botWizardList, total } = await this.buildSearchQuery(query, { ownerId });
-
-    const data = await botWizardList.getMany();
-
+    const inValidateSortField = query.sortField === 'name' ? 'botName' : query.sortField;
     return paginate<BotWizard, GetBotWizardResponse>(
-      [data, total],
+      () =>
+        this.botWizardRepository.findMany({
+          ...query,
+          sortField: inValidateSortField,
+          where: () => ({ ownerId, status: query.status }),
+        }),
       query.pageSize,
       query.pageNumber,
       (entity) => Mapper(GetBotWizardResponse, entity),

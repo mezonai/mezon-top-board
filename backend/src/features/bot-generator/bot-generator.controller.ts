@@ -7,22 +7,16 @@ import {
   Query,
 } from '@nestjs/common';
 import { BotGeneratorService } from '@features/bot-generator/bot-generator.service';
-import {
-  BotWizardRequest,
-  GetBotWizardRequest,
-  GetOwnBotWizardRequest,
-} from '@features/bot-generator/dtos/request';
+import { BotWizardRequest, GetOwnBotWizardRequest } from '@features/bot-generator/dtos/request';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { GetUserFromHeader } from '@libs/decorator/getUserFromHeader.decorator';
 import { User } from '@domain/entities';
-import { RoleRequired } from '@libs/decorator/roles.decorator';
-import { Role } from '@domain/common/enum/role';
 
 @Controller('bot-generator')
 @ApiTags('BotGenerator')
 @ApiBearerAuth()
 export class BotGeneratorController {
-  constructor(private readonly service: BotGeneratorService) { }
+  constructor(private readonly service: BotGeneratorService) {}
 
   @Post()
   @ApiBearerAuth()
@@ -41,13 +35,6 @@ export class BotGeneratorController {
   @ApiBearerAuth()
   async getLanguagesList() {
     return await this.service.getLanguagesList();
-  }
-
-  @Get('search')
-  @RoleRequired([Role.ADMIN])
-  @ApiBearerAuth()
-  async getListBotWizards(@Query() query: GetBotWizardRequest) {
-    return await this.service.getListbotWizards(query);
   }
 
   @Get('my-wizards')

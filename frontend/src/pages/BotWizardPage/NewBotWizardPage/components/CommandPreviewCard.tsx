@@ -32,13 +32,11 @@ export default function CommandPreviewCard({ data, onRemove }: Props) {
                     </Button>
                 </Tooltip>
             </div>
-
             {data.description && (
                 <div className='text-xs leading-relaxed line-clamp-4'>
                     {data.description}
                 </div>
             )}
-
             {aliases.length > 0 && (
                 <div className='flex flex-wrap gap-2 pt-2 border-t border-gray-100 mt-2'>
                     {aliases.map((a) => (
