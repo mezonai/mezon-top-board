@@ -41,7 +41,13 @@ export class CleanupTempFileService {
           }
         }
 
-        await this.botWizardRepository.update(file.botWizardId, { status: BotWizardStatus.EXPIRED });
+        const botWizard = await this.botWizardRepository.findOne({
+          where: { tempFileId: file.id },
+        });
+
+        if (botWizard) {
+          await this.botWizardRepository.update(botWizard.id, { status: BotWizardStatus.EXPIRED });
+        }
       } catch (err) {
         this.logger.error(`Failed to delete temp ${file.id}`, err);
       }

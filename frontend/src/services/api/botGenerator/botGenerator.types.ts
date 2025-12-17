@@ -36,7 +36,7 @@ export type BotGeneratorControllerGetBotWizardDetailApiArg = {
 };
 
 export type BotGeneratorControllerGenerateBotTemplateApiArg = BotWizardRequest;
-export type BotGeneratorControllerGenerateBotTemplateApiResponse = HttpResponse<unknown>;
+export type BotGeneratorControllerGenerateBotTemplateApiResponse = string;
 
 export type BotGeneratorControllerGetIntegrationsApiArg = {
   language: string;

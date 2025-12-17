@@ -74,6 +74,7 @@ export class BotGeneratorService {
           ...query,
           sortField: inValidateSortField,
           where: () => ({ ownerId, status: query.status }),
+          relations: ['tempFile'],
         }),
       query.pageSize,
       query.pageNumber,
