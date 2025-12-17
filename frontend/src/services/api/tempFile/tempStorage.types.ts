@@ -2,20 +2,20 @@ import { HttpResponse } from '@app/types/API.types';
 import { BaseListApiArg } from '@app/types/common.types';
 import { TempFile } from '@app/types/tempFile.types';
 
-export type TempStorageSearchApiArg = BaseListApiArg & {
+export type TempStorageControllerSearchTempFileshApiArg = BaseListApiArg & {
   ownerId?: string;
 };
-export type TempStorageSearchApiResponse = HttpResponse<TempFile[]>;
+export type TempStorageControllerSearchTempFilesApiResponse = HttpResponse<TempFile[]>;
 
-export type TempStorageGetFileApiArg = {
+export type TempStorageControllerGetTempFileApiArg = {
   id: string;
 };
-export type TempStorageGetFileApiResponse = HttpResponse<TempFile>;
+export type TempStorageControllerGetTempFileApiResponse = HttpResponse<TempFile>;
 
 export type TempFilesDownloadApiArg = {
   filePath: string;
 };
 export type TempFilesDownloadApiResponse = Blob;
 
-export type TempStorageMyFilesApiArg = BaseListApiArg;
-export type TempStorageMyFilesApiResponse = HttpResponse<TempFile[]>;
+export type TempStorageControllerGetMyTempFilesApiArg = BaseListApiArg;
+export type TempStorageControllerGetMyTempFilesApiResponse = HttpResponse<TempFile[]>;

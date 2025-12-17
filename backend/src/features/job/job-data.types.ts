@@ -10,4 +10,5 @@ export type MarketingMailJobData = {
 export type BotGeneratorJobData = {
   payload: BotWizardRequest;
   ownerId: string;
+  botWizardId: string;
 };

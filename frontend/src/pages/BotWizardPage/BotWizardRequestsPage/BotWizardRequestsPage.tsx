@@ -4,15 +4,14 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
 import { LoadingOutlined } from '@ant-design/icons'
 import BotWizardCard from './components/BotWizardCard'
-import { useTempStorageMyFilesQuery } from '@app/services/api/tempFile/tempStorage'
 import { WizardStatus } from '@app/enums/botWizard.enum'
-import { getFileStatus } from './helpers' 
+import { useBotGeneratorControllerGetMyBotWizardsQuery } from '@app/services/api/botGenerator/botGenerator'
 
 const statusOptions: IOption[] = [
     { label: 'All', value: 'all' },
-    { label: 'Processing', value: WizardStatus.Processing },
-    { label: 'Completed', value: WizardStatus.Completed },
-    { label: 'Expired', value: WizardStatus.Expired },
+    { label: 'Processing', value: WizardStatus.PROCESSING },
+    { label: 'Completed', value: WizardStatus.COMPLETED },
+    { label: 'Expired', value: WizardStatus.EXPIRED },
 ]
 
 const pageOptions = [6, 9, 12]
@@ -28,29 +27,16 @@ export default function BotWizardRequestsPage() {
         pageSize: pageSize,
         sortField: 'createdAt',
         sortOrder: 'DESC',
-    }), [page, pageSize])
+        status: statusFilter.value === 'all' ? undefined : statusFilter.value as WizardStatus,
+    }), [page, pageSize, statusFilter])
 
     const { 
         data: apiData, 
         isLoading, 
         isFetching, 
-    } = useTempStorageMyFilesQuery(queryArgs, {
+    } = useBotGeneratorControllerGetMyBotWizardsQuery(queryArgs, {
         refetchOnMountOrArgChange: true, 
     })
-
-    const processedList = useMemo(() => {
-        if (!apiData?.data) return []
-        
-        let list = apiData.data;
-
-        if (statusFilter.value !== 'all') {
-            list = list.filter(item => {
-                const status = getFileStatus(item);
-                return status === statusFilter.value;
-            })
-        }
-        return list
-    }, [apiData, statusFilter])
 
     useEffect(() => {
         setPage(1)
@@ -98,13 +84,13 @@ export default function BotWizardRequestsPage() {
                 <div className='flex items-center justify-center h-64'>
                     <LoadingOutlined style={{ fontSize: 32 }} spin />
                 </div>
-            ) : (processedList.length === 0 ? (
+            ) : (apiData?.data.length === 0 ? (
                 <div className='text-center text-gray-500 py-12'>No requests found.</div>
             ) : (
                 <>
                     <div className='grid grid-cols-1 gap-6'>
                         <div className={`grid grid-cols-1 gap-6 w-full ${isFetching ? 'opacity-50 pointer-events-none' : ''}`}>
-                            {processedList.map((item) => (
+                            {apiData?.data.map((item) => (
                                 <BotWizardCard key={item.id} item={item} />
                             ))}
                         </div>

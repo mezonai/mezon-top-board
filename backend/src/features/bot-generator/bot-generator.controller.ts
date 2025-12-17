@@ -4,23 +4,29 @@ import {
   Body,
   Get,
   Param,
+  Query,
 } from '@nestjs/common';
 import { BotGeneratorService } from '@features/bot-generator/bot-generator.service';
-import { BotWizardRequest } from '@features/bot-generator/dtos/request';
+import {
+  BotWizardRequest,
+  GetBotWizardRequest,
+  GetOwnBotWizardRequest,
+} from '@features/bot-generator/dtos/request';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { GetUserFromHeader } from '@libs/decorator/getUserFromHeader.decorator';
 import { User } from '@domain/entities';
-import { OAuth2Request } from '@features/auth/dtos/request';
+import { RoleRequired } from '@libs/decorator/roles.decorator';
+import { Role } from '@domain/common/enum/role';
 
 @Controller('bot-generator')
 @ApiTags('BotGenerator')
+@ApiBearerAuth()
 export class BotGeneratorController {
-
-  constructor(private readonly service: BotGeneratorService,) {}
+  constructor(private readonly service: BotGeneratorService) { }
 
   @Post()
   @ApiBearerAuth()
-  @ApiBody({ type: OAuth2Request })
+  @ApiBody({ type: BotWizardRequest })
   async createJob(@Body() payload: BotWizardRequest, @GetUserFromHeader() user: User) {
     return await this.service.genBotTemplate(payload, user.id);
   }
@@ -29,5 +35,33 @@ export class BotGeneratorController {
   @ApiBearerAuth()
   async getIntegrationsList(@Param('language') language: string) {
     return await this.service.getIntegrationsList(language);
+  }
+
+  @Get('languages')
+  @ApiBearerAuth()
+  async getLanguagesList() {
+    return await this.service.getLanguagesList();
+  }
+
+  @Get('search')
+  @RoleRequired([Role.ADMIN])
+  @ApiBearerAuth()
+  async getListBotWizards(@Query() query: GetBotWizardRequest) {
+    return await this.service.getListbotWizards(query);
+  }
+
+  @Get('my-wizards')
+  @ApiBearerAuth()
+  async getOwnListBotWizards(
+    @GetUserFromHeader() user: User,
+    @Query() query: GetOwnBotWizardRequest,
+  ) {
+    return await this.service.getOwnListbotWizards(user.id, query);
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  async getBotWizard(@Param('id') id: string) {
+    return await this.service.getBotWizard(id);
   }
 }

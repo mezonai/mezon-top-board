@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
-import { useBotGetIntegrationsQuery } from '@app/services/api/botGenerator/botGenerator'
+import { useBotGeneratorControllerGetIntegrationsQuery } from '@app/services/api/botGenerator/botGenerator'
 import { Checkbox, Card, Spin } from 'antd'
 
 export default function NewBotWizardStep3() {
@@ -8,7 +8,7 @@ export default function NewBotWizardStep3() {
     const language = watch('language') || 'nestjs'
     const selectedIntegrations = watch('integrations') || []
 
-    const { data: options = [], isLoading, isError } = useBotGetIntegrationsQuery(
+    const { data: options = [], isLoading, isError } = useBotGeneratorControllerGetIntegrationsQuery(
         { language },
         { skip: !language }
     )
@@ -25,7 +25,7 @@ export default function NewBotWizardStep3() {
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <p className="text-sm text-gray-500 mb-4 col-span-2">
+            <p className="text-sm mb-8 col-span-2 font-semibold">
                 Select the integrations you want to include in your bot.
                 Click on a card or checkbox to enable or disable an integration.
             </p>

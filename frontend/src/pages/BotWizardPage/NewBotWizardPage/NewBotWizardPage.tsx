@@ -10,7 +10,7 @@ import NewBotWizardStep3 from './NewBotWizardStep3'
 import NewBotWizardStep4 from './NewBotWizardStep4'
 import NewBotWizardStep5 from './NewBotWizardStep5'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
-import { useBotGenerateMutation } from '@app/services/api/botGenerator/botGenerator'
+import { useBotGeneratorControllerGenerateBotTemplateMutation } from '@app/services/api/botGenerator/botGenerator'
 
 const defaultValues: BotWizardRequest = {
     botName: '',
@@ -18,6 +18,7 @@ const defaultValues: BotWizardRequest = {
     commands: [],
     integrations: [],
     events: [],
+    templateJson: '',
 }
 
 function NewBotWizardPage() {
@@ -26,7 +27,7 @@ function NewBotWizardPage() {
     const navigate = useNavigate()
     
     const [isRedirecting, setIsRedirecting] = useState(false)
-    const [generateBot, { isLoading: isSubmitting }] = useBotGenerateMutation()
+    const [generateBot, { isLoading: isSubmitting }] = useBotGeneratorControllerGenerateBotTemplateMutation()
 
     const steps = useMemo(
         () => [
@@ -68,16 +69,15 @@ function NewBotWizardPage() {
     return (
         <div className='w-full'>
             <MtbTypography variant='h2'>New Bot Wizard</MtbTypography>
-            <Divider className='bg-gray-100' />
+            <Divider className='bg-gray-300' />
 
             <FormProvider {...methods}>
                 <div className='flex flex-col gap-6 max-w-4xl mx-auto'>
                     <Steps current={current} items={steps.map((s) => ({ title: s.title }))} />
-                    <div className='mt-4 min-h-[300px]'>
+                    <div className='mt-4 min-h-[200px]'>
                         {steps[current].content}
                     </div>
-                    <Divider />
-                    <div className='flex justify-end gap-3 pb-10'>
+                    <div className='flex justify-end gap-3 mt-8 pb-10'>
                         <Button 
                             variant='outlined' 
                             onClick={prev} 

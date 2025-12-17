@@ -2,10 +2,11 @@ import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
 import { Input, Select } from 'antd'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
-import { LANGUAGE_OPTIONS } from '@app/constants/botWizard.constant'
+import { useBotGeneratorControllerGetLanguagesQuery } from '@app/services/api/botGenerator/botGenerator'
 
 export default function NewBotWizardStep1() {
     const { control, formState: { errors } } = useFormContext<BotWizardRequest>()
+    const { data, isLoading } = useBotGeneratorControllerGetLanguagesQuery();
 
     return (
         <div className='flex flex-col gap-4'>
@@ -25,7 +26,7 @@ export default function NewBotWizardStep1() {
                         name='language'
                         rules={{ required: 'Language is required' }}
                         render={({ field }) => (
-                            <Select {...field} options={LANGUAGE_OPTIONS} placeholder="Select language" />
+                            <Select {...field} options={data?.map(lang => ({ label: lang.charAt(0).toUpperCase() + lang.slice(1), value: lang }))} placeholder="Select language" loading={isLoading} />
                         )}
                     />
                 </FormField>

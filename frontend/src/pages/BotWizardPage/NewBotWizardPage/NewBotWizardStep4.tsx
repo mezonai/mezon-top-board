@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import { Checkbox, Divider } from 'antd'
+import { Checkbox } from 'antd'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 import { NESTJS_EVENTS } from '@app/constants/botWizard.constant'
 
@@ -11,7 +11,12 @@ export default function NewBotWizardStep4() {
         let current = [...selected]
         
         if (checked) {
-            current.push({ eventName: key, eventType: '' })
+            const event = NESTJS_EVENTS.find(e => e.value === key)
+
+            current.push({
+                eventName: key,
+                eventType: event?.eventType,
+            })
         } else {
             current = current.filter((e) => e.eventName !== key)
         }
@@ -21,7 +26,7 @@ export default function NewBotWizardStep4() {
 
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            const allEvents = NESTJS_EVENTS.map(e => ({ eventName: e.value, eventType: '' }))
+            const allEvents = NESTJS_EVENTS.map(e => ({ eventName: e.value, eventType: e.eventType }))
             setValue('events', allEvents, { shouldValidate: true })
         } else {
             setValue('events', [], { shouldValidate: true })
@@ -36,8 +41,8 @@ export default function NewBotWizardStep4() {
     return (
         <div className='flex flex-col gap-4'>
             <div className="flex justify-between items-center">
-                <span className="font-semibold text-gray-700">Available Gateway Events</span>
-                <Checkbox 
+                <span className="font-semibold">Available Gateway Events</span>
+                <Checkbox
                     checked={isAllSelected}
                     indeterminate={isIndeterminate}
                     onChange={(e) => handleSelectAll(e.target.checked)}
@@ -45,10 +50,8 @@ export default function NewBotWizardStep4() {
                     Select All
                 </Checkbox>
             </div>
-            
-            <Divider />
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-4 border p-4 rounded-lg bg-bg-container mt-8'>
                 {NESTJS_EVENTS.map((ev) => (
                     <Checkbox
                         key={ev.value}

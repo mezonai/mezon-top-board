@@ -19,8 +19,8 @@ export class BotWizard extends BaseSoftDelete {
     @Column({ nullable: true, type: "enum", enum: Object.keys(BotWizardStatus) })
     public status: BotWizardStatus;
 
-    @Column({ type: "jsonb", nullable: true })
-    public templateJson: Record<string, string[]> | null;
+    @Column({ type: 'text', nullable: true })
+    public templateJson: string;
 
     @Column({ nullable: true })
     public ownerId: string;

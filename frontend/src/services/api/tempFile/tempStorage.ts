@@ -1,43 +1,42 @@
 import { api } from '../../apiInstance';
 import type {
-    TempStorageSearchApiResponse,
-    TempStorageSearchApiArg,
-    TempStorageMyFilesApiResponse,
-    TempStorageMyFilesApiArg,
-    TempStorageGetFileApiResponse,
-    TempStorageGetFileApiArg,
     TempFilesDownloadApiResponse,
-    TempFilesDownloadApiArg
+    TempFilesDownloadApiArg,
+    TempStorageControllerSearchTempFilesApiResponse,
+    TempStorageControllerSearchTempFileshApiArg,
+    TempStorageControllerGetMyTempFilesApiResponse,
+    TempStorageControllerGetMyTempFilesApiArg,
+    TempStorageControllerGetTempFileApiResponse,
+    TempStorageControllerGetTempFileApiArg
 } from './tempStorage.types';
 
 const injectedRtkApi = api.injectEndpoints({
     endpoints: (build) => ({
-        tempStorageSearch: build.query<TempStorageSearchApiResponse, TempStorageSearchApiArg>({
-            query: (queryArg) => ({
+        tempStorageControllerSearchTempFiles: build.query<
+        TempStorageControllerSearchTempFilesApiResponse,
+        TempStorageControllerSearchTempFileshApiArg
+        >({
+            query: (params) => ({
                 url: `/api/temp-storage/search`,
                 method: 'GET',
-                params: {
-                    pageSize: queryArg.pageSize,
-                    pageNumber: queryArg.pageNumber,
-                    sortField: queryArg.sortField,
-                    sortOrder: queryArg.sortOrder,
-                    ownerId: queryArg.ownerId
-                }
+                params
             })
         }),
-        tempStorageMyFiles: build.query<TempStorageMyFilesApiResponse, TempStorageMyFilesApiArg>({
-            query: (queryArg) => ({
+        tempStorageControllerGetMyTempFiles: build.query<
+        TempStorageControllerGetMyTempFilesApiResponse,
+        TempStorageControllerGetMyTempFilesApiArg
+        >({
+            query: (params) => ({
                 url: `/api/temp-storage/my-files`,
                 method: 'GET',
-                params: {
-                    pageSize: queryArg.pageSize,
-                    pageNumber: queryArg.pageNumber,
-                    sortField: queryArg.sortField,
-                    sortOrder: queryArg.sortOrder
-                }
+                params
             })
+
         }),
-        tempStorageGetFile: build.query<TempStorageGetFileApiResponse, TempStorageGetFileApiArg>({
+        tempStorageControllerGetTempFile: build.query<
+        TempStorageControllerGetTempFileApiResponse,
+        TempStorageControllerGetTempFileApiArg
+        >({
             query: (queryArg) => ({
                 url: `/api/temp-storage/${queryArg.id}`,
                 method: 'GET'
@@ -58,12 +57,12 @@ const injectedRtkApi = api.injectEndpoints({
 export { injectedRtkApi as tempStorageService };
 
 export const {
-    useTempStorageSearchQuery,
-    useLazyTempStorageSearchQuery,
-    useTempStorageMyFilesQuery,
-    useLazyTempStorageMyFilesQuery,
-    useTempStorageGetFileQuery,
-    useLazyTempStorageGetFileQuery,
+    useTempStorageControllerSearchTempFilesQuery,
+    useLazyTempStorageControllerSearchTempFilesQuery,
+    useTempStorageControllerGetMyTempFilesQuery,
+    useLazyTempStorageControllerGetMyTempFilesQuery,
+    useTempStorageControllerGetTempFileQuery,
+    useLazyTempStorageControllerGetTempFileQuery,
     useTempFilesDownloadQuery,
     useLazyTempFilesDownloadQuery
 } = injectedRtkApi;

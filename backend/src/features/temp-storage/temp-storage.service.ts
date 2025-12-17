@@ -1,7 +1,9 @@
 import { tempFilesRootDir } from '@config/files.config';
 import { Result } from '@domain/common/dtos/result.dto';
+import { BotWizardStatus } from '@domain/common/enum/botWizardStatus';
 import { SaveTempFileArgs } from '@domain/common/types/temp-file.types';
 import { TempFile } from '@domain/entities';
+import { BotWizard } from '@domain/entities/schema/botWizard.entity';
 import { GetOwnTempFileRequest, GetTempFileRequest } from '@features/temp-storage/dtos/request';
 import { GetTempFileResponse } from '@features/temp-storage/dtos/response';
 import { GenericRepository } from '@libs/repository/genericRepository';
@@ -16,18 +18,21 @@ import { EntityManager } from 'typeorm';
 @Injectable()
 export class TempStorageService {
   private readonly tempFileRepository: GenericRepository<TempFile>;
+  private readonly botWizardRepository: GenericRepository<BotWizard>;
   private readonly DEFAULT_EXPIRED_HOURS = 24;
 
   constructor(
     private manager: EntityManager,
   ) {
     this.tempFileRepository = new GenericRepository(TempFile, manager);
+    this.botWizardRepository = new GenericRepository(BotWizard, manager);
   }
 
-  async saveTemp(saveTempFileArgs: SaveTempFileArgs, ownerId: string) {
+  async saveTemp(saveTempFileArgs: SaveTempFileArgs, ownerId: string, botWizardId: string) {
     let tempFile = await this.tempFileRepository.getRepository().create({
       fileName: saveTempFileArgs.fileName,
-      ownerId
+      ownerId,
+      botWizardId,
     })
 
     if (saveTempFileArgs.id) {
@@ -35,13 +40,17 @@ export class TempStorageService {
       if (!tempFile) throw new BadRequestException(`Temp file not found`);
 
       tempFile.fileName = saveTempFileArgs.fileName;
+
+      if (botWizardId) {
+      tempFile.botWizardId = botWizardId;
+    }
     }
 
     tempFile.mimeType = saveTempFileArgs.mimeType;
     tempFile.expiredAt = moment().add(saveTempFileArgs.expiredHours || this.DEFAULT_EXPIRED_HOURS, 'hours').toDate();
 
     const absoluteDir = join(tempFilesRootDir, saveTempFileArgs.path || '');
-    
+
     if (!existsSync(absoluteDir)) {
       mkdirSync(absoluteDir, { recursive: true });
     }
@@ -53,7 +62,9 @@ export class TempStorageService {
 
     tempFile.filePath = normalizedPath;
 
-    return await this.tempFileRepository.getRepository().save(tempFile);
+    await this.tempFileRepository.getRepository().save(tempFile);
+    
+    return await this.botWizardRepository.update(botWizardId, { status: BotWizardStatus.COMPLETED });
   }
 
   async getTempFile(id: string) {

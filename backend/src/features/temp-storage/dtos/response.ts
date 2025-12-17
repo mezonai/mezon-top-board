@@ -16,3 +16,18 @@ export class GetTempFileResponse {
   @Expose()
   public createdAt: Date;
 }
+
+export class TempFileInBotWizardResponse {
+  @Expose()
+  public id: string;
+  @Expose()
+  public fileName: string;
+  @Expose()
+  public filePath: string;
+  @Expose()
+  public mimeType: string;
+  @Expose()
+  public expiredAt: Date;
+  @Expose()
+  public createdAt: Date;
+}

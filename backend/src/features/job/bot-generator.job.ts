@@ -27,7 +27,7 @@ export class BotGeneratorJob implements OnModuleInit {
     );
   }
 
-  async processJob(payload: BotWizardRequest, ownerId: string ) {
+  async processJob(payload: BotWizardRequest, ownerId: string, botWizardId: string) {
     const processor = WizardProcessorFactory.create(payload.language, payload);
     const zipBuffer = await processor.process();
 
@@ -38,12 +38,12 @@ export class BotGeneratorJob implements OnModuleInit {
       path: envConfig().BOT_GENERATED_FILE_DIR
     };
 
-    await this.tempStorageService.saveTemp(saveTempFileArgs, ownerId);
+    await this.tempStorageService.saveTemp(saveTempFileArgs, ownerId, botWizardId);
   }
 
   private async handle(data: BotGeneratorJobData) {
-    const { payload, ownerId } = data;
-    await this.processJob(payload, ownerId);
+    const { payload, ownerId, botWizardId } = data;
+    await this.processJob(payload, ownerId, botWizardId);
   }
 
   async addToQueue(data: BotGeneratorJobData) {
