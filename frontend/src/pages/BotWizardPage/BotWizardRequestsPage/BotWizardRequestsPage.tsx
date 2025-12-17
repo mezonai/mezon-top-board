@@ -49,7 +49,6 @@ export default function BotWizardRequestsPage() {
                     <MtbTypography variant='h2'>Bot Wizard Requests</MtbTypography>
                 </div>
             </div>
-
             <div className='flex items-center justify-between flex-wrap gap-4 pt-4'>
                 <Flex gap={10} align='center' wrap='wrap' className='w-full'>
                     <div className='flex items-center gap-2'>
@@ -79,7 +78,6 @@ export default function BotWizardRequestsPage() {
                 </Flex>
             </div>
             <Divider className='bg-gray-100' />
-            
             {isLoading ? (
                 <div className='flex items-center justify-center h-64'>
                     <LoadingOutlined style={{ fontSize: 32 }} spin />

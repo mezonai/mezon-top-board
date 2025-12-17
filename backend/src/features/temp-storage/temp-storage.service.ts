@@ -50,7 +50,7 @@ export class TempStorageService {
     tempFile.expiredAt = moment().add(saveTempFileArgs.expiredHours || this.DEFAULT_EXPIRED_HOURS, 'hours').toDate();
 
     const absoluteDir = join(tempFilesRootDir, saveTempFileArgs.path || '');
-
+    
     if (!existsSync(absoluteDir)) {
       mkdirSync(absoluteDir, { recursive: true });
     }

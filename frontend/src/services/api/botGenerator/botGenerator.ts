@@ -21,7 +21,6 @@ export const botGeneratorService = api.injectEndpoints({
           url: `/api/bot-generator`,
           method: 'POST',
           body,
-          responseHandler: (response) => response.text(),
         }),
       }),
 
