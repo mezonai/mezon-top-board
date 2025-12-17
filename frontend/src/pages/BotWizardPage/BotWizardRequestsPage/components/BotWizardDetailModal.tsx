@@ -8,10 +8,9 @@ type Props = {
     open: boolean
     onClose: () => void
     item: BotWizard
-    status: WizardStatus
 }
 
-export default function BotWizardDetailModal({ open, onClose, item, status }: Props) {
+export default function BotWizardDetailModal({ open, onClose, item }: Props) {
     return (
         <Modal
             open={open}
@@ -36,8 +35,8 @@ export default function BotWizardDetailModal({ open, onClose, item, status }: Pr
                         <span className="font-medium">{item.tempFile?.fileName}</span>
                     </Descriptions.Item>
                     <Descriptions.Item label="Status">
-                        <Tag color={getStatusColor(status)}>
-                            {status}
+                        <Tag color={getStatusColor(item.status)}>
+                            {item.status}
                         </Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="Expires At">

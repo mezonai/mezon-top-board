@@ -12,18 +12,15 @@ import {
     InfoCircleOutlined 
 } from '@ant-design/icons'
 import { formatDate } from '@app/utils/date'
-import { getFileStatus, getStatusColor } from '../helpers'
+import { getStatusColor } from '../helpers'
 import { BotWizard } from '@app/types/botWizard.types'
 
 export default function BotWizardCard({ item }: { item: BotWizard }) {
     const [open, setOpen] = useState(false)
     const [downloadTrigger, { isLoading: isDownloading }] = useLazyTempFilesDownloadQuery()
-    
-    const status = getFileStatus(item);
-    const isExpired = status === WizardStatus.EXPIRED;
 
     const handleDownload = async () => {
-        if (isExpired) return;
+        if (item.status === WizardStatus.EXPIRED) return;
         try {
             const blob = await downloadTrigger({ filePath: encodeURIComponent(item.tempFile?.filePath) }).unwrap()
             const url = window.URL.createObjectURL(blob)
@@ -50,8 +47,8 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                             <MtbTypography variant='h4' customClassName='truncate !mb-0' label={item.botName} />
                         </div>
                     </div>
-                    <Tag color={getStatusColor(status)} className='m-0 capitalize'>
-                        {status.toLowerCase()}
+                    <Tag color={getStatusColor(item.status)} className='m-0 capitalize'>
+                        {item.status.toLowerCase()}
                     </Tag>
                 </div>
 
@@ -71,7 +68,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                         </MtbButton>
                     </Tooltip>
 
-                    {!isExpired && (
+                    {item.status !== WizardStatus.EXPIRED && (
                         <MtbButton 
                             color='primary' 
                             variant='solid' 
@@ -84,7 +81,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                     )}
                 </div>
             </div>
-            <BotWizardDetailModal open={open} onClose={() => setOpen(false)} item={item} status={status} />
+            <BotWizardDetailModal open={open} onClose={() => setOpen(false)} item={item} />
         </>
     )
 }
