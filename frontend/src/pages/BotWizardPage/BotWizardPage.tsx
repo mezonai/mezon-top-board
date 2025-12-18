@@ -25,7 +25,7 @@ function BotWizardPage() {
       <MtbTypography variant='h3' customClassName='!pl-0 text-gray-500 !font-normal'>
         Manage and review bot generation requests.
       </MtbTypography>
-      <Divider className='bg-gray-100' />
+      <Divider className='bg-border' />
       
       <div className='flex justify-between gap-10 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/4 max-lg:w-full max-2xl:w-full'>

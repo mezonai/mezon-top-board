@@ -2,6 +2,7 @@ import { useFormContext } from 'react-hook-form'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 import { useBotGeneratorControllerGetIntegrationsQuery } from '@app/services/api/botGenerator/botGenerator'
 import { Checkbox, Card, Spin } from 'antd'
+import { cn } from '@app/utils/cn'
 
 export default function NewBotWizardStep3() {
     const { setValue, watch } = useFormContext<BotWizardRequest>()
@@ -21,11 +22,11 @@ export default function NewBotWizardStep3() {
     }
 
     if (isLoading) return <div className="flex justify-center p-10"><Spin tip="Loading integrations..." /></div>
-    if (isError) return <div className="text-red-500">Failed to load integrations for {language}.</div>
+    if (isError) return <div className="text-danger">Failed to load integrations for {language}.</div>
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <p className="text-sm mb-8 col-span-2 font-semibold">
+            <p className="text-sm mb-8 col-span-2">
                 Select the integrations you want to include in your bot.
                 Click on a card or checkbox to enable or disable an integration.
             </p>
@@ -33,7 +34,10 @@ export default function NewBotWizardStep3() {
                 <Card
                     key={opt}
                     hoverable
-                    className={`${selectedIntegrations.includes(opt) ? 'border-blue-500 bg-blue-50' : ''}`}
+                    className={cn(
+                        selectedIntegrations.includes(opt) ? 'border-blue-500 bg-blue-50' : '',
+                        'border !border-border cursor-pointer'
+                    )}
                     onClick={() => toggle(opt, !selectedIntegrations.includes(opt))}
                 >
                     <div className="flex items-center gap-3">

@@ -42,7 +42,7 @@ export default function NewBotWizardStep2() {
         <div className='flex flex-col gap-8'>
 
             <div className='p-5 flex flex-col'>
-                <p className="text-sm mb-4 font-semibold">
+                <p className="text-sm mb-4">
                     Add commands for your bot.
                     Fill in the command information below and click <b>Add Command</b> to add it to the list.
                     You can add multiple commands.
