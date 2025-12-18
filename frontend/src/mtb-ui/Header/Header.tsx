@@ -84,16 +84,16 @@ function Header() {
   }, [])
 
   const renderUserIcon = (size: string) => (
-    <div className="relative select-none flex gap-4 items-center" onClick={(e) => e.stopPropagation()}>
+    <div className="relative select-none flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
       <div className="relative" onClick={() => setDropdownOpen((prev) => !prev)}>
         {isLogin ? (
           <img
             src={imgUrl}
             alt="avatar"
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 rounded-full object-cover border border-border"
           />
         ) : (
-          <span className={`rounded-full px-2 py-1 hover:bg-bg-hover cursor-pointer text-${size}`}>
+          <span className={cn(`rounded-full px-2 py-1 hover:bg-bg-hover cursor-pointer transition-base text-${size}`)}>
             <UserOutlined />
           </span>)}
 
@@ -115,7 +115,7 @@ function Header() {
   const renderHeaderItems = (isUserIcon: boolean) => {
     return (
       <>
-        <ul className="flex flex-col lg:flex-row gap-5 flex-none text-sm mb-2 text-text-primary lg:mb-0">
+        <ul className="flex flex-col lg:flex-row gap-5 flex-none text-body mb-2 lg:mb-0">
           {renderMenu(true)}
         </ul>
         {isUserIcon && renderUserIcon('[20px]')}
@@ -131,10 +131,10 @@ function Header() {
   return (
     <div
       className={cn(
-        'flex items-center justify-between py-4 px-5 lg:px-20 cursor-pointer sticky top-0 w-full',
+        'flex-between py-4 px-5 lg:px-20 cursor-pointer sticky top-0 w-full',
         'bg-bg dark:bg-bg-container',
         'z-20',
-        'border-t border-b border-border'
+        'border-y border-border'
       )}
     >
       <div className='flex items-center gap-3' onClick={handleLogoClick}>
@@ -143,14 +143,14 @@ function Header() {
         </div>
         <MtbTypography variant='h5' customClassName='!mb-0 dark:text-white' label='Mezon Top Board' />
       </div>
-      <div className={cn('flex items-center justify-between gap-12.5 max-lg:hidden max-2xl:hidden')}>
+      <div className={cn('flex-between gap-12.5 max-lg:hidden max-2xl:hidden')}>
         {renderHeaderItems(true)}
       </div>
       <div className="2xl:hidden flex items-center gap-4">
         {renderUserIcon('xl')}
 
         <MenuOutlined
-          className="text-xl cursor-pointer"
+          className="text-xl cursor-pointer hover:text-accent-primary transition-base"
           onClick={() => setOpen(true)}
         />
       </div>

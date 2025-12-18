@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RightOutlined, LeftOutlined, CheckOutlined } from "@ant-design/icons";
 import { useTheme } from '@app/hook/useTheme'
 import { useNavigate } from "react-router-dom";
+import { cn } from "@app/utils/cn";
 
 const COLORS = [
   { key: "red", label: "Red", color: "bg-red-500" },
@@ -13,56 +14,86 @@ const COLORS = [
   { key: "orange", label: "Orange", color: "bg-orange-500" },
 ];
 
-type Mode = 'Light' | 'Dark'
-type Theme = 'light' | 'dark'
+type ViewState = "main" | "colors" | "mode";
+type Mode = 'Light' | 'Dark';
+const MODES: Mode[] = ['Light', 'Dark'];
 
-const mapThemeToMode = (theme: string): Mode => {
-  switch (theme) {
-    case 'light':
-      return 'Light';
-    case 'dark':
-      return 'Dark';
-    default:
-      return 'Light';
-  }
+type MenuItemProps = {
+  label: string;
+  icon?: React.ReactNode;
+  right?: React.ReactNode;
+  isActive?: boolean;
+  onClick?: () => void;
+  className?: string;
 };
 
+const MenuItem = ({ label, icon, right, isActive, onClick, className }: MenuItemProps) => (
+  <div
+    onClick={onClick}
+    className={cn(
+      "flex-between w-full p-3 rounded-md cursor-pointer transition-base",
+      !className && "hover:bg-bg-hover",
+      className
+    )}
+  >
+    <div className="flex items-center gap-3">
+      {icon}
+      <span className="text-body font-medium">{label}</span>
+    </div>
+    
+    <div className="flex items-center gap-2 text-caption">
+      {right}
+      {isActive && <CheckOutlined className="text-xs" />}
+    </div>
+  </div>
+);
+
+const MenuHeader = ({ title, onBack }: { title: string; onBack: () => void }) => (
+  <>
+    <div 
+      className="flex items-center gap-2 p-2 mb-1 cursor-pointer hover:bg-bg-hover rounded-md transition-base" 
+      onClick={onBack}
+    >
+      <LeftOutlined className="text-xs" />
+      <span className="text-heading-5 !text-sm !font-semibold">{title}</span>
+    </div>
+    <div className="divider-horizontal my-1 opacity-50"></div>
+  </>
+);
+
 export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boolean, handleLogout: () => void }) {
-  const [view, setView] = useState<"main" | "colors" | "mode">("main");
-  const [color, setColor] = useState("red");
+  const [view, setView] = useState<ViewState>("main")
+  const [color, setColor] = useState("red")
   const { theme, setTheme } = useTheme()
-  const mode = mapThemeToMode(theme);
   const navigate = useNavigate()
 
-  const handleModeChange = (mode: Mode) => {
-    setTheme(mode.toLowerCase() as Theme)
-  }
+  const currentMode = theme === 'dark' ? 'Dark' : 'Light';
+  const activeColorClass = COLORS.find(c => c.key === color)?.color;
 
   return (
-    <div
-      className="w-[228px] rounded-lg bg-bg-body shadow-xl border border-gray-300 p-2 text-sm"
+    <div 
+      className="card-elevated bg-bg-container w-[240px] p-2 flex flex-col gap-1 rounded-lg shadow-lg border border-border"
       onClick={(e) => e.stopPropagation()}
     >
       {view === "main" && (
         <>
           {isLogin && (
-            <div>
-
-              <MenuItem
-                label="Profile"
-                onClick={() => { navigate(`/profile`) }}
+            <>
+              <MenuItem 
+                label="Profile" 
+                onClick={() => { navigate(`/profile`) }} 
               />
-              <div className="h-[1px] my-2 bg-gray-300"></div>
-            </div>
+              <div className="divider-horizontal my-1 opacity-50" />
+            </>
           )}
 
           <MenuItem
             label="Colors"
             right={
-              <div className="flex items-center gap-2">
-                <span className={`w-5 h-5 rounded-full border-2 ${COLORS.find(c => c.key === color)?.color}`} />
-                <span className="text-[14px]"><RightOutlined /></span>
-              </div>
+              <>
+                <span className={`w-4 h-4 rounded-full border-2 border-black ${activeColorClass}`} />
+                <RightOutlined className="ml-2" />
+              </>
             }
             onClick={() => setView("colors")}
           />
@@ -70,95 +101,67 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
           <MenuItem
             label="Color Mode"
             right={
-              <div className="flex items-center gap-1">
-                <span className="text-xs uppercase">{mode}</span>
-                <RightOutlined />
-              </div>
+              <>
+                <span className="uppercase font-semibold text-xs">{currentMode}</span>
+                <RightOutlined className="ml-2" />
+              </>
             }
             onClick={() => setView("mode")}
           />
+
           {isLogin && (
-            <div>
-              <div className="h-[1px] my-2 bg-gray-300"></div>
-              <MenuItem
-                label="Log out"
-                onClick={handleLogout}
+            <>
+              <div className="divider-horizontal my-1 opacity-50" />
+              <MenuItem 
+                label="Log out" 
+                onClick={handleLogout} 
               />
-            </div>
+            </>
           )}
-
-        </>
-      )}
-
-      {view === "mode" && (
-        <>
-          <Header title="Color Mode" onBack={() => setView("main")} />
-          {(['Light', 'Dark'] as Mode[]).map((m) => (
-            <SelectItem
-              key={m}
-              label={m}
-              active={mode === m}
-              onClick={() => handleModeChange(m)}
-            />
-          ))}
         </>
       )}
 
       {view === "colors" && (
         <>
-          <Header title="Colors" onBack={() => setView("main")} />
-          {COLORS.map(c => (
-            <div
-              key={c.key}
-              onClick={() => setColor(c.key)}
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-bg-hover ${color === c.key ? c.color : ""
-                }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className={`w-4 h-4 rounded-full border-2 ${c.color}`} />
-                <span>{c.label}</span>
-              </div>
-              {color === c.key && <span className="text-[10px]"><CheckOutlined /></span>}
-            </div>
+          <MenuHeader title="Colors" onBack={() => setView("main")} />
+          <div className="max-h-[330px] overflow-y-auto custom-scrollbar flex flex-col gap-1">
+            {COLORS.map((c) => {
+              const isSelected = color === c.key;
+              return (
+                <MenuItem
+                  key={c.key}
+                  label={c.label}
+                  icon={
+                    <span 
+                      className={cn(
+                        "block w-4 h-4 rounded-full border-2 border-black", 
+                        c.color 
+                      )} 
+                    />
+                  }
+                  className={isSelected ? c.color : ""} 
+                  isActive={isSelected}
+                  onClick={() => setColor(c.key)}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {view === "mode" && (
+        <>
+          <MenuHeader title="Color Mode" onBack={() => setView("main")} />
+          {MODES.map((m) => (
+            <MenuItem
+              key={m}
+              label={m}
+              isActive={currentMode === m}
+              onClick={() => setTheme(m.toLowerCase() as 'light' | 'dark')}
+            />
           ))}
         </>
       )}
-    </div>
-  );
-}
-
-function MenuItem({ label, right, onClick }: any) {
-  return (
-    <div
-      onClick={onClick}
-      className="flex w-full items-center justify-between p-3 rounded-md cursor-pointer hover:bg-bg-hover"
-    >
-      <span>{label}</span>
-      {right}
-    </div>
-  );
-}
-
-function Header({ title, onBack }: any) {
-  return (
-    <div className="flex-col">
-      <div className="flex items-center gap-2 border-gray-300 p-3 hover:bg-bg-hover rounded-md mb-2" onClick={onBack}>
-        <LeftOutlined className="cursor-pointer" />
-        <span className="font-medium">{title}</span>
-      </div>
-      <div className="h-[1px] my-2 bg-gray-300"></div>
-    </div>
-  );
-}
-
-function SelectItem({ label, active, onClick }: any) {
-  return (
-    <div
-      onClick={onClick}
-      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-bg-hover`}
-    >
-      <span>{label}</span>
-      {active && <span className="text-[10px]"><CheckOutlined /></span>}
     </div>
   );
 }
