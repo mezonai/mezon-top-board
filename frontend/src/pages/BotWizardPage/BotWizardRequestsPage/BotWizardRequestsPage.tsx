@@ -77,7 +77,7 @@ export default function BotWizardRequestsPage() {
                     </div>
                 </Flex>
             </div>
-            <Divider className='bg-gray-100' />
+            <Divider className='bg-border' />
             {isLoading ? (
                 <div className='flex items-center justify-center h-64'>
                     <LoadingOutlined style={{ fontSize: 32 }} spin />

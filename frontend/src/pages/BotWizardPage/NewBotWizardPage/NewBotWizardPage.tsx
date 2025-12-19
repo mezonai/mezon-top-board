@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Divider, Steps, message } from 'antd'
+import { Steps, message } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import Button from '@app/mtb-ui/Button'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -67,16 +67,22 @@ function NewBotWizardPage() {
     const isLoadingState = isSubmitting || isRedirecting
 
     return (
-        <div className='w-full'>
-            <MtbTypography variant='h2'>New Bot Wizard</MtbTypography>
-            <Divider className='bg-gray-300' />
+        <div className='w-full text-body'>
+            <MtbTypography variant='h2'>New Bot Wizard</MtbTypography>   
+            <div className='divider-horizontal' />
 
             <FormProvider {...methods}>
                 <div className='flex flex-col gap-6 max-w-4xl mx-auto'>
-                    <Steps current={current} items={steps.map((s) => ({ title: s.title }))} />
+                    <Steps 
+                      current={current} 
+                      items={steps.map((s) => ({ title: s.title }))} 
+                      className="custom-steps"
+                    />
+                    
                     <div className='mt-4 min-h-[200px]'>
                         {steps[current].content}
                     </div>
+                    
                     <div className='flex justify-end gap-3 mt-8 pb-10'>
                         <Button 
                             variant='outlined' 

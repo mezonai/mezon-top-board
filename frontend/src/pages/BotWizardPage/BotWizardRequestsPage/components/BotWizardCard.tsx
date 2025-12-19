@@ -37,7 +37,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
 
     return (
         <>
-            <div className='rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-bg-container border border-gray-100 flex flex-col gap-3'>
+            <div className='rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-bg-container border border-border flex flex-col gap-3'>
                 <div className='flex items-start justify-between gap-3'>
                     <div className='flex items-center gap-3 min-w-0'>
                         <div className='w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500'>
