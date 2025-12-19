@@ -32,7 +32,6 @@ export class TempStorageService {
     let tempFile = await this.tempFileRepository.getRepository().create({
       fileName: saveTempFileArgs.fileName,
       ownerId,
-      botWizardId,
     })
 
     if (saveTempFileArgs.id) {
@@ -40,10 +39,6 @@ export class TempStorageService {
       if (!tempFile) throw new BadRequestException(`Temp file not found`);
 
       tempFile.fileName = saveTempFileArgs.fileName;
-
-      if (botWizardId) {
-        tempFile.botWizardId = botWizardId;
-      }
     }
 
     tempFile.mimeType = saveTempFileArgs.mimeType;
@@ -64,7 +59,7 @@ export class TempStorageService {
 
     await this.tempFileRepository.getRepository().save(tempFile);
 
-    return await this.botWizardRepository.update(botWizardId, { status: BotWizardStatus.COMPLETED });
+    return await this.botWizardRepository.update(botWizardId, { tempFileId: tempFile.id, status: BotWizardStatus.COMPLETED });
   }
 
   async getTempFile(id: string) {

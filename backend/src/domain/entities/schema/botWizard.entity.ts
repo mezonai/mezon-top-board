@@ -28,7 +28,11 @@ export class BotWizard extends BaseSoftDelete {
     @ManyToOne(() => User, (user) => user.botWizards, { onDelete: "CASCADE" })
     @JoinColumn({ name: "ownerId" })
     public owner: User;
+    
+    @Column({ nullable: true, unique: true })
+    public tempFileId: string;
 
-    @OneToOne(() => TempFile, (file) => file.botWizard)
+    @OneToOne(() => TempFile, (file) => file.botWizard, { onDelete: "CASCADE", })
+    @JoinColumn({ name: "tempFileId" })
     public tempFile: TempFile;
 }

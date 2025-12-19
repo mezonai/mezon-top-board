@@ -31,10 +31,6 @@ export class TempFile extends BaseSoftDelete {
     @JoinColumn({ name: "ownerId" })
     public owner: User;
 
-    @Column({ nullable: true, unique: true })
-    public botWizardId: string;
-
-    @OneToOne(() => BotWizard, (bot) => bot.tempFile, { onDelete: "CASCADE", })
-    @JoinColumn({ name: "botWizardId" })
+    @OneToOne(() => BotWizard, (bot) => bot.tempFile)
     public botWizard: BotWizard;
 }
