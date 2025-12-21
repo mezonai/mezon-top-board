@@ -47,7 +47,7 @@ export const NESTJS_EVENTS = [
   {
     label: 'Role Assign',
     value: 'RoleAssign',
-    eventType: 'RoleAssignedEvent',
+    eventType: undefined,
   },
   {
     label: 'User Channel Added',
@@ -67,7 +67,7 @@ export const NESTJS_EVENTS = [
   {
     label: 'User Channel Removed',
     value: 'UserChannelRemoved',
-    eventType: 'UserChannelRemovedEvent',
+    eventType: 'UserChannelRemoved',
   },
   {
     label: 'Give Coffee',
