@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RightOutlined, LeftOutlined, CheckOutlined } from "@ant-design/icons";
+import { Divider } from "antd";
 import { useTheme } from '@app/hook/useTheme'
 import { useNavigate } from "react-router-dom";
 import { cn } from "@app/utils/cn";
@@ -51,13 +52,13 @@ const MenuItem = ({ label, icon, right, isActive, onClick, className }: MenuItem
 const MenuHeader = ({ title, onBack }: { title: string; onBack: () => void }) => (
   <>
     <div 
-      className="flex items-center gap-2 p-2 mb-1 cursor-pointer hover:bg-bg-hover rounded-md transition-base" 
+      className="flex items-center gap-2 p-3 mb-1 cursor-pointer hover:bg-bg-hover rounded-md transition-base" 
       onClick={onBack}
     >
       <LeftOutlined className="text-xs" />
       <span className="text-heading-5 !text-sm !font-semibold">{title}</span>
     </div>
-    <div className="divider-horizontal my-1 opacity-50"></div>
+    <Divider className="border border-border !my-1" />
   </>
 );
 
