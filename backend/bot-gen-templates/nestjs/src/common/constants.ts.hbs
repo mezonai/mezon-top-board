@@ -4,10 +4,6 @@ export const APP_CONSTANTS = {
         THROTTLE_LIMIT: 45,
     },
 
-    MEZON: {
-        DM_CLAN_ID: '0',
-    },
-
     HTTP: {
         PORT: 5786,
         CORS: {
