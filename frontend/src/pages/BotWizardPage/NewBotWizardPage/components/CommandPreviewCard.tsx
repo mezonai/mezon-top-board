@@ -13,7 +13,7 @@ export default function CommandPreviewCard({ data, onRemove }: Props) {
     const aliases = data.aliases || []
 
     return (
-        <div className='p-4 border border-border rounded-xl bg-bg-container flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow group relative'>
+        <div className='p-4 border border-border rounded-xl bg-container flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow group relative'>
             <div className='flex items-start justify-between'>
                 <div className='flex flex-row gap-4 items-center'>
                     <div className='font-semibold text-sm'>{data.command}</div>

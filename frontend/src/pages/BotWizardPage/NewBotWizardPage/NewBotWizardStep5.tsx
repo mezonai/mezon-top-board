@@ -25,7 +25,7 @@ export default function NewBotWizardStep5() {
 
     return (
         <div className='flex flex-col gap-3'>
-            <div className='p-4 border border-border rounded-xl bg-bg-container shadow-sm'>
+            <div className='p-4 border border-border rounded-xl bg-container shadow-sm'>
                 <div className='flex items-center justify-between mb-3'>
                     <div className='font-semibold'>Configuration Payload Preview</div>
                     <Tooltip title={copied ? 'Copied!' : 'Copy JSON'}>
@@ -34,12 +34,12 @@ export default function NewBotWizardStep5() {
                         </Button>
                     </Tooltip>
                 </div>
-                <div className="bg-bg-container p-4 rounded-md border border-border shadow-sm max-h-[400px] overflow-auto">
+                <div className="bg-container p-4 rounded-md border border-border shadow-sm max-h-[400px] overflow-auto">
                     <pre className='text-xs whitespace-pre-wrap font-mono'>
                         {JSON.stringify(rest, null, 2)}
                     </pre>
                 </div>
-                <div className="mt-2 text-xs text-text-secondary text-center font-semibold">
+                <div className="mt-2 text-xs text-secondary text-center font-semibold">
                     Review your configuration before submitting.
                 </div>
             </div>

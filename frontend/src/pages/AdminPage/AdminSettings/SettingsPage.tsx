@@ -7,16 +7,16 @@ const SettingsPage = () => {
 
   return (
     <div className='p-4'>
-      <h2 className='text-lg font-semibold mb-4 text-text-primary'>
+      <h2 className='text-lg font-semibold mb-4 text-primary'>
         Settings
       </h2>
 
       <Card
-        title={<div className="text-text-primary">Appearance</div>}
-        className="bg-bg-container border border-border"
+        title={<div className="text-primary">Appearance</div>}
+        className="bg-container border "
       >
         <Form layout="horizontal">
-          <Form.Item label={<span className="text-text-primary">Theme Mode</span>}>
+          <Form.Item label={<span className="text-primary">Theme Mode</span>}>
             <Space align="center" size="large">
               <Switch
                 checked={theme === 'dark'}

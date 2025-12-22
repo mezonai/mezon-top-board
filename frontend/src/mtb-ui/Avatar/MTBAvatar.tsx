@@ -15,7 +15,7 @@ const MTBAvatar: React.FC<AvatarProps> = ({ imgUrl, isAllowUpdate = false, isUpd
                 src={imgUrl}
                 alt="avatar"
                 className={cn(
-                    "rounded-full w-full aspect-square object-cover bg-bg-secondary",
+                    "rounded-full w-full aspect-square object-cover bg-secondary",
                     isUpdatingAvatar && "opacity-50"
                 )}
             />

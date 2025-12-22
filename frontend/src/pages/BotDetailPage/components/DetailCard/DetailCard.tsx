@@ -15,9 +15,9 @@ function DetailCard() {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
 
   return (
-    <div className='shadow-sm rounded-2xl bg-bg-container p-4 border border-transparent dark:border-border'>
+    <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>
       <div className='pb-4'>
-        <MtbTypography label={<InfoCircleOutlined className='text-xl !text-secondary' />} variant='h3'>
+        <MtbTypography label={<InfoCircleOutlined className='!text-xl !text-primary-active' />} variant='h3'>
           Details
         </MtbTypography>
         {mezonAppDetail.prefix && (
@@ -29,7 +29,7 @@ function DetailCard() {
         )}
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-primary-active' />}>
           Socials
         </MtbTypography>
         <div>
@@ -39,7 +39,7 @@ function DetailCard() {
                 href={mezonAppDetail?.supportUrl}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-text-primary hover:text-primary transition-colors'
+                className='text-primary transition-colors'
               >
                 <u>{mezonAppDetail.name}'s Support link</u>
               </a>
@@ -51,7 +51,7 @@ function DetailCard() {
                 href={`${link.type.prefixUrl}${link.url}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-text-primary hover:text-primary transition-colors'
+                className='text-primary transition-colors'
               >
                 {link.type.prefixUrl}{link.url}
               </a>
@@ -60,14 +60,14 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-5'>
-        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-primary-active' />}>
           Categories
         </MtbTypography>
         <div className='pt-1'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
             <Tag 
               key={tag.id} 
-              className='cursor-pointer !bg-bg-container !text-text-secondary dark:!bg-bg-container-secondary dark:!text-text-primary'
+              className='cursor-pointer !bg-container !text-secondary dark:!bg-container-secondary dark:!text-primary'
             >
               {tag?.name}
             </Tag>
@@ -75,12 +75,12 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-primary-active' />}>
           Creators
         </MtbTypography>
         <div className={`pt-2`}>
           <a href={`/profile/${userInfo.id === mezonAppDetail?.owner?.id ? '' : mezonAppDetail?.owner?.id}`}>
-            <Tag className='!rounded-lg !pr-6 !py-3 !shadow-md !bg-bg-container dark:!bg-bg-container-secondary dark:!border-border flex items-center w-full !border-0 dark:!border'>
+            <Tag className='!rounded-lg !pr-6 !py-3 !shadow-md !bg-container dark:!bg-container-secondary dark:!border-border flex items-center w-full !border-0 dark:!border'>
               <div className='flex gap-4 items-center'>
                 <div className='w-[40px] h-[40px] overflow-hidden rounded-xl flex-shrink-0 bg-border dark:bg-border'>
                   <img

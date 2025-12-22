@@ -26,8 +26,8 @@ export const getButtonTheme = (baseColor: string = BRAND_COLOR): ThemeConfig => 
 export const buttonVariants = cva('!shadow-none transition-all duration-200', {
   variants: {
     color: {
-      [EButtonColor.DEFAULT]: '!border-border !text-text-primary',
-      [EButtonColor.PRIMARY]: '!border-primary !text-primary',
+      [EButtonColor.DEFAULT]: '!border-border !text-primary',
+      [EButtonColor.PRIMARY]: '!border-primary !text-accent-primary',
       [EButtonColor.DANGER]: '!border-danger !text-danger',
       [EButtonColor.PINK]: '!border-pink-500 !text-pink-500',
       [EButtonColor.PURPLE]: '!border-purple-500 !text-purple-500',
@@ -57,22 +57,22 @@ export const buttonVariants = cva('!shadow-none transition-all duration-200', {
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.DASHED,
-      class: '!border-border !text-text-primary',
+      class: '!border-border !text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.FILLED,
-      class: '!bg-bg-container-secondary !border-border !text-text-primary',
+      class: '!bg-container-secondary !border-border !text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.TEXT,
-      class: '!text-text-primary',
+      class: '!text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.LINK,
-      class: '!text-text-primary',
+      class: '!text-primary',
     },
 
     {

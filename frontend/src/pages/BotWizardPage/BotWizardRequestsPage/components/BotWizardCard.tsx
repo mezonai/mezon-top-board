@@ -37,7 +37,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
 
     return (
         <>
-            <div className='rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-bg-container border border-border flex flex-col gap-3'>
+            <div className='rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-container border border-border flex flex-col gap-3'>
                 <div className='flex items-start justify-between gap-3'>
                     <div className='flex items-center gap-3 min-w-0'>
                         <div className='w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500'>
@@ -52,7 +52,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                     </Tag>
                 </div>
 
-                <div className='flex items-center gap-2 text-sm bg-bg-container p-2 rounded-md'>
+                <div className='flex items-center gap-2 text-sm bg-container p-2 rounded-md'>
                     <CalendarOutlined />
                     <span>Created: <span className='font-medium'>{formatDate(item?.createdAt)}</span></span>
                 </div>

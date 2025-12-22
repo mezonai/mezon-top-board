@@ -116,7 +116,7 @@ function EmailSubscriberList() {
       dataIndex: 'email',
       key: 'email',
       render: (text: string) =>
-        <Tag className="bg-bg-secondary text-text-primary border-border">{text}</Tag>
+        <Tag className="bg-secondary text-primary border-border">{text}</Tag>
     },
     {
       title: 'Status',
@@ -128,7 +128,7 @@ function EmailSubscriberList() {
             value={editingSubscriber.status}
             onChange={(value) => setEditingSubscriber((prev) => ({ ...prev, status: value }))}
             className="w-32"
-            popupClassName="bg-bg-container text-text-primary"
+            popupClassName="bg-container text-primary"
             dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
           >
             {Object.values(EmailSubscriptionStatus).map((status) => (
@@ -138,7 +138,7 @@ function EmailSubscriberList() {
             ))}
           </Select>
         ) : (
-          <span className="text-text-primary">{text}</span>
+          <span className="text-primary">{text}</span>
         )
     },
     {
@@ -174,7 +174,7 @@ function EmailSubscriberList() {
               onConfirm={() => handleDelete(record.id)} 
               okText='Yes' 
               cancelText='No'
-              overlayClassName='bg-bg-container text-text-primary'
+              overlayClassName='bg-container text-primary'
             >
               <MtbButton 
                 variant="solid"
@@ -188,8 +188,8 @@ function EmailSubscriberList() {
   ]
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-bg-container">
-      <h2 className='font-bold text-lg mb-4 text-text-primary'>Manage Email Subscribers</h2>
+    <div className="p-4 rounded-md shadow-md bg-container">
+      <h2 className='font-bold text-lg mb-4 text-primary'>Manage Email Subscribers</h2>
       
       {/* Search & Filter Form */}
       <div className='mb-4'>
@@ -204,16 +204,16 @@ function EmailSubscriberList() {
               <Input
                 ref={searchRef}
                 placeholder='Search by email'
-                prefix={<SearchOutlined className='text-text-secondary' />}
+                prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => searchForm.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-bg-container text-text-primary border-border placeholder:text-text-secondary'
+                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
               />
             </Form.Item>
             <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
               <Select 
                 className='w-full h-[40px]'
                 placeholder='Status'
-                popupClassName='bg-bg-container text-text-primary'
+                popupClassName='bg-container text-primary'
                 dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
                 allowClear
               >
@@ -254,7 +254,7 @@ function EmailSubscriberList() {
           className="admin-table"
         />
       ) : (
-        <div className='text-center p-8 text-text-secondary'>
+        <div className='text-center p-8 text-secondary'>
           <p>No result found</p>
         </div>
       )}

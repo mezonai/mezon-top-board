@@ -25,7 +25,7 @@ function Comment({ rating }: { rating: RatingResponse }) {
             </MtbTypography>
           </Link>
 
-          <MtbTypography variant='p' weight='italic' customClassName='text-text-tertiary'>
+          <MtbTypography variant='p' weight='italic' customClassName='text-tertiary'>
             {formatAgo(rating.updatedAt)}
           </MtbTypography>
         </div>

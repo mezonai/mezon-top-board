@@ -207,7 +207,7 @@ function BotDetailPage() {
                 ))}
               </Carousel>
             ) : (
-              <MtbTypography variant='h4' weight='normal' customClassName='!text-text-secondary !text-center !block'>
+              <MtbTypography variant='h4' weight='normal' customClassName='!text-secondary !text-center !block'>
                 No related bot
               </MtbTypography>
             )}

@@ -13,8 +13,8 @@ function StatsSection({ stats }: IStatsSectionProps) {
             'border border-transparent dark:border-border'
           )}
         >
-          <div className='text-primary text-5xl font-bold mb-2'>{stat.number}</div>
-          <div className='text-text-secondary text-sm'>{stat.description}</div>
+          <div className='text-primary-active text-5xl font-bold mb-2'>{stat.number}</div>
+          <div className='text-secondary text-sm'>{stat.description}</div>
         </div>
       ))}
     </div>

@@ -86,7 +86,7 @@ function GalleryPage() {
                                         options={pageOptions}
                                         placeholder='Select'
                                         size='large'
-                                        className='w-[12rem] text-text-primary'
+                                        className='w-[12rem] text-primary'
                                         dropDownTitle='Images per page'
                                         value={pageOptions.find(o => o.value === pageSize)}
                                     />
@@ -100,13 +100,13 @@ function GalleryPage() {
                             <Spin size='large' />
                         </div>
                     ) : totalPages === 0 ? (
-                        <div className='pt-8 text-center text-text-secondary'>No media uploaded yet.</div>
+                        <div className='pt-8 text-center text-secondary'>No media uploaded yet.</div>
                     ) : (
                         <>
                             <div className='grid grid-cols-2 gap-6 min-lg:grid-cols-3 min-xl:grid-cols-4 pt-4'>
                                 {mediaList.map((item: MediaResponse) => (
-                                    <div key={item.id} className='rounded-xl p-2 flex flex-col gap-2 shadow-sm hover:shadow-xl transition-all duration-300 bg-bg-container cursor-pointer border border-transparent dark:border-border'>
-                                        <div className='w-full aspect-square overflow-hidden rounded-md bg-bg-container-secondary relative group'>
+                                    <div key={item.id} className='rounded-xl p-2 flex flex-col gap-2 shadow-sm hover:shadow-xl transition-all duration-300 bg-container cursor-pointer border border-transparent dark:border-border'>
+                                        <div className='w-full aspect-square overflow-hidden rounded-md bg-container-secondary relative group'>
                                             <img
                                                 src={getUrlMedia(item.filePath)}
                                                 alt={item.fileName}
@@ -118,7 +118,7 @@ function GalleryPage() {
                                             <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate'>
                                                 {item.fileName}
                                             </MtbTypography>
-                                            <MtbTypography variant='p' size={12} weight='normal' customClassName='!pl-0 text-text-secondary'>
+                                            <MtbTypography variant='p' size={12} weight='normal' customClassName='!pl-0 text-secondary'>
                                                 {item.mimeType}
                                             </MtbTypography>
                                         </div>

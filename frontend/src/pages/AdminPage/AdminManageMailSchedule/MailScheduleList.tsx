@@ -103,7 +103,7 @@ function MailScheduleList() {
       dataIndex: 'subject',
       key: 'subject',
       render: (text: string) =>
-        <span className="text-text-primary">{text}</span>
+        <span className="text-primary">{text}</span>
     },
     {
       title: 'Repeatable',
@@ -117,7 +117,7 @@ function MailScheduleList() {
       dataIndex: 'repeatInterval',
       key: 'repeatInterval',
       render: (text: RepeatInterval) =>
-        <span className="text-text-secondary">{text || '-'}</span>
+        <span className="text-secondary">{text || '-'}</span>
     },
     {
       title: 'Actions',
@@ -136,7 +136,7 @@ function MailScheduleList() {
             onConfirm={() => handleDelete(record.id)} 
             okText='Yes' 
             cancelText='No'
-            overlayClassName='bg-bg-container text-text-primary'
+            overlayClassName='bg-container text-primary'
           >
             <MtbButton 
               color='danger' 
@@ -149,8 +149,8 @@ function MailScheduleList() {
   ]
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-bg-container">
-      <h2 className='font-bold text-lg mb-4 text-text-primary'>Manage Mail Schedule Templates</h2>
+    <div className="p-4 rounded-md shadow-md bg-container">
+      <h2 className='font-bold text-lg mb-4 text-primary'>Manage Mail Schedule Templates</h2>
       
       {/* Search & Filter Section */}
       <div className='mb-4'>
@@ -165,21 +165,21 @@ function MailScheduleList() {
               <Input
                 ref={searchRef}
                 placeholder='Search by subject'
-                prefix={<SearchOutlined className='text-text-secondary' />}
+                prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => searchForm.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-bg-container text-text-primary border-border placeholder:text-text-secondary'
+                className='w-full rounded-[8px] h-[40px] bg-container text-primary  placeholder:text-secondary'
               />
             </Form.Item>
             <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
               <Select 
                 className='w-full h-[40px]'
                 placeholder='Repeat Interval'
-                popupClassName='bg-bg-container text-text-primary'
+                popupClassName='bg-container text-primary'
                 dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
                 allowClear
               >
                 {Object.values(RepeatInterval).map((status) => (
-                  <Select.Option key={status} value={status} className="text-text-primary hover:bg-bg-secondary">
+                  <Select.Option key={status} value={status} className="text-primary hover:bg-secondary">
                     {status}
                   </Select.Option>
                 ))}
@@ -226,7 +226,7 @@ function MailScheduleList() {
           className="admin-table"
         />
       ) : (
-        <div className='text-center p-8 text-text-secondary'>
+        <div className='text-center p-8 text-secondary'>
           <p>No result found</p>
         </div>
       )}

@@ -207,7 +207,7 @@ function ReviewHistoryPage() {
           placeholder='Search by name or email'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          prefix={<SearchOutlined className='text-text-secondary' />}
+          prefix={<SearchOutlined className='text-secondary' />}
           onPressEnter={handleSearchSubmit}
           className='w-full'
           style={{ borderRadius: '8px', height: '40px' }}
