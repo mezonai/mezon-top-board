@@ -73,7 +73,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <MtbTypography variant='h2' customClassName='text-primary mb-0'>
                 Profile Information
               </MtbTypography>
-              <MtbTypography variant='p' customClassName='text-text-secondary text-sm mt-0 !font-normal'>
+              <MtbTypography variant='p' customClassName='text-secondary text-sm mt-0 !font-normal'>
                 Your information has been pre-filled from your Mezon account
               </MtbTypography>
             </div>
@@ -110,11 +110,11 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <Input {...field} placeholder='Alex Johnson' status={errorStatus(errors.name)} />
             )}
           />
-          <p className='text-xs text-text-secondary mt-1'>3-50 characters. This is how others will see your name.</p>
+          <p className='text-xs text-secondary mt-1'>3-50 characters. This is how others will see your name.</p>
         </FormField>
         
         <FormField label='Email'>
-          <Input value={userResponse?.data?.email} className='!text-text-secondary' disabled />
+          <Input value={userResponse?.data?.email} className='!text-secondary' disabled />
         </FormField>
         
         <FormField label='Bio (Optional)' errorText={errors.bio?.message}>
@@ -125,7 +125,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <Input.TextArea {...field} rows={3} placeholder='Tell us about yourself...' />
             )}
           />
-          <div className='flex justify-between text-xs text-text-secondary mt-1'>
+          <div className='flex justify-between text-xs text-secondary mt-1'>
             <span>Share a short introduction.</span>
             <span>{bioValue?.length}/500 characters</span>
           </div>

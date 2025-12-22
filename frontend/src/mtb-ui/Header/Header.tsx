@@ -93,7 +93,7 @@ function Header() {
             className="w-10 h-10 rounded-full object-cover border border-border"
           />
         ) : (
-          <span className={cn(`rounded-full px-2 py-1 hover:bg-bg-hover cursor-pointer transition-base text-${size}`)}>
+          <span className={cn(`rounded-full px-2 py-1 hover:bg-hover cursor-pointer transition-base text-${size}`)}>
             <UserOutlined />
           </span>)}
 
@@ -132,7 +132,7 @@ function Header() {
     <div
       className={cn(
         'flex-between py-4 px-5 lg:px-20 cursor-pointer sticky top-0 w-full',
-        'bg-bg dark:bg-bg-container',
+        'bg-container dark:bg-container',
         'z-20',
         'border-y border-border'
       )}

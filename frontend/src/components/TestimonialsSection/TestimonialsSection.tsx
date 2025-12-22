@@ -15,9 +15,9 @@ function TestimonialsSection({ testimonials }: ITestimonialsSectionProps) {
             )}
           >
             <div className='flex items-center gap-3 mb-4'>
-              <div className='w-10 h-10 rounded-full bg-bg-secondary flex-shrink-0' />
+              <div className='w-10 h-10 rounded-full bg-secondary flex-shrink-0' />
               <div>
-                <h2 className='text-lg font-semibold text-text-primary'>
+                <h2 className='text-lg font-semibold text-primary'>
                   {item.title}
                 </h2>
                 <p className='text-sm text-primary font-medium'>
@@ -25,9 +25,9 @@ function TestimonialsSection({ testimonials }: ITestimonialsSectionProps) {
                 </p>
               </div>
 
-              <a className='ml-auto p-2 rounded-md hover:bg-bg-secondary cursor-pointer transition-colors'>
+              <a className='ml-auto p-2 rounded-md hover:bg-secondary cursor-pointer transition-colors'>
                 <svg 
-                  className='w-5 h-5 text-text-tertiary' 
+                  className='w-5 h-5 text-tertiary' 
                   fill='currentColor' 
                   viewBox='0 0 24 24'
                 >
@@ -35,7 +35,7 @@ function TestimonialsSection({ testimonials }: ITestimonialsSectionProps) {
                 </svg>
               </a>
             </div>
-            <p className='text-sm whitespace-pre-line leading-relaxed text-text-secondary'>
+            <p className='text-sm whitespace-pre-line leading-relaxed text-secondary'>
               {item.description}
             </p>
           </div>

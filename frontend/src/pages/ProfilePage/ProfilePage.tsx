@@ -182,7 +182,7 @@ function ProfilePage() {
                     options={pageOptions}
                     placeholder='Select'
                     size='large'
-                    className='w-[10rem] text-text-primary'
+                    className='w-[10rem] text-primary'
                     dropDownTitle='Bots per page'
                     value={pageOptions.find(o => o.value === pageSize)}
                   />
@@ -193,7 +193,7 @@ function ProfilePage() {
 
           {totalPages === 0 ? (
             <div className='pt-8'>
-              <div className='text-center py-12 text-text-secondary'>No Result</div>
+              <div className='text-center py-12 text-secondary'>No Result</div>
             </div>
           ) : (
             <>

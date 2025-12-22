@@ -21,7 +21,7 @@ export const FeatureCard = ({ icon, title, children, color }: FeatureCardProps) 
       >
         {title}
       </MtbTypography>
-      <p className='text-text-secondary text-sm'>{children}</p>
+      <p className='text-secondary text-sm'>{children}</p>
     </div>
   )
 }

@@ -39,15 +39,15 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
   }
 
   return (
-    <div className='flex items-start gap-8 p-4 rounded-lg bg-bg-container border border-transparent dark:border-border'>
+    <div className='flex items-start gap-8 p-4 rounded-lg bg-container border border-transparent dark:border-border'>
       <img
         src={userInfo?.profileImage ? getUrlMedia(userInfo?.profileImage) : avatar}
         alt={userInfo.name}
-        className='w-15 h-15 rounded-full object-cover mt-1 bg-bg-container-secondary'
+        className='w-15 h-15 rounded-full object-cover mt-1 bg-container-secondary'
       />
 
       <div className='flex-1 flex flex-col gap-2 mt-4'>
-        <MtbTypography variant='h4' customClassName='!text-text-primary'>
+        <MtbTypography variant='h4' customClassName='!text-primary'>
           {userInfo.name}
         </MtbTypography>
         
@@ -65,7 +65,7 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
                 {...field}
                 rows={3}
                 placeholder='Write your comment...'
-                className='rounded-md mt-3 !bg-bg-container !text-text-primary !border-border dark:!border-border focus:!border-primary focus:!ring-primary placeholder:!text-text-secondary'
+                className='rounded-md mt-3 !bg-container !text-primary !border-border dark:!border-border focus:!border-primary focus:!ring-primary placeholder:!text-secondary'
               />
             )}
           />

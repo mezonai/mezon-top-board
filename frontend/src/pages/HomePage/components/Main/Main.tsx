@@ -221,7 +221,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotCard key={bot.id} data={bot} />)}
             </div>
           ) : (
-            <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-text-secondary'>
+            <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-secondary'>
               No result
             </MtbTypography>
           )}

@@ -57,22 +57,22 @@ export const buttonVariants = cva('!shadow-none transition-all duration-200', {
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.DASHED,
-      class: '!border-border !text-text-primary',
+      class: '! !text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.FILLED,
-      class: '!bg-bg-container-secondary !border-border !text-text-primary',
+      class: '!bg-container-secondary !border-border !text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.TEXT,
-      class: '!text-text-primary',
+      class: '!text-primary',
     },
     {
       color: EButtonColor.DEFAULT,
       variant: EButtonVariant.LINK,
-      class: '!text-text-primary',
+      class: '!text-primary',
     },
 
     {

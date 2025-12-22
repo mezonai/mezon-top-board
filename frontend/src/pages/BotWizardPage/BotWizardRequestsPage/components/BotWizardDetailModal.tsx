@@ -44,7 +44,7 @@ export default function BotWizardDetailModal({ open, onClose, item }: Props) {
                     </Descriptions.Item>
                     <Descriptions.Item label="Template">
                         {item.templateJson && (
-                            <pre className='max-h-60 overflow-auto bg-bg-container p-2 rounded-md border border-border text-xs whitespace-pre-wrap font-mono'>
+                            <pre className='max-h-60 overflow-auto bg-container p-2 rounded-md border border-border text-xs whitespace-pre-wrap font-mono'>
                                 {JSON.stringify(JSON.parse(item.templateJson), null, 2)}
                             </pre>
                         )}

@@ -30,8 +30,8 @@ const Step5Submit = ({
       <>
         <Result
           status="success"
-          title={<div className="text-text-primary">{title}</div>}
-          subTitle={<div className="text-text-secondary">{subTitle}</div>}
+          title={<div className="text-primary">{title}</div>}
+          subTitle={<div className="text-secondary">{subTitle}</div>}
           extra={[
             <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
               {isEdit ? 'View Bot' : 'Go to Bot'}
@@ -49,8 +49,8 @@ const Step5Submit = ({
     <>
       <Result
         status="error"
-        title={<div className="text-text-primary">{isEdit ? 'Update Failed' : 'Submission Failed'}</div>}
-        subTitle={<div className="text-text-secondary">Something went wrong. Please go back and check your input before trying again.</div>}
+        title={<div className="text-primary">{isEdit ? 'Update Failed' : 'Submission Failed'}</div>}
+        subTitle={<div className="text-secondary">Something went wrong. Please go back and check your input before trying again.</div>}
         extra={[
           <Button key="back" onClick={() => navigate(-1)}>
             Go Back

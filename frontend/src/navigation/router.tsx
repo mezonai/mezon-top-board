@@ -62,7 +62,7 @@ export const renderMenu = (isHasActive: boolean) => {
 
       const linkClasses = cn(
         "py-2 transition-all duration-300 border-b-[3px] block", 
-        "text-text-primary dark:text-white", 
+        "text-primary dark:text-white", 
         isActive 
           ? "border-primary text-primary" 
           : "border-transparent hover:text-primary hover:border-primary/50" 
@@ -76,11 +76,11 @@ export const renderMenu = (isHasActive: boolean) => {
           return {
             key,
             label: isExternal ? (
-              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-text-primary dark:!text-white hover:text-primary">
+              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-primary dark:!text-white hover:text-primary">
                 {child.strLabel}
               </a>
             ) : (
-              <a href={child.path} className="text-text-primary dark:!text-white hover:text-primary">
+              <a href={child.path} className="text-primary dark:!text-white hover:text-primary">
                 {child.strLabel}
               </a>
             ),

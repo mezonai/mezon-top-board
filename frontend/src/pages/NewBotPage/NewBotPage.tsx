@@ -252,21 +252,21 @@ function NewBotPage() {
             />
           </div>
           <div>
-            <MtbTypography variant='h4' customClassName='text-text-primary'>{nameValue || 'Name'}</MtbTypography>
-            <MtbTypography variant='p' customClassName='text-text-secondary'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
+            <MtbTypography variant='h4' customClassName='text-primary'>{nameValue || 'Name'}</MtbTypography>
+            <MtbTypography variant='p' customClassName='text-secondary'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
           </div>
         </div>
       </div>
 
       <div className='pt-8'>
         <FormProvider {...methods}>
-          <div className='bg-bg-container p-6 rounded-md shadow-md border border-transparent dark:border-border'>
+          <div className='bg-container p-6 rounded-md shadow-md border border-transparent dark:border-border'>
             <Steps
               labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'}
               current={currentStep}
               items={steps.map((step, idx) => ({
                 title: (
-                  <span className={idx <= currentStep ? 'text-text-primary' : 'text-text-secondary'}>
+                  <span className={idx <= currentStep ? 'text-primary' : 'text-secondary'}>
                     {step.title}
                   </span>
                 )

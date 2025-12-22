@@ -33,7 +33,7 @@ const MenuItem = ({ label, icon, right, isActive, onClick, className }: MenuItem
     onClick={onClick}
     className={cn(
       "flex-between w-full p-3 rounded-md cursor-pointer transition-base",
-      !className && "hover:bg-bg-hover",
+      !className && "hover:bg-hover",
       className
     )}
   >
@@ -52,7 +52,7 @@ const MenuItem = ({ label, icon, right, isActive, onClick, className }: MenuItem
 const MenuHeader = ({ title, onBack }: { title: string; onBack: () => void }) => (
   <>
     <div 
-      className="flex items-center gap-2 p-3 mb-1 cursor-pointer hover:bg-bg-hover rounded-md transition-base" 
+      className="flex items-center gap-2 p-3 mb-1 cursor-pointer hover:bg-hover rounded-md transition-base" 
       onClick={onBack}
     >
       <LeftOutlined className="text-xs" />
@@ -73,7 +73,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
 
   return (
     <div 
-      className="card-elevated bg-bg-container w-[240px] p-2 flex flex-col gap-1 rounded-lg shadow-lg border border-border"
+      className="card-elevated bg-container w-[240px] p-2 flex flex-col gap-1 rounded-lg shadow-lg border border-border"
       onClick={(e) => e.stopPropagation()}
     >
       {view === "main" && (

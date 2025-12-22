@@ -242,7 +242,7 @@ function TagsList() {
             <Input
               ref={searchRef}
               placeholder='Search by name or slug'
-              prefix={<SearchOutlined className='text-text-secondary' />}
+              prefix={<SearchOutlined className='text-secondary' />}
               onPressEnter={() => searchForm.submit()}
             />
           </Form.Item>
@@ -266,7 +266,7 @@ function TagsList() {
             pageSizeOptions: pageOptions.map(String)
           }}/>
       ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-text-secondary'>
+        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-secondary'>
           No result
         </MtbTypography>
       )}

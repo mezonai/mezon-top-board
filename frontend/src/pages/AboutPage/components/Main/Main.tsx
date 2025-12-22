@@ -44,7 +44,7 @@ function Main() {
     <div className='flex flex-col justify-center pt-8 pb-12 w-[80%] m-auto'>
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Power your discovery and growth with Mezon Bots</MtbTypography>
-        <p className='text-text-secondary'>
+        <p className='text-secondary'>
           Gain millions of impressions for your app or community on the #1 platform for bot and server discovery
         </p>
       </div>
@@ -54,7 +54,7 @@ function Main() {
 
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Why Mezon Top Board? Here's Everything!</MtbTypography>
-        <p className='text-text-secondary'>Hear from our trusted partners - our customers say it best</p>
+        <p className='text-secondary'>Hear from our trusted partners - our customers say it best</p>
       </div>
 
       <TestimonialsSection testimonials={testimonials} />
@@ -62,7 +62,7 @@ function Main() {
 
       <div className='flex flex-col items-center text-center mt-10'>
         <MtbTypography variant='h1'>Have we got your attention?</MtbTypography>
-        <p className='text-text-secondary'>
+        <p className='text-secondary'>
           Join us in exploring the future of applications built on Mezon. Discover, engage, and innovate with Mezon Top
           Board!
         </p>

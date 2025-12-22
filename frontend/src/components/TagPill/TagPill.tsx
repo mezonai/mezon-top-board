@@ -11,7 +11,7 @@ const getLabel = (value?: string | number) => {
 }
 
 const getClassName = (value?: MezonAppType | AppPricing) => {
-  const baseClass = "bg-bg-container dark:bg-bg-secondary border font-medium"
+  const baseClass = "bg-container dark:bg-secondary border font-medium"
 
   switch (value) {
     case MezonAppType.BOT:
@@ -23,7 +23,7 @@ const getClassName = (value?: MezonAppType | AppPricing) => {
     case AppPricing.PAID:
       return cn(baseClass, "!border-purple-500 !text-purple-500 dark:border-purple-400 dark:text-purple-400")
     default:
-      return cn(baseClass, "!border-border !text-text-secondary")
+      return cn(baseClass, "!border-border !text-secondary")
   }
 }
 

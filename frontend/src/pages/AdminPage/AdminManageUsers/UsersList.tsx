@@ -164,8 +164,8 @@ function UsersList() {
   ]
   
   return (
-    <div className='p-4 rounded-md shadow-md bg-bg-container'>
-      <h2 className='text-lg font-semibold mb-4 text-text-primary'>Users List</h2>
+    <div className='p-4 rounded-md shadow-md bg-container'>
+      <h2 className='text-lg font-semibold mb-4 text-primary'>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
@@ -180,9 +180,9 @@ function UsersList() {
               <Input
                 ref={searchRef}
                 placeholder='Search by name or email'
-                prefix={<SearchOutlined className='text-text-secondary' />}
+                prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => form.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-bg-container text-text-primary border-border placeholder:text-text-secondary'
+                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
               />
             </Form.Item>
 
@@ -190,7 +190,7 @@ function UsersList() {
               <Select 
                 className='w-full h-[40px]'
                 placeholder='Sort Field'
-                popupClassName='bg-bg-container text-text-primary'
+                popupClassName='bg-container text-primary'
                 dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='createdAt'>Created At</Option>
@@ -202,7 +202,7 @@ function UsersList() {
               <Select 
                 className='w-full h-[40px]'
                 placeholder='Sort Order'
-                popupClassName='bg-bg-container text-text-primary'
+                popupClassName='bg-container text-primary'
                 dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='ASC'>Ascending</Option>
@@ -254,7 +254,7 @@ function UsersList() {
       )}
 
       {!isLoading && !error && (!users || users.totalCount === 0) && (
-        <div className='text-center p-8 text-text-secondary'>
+        <div className='text-center p-8 text-secondary'>
           <p>Không tìm thấy người dùng</p>
         </div>
       )}

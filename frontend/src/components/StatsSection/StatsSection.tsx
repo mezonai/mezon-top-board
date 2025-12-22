@@ -14,7 +14,7 @@ function StatsSection({ stats }: IStatsSectionProps) {
           )}
         >
           <div className='text-primary text-5xl font-bold mb-2'>{stat.number}</div>
-          <div className='text-text-secondary text-sm'>{stat.description}</div>
+          <div className='text-secondary text-sm'>{stat.description}</div>
         </div>
       ))}
     </div>

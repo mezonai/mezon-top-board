@@ -102,7 +102,7 @@ const MediaManagerModal = ({
               Click to Upload
             </Button>
           </Upload>
-          <i className='text-text-secondary'>Choose an image in your browser</i>
+          <i className='text-secondary'>Choose an image in your browser</i>
           {selectedFile && (
             <img
               src={selectedImage || ''}
@@ -202,7 +202,7 @@ const MediaManagerModal = ({
         footer={
           <div className="flex justify-between items-center">
             {activeTab === '2' && (
-              <div className='text-sm text-text-secondary pl-2'>
+              <div className='text-sm text-secondary pl-2'>
                 Total {mediaList?.totalCount || 0} image(s)
               </div>
             )}

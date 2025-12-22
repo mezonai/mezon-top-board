@@ -5,31 +5,6 @@ const tailwindPreset: Config = {
   theme: {
     extend: {
       colors: {
-        bg: {
-          DEFAULT: 'var(--bg-body)',
-          container: 'var(--bg-container)',
-          secondary: 'var(--bg-container-secondary)',
-          elevated: 'var(--bg-elevated)',
-          content: 'var(--bg-content)',
-          sidebar: 'var(--bg-sidebar)',
-          body: 'var(--bg-body)',
-          'table-header': 'var(--bg-table-header)',
-          hover: 'var(--bg-hover)',
-        },
-        text: {
-          primary: 'var(--text-primary)',
-          secondary: 'var(--text-secondary)',
-          tertiary: 'var(--text-tertiary)',
-          breadcrumb: 'var(--text-breadcrumb)',
-          sidebar: 'var(--text-sidebar)',
-        },
-        border: {
-          DEFAULT: 'var(--border-color)',
-          footer: 'var(--border-footer)',
-          table: 'var(--border-table)',
-          subtle: 'var(--border-subtle)',
-          emphasis: 'var(--border-emphasis)',
-        },
         primary: {
           DEFAULT: 'var(--accent-primary)',
           hover: new TinyColor('#F2385A').lighten(5).toString(),
@@ -62,12 +37,33 @@ const tailwindPreset: Config = {
           bg: 'var(--color-info-bg)',
           border: 'var(--color-info-border)',
         },
-        default: {
-          default: '#fff',
-          hover: new TinyColor('#000').lighten(5).toString(),
-          active: new TinyColor('#000').lighten(10).toString(),
-          border: new TinyColor('#000').setAlpha(0.2).toString()
-        }
+        border: {
+          DEFAULT: 'var(--border-color)',
+          footer: 'var(--border-footer)',
+          table: 'var(--border-table)',
+          subtle: 'var(--border-subtle)',
+          emphasis: 'var(--border-emphasis)',
+        },
+      },
+
+      backgroundColor: {
+        DEFAULT: 'var(--bg-body)',
+        container: 'var(--bg-container)',
+        secondary: 'var(--bg-container-secondary)',
+        elevated: 'var(--bg-elevated)',
+        content: 'var(--bg-content)',
+        sidebar: 'var(--bg-sidebar)',
+        body: 'var(--bg-body)',
+        'table-header': 'var(--bg-table-header)',
+        hover: 'var(--bg-hover)',
+      },
+
+      textColor: {
+        primary: 'var(--text-primary)',
+        secondary: 'var(--text-secondary)',
+        tertiary: 'var(--text-tertiary)',
+        breadcrumb: 'var(--text-breadcrumb)',
+        sidebar: 'var(--text-sidebar)',
       },
       spacing: {
         '0': '0px',

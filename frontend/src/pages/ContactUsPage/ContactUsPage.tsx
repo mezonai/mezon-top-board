@@ -23,18 +23,18 @@ function HelpPage() {
         </header>
         <section className='flex flex-col lg:flex-row lg:gap-36 xl:mx-12 xl:mr-20'>
           {/* Form */}
-          <form action='' className='bg-bg-secondary dark:bg-bg-container p-6 w-full lg:w-1/2 rounded-xl shadow-md border border-transparent dark:border-border transition-colors duration-300'>
+          <form action='' className='bg-secondary dark:bg-container p-6 w-full lg:w-1/2 rounded-xl shadow-md border border-transparent dark:border-border transition-colors duration-300'>
             <MtbTypography variant='h4' label='Send us a message' />
             <div className='flex gap-4 mb-4'>
-              <input type='text' placeholder='Your name' className='w-1/2 p-2 rounded bg-bg-body dark:bg-bg-container-secondary text-text-primary border border-transparent dark:border-border placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
-              <input type='email' placeholder='Your email' className='w-1/2 p-2 rounded bg-bg-body dark:bg-bg-container-secondary text-text-primary border border-transparent dark:border-border placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
+              <input type='text' placeholder='Your name' className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
+              <input type='email' placeholder='Your email' className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
             </div>
-            <textarea placeholder='Information' className='w-full p-2 rounded bg-bg-body dark:bg-bg-container-secondary text-text-primary border border-transparent dark:border-border placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary mb-4 h-24' required></textarea>
+            <textarea placeholder='Information' className='w-full p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary mb-4 h-24' required></textarea>
             <div className="flex items-center gap-2 mb-4">
               <input
                 type="text"
                 placeholder="Verification code"
-                className="p-2 rounded w-2/3 bg-bg-body dark:bg-bg-container-secondary text-text-primary border border-transparent dark:border-border placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="p-2 rounded w-2/3 bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary"
                 required
                 value={captchaInput}
                 onChange={(e) => setCaptchaInput(e.target.value)}
@@ -42,7 +42,7 @@ function HelpPage() {
               <div className="flex items-center justify-around p-2 rounded-xs w-1/3 text-center font-bold relative">
                 <span className='inline-block'>{captcha}</span>
                 <button type="button" onClick={refreshCaptcha} className="absolute right-1 top-1/2 -translate-y-1/2 max-[400px]:-right-2.5">
-                  <SyncOutlined className="text-text-tertiary hover:text-text-primary transition text-sm cursor-pointer" />
+                  <SyncOutlined className="text-tertiary hover:text-primary transition text-sm cursor-pointer" />
                 </button>
               </div>
             </div>

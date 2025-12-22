@@ -74,7 +74,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
                 variant='h4'
                 customClassName={cn(
                   titleMaxWidth, 
-                  "!mb-0 text-text-primary",
+                  "!mb-0 text-primary",
                   "truncate" 
                 )}
                 label={data?.name} 
@@ -117,7 +117,7 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
               <Button size='large' color='default' variant='outlined' icon={<UploadOutlined />} onClick={handleShare} />
             </Popover>
           </div>
-          <div className='break-words max-w-full text-text-secondary line-clamp-3'>
+          <div className='break-words max-w-full text-secondary line-clamp-3'>
             {data?.headline}
           </div>
         </div>

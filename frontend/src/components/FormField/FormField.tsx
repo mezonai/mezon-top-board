@@ -14,11 +14,11 @@ function FormField({ label, required = false, description = '', children, errorT
   return (
     <div className={cn('flex items-start pt-10 gap-6', customClass)}>
       <div className='flex flex-col w-1/4'>
-        <p className='text-md sm:text-sm text-text-primary font-medium'>
+        <p className='text-md sm:text-sm text-primary font-medium'>
           {label}
           {required && <span className="ml-1 text-danger">*</span>}
         </p>
-           <p className='text-xs sm:text-md text-text-secondary mt-1'>{description}</p>
+           <p className='text-xs sm:text-md text-secondary mt-1'>{description}</p>
       </div>
       <div className='flex flex-col w-[calc(75%-1.5rem)]'>
         {children}
