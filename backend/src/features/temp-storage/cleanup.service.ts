@@ -8,6 +8,7 @@ import { GenericRepository } from '@libs/repository/genericRepository';
 import { TempFile } from '@domain/entities';
 import { BotWizard } from '@domain/entities/schema/botWizard.entity';
 import { BotWizardStatus } from '@domain/common/enum/botWizardStatus';
+import * as moment from 'moment';
 
 @Injectable()
 export class CleanupTempFileService {
@@ -24,8 +25,8 @@ export class CleanupTempFileService {
 
   @Cron('0 */6 * * *')
   async cleanupTempFiles() {
-    const now = new Date();
-    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const now = moment().toDate();
+    const last24Hours = moment().subtract(24, 'hours').toDate();
 
     const expiredFiles = await this.tempFileRepository.find({
       where: { expiredAt: Between(last24Hours, now) },
