@@ -45,11 +45,6 @@ export const NESTJS_EVENTS = [
     eventType: undefined,
   },
   {
-    label: 'Role Assign',
-    value: 'RoleAssign',
-    eventType: undefined,
-  },
-  {
     label: 'User Channel Added',
     value: 'UserChannelAdded',
     eventType: 'UserChannelAddedEvent',
