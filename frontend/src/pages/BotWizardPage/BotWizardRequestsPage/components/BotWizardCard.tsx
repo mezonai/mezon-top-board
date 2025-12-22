@@ -54,7 +54,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
 
                 <div className='flex items-center gap-2 text-sm bg-bg-container p-2 rounded-md'>
                     <CalendarOutlined />
-                    <span>Created: <span className='font-medium'>{formatDate(item.tempFile?.createdAt)}</span></span>
+                    <span>Created: <span className='font-medium'>{formatDate(item?.createdAt)}</span></span>
                 </div>
 
                 <div className='flex flex-wrap gap-2'>
