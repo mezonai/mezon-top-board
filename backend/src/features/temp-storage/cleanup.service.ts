@@ -3,11 +3,12 @@ import { Cron } from '@nestjs/schedule';
 import { rmSync, existsSync } from 'fs';
 import { join } from 'path';
 import { tempFilesRootDir } from '@config/files.config';
-import { EntityManager, LessThan } from 'typeorm';
+import { Between, EntityManager } from 'typeorm';
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { TempFile } from '@domain/entities';
 import { BotWizard } from '@domain/entities/schema/botWizard.entity';
 import { BotWizardStatus } from '@domain/common/enum/botWizardStatus';
+import * as moment from 'moment';
 
 @Injectable()
 export class CleanupTempFileService {
@@ -24,10 +25,11 @@ export class CleanupTempFileService {
 
   @Cron('0 */6 * * *')
   async cleanupTempFiles() {
-    const now = new Date();
+    const now = moment().toDate();
+    const last24Hours = moment().subtract(24, 'hours').toDate();
 
     const expiredFiles = await this.tempFileRepository.find({
-      where: { expiredAt: LessThan(now) },
+      where: { expiredAt: Between(last24Hours, now) },
     });
 
     for (const file of expiredFiles) {
