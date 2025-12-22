@@ -7,5 +7,6 @@ export type BotWizard = {
     language: string
     status: WizardStatus
     templateJson: string
+    createdAt: Date
     tempFile: TempFile
 }

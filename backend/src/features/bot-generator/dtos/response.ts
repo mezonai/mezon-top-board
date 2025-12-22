@@ -25,6 +25,10 @@ export class GetBotWizardResponse {
   public templateJson: string
 
   @Expose()
+  @ApiProperty()
+  public createdAt: Date;
+
+  @Expose()
   @ApiPropertyOptional({ type: () => TempFileInBotWizardResponse })
   @Type(() => TempFileInBotWizardResponse)
   public tempFile?: TempFileInBotWizardResponse;
