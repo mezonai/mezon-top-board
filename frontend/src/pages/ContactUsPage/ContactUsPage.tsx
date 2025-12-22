@@ -19,7 +19,7 @@ function HelpPage() {
       <div className="container m-auto mt-2 pb-3">
         <header className='relative mb-10 flex justify-center'>
           <MtbTypography variant='h2'>Contact Us</MtbTypography>
-          <span className="absolute left-1/2 bottom-[-16px] w-28 h-[3px] bg-secondary -translate-x-1/2"></span>
+          <span className="absolute left-1/2 bottom-[-16px] w-28 h-[3px] bg-heading -translate-x-1/2"></span>
         </header>
         <section className='flex flex-col lg:flex-row lg:gap-36 xl:mx-12 xl:mr-20'>
           {/* Form */}
@@ -57,11 +57,11 @@ function HelpPage() {
           <div className='w-full lg:w-1/2 p-6 max-lg:mt-6'>
             <p>
               Thank you for your interest in Mezon Top Board. To receive further information, please send an email to
-              <span className='text-primary font-bold'> sales@ncc.asia</span> Or call us
+              <span className='text-heading font-bold'> sales@ncc.asia</span> Or call us
               directly (+84) 2466874606.
             </p>
             <h5 className='mt-8 mb-1.5'>
-              You might also join our support clan on Mezon - <strong>TOP MEZON SUPPORT</strong> at: <a href="https://mezon.ai/invite/1840680946488053760" className='text-primary font-bold' target='_blank'>https://mezon.ai/invite/1840680946488053760</a>
+              You might also join our support clan on Mezon - <strong>TOP MEZON SUPPORT</strong> at: <a href="https://mezon.ai/invite/1840680946488053760" className='text-heading font-bold' target='_blank'>https://mezon.ai/invite/1840680946488053760</a>
             </h5>
             <p className='mt-8'>
               <div className='mb-1.5'>

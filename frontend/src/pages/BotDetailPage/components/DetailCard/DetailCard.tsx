@@ -17,7 +17,7 @@ function DetailCard() {
   return (
     <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>
       <div className='pb-4'>
-        <MtbTypography label={<InfoCircleOutlined className='text-xl !text-secondary' />} variant='h3'>
+        <MtbTypography label={<InfoCircleOutlined className='!text-xl !text-primary-active' />} variant='h3'>
           Details
         </MtbTypography>
         {mezonAppDetail.prefix && (
@@ -29,7 +29,7 @@ function DetailCard() {
         )}
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-primary-active' />}>
           Socials
         </MtbTypography>
         <div>
@@ -39,7 +39,7 @@ function DetailCard() {
                 href={mezonAppDetail?.supportUrl}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-primary hover:text-primary transition-colors'
+                className='text-primary transition-colors'
               >
                 <u>{mezonAppDetail.name}'s Support link</u>
               </a>
@@ -51,7 +51,7 @@ function DetailCard() {
                 href={`${link.type.prefixUrl}${link.url}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-primary hover:text-primary transition-colors'
+                className='text-primary transition-colors'
               >
                 {link.type.prefixUrl}{link.url}
               </a>
@@ -60,7 +60,7 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-5'>
-        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-primary-active' />}>
           Categories
         </MtbTypography>
         <div className='pt-1'>
@@ -75,7 +75,7 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-secondary' />}>
+        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-primary-active' />}>
           Creators
         </MtbTypography>
         <div className={`pt-2`}>

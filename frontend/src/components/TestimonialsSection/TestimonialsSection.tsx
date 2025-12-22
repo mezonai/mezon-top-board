@@ -10,14 +10,15 @@ function TestimonialsSection({ testimonials }: ITestimonialsSectionProps) {
             key={index}
             className={cn(
               "p-6 rounded-xl transition-all duration-300",
-              "bg-bg-container border border-transparent dark:border-border",
+              "bg-container border border-transparent dark:border-border",
               "shadow-xl hover:shadow-2xl"
             )}
           >
             <div className='flex items-center gap-3 mb-4'>
               <div className='w-10 h-10 rounded-full bg-secondary flex-shrink-0' />
               <div>
-                <h2 className='text-lg font-semibold text-primary'>
+                <h2 className='text-lg font-semibold text-primary
+                -'>
                   {item.title}
                 </h2>
                 <p className='text-sm text-primary font-medium'>

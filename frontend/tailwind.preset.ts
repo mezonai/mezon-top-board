@@ -48,6 +48,7 @@ const tailwindPreset: Config = {
 
       backgroundColor: {
         DEFAULT: 'var(--bg-body)',
+        heading: 'var(--accent-primary)',
         container: 'var(--bg-container)',
         secondary: 'var(--bg-container-secondary)',
         elevated: 'var(--bg-elevated)',
@@ -59,6 +60,7 @@ const tailwindPreset: Config = {
       },
 
       textColor: {
+        heading: 'var(--accent-primary)',
         primary: 'var(--text-primary)',
         secondary: 'var(--text-secondary)',
         tertiary: 'var(--text-tertiary)',
