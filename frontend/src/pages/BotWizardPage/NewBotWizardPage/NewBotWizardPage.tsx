@@ -84,12 +84,15 @@ function NewBotWizardPage() {
                     </div>
                     
                     <div className='flex justify-end gap-3 mt-8 pb-10'>
-                        <Button 
-                            variant='outlined' 
-                            onClick={prev} 
-                        >
-                            Back
-                        </Button>
+                        {current > 0 && ( 
+                            <Button 
+                                variant='outlined' 
+                                onClick={prev}
+                            >
+                                Back
+                            </Button>
+                        )
+                        }
                         <Button 
                             color='primary' 
                             onClick={next} 
