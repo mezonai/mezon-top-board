@@ -44,7 +44,7 @@ export default function BotWizardDetailModal({ open, onClose, item }: Props) {
                         </Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="Expires At">
-                        {formatDate(item.tempFile?.expiredAt) || ('[PROCESSING]')}
+                        {formatDate(item.tempFile?.expiredAt) || '[PROCESSING]'}
                     </Descriptions.Item>
                     <Descriptions.Item label="Template">
                         {item.templateJson && (
