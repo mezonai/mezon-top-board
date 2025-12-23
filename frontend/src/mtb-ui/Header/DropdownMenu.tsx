@@ -4,16 +4,7 @@ import { Divider } from "antd";
 import { useTheme } from '@app/hook/useTheme'
 import { useNavigate } from "react-router-dom";
 import { cn } from "@app/utils/cn";
-
-const COLORS = [
-  { key: "red", label: "Red", color: "bg-red-500" },
-  { key: "pink", label: "Pink", color: "bg-pink-400" },
-  { key: "purple", label: "Purple", color: "bg-purple-500" },
-  { key: "blue", label: "Blue", color: "bg-blue-500" },
-  { key: "green", label: "Green", color: "bg-green-500" },
-  { key: "yellow", label: "Yellow", color: "bg-yellow-400" },
-  { key: "orange", label: "Orange", color: "bg-orange-500" },
-];
+import { COLOR_OPTIONS } from "@app/constants/themeColors";
 
 type ViewState = "main" | "colors" | "mode";
 type Mode = 'Light' | 'Dark';
@@ -64,12 +55,11 @@ const MenuHeader = ({ title, onBack }: { title: string; onBack: () => void }) =>
 
 export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boolean, handleLogout: () => void }) {
   const [view, setView] = useState<ViewState>("main")
-  const [color, setColor] = useState("red")
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, primaryColor, setPrimaryColor } = useTheme()
   const navigate = useNavigate()
 
   const currentMode = theme === 'dark' ? 'Dark' : 'Light';
-  const activeColorClass = COLORS.find(c => c.key === color)?.color;
+  const activeColorClass = COLOR_OPTIONS.find(c => c.key === primaryColor)?.tailwindClass || 'bg-red-500';
 
   return (
     <div 
@@ -126,8 +116,8 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
         <>
           <MenuHeader title="Colors" onBack={() => setView("main")} />
           <div className="max-h-[330px] overflow-y-auto custom-scrollbar flex flex-col gap-1">
-            {COLORS.map((c) => {
-              const isSelected = color === c.key;
+            {COLOR_OPTIONS.map((c) => {
+              const isSelected = primaryColor === c.key;
               return (
                 <MenuItem
                   key={c.key}
@@ -136,13 +126,13 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
                     <span 
                       className={cn(
                         "block w-4 h-4 rounded-full border-2 border-black", 
-                        c.color 
+                        c.tailwindClass 
                       )} 
                     />
                   }
-                  className={isSelected ? c.color : ""} 
+                  className={isSelected ? "bg-hover" : ""} 
                   isActive={isSelected}
-                  onClick={() => setColor(c.key)}
+                  onClick={() => setPrimaryColor(c.key)}
                 />
               );
             })}
@@ -157,7 +147,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
             <MenuItem
               key={m}
               label={m}
-              isActive={currentMode === m}
+              isActive={theme === m.toLowerCase()}
               onClick={() => setTheme(m.toLowerCase() as 'light' | 'dark')}
             />
           ))}
