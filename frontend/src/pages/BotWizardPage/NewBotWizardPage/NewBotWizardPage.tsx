@@ -91,8 +91,7 @@ function NewBotWizardPage() {
                             >
                                 Back
                             </Button>
-                        )
-                        }
+                        )}
                         <Button 
                             color='primary' 
                             onClick={next} 
