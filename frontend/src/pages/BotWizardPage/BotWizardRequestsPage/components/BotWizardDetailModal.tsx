@@ -32,7 +32,13 @@ export default function BotWizardDetailModal({ open, onClose, item }: Props) {
 
                 <Descriptions bordered column={1} size='small'>
                     <Descriptions.Item label="File Name">
-                        <span className="font-medium">{item.tempFile?.fileName}</span>
+                        {item.tempFile?.fileName ? (
+                            <span className="font-medium">{item.tempFile?.fileName}</span>
+                        ) : (
+                            <Tag color={getStatusColor(item.status)}>
+                                {item.status}
+                            </Tag>
+                        )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Status">
                         <Tag color={getStatusColor(item.status)}>
@@ -40,7 +46,13 @@ export default function BotWizardDetailModal({ open, onClose, item }: Props) {
                         </Tag>
                     </Descriptions.Item>
                     <Descriptions.Item label="Expires At">
-                        {formatDate(item.tempFile?.expiredAt)}
+                        {item.tempFile?.expiredAt ? (
+                            <>{formatDate(item.tempFile?.expiredAt)}</>
+                        ) : (
+                            <Tag color={getStatusColor(item.status)}>
+                                {item.status}
+                            </Tag>
+                        )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Template">
                         {item.templateJson && (

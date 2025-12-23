@@ -87,7 +87,6 @@ function NewBotWizardPage() {
                         <Button 
                             variant='outlined' 
                             onClick={prev} 
-                            disabled={current === 0 || isLoadingState}
                         >
                             Back
                         </Button>
