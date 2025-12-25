@@ -16,7 +16,7 @@ export default function NewBotWizardStep1() {
                         control={control}
                         name='botName'
                         rules={{ required: 'Bot name is required' }}
-                        render={({ field }) => <Input {...field} placeholder='MezonBot' />}
+                        render={({ field }) => <Input {...field} placeholder='MezonBot' className='placeholder:!text-primary' />}
                     />
                 </FormField>
 

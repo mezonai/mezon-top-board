@@ -83,7 +83,7 @@ export const buttonVariants = cva('!shadow-none transition-all duration-200', {
     {
       color: EButtonColor.PRIMARY,
       variant: EButtonVariant.OUTLINED,
-      class: 'hover:!bg-primary-hover hover:!text-white hover:!border-primary-hover',
+      class: 'hover:!bg-heading hover:!text-white hover:!border-heading',
     },
     {
       color: EButtonColor.PRIMARY,
