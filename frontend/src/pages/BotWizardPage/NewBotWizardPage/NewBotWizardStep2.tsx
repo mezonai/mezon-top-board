@@ -49,7 +49,7 @@ export default function NewBotWizardStep2() {
                 </p>
 
                 <FormField label='Command' description='Trigger word (e.g. ping)'>
-                    <Input value={command} onChange={(e) => setCommand(e.target.value)} placeholder='ping' />
+                    <Input className='placeholder:!text-primary' value={command} onChange={(e) => setCommand(e.target.value)} placeholder='ping' />
                 </FormField>
 
                 <FormField label='Description' description="Briefly describe what this command does">
@@ -58,15 +58,17 @@ export default function NewBotWizardStep2() {
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
                         placeholder='Explain this command'
+                        className='placeholder:!text-primary'
                     />
                 </FormField>
 
                 <FormField label='Category' description="Used to group commands">
-                    <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder='General' />
+                    <Input className='placeholder:!text-primary' value={category} onChange={(e) => setCategory(e.target.value)} placeholder='General' />
                 </FormField>
 
                 <FormField label='Aliases' description="Comma-separated alternative trigger words">
                     <Input
+                        className='placeholder:!text-primary'
                         value={aliasesRaw}
                         onChange={(e) => setAliasesRaw(e.target.value)}
                         placeholder='p, pong'

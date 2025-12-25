@@ -24,7 +24,7 @@ export default function BotWizardSidebar() {
                             key={l.path}
                             className={`p-2 cursor-pointer align-middle transition-all rounded-md border ${isActive
                                 ? 'border-primary text-heading font-semibold'
-                                : 'border-transparent hover:text-white'
+                                : 'border-transparent hover:text-primary hover:bg-heading hover:border-primary'
                                 }`}
                         >
                             <a href={l.path} className='w-full inline-block font-medium'>

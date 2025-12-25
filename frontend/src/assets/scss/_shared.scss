@@ -275,6 +275,137 @@
   }
 }
 
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
+}
+
+.ant-modal {
+  .ant-modal-content {
+    background-color: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  }
+
+  .ant-modal-header {
+    background-color: var(--bg-container) !important;
+    border-bottom-color: var(--border-color) !important;
+    .ant-modal-title { color: var(--text-primary) !important; }
+  }
+
+  .ant-modal-close {
+    color: var(--text-secondary) !important;
+    background: transparent !important;
+  }
+
+  .ant-modal-body { color: var(--text-primary) !important; }
+
+  .ant-modal-footer {
+    border-top-color: var(--border-color) !important;
+
+    .ant-btn {
+      background-color: var(--bg-container) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--bg-container) !important;
+        border-color: var(--accent-primary) !important;
+        color: var(--accent-primary) !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+    }
+
+    .ant-btn-primary {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+
+    .ant-btn-dangerous {
+      background-color: var(--color-danger) !important;
+      border-color: var(--color-danger) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--color-danger) !important;
+        border-color: var(--color-danger) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+  }
+}
+
+.ant-modal-confirm {
+  .ant-modal-confirm-title { color: var(--text-primary) !important; }
+  .ant-modal-confirm-content { color: var(--text-secondary) !important; }
+
+  .anticon { color: var(--accent-primary) !important; }
+  &.ant-modal-confirm-error   .anticon { color: var(--color-danger) !important; }
+  &.ant-modal-confirm-warning .anticon { color: var(--color-warning) !important; }
+  &.ant-modal-confirm-success .anticon { color: var(--color-success) !important; }
+
+  .ant-modal-confirm-btns {
+    .ant-btn {
+      background-color: var(--bg-container) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--bg-container) !important;
+        border-color: var(--accent-primary) !important;
+        color: var(--accent-primary) !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+    }
+    .ant-btn-primary {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+    .ant-btn-dangerous {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--border-color) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--border-color) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+  }
+}
+
 .ant-select {
   .ant-select-arrow {
     color: var(--text-secondary) !important;
