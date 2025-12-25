@@ -17,7 +17,7 @@ function DetailCard() {
   return (
     <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>
       <div className='pb-4'>
-        <MtbTypography label={<InfoCircleOutlined className='!text-xl !text-primary-active' />} variant='h3'>
+        <MtbTypography label={<InfoCircleOutlined className='!text-xl !text-heading' />} variant='h3'>
           Details
         </MtbTypography>
         {mezonAppDetail.prefix && (
@@ -29,7 +29,7 @@ function DetailCard() {
         )}
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-primary-active' />}>
+        <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-heading' />}>
           Socials
         </MtbTypography>
         <div>
@@ -60,7 +60,7 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-5'>
-        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-primary-active' />}>
+        <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-heading' />}>
           Categories
         </MtbTypography>
         <div className='pt-1'>
@@ -75,7 +75,7 @@ function DetailCard() {
         </div>
       </div>
       <div className='pb-4'>
-        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-primary-active' />}>
+        <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-heading' />}>
           Creators
         </MtbTypography>
         <div className={`pt-2`}>

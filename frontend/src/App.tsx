@@ -6,12 +6,13 @@ import { useTheme } from '@app/hook/useTheme'
 import { useMemo } from 'react'
 
 function App() {
-  const { theme } = useTheme()
+  const { theme, primaryColorHex } = useTheme()
   
   const themeConfig = useMemo(() => ({
     algorithm: theme === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
     token: {
       fontFamily: 'Open Sans, sans-serif',
+      colorPrimary: primaryColorHex, 
       colorBgBase: 'var(--bg-body)',
       colorTextBase: 'var(--text-primary)',
       colorBgContainer: 'var(--bg-container)',
@@ -19,7 +20,7 @@ function App() {
       colorTextSecondary: 'var(--text-secondary)',
       colorBorder: 'var(--border-color)'
     }
-  }), [theme])
+  }), [theme, primaryColorHex]) 
   
   return (
     <ConfigProvider theme={themeConfig}>

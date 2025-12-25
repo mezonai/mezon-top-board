@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, ReactNode } from 'react'
+import { THEME_COLORS, ThemeColorKey } from '@app/constants/themeColors'
 
 type Theme = 'light' | 'dark'
 
@@ -6,6 +7,9 @@ interface ThemeContextType {
   theme: Theme
   setTheme: (theme: Theme) => void
   toggleTheme: () => void
+  primaryColor: ThemeColorKey
+  setPrimaryColor: (color: ThemeColorKey) => void
+  primaryColorHex: string 
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -23,12 +27,21 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     return 'light'
   })
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme)
-  }
+  const [primaryColor, setPrimaryColorState] = useState<ThemeColorKey>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('primary-color') as ThemeColorKey) || 'red'
+    }
+    return 'red'
+  })
 
+  const setTheme = (newTheme: Theme) => setThemeState(newTheme)
+  
   const toggleTheme = () => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'))
+  }
+
+  const setPrimaryColor = (color: ThemeColorKey) => {
+    setPrimaryColorState(color)
   }
 
   useEffect(() => {
@@ -41,8 +54,23 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     })
   }, [theme])
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const hexColor = THEME_COLORS[primaryColor];
+    
+    localStorage.setItem('primary-color', primaryColor);
+    root.style.setProperty('--accent-primary', hexColor);
+  }, [primaryColor])
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ 
+      theme, 
+      setTheme, 
+      toggleTheme,
+      primaryColor,
+      setPrimaryColor,
+      primaryColorHex: THEME_COLORS[primaryColor]
+    }}>
       {children}
     </ThemeContext.Provider>
   )

@@ -27,7 +27,7 @@ export const buttonVariants = cva('!shadow-none transition-all duration-200', {
   variants: {
     color: {
       [EButtonColor.DEFAULT]: '!border-border !text-primary',
-      [EButtonColor.PRIMARY]: '!border-primary !text-accent-primary',
+      [EButtonColor.PRIMARY]: '!border-primary !text-heading',
       [EButtonColor.DANGER]: '!border-danger !text-danger',
       [EButtonColor.PINK]: '!border-pink-500 !text-pink-500',
       [EButtonColor.PURPLE]: '!border-purple-500 !text-purple-500',

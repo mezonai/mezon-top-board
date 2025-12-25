@@ -23,8 +23,8 @@ export default function BotWizardSidebar() {
                         <li
                             key={l.path}
                             className={`p-2 cursor-pointer align-middle transition-all rounded-md border ${isActive
-                                ? 'bg-red-50 border-primary-active text-primary-active font-semibold'
-                                : 'border-transparent hover:bg-red-400 hover:text-white'
+                                ? 'border-primary text-heading font-semibold'
+                                : 'border-transparent hover:text-white'
                                 }`}
                         >
                             <a href={l.path} className='w-full inline-block font-medium'>
