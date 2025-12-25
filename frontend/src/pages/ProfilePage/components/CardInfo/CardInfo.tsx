@@ -120,7 +120,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           {cardInfoLink
             .filter((item) => item.isPublic || !isPublic)
             .map((item, index) => (
-              <li key={index} className='p-2 cursor-pointer align-middle hover:bg-red-400 transition-all'>
+              <li key={index} className='p-2 cursor-pointer align-middle hover:bg-heading transition-all'>
                 <a href={item.path} className='w-full inline-block'>
                   <span className='mr-4'>{item.icon}</span>
                   {item.name}
