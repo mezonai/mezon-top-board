@@ -22,7 +22,7 @@ import { GetMezonAppDetailsResponse, GetRelatedMezonAppResponse } from '@app/ser
 import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
-const pageGridOptions = [36]
+const GRID_PAGE_SIZE = 36;
 
 const sortOptions = [
   { value: "createdAt_DESC", label: "Date Created (Newest → Oldest)" },
@@ -53,7 +53,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [savedListPageSize, setSavedListPageSize] = useState<number>(pageOptions[0])
-  const [savedGridPageSize, setSavedGridPageSize] = useState<number>(pageGridOptions[0])
+  
   const [sortField, setSortField] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
@@ -132,18 +132,11 @@ function Main({ isSearchPage = false }: IMainProps) {
     }))
   }, [])
 
-  const gridOptions = useMemo(() => {
-    return pageGridOptions.map((value) => ({
-      value,
-      label: `${value}`
-    }))
-  }, [])
-
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
     setPage(1)
     if (mode === 'grid') {
-      setBotPerPage(savedGridPageSize)
+      setBotPerPage(GRID_PAGE_SIZE)
     } else {
       setBotPerPage(savedListPageSize)
     }
@@ -161,11 +154,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const handlePageSizeChange = (option: IOption) => {
     const newVal = Number(option.value)
-    if (viewMode === 'grid') {
-      setSavedGridPageSize(newVal)
-    } else {
-      setSavedListPageSize(newVal)
-    }
+    setSavedListPageSize(newVal)
     setBotPerPage(newVal)
     setPage(1)
   }
@@ -235,25 +224,26 @@ function Main({ isSearchPage = false }: IMainProps) {
                 data-e2e="selectSortOptions"
               />
             </div>
-            <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
-            <div className="flex items-center gap-2">
-              <span className="text-secondary whitespace-nowrap">Per page:</span>
-              <SingleSelect
-                getPopupContainer={(trigger) => trigger.parentElement}
-                onChange={handlePageSizeChange}
-                options={viewMode === 'grid' ? gridOptions : listOptions}
-                value={
-                  viewMode === 'grid' 
-                    ? { value: savedGridPageSize, label: `${savedGridPageSize}` } 
-                    : { value: savedListPageSize, label: `${savedListPageSize}` }
-                }
-                placeholder='5'
-                size='large'
-                className='w-[70px]' 
-                defaultValue={viewMode === 'grid' ? gridOptions[0] : listOptions[0]}
-                data-e2e="selectPageOptions"
-              />
-            </div>
+
+            {viewMode === 'list' && (
+              <>
+                <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
+                <div className="flex items-center gap-2">
+                  <span className="text-secondary whitespace-nowrap">Per page:</span>
+                  <SingleSelect
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                    onChange={handlePageSizeChange}
+                    options={listOptions}
+                    value={{ value: savedListPageSize, label: `${savedListPageSize}` }}
+                    placeholder='5'
+                    size='large'
+                    className='w-[70px]' 
+                    defaultValue={listOptions[0]}
+                    data-e2e="selectPageOptions"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="flex bg-container-secondary p-1 rounded-lg border border-border">
               <Button
