@@ -132,7 +132,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           control={control}
           name='name'
           render={({ field }) => (
-            <Input {...field} placeholder='MezonBot' status={errorStatus(errors.name)} />
+            <Input {...field} className='placeholder:!text-primary' placeholder='MezonBot' status={errorStatus(errors.name)} />
           )}
         />
       </FormField>
@@ -148,6 +148,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           name='headline'
           render={({ field }) => (
             <TextArea {...field} placeholder='A powerful and multi-functional role bot'
+              className='placeholder:!text-primary'
               status={errorStatus(errors.headline)} />
           )}
         />
@@ -191,7 +192,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
               control={control}
               name='prefix'
               render={({ field }) => (
-                <Input {...field} placeholder='!' status={errorStatus(errors.prefix)} />
+                <Input {...field} className='placeholder:!text-primary' placeholder='!' status={errorStatus(errors.prefix)} />
               )}
             />
           </FormField>
@@ -282,7 +283,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           control={control}
           name='supportUrl'
           render={({ field }) => (
-            <Input {...field} placeholder='https://yourdomain.com/support' status={errorStatus(errors.supportUrl)} />
+            <Input {...field} className='placeholder:!text-primary' placeholder='https://yourdomain.com/support' status={errorStatus(errors.supportUrl)} />
           )}
         />
       </FormField>
@@ -293,6 +294,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           name='remark'
           render={({ field }) => (
             <TextArea {...field} rows={3}
+              className='placeholder:!text-primary'
               placeholder="Please share any important information or details about your bot that our reviewers should know"
               status={errorStatus(errors.remark)}
             />

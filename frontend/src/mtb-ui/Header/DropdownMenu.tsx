@@ -4,7 +4,8 @@ import { Divider } from "antd";
 import { useTheme } from '@app/hook/useTheme'
 import { useNavigate } from "react-router-dom";
 import { cn } from "@app/utils/cn";
-import { COLOR_OPTIONS } from "@app/constants/themeColors";
+import { COLOR_OPTIONS, THEME_COLORS } from "@app/constants/themeColors";
+import { lighten } from "@app/utils/colors";
 
 type ViewState = "main" | "colors" | "mode";
 type Mode = 'Light' | 'Dark';
@@ -60,6 +61,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
 
   const currentMode = theme === 'dark' ? 'Dark' : 'Light';
   const activeColorClass = COLOR_OPTIONS.find(c => c.key === primaryColor)?.tailwindClass || 'bg-red-500';
+  const activeColorHex = THEME_COLORS[primaryColor as keyof typeof THEME_COLORS] || 'bg-red-500';
 
   return (
     <div 
@@ -82,7 +84,10 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
             label="Colors"
             right={
               <>
-                <span className={`w-4 h-4 rounded-full border-2 border-black ${activeColorClass}`} />
+                <span
+                  className={`w-4 h-4 rounded-full border-2 ${activeColorClass}`}
+                  style={{ borderColor: lighten(activeColorHex, 0.4) }}
+                />
                 <RightOutlined className="ml-2" />
               </>
             }
@@ -123,11 +128,12 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
                   key={c.key}
                   label={c.label}
                   icon={
-                    <span 
+                    <span
                       className={cn(
-                        "block w-4 h-4 rounded-full border-2 border-black", 
-                        c.tailwindClass 
-                      )} 
+                        "block w-4 h-4 rounded-full border-2",
+                        c.tailwindClass
+                      )}
+                      style={{ borderColor: lighten(THEME_COLORS[c.key], 0.4) }}
                     />
                   }
                   className={isSelected ? "bg-hover" : ""} 
