@@ -21,6 +21,7 @@ import type { AppVersion } from '@app/types/appVersion.types'
 import TagPill from '@app/components/TagPill/TagPill';
 import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
+import { GlassCard } from '../GlassCard/GlassCard'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
@@ -46,18 +47,17 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
   }
 
   return (
-    <div
+    <GlassCard
+      hoverEffect={true}
       className={cn(
-        'card-base',
-        'border-border border rounded-lg shadow-md',
         'flex flex-col gap-6 p-8 relative',
-        'cursor-pointer transition-all',
+        '!shadow-md'
       )}
       onClick={canNavigateOnClick ? () => navigate(`/bot/${data?.id}`) : undefined}
     >
       <div className='flex flex-col md:flex-row items-start gap-6 w-full'>
         <div className='w-24 md:w-36 flex-shrink-0'>
-          <img src={imgUrl} alt='Bot' className='w-full h-auto object-cover aspect-square' />
+          <img src={imgUrl} alt='Bot' className='w-full h-auto object-cover aspect-square rounded-lg' />
         </div>
 
         <div className='flex flex-1 flex-col gap-3 overflow-hidden min-w-0 w-full'>
@@ -128,7 +128,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
         appData={data!}
         latestVersion={data?.versions?.[0]}
       />
-    </div>
+    </GlassCard>
   )
 }
 

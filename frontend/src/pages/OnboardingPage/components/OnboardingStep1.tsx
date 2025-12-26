@@ -11,8 +11,8 @@ interface Props {
 function OnboardingStep1({ onSkip, onNext }: Props) {
     return (
         <div className='flex flex-col items-center py-10 px-6 w-full'>
-                <RocketOutlined className='text-8xl !text-primary mb-4' />
-                <MtbTypography variant='h1' customClassName='mt-4 text-primary'>
+                <RocketOutlined className='text-8xl !text-heading mb-4' />
+                <MtbTypography variant='h1' customClassName='mt-4 !text-heading'>
                 Welcome to Mezon Top Board
             </MtbTypography>
 
@@ -29,7 +29,7 @@ function OnboardingStep1({ onSkip, onNext }: Props) {
                 <FeatureCard icon={<TeamOutlined />} title="For Users & Developers" color='red'>
                     Find tools, solutions, and inspirations across the ecosystem.
                 </FeatureCard>
-                <FeatureCard icon={<AimOutlined />} title="Discover Faster" color='indigo'>
+                <FeatureCard icon={<AimOutlined />} title="Discover Faster" color='blue'>
                     Navigate curated app categories with ease.
                 </FeatureCard>
                 <FeatureCard icon={<ThunderboltOutlined />} title="Stay Updated" color='green'>
@@ -45,10 +45,10 @@ function OnboardingStep1({ onSkip, onNext }: Props) {
             </MtbTypography>
 
             <div className='flex justify-center gap-4 mt-6'>
-                <MtbButton color='default' variant='outlined' className='hover:text-primary p-5 text-sm' onClick={onSkip}>
+                <MtbButton color='default' variant='outlined' size='large' className='hover:text-primary p-5 text-sm' onClick={onSkip}>
                     Skip for now
                 </MtbButton>
-                <MtbButton color='primary' variant='solid' className='hover:bg-primary p-5 text-sm' onClick={onNext}>
+                <MtbButton color='primary' variant='solid' size='large' className='hover:bg-primary p-5 text-sm' onClick={onNext}>
                     Get Started
                 </MtbButton>
             </div>
