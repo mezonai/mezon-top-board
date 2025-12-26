@@ -1,6 +1,6 @@
 import { RiseOutlined, StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { ICompactBotCardProps } from '@app/components/BotCard/BotCard.types'
+import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
 import OwnerActions from '../OwnerActions/OwnerActions'
@@ -11,7 +11,7 @@ import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
 
-function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
+function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
@@ -107,4 +107,4 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   )
 }
 
-export default CompactBotCard
+export default BotGridItem

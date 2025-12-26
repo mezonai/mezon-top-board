@@ -1,4 +1,4 @@
-import BotCard from '@app/components/BotCard/BotCard'
+import BotListItem from '@app/components/BotListItem/BotListItem'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
@@ -218,7 +218,7 @@ function Main({ isSearchPage = false }: IMainProps) {
         <div>
           {mezonApp?.data?.length !== 0 ? (
             <div className='flex flex-col gap-4 pt-8'>
-              {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotCard readonly={true} key={bot.id} data={bot} />)}
+              {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotListItem readonly={true} key={bot.id} data={bot} />)}
             </div>
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-secondary'>
