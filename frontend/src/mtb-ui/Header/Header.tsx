@@ -18,15 +18,30 @@ import { AppEvent } from '@app/enums/AppEvent.enum'
 import DropdownMenu from '@app/mtb-ui/Header/DropdownMenu'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import avatar from '@app/assets/images/default-user.webp'
+import HeaderBackground from './HeaderBackground'
 
 function Header() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false) 
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { isLogin, postLogout } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -90,10 +105,10 @@ function Header() {
           <img
             src={imgUrl}
             alt="avatar"
-            className="w-10 h-10 rounded-full object-cover border border-border"
+            className="w-10 h-10 rounded-full object-cover border border-accent-primary/50 transition-transform hover:scale-105"
           />
         ) : (
-          <span className={cn(`rounded-full px-2 py-1 hover:bg-hover cursor-pointer transition-base text-${size}`)}>
+          <span className={cn(`rounded-full px-2 py-1 hover:bg-accent-primary/20 cursor-pointer transition-base text-${size}`)}>
             <UserOutlined />
           </span>)}
 
@@ -131,22 +146,25 @@ function Header() {
   return (
     <div
       className={cn(
-        'flex-between py-4 px-5 lg:px-20 cursor-pointer sticky top-0 w-full',
-        'bg-container dark:bg-container',
-        'z-20',
-        'border-y border-border'
+        'flex-between sticky top-0 w-full z-20',
+        'bg-transparent', 
+        'transition-all duration-300 ease-in-out', 
+        isScrolled 
+          ? 'py-3 px-5 lg:px-20 shadow-lg shadow-accent-primary/5' 
+          : 'py-5 px-5 lg:px-20' 
       )}
     >
-      <div className='flex items-center gap-3' onClick={handleLogoClick}>
-        <div className='h-[50px]'>
+      <HeaderBackground isScrolled={isScrolled} />
+      <div className='flex items-center gap-3 relative z-10 transition-transform duration-300' onClick={handleLogoClick}>
+        <div className={cn('transition-all duration-300', isScrolled ? 'h-[40px]' : 'h-[50px]')}>
           <img src={logo} alt='' style={{ height: '100%', objectFit: 'contain' }} />
         </div>
         <MtbTypography variant='h5' customClassName='!mb-0 dark:text-white' label='Mezon Top Board' />
       </div>
-      <div className={cn('flex-between gap-12.5 max-lg:hidden max-2xl:hidden')}>
+      <div className={cn('flex-between gap-12.5 max-lg:hidden max-2xl:hidden relative z-10')}>
         {renderHeaderItems(true)}
       </div>
-      <div className="2xl:hidden flex items-center gap-4">
+      <div className="2xl:hidden flex items-center gap-4 relative z-10">
         {renderUserIcon('xl')}
 
         <MenuOutlined

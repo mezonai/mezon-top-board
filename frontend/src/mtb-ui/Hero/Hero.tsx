@@ -4,10 +4,7 @@ import screenshot from '@app/assets/images/screenshot.png'
 
 function Hero() {
   return (
-    <section
-      className='py-10 px-6 md:px-20'
-      style={{ background: 'linear-gradient(170deg, var(--accent-primary) 0%, transparent 50%)' }}
-    >
+    <section className='py-10 px-6 md:px-20'>
       <div className='grid grid-cols-1 xl:grid-cols-2 items-center gap-8'>
         {/* Left Section - Text Content */}
         <article>
