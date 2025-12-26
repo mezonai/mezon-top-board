@@ -10,6 +10,7 @@ import PreviewModal from '../PreviewModal/PreviewModal'
 import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
+import { GlassCard } from '../GlassCard/GlassCard'
 
 function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
   const navigate = useNavigate()
@@ -62,14 +63,12 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
 
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
-  }
+  }  
   return (
-    <div
+    <GlassCard
+      hoverEffect={true}
       className={cn(
-        'card-base',
-        'shadow-sm rounded-2xl p-4 relative select-none',
-        'cursor-pointer transition-all duration-300',
-        'hover:shadow-md hover:border-primary-border'
+        'p-4 relative select-none',
       )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -84,7 +83,7 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
           <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
         </div>)}
       </div>
-      <div className='pt-3 pb-3 font-black truncate text-primary'>
+      <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
         {data?.name || 'Name'}
       </div>
       <div className='flex justify-between items-center text-secondary text-sm font-medium'>
@@ -103,7 +102,7 @@ function CompactBotCard({ data, isPublic = true }: ICompactBotCardProps) {
         appData={data}
         latestVersion={previewVersion}
       />
-    </div>
+    </GlassCard>
   )
 }
 

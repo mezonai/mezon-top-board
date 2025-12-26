@@ -6,6 +6,7 @@ import { IUserStore } from '@app/store/user';
 import { Spin } from 'antd';
 import OnboardingStep1 from './components/OnboardingStep1';
 import OnboardingStep2 from './components/OnboardingStep2';
+import { GlassCard } from '@app/components/GlassCard/GlassCard'; 
 
 function OnboardingPage() {
   const [step, setStep] = useState(1);
@@ -22,7 +23,7 @@ function OnboardingPage() {
 
   if (!isUserLoaded) {
     return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-100 p-6'>
+      <div className='min-h-screen flex items-center justify-center p-6'>
         <Spin size='large' />
       </div>
     );
@@ -33,20 +34,24 @@ function OnboardingPage() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-content p-6'>
-      <div className={`bg-container p-8 rounded-xl shadow-lg w-full ${step === 1 ? 'max-w-4xl' : 'max-w-2xl'}`}>
-        {step === 1 && (
-          <OnboardingStep1
-            onSkip={handleSkip}
-            onNext={() => setStep(2)}
-          />
-        )}
-        {step === 2 && (
-          <OnboardingStep2 
-            onSubmitSuccess={handleSkip} 
-          />
-        )}
-      </div>
+    <div className='min-h-screen flex items-center justify-center p-6'>
+      <GlassCard 
+        className={`w-full transition-all duration-500 ${step === 1 ? 'max-w-5xl' : 'max-w-2xl'}`}
+      >
+        <div className="p-8 md:p-10">
+          {step === 1 && (
+            <OnboardingStep1
+              onSkip={handleSkip}
+              onNext={() => setStep(2)}
+            />
+          )}
+          {step === 2 && (
+            <OnboardingStep2 
+              onSubmitSuccess={handleSkip} 
+            />
+          )}
+        </div>
+      </GlassCard>
     </div>
   );
 }
