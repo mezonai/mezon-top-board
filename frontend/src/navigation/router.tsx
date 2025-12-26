@@ -76,11 +76,11 @@ export const renderMenu = (isHasActive: boolean) => {
           return {
             key,
             label: isExternal ? (
-              <a href={child.path} target="_blank" rel="noopener noreferrer" className="text-primary dark:!text-white hover:text-primary">
+              <a href={child.path} target="_blank" rel="noopener noreferrer" className="!text-primary hover:!text-heading">
                 {child.strLabel}
               </a>
             ) : (
-              <a href={child.path} className="text-primary dark:!text-white hover:text-primary">
+              <a href={child.path} className="!text-primary hover:!text-heading">
                 {child.strLabel}
               </a>
             ),
