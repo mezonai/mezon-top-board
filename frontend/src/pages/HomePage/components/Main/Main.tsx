@@ -1,4 +1,5 @@
-import BotCard from '@app/components/BotCard/BotCard'
+import BotListItem from '@app/components/BotListItem/BotListItem'
+import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
@@ -10,22 +11,27 @@ import { IMezonAppStore } from '@app/store/mezonApp'
 import { ApiError } from '@app/types/API.types'
 import { getPageFromParams } from '@app/utils/uri'
 import { Divider, Flex, Pagination } from 'antd'
+import Button from '@app/mtb-ui/Button'
+import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
 const sortOptions = [
-  { value: "createdAt_DESC", label: "Date Created (Newest → Oldest)" },
-  { value: "createdAt_ASC", label: "Date Created (Oldest → Newest)" },
+  { value: "createdAt_DESC", label: "Created (Newest)" },
+  { value: "createdAt_ASC", label: "Created (Oldest)" },
   { value: "name_ASC", label: "Name (A–Z)" },
   { value: "name_DESC", label: "Name (Z–A)" },
-  { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
-  { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
+  { value: "updatedAt_DESC", label: "Updated (Newest)" },
+  { value: "updatedAt_ASC", label: "Updated (Oldest)" },
 ];
+
+type ViewMode = 'list' | 'grid';
 
 function Main({ isSearchPage = false }: IMainProps) {
   const navigate = useNavigate()
@@ -53,7 +59,8 @@ function Main({ isSearchPage = false }: IMainProps) {
 
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
-  const [type, setType] = useState<MezonAppType| undefined>(defaultType)
+  const [type, setType] = useState<MezonAppType | undefined>(defaultType)
+  const [viewMode, setViewMode] = useState<ViewMode>('list')
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -114,14 +121,19 @@ function Main({ isSearchPage = false }: IMainProps) {
     })
   }
 
-  const options = useMemo(() => {
-    return pageOptions.map((value) => {
-      return {
-        value,
-        label: `${value} bots/page`
-      }
-    })
+  const listOptions = useMemo(() => {
+    return pageOptions.map((value) => ({
+      value,
+      label: `${value}`
+    }))
   }, [])
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode)
+    setPage(1)
+    // Default: grid 36 items
+    setBotPerPage(mode === 'grid' ? 36 : pageOptions[0])
+  }
 
   const handleSortChange = (option: IOption) => {
     setSelectedSort(option)
@@ -181,44 +193,103 @@ function Main({ isSearchPage = false }: IMainProps) {
         ></SearchBar>
       </div>
       <div className='pt-8'>
-        <Flex justify="space-between" wrap="wrap">
+        <Flex justify="space-between" wrap="wrap" align='center' className="gap-4">
           <div className='flex-shrink-0'>
             <MtbTypography variant='h3'>Mezon Bots</MtbTypography>
             <MtbTypography variant='h5' weight='normal'>
               Showing 1 of {mezonApp.totalPages ?? 0} page
             </MtbTypography>
           </div>
-          <Flex gap={10} align='center' wrap="wrap">
-            <SingleSelect
-              getPopupContainer={(trigger) => trigger.parentElement}
-              options={sortOptions}
-              value={selectedSort}
-              onChange={handleSortChange}
-              size='large'
-              placeholder="Sort bots by..."
-              dropDownTitle='Sort by'
-              className='w-[13rem]'
-              dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
-              defaultValue={sortOptions[0]}
-              data-e2e="selectSortOptions"
-            />
-            <SingleSelect
-              getPopupContainer={(trigger) => trigger.parentElement}
-              onChange={handlePageSizeChange}
-              options={options}
-              placeholder='Select'
-              size='large'
-              className='w-[10rem] lg:w-[13rem]'
-              dropDownTitle='Title'
-              defaultValue={options[0]}
-              data-e2e="selectPageOptions"
-            />
-          </Flex>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-end">
+            <div className="flex items-center gap-2">
+              <span className="text-secondary whitespace-nowrap">Sort by:</span>
+              <SingleSelect
+                getPopupContainer={(trigger) => trigger.parentElement}
+                options={sortOptions}
+                value={selectedSort}
+                onChange={handleSortChange}
+                size='large'
+                placeholder="Sort by"
+                className='min-w-[160px]'
+                dropdownStyle={{ width: '13rem' }}
+                defaultValue={sortOptions[0]}
+                data-e2e="selectSortOptions"
+              />
+            </div>
+
+            {viewMode === 'list' && (
+              <>
+                <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
+                <div className="flex items-center gap-2">
+                  <span className="text-secondary whitespace-nowrap">Per page:</span>
+                  <SingleSelect
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                    onChange={handlePageSizeChange}
+                    options={listOptions}
+                    value={{ value: botPerPage, label: `${botPerPage}` }}
+                    placeholder='5'
+                    size='large'
+                    className='w-[70px]'
+                    defaultValue={listOptions[0]}
+                    data-e2e="selectPageOptions"
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="flex bg-container-secondary p-1 rounded-lg border border-border">
+              <Button
+                variant="text"
+                color="default"
+                icon={<BarsOutlined />}
+                onClick={() => handleViewModeChange('list')}
+                className={cn(
+                  "min-w-[40px] px-3",
+                  viewMode === 'list'
+                    ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
+                    : '!text-secondary hover:!text-accent-primary'
+                )}
+                size="middle"
+              />
+              <Button
+                variant="text"
+                color="default"
+                icon={<AppstoreOutlined />}
+                onClick={() => handleViewModeChange('grid')}
+                className={cn(
+                  "min-w-[40px] px-3",
+                  viewMode === 'grid'
+                    ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
+                    : '!text-secondary hover:!text-accent-primary'
+                )}
+                size="middle"
+              />
+            </div>
+          </div>
         </Flex>
         <div>
           {mezonApp?.data?.length !== 0 ? (
-            <div className='flex flex-col gap-4 pt-8'>
-              {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => <BotCard readonly={true} key={bot.id} data={bot} />)}
+            <div className={cn(
+              'pt-8',
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6'
+                : 'flex flex-col gap-4'
+            )}>
+              {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => (
+                viewMode === 'grid' ? (
+                  <BotGridItem
+                    key={bot.id}
+                    data={bot}
+                    isPublic={true}
+                  />
+                ) : (
+                  <BotListItem
+                    readonly={true}
+                    key={bot.id}
+                    data={bot}
+                  />
+                )
+              ))}
             </div>
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-secondary'>

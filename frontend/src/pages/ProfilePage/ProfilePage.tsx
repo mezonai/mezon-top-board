@@ -1,4 +1,4 @@
-import CompactBotCard from '@app/components/CompactBotCard/CompactBotCard'
+import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import useAuthRedirect from '@app/hook/useAuthRedirect'
 import Button from '@app/mtb-ui/Button'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
@@ -199,7 +199,7 @@ function ProfilePage() {
             <>
               <div className='grid grid-cols-1 gap-8 min-lg:grid-cols-2 min-xl:grid-cols-3 max-w-full pt-8'>
                 {mezonApp?.data?.map((item: GetMezonAppDetailsResponse) => (
-                  <CompactBotCard key={item.id} data={item} isPublic={Boolean(userId)} />
+                  <BotGridItem key={item.id} data={item} isPublic={Boolean(userId)} />
                 ))}
               </div>
 

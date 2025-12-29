@@ -4,7 +4,7 @@ import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { IBotCardProps } from './BotCard.types'
+import { IBotListItemProps } from './BotListItem.types'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
 import { Popover, Tag } from 'antd'
@@ -23,7 +23,7 @@ import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 
-function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCardProps) {
+function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(80%-150px)]' : 'md:max-w-[calc(70%-100px)]';
@@ -132,4 +132,4 @@ function BotCard({ readonly = false, data, canNavigateOnClick = true }: IBotCard
   )
 }
 
-export default BotCard
+export default BotListItem

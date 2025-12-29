@@ -1,5 +1,5 @@
-import BotCard from '@app/components/BotCard/BotCard'
-import CompactBotCard from '@app/components/CompactBotCard/CompactBotCard'
+import BotListItem from '@app/components/BotListItem/BotListItem'
+import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import { TypographyStyle } from '@app/enums/typography.enum'
 import { useMezonAppSearch } from '@app/hook/useSearch'
 import MtbProgress from '@app/mtb-ui/ProgressBar/ProgressBar'
@@ -174,7 +174,7 @@ function BotDetailPage() {
         ></SearchBar>
       </div>
       <div className='pt-5 pb-5'>
-        <BotCard readonly={true} data={mezonAppDetail} canNavigateOnClick={false}></BotCard>
+        <BotListItem readonly={true} data={mezonAppDetail} canNavigateOnClick={false}></BotListItem>
       </div>
       <div className='sm:flex sm:gap-10 pt-5 pb-5 sm:flex-row-reverse'>
         <div className='flex-1 sm:max-w-1/4'>
@@ -202,7 +202,7 @@ function BotDetailPage() {
               >
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
-                    <CompactBotCard data={bot} />
+                    <BotGridItem data={bot} />
                   </div>
                 ))}
               </Carousel>
