@@ -18,19 +18,17 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
-import { GetMezonAppDetailsResponse, GetRelatedMezonAppResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
-const GRID_PAGE_SIZE = 36;
-
 const sortOptions = [
-  { value: "createdAt_DESC", label: "Date Created (Newest → Oldest)" },
-  { value: "createdAt_ASC", label: "Date Created (Oldest → Newest)" },
+  { value: "createdAt_DESC", label: "Created (Newest)" },
+  { value: "createdAt_ASC", label: "Created (Oldest)" },
   { value: "name_ASC", label: "Name (A–Z)" },
   { value: "name_DESC", label: "Name (Z–A)" },
-  { value: "updatedAt_DESC", label: "Date Updated (Newest → Oldest)" },
-  { value: "updatedAt_ASC", label: "Date Updated (Oldest → Newest)" },
+  { value: "updatedAt_DESC", label: "Updated (Newest)" },
+  { value: "updatedAt_ASC", label: "Updated (Oldest)" },
 ];
 
 type ViewMode = 'list' | 'grid';
@@ -52,8 +50,6 @@ function Main({ isSearchPage = false }: IMainProps) {
   const defaultType = searchParams?.get('type') as MezonAppType | undefined
 
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
-  const [savedListPageSize, setSavedListPageSize] = useState<number>(pageOptions[0])
-  
   const [sortField, setSortField] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
   const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
@@ -135,11 +131,8 @@ function Main({ isSearchPage = false }: IMainProps) {
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
     setPage(1)
-    if (mode === 'grid') {
-      setBotPerPage(GRID_PAGE_SIZE)
-    } else {
-      setBotPerPage(savedListPageSize)
-    }
+    // Default: grid 36 items
+    setBotPerPage(mode === 'grid' ? 36 : pageOptions[0])
   }
 
   const handleSortChange = (option: IOption) => {
@@ -153,9 +146,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   };
 
   const handlePageSizeChange = (option: IOption) => {
-    const newVal = Number(option.value)
-    setSavedListPageSize(newVal)
-    setBotPerPage(newVal)
+    setBotPerPage(Number(option.value))
     setPage(1)
   }
 
@@ -185,6 +176,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     }
     searchMezonAppList(text, tagIds, type)
   }
+
 
   return (
     <div ref={mainRef} className='flex flex-col justify-center pt-8 pb-12 max-w-6xl mx-auto relative z-1'>
@@ -218,8 +210,8 @@ function Main({ isSearchPage = false }: IMainProps) {
                 onChange={handleSortChange}
                 size='large'
                 placeholder="Sort by"
-                className='min-w-[160px]' 
-                dropdownStyle={{ width: '300px', fontWeight: 'normal' }}
+                className='min-w-[160px]'
+                dropdownStyle={{ width: '13rem' }}
                 defaultValue={sortOptions[0]}
                 data-e2e="selectSortOptions"
               />
@@ -234,10 +226,10 @@ function Main({ isSearchPage = false }: IMainProps) {
                     getPopupContainer={(trigger) => trigger.parentElement}
                     onChange={handlePageSizeChange}
                     options={listOptions}
-                    value={{ value: savedListPageSize, label: `${savedListPageSize}` }}
+                    value={{ value: botPerPage, label: `${botPerPage}` }}
                     placeholder='5'
                     size='large'
-                    className='w-[70px]' 
+                    className='w-[70px]'
                     defaultValue={listOptions[0]}
                     data-e2e="selectPageOptions"
                   />
@@ -287,7 +279,7 @@ function Main({ isSearchPage = false }: IMainProps) {
                 viewMode === 'grid' ? (
                   <BotGridItem
                     key={bot.id}
-                    data={bot as unknown as GetRelatedMezonAppResponse}
+                    data={bot}
                     isPublic={true}
                   />
                 ) : (
