@@ -1,4 +1,5 @@
 import { Controller, useFormContext, useWatch, useFieldArray } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Input, Checkbox, Select, Form, Tag, InputNumber } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useEffect, useMemo, useState } from 'react'
@@ -28,6 +29,7 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
 )
 
 const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
+  const { t } = useTranslation()
   const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
@@ -76,7 +78,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
     )
 
     if (isDuplicate) {
-      setAddLinkError('This link already exists.')
+      setAddLinkError(t('new_bot_page.step3.errors.link_exists'))
       return
     }
 
@@ -116,7 +118,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         indexes.forEach(i =>
           setError(`socialLinks.${i}.url`, {
             type: 'duplicate',
-            message: 'This link is duplicated.'
+            message: t('new_bot_page.step3.errors.link_duplicate')
           })
         )
       } else {
@@ -127,27 +129,27 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
   return (
     <>
-      <FormField label='Name' required description='Name your bot' errorText={errors.name?.message}>
+      <FormField label={t('new_bot_page.step3.name')} required description={t('new_bot_page.step3.name_desc')} errorText={errors.name?.message}>
         <Controller
           control={control}
           name='name'
           render={({ field }) => (
-            <Input {...field} className='placeholder:!text-primary' placeholder='MezonBot' status={errorStatus(errors.name)} />
+            <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.name')} status={errorStatus(errors.name)} />
           )}
         />
       </FormField>
 
       <FormField
-        label='Headline'
+        label={t('new_bot_page.step3.headline')}
         required
-        description='Provide a short and catchy phrase that describes your bot.' 
+        description={t('new_bot_page.step3.headline_desc')} 
         errorText={errors.headline?.message}
       >
         <Controller
           control={control}
           name='headline'
           render={({ field }) => (
-            <TextArea {...field} placeholder='A powerful and multi-functional role bot'
+            <TextArea {...field} placeholder={t('new_bot_page.step3.placeholders.headline')}
               className='placeholder:!text-primary'
               status={errorStatus(errors.headline)} />
           )}
@@ -155,9 +157,9 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
 
       <FormField
-          label='Full Description'
+          label={t('new_bot_page.step3.description')}
           required
-          description='Tell us what your bot can do. We want to hear the whole story!'
+          description={t('new_bot_page.step3.description_desc')}
           errorText={errors.description?.message}>
         <Controller
           control={control}
@@ -168,7 +170,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label='Auto-Publish?' customClass='!items-center'>
+      <FormField label={t('new_bot_page.step3.auto_publish')} customClass='!items-center'>
         <Controller
           control={control}
           name='isAutoPublished'
@@ -178,29 +180,29 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label='Install Link' description='A place where users can install your bot on their Mezon server.'>
+      <FormField label={t('new_bot_page.step3.install_link')} description={t('new_bot_page.step3.install_link_desc')}>
         <Input value={inviteURL} disabled className="!text-primary !border-transparent" />
       </FormField>
       {
         type === MezonAppType.BOT &&
           <FormField
-              label='Prefix'
+              label={t('new_bot_page.step3.prefix')}
               required
-              description='What keyword or phrase does your bot react to?'
+              description={t('new_bot_page.step3.prefix_desc')}
               errorText={errors.prefix?.message}>
             <Controller
               control={control}
               name='prefix'
               render={({ field }) => (
-                <Input {...field} className='placeholder:!text-primary' placeholder='!' status={errorStatus(errors.prefix)} />
+                <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.prefix')} status={errorStatus(errors.prefix)} />
               )}
             />
           </FormField>
       }
       <FormField
-          label='Tags'
+          label={t('new_bot_page.step3.tags')}
           required
-          description='Select the top 12 categories that best represent your community.'
+          description={t('new_bot_page.step3.tags_desc')}
           errorText={errors.tagIds?.message}>
         <Controller
           control={control}
@@ -211,7 +213,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                 {...field}
                 allowClear
                 mode='multiple'
-                placeholder='Search for tags'
+                placeholder={t('new_bot_page.step3.placeholders.tags')}
                 status={errors?.tagIds?.message ? 'error' : ''}
                 options={tagOptions}
                 tagRender={() => <></>}
@@ -247,7 +249,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
       {/* TAG PRICE */}
-      <FormField label='Tag Price' description='Select FREE or PAID tag' errorText={errors.pricingTag?.message}>
+      <FormField label={t('new_bot_page.step3.tag_price')} description={t('new_bot_page.step3.tag_price_desc')} errorText={errors.pricingTag?.message}>
         <Controller
           control={control}
           name='pricingTag'
@@ -255,10 +257,10 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
             <Select
               {...field}
               allowClear
-              placeholder='Select tag price'
+              placeholder={t('new_bot_page.step3.placeholders.tag_price')}
               status={errors?.pricingTag?.message ? 'error' : ''}
               options={Object.values(AppPricing).map(value => ({
-                label: value,
+                label: t(`enums.app_pricing.${value}`),
                 value,
               }))}
               onChange={(value) => field.onChange(value)}
@@ -270,45 +272,45 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
 
       {/* PRICE */}
-      <FormField label='Price' description='Set a price for your bot' errorText={errors.price?.message}>
+      <FormField label={t('new_bot_page.step3.price')} description={t('new_bot_page.step3.price_desc')} errorText={errors.price?.message}>
         <Controller
           control={control}
           name='price'
-          render={({ field }) => <InputNumber {...field} placeholder='MezonBot' status={errorStatus(errors.price)} />}
+          render={({ field }) => <InputNumber {...field} placeholder={t('new_bot_page.step3.placeholders.price')} status={errorStatus(errors.price)} />}
         />
       </FormField>
 
-      <FormField label='Support URL' required description='People might have many questions about your bot, make sure you can answer them!' errorText={errors.supportUrl?.message}>
+      <FormField label={t('new_bot_page.step3.support_url')} required description={t('new_bot_page.step3.support_url_desc')} errorText={errors.supportUrl?.message}>
         <Controller
           control={control}
           name='supportUrl'
           render={({ field }) => (
-            <Input {...field} className='placeholder:!text-primary' placeholder='https://yourdomain.com/support' status={errorStatus(errors.supportUrl)} />
+            <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.support_url')} status={errorStatus(errors.supportUrl)} />
           )}
         />
       </FormField>
 
-      <FormField label='Note' description='If you have any important information for the reviewer, you can share it here'>
+      <FormField label={t('new_bot_page.step3.note')} description={t('new_bot_page.step3.note_desc')}>
         <Controller
           control={control}
           name='remark'
           render={({ field }) => (
             <TextArea {...field} rows={3}
               className='placeholder:!text-primary'
-              placeholder="Please share any important information or details about your bot that our reviewers should know"
+              placeholder={t('new_bot_page.step3.placeholders.note')}
               status={errorStatus(errors.remark)}
             />
           )}
         />
       </FormField>
 
-      <FormField label='Social Links' description='Link your social channels'>
+      <FormField label={t('new_bot_page.step3.social_links')} description={t('new_bot_page.step3.social_links_desc')}>
         <div className='flex flex-col sm:flex-row gap-4'>
           <Select
             options={linkOptions}
             value={selectedSocialLink}
             onChange={setSelectedSocialLink}
-            placeholder='Link Type'
+            placeholder={t('new_bot_page.step3.placeholders.link_type')}
             className={`w-full sm:w-1/3 ${styles.themedSelect}`}
             popupClassName={styles.selectDropdown}
           />
@@ -328,7 +330,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
               disabled={!selectedSocialLink}
             />
           </Form.Item>
-          <Button variant='outlined' onClick={addNewLink}>Add</Button>
+          <Button variant='outlined' onClick={addNewLink}>{t('new_bot_page.buttons.add')}</Button>
         </div>
 
         {socialLinksData.map((link, index) => (
@@ -349,7 +351,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                     onBlur={(e) => update(index, { ...link, url: e.target.value })}
                   />
                 </Form.Item>
-                <Button color='danger' onClick={() => remove(index)}>Delete</Button>
+                <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
               </div>
             )}
           />

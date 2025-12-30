@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { RatingFormProps } from './RatingForm.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { useTranslation } from 'react-i18next'
 
 const RatingForm = ({ onSubmitted }: RatingFormProps) => {
   const { botId: appId } = useParams<string>()
@@ -24,13 +25,14 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
     }
   })
   const [createRating] = useRatingControllerCreateRatingMutation()
+  const {t} = useTranslation()
 
   const onSubmit = async (data: Omit<CreateRatingRequest, "appId">) => {
     try {
-      if (!appId) throw new Error("Bad Request!")
+      if (!appId) throw new Error(t('bot_detail.bad_request'))
       await createRating({ createRatingRequest: { ...data, appId } }).unwrap()
       if (onSubmitted) onSubmitted(data)
-      toast.success('Successfully')
+      toast.success(t('bot_detail.success'))
       reset()
     } catch (error: any) {
       if (!Array.isArray(error.data.message)) toast.error(error.data.message)
@@ -64,14 +66,14 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
               <Input.TextArea
                 {...field}
                 rows={3}
-                placeholder='Write your comment...'
+                placeholder={t('bot_detail.comment_placeholder')}
                 className='rounded-md mt-3 !bg-container !text-primary !border-border dark:!border-border focus:!border-primary focus:!ring-primary placeholder:!text-secondary'
               />
             )}
           />
 
           <Button htmlType='submit' customClassName='self-start bg-primary hover:bg-primary/90 text-white rounded-md px-4 py-2' size='large'>
-            Post Rating
+            {t('bot_detail.post_rating')}
           </Button>
         </Form>
       </div>

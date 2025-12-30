@@ -9,8 +9,10 @@ import { getRouteMatchPath } from '@app/utils/uri'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const useWebTitle = () => {
+  const { t } = useTranslation()
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -28,7 +30,7 @@ const useWebTitle = () => {
   const route = flattenedRoutes.find((route) => route.path === routePath);
 
   const path = location.pathname.split('/').filter((i) => i)
-  let pageName = route?.strLabel || path[path.length - 1] || 'Home'
+  let pageName = route?.strLabel ? t(route.strLabel) : (path[path.length - 1] || 'Home')
 
   const updateTitle = useCallback(() => {
     pageName = fillHbsFormat(pageName, {
@@ -36,11 +38,11 @@ const useWebTitle = () => {
       botName: mezonAppDetail?.name || 'Bot',
     })
     document.title = `${pageName} - Mezon Top Board`
-  }, [location.pathname, publicProfile?.name, mezonAppDetail?.name])
+  }, [location.pathname, publicProfile?.name, mezonAppDetail?.name, t])
 
   useEffect(() => {
     updateTitle()
-  }, [location.pathname, publicProfile?.name, mezonAppDetail?.name])
+  }, [location.pathname, publicProfile?.name, mezonAppDetail?.name, t])
 }
 
 export default useWebTitle

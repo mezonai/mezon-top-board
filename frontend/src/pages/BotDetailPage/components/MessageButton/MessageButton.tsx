@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { QrCode } from 'lucide-react'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { Link } from 'react-router-dom'
@@ -7,6 +8,7 @@ import { avatarBotDefault } from '@app/assets'
 import Button from '@app/mtb-ui/Button'
 
 const MessageButton = ({ data }: { data: GetMezonAppDetailsResponse }) => {
+  const { t } = useTranslation()
   const [dataBot, setDataBot] = useState('')
   useEffect(() => {
     if (!data) return
@@ -26,7 +28,7 @@ const MessageButton = ({ data }: { data: GetMezonAppDetailsResponse }) => {
         className='flex gap-1 items-center justify-center'
       >
         <QrCode size={18} />
-        <span>Chat now</span>
+        <span>{t('bot_detail.chat_now')}</span>
       </Link>
     </Button>
   )

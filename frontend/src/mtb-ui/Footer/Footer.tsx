@@ -10,6 +10,7 @@ import { RootState } from '@app/store'
 import { useEmailSubscribeControllerReSubscribeMutation, useEmailSubscribeControllerSendConfirmMailMutation } from '@app/services/api/emailSubscribe/emailSubscribe'
 import { EmailSubscriptionStatus } from '@app/enums/subscribe'
 import { cn } from '@app/utils/cn'
+import { useTranslation } from 'react-i18next'
 
 const footerLink = [
   {
@@ -30,6 +31,7 @@ const footerLink = [
   }
 ]
 function Footer() {
+  const { t } = useTranslation()
   const [sendMail, { isLoading }] = useEmailSubscribeControllerSendConfirmMailMutation()
   const [updateStatus] = useEmailSubscribeControllerReSubscribeMutation()
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
@@ -38,23 +40,23 @@ function Footer() {
     e.preventDefault()
     const email = userInfo?.email
     if (!email) {
-      toast.error('Please log in to subscribe to the newsletter.')
+      toast.error(t('footer.login_required'))
       return
     }
     const res = await sendMail({ email }).unwrap().catch((err) => {
-      const message = err?.data?.message || 'An error occurred.';
+      const message = err?.data?.message || t('footer.error_occurred');
 
       if (message.includes('unsubscribed')) {
         Modal.confirm({
-          title: 'Resubscribe?',
-          content: 'You have unsubscribed from our newsletter. Would you like to subscribe again?',
-          okText: 'Yes',
-          cancelText: 'No',
+          title: t('footer.resubscribe_title'),
+          content: t('footer.resubscribe_content'),
+          okText: t('footer.yes'),
+          cancelText: t('footer.no'),
           onOk: async () => {
             const resub = await updateStatus({
                 updateSubscriptionRequest: { status: EmailSubscriptionStatus.ACTIVE }
               }).unwrap().catch((error) => {
-                const errMessage = error?.data?.message || 'Failed to resubscribe. Please try again later..';
+                const errMessage = error?.data?.message || t('footer.resubscribe_failed');
                 toast.error(errMessage);
                 throw error;
               });
@@ -74,7 +76,7 @@ function Footer() {
       <div className='flex flex-col md:flex-row justify-around items-center gap-6 md:gap-0 pb-8 px-4'>
         {/* Follow us section */}
         <div className='flex flex-col md:flex-row gap-4 items-center text-center md:text-left'>
-          <MtbTypography variant='h5' customClassName='!mb-0 text-secondary'>Follow us</MtbTypography>
+          <MtbTypography variant='h5' customClassName='!mb-0 text-secondary'>{t('footer.follow_us')}</MtbTypography>
           <div className='flex gap-2'>
           {footerLink.map((item, index) => (
             <Tag
@@ -97,7 +99,7 @@ function Footer() {
           <MtbTypography
             variant="h5"
             customClassName="!mb-0 text-secondary"
-            label="Get Newsletter"
+            label={t('footer.get_newsletter')}
           />
           <div className='flex items-center justify-center gap-2 w-full md:w-auto'>
             <Form className='flex-grow max-w-sm'>
@@ -119,8 +121,8 @@ function Footer() {
               variant="solid"
               onClick={handleSubmit}
               disabled={isLoading}
-            >
-              {isLoading ? 'Sending...' : 'Subscribe'}
+              >
+              {isLoading ? t('footer.sending') : t('footer.subscribe')}
             </Button>
           </div>
         </div>
@@ -132,7 +134,7 @@ function Footer() {
           variant='p'
           customClassName='!mb-0 text-secondary text-center max-md:mx-12'
           weight='normal'
-          label='Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam'
+          label={t('footer.address')}
         />
         <MtbTypography
           variant='p'

@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-export const PROFILE_SETTING_SCHEMA = yup.object({
-  name: yup.string().required("Name is required").min(3, "Minimum 3 characters").max(50, "Maximum 50 characters"),
+export const getProfileSettingSchema = (t: any) => yup.object({
+  name: yup.string().required(t('validation.name_required')).min(3, t('validation.min_char', { count: 3 })).max(50, t('validation.max_char', { count: 50 })),
   bio: yup.string().optional()
 })

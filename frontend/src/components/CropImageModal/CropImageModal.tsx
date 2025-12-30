@@ -8,6 +8,7 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { getCroppedImg } from '@app/utils/cropImage'
 import MtbSlider from '@app/mtb-ui/Slider/Slider'
 import { cn } from '@app/utils/cn'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   open: boolean
@@ -28,6 +29,7 @@ const CropImageModal: React.FC<Props> = ({
   onConfirm,
   parentLoading = false
 }) => {
+  const { t } = useTranslation()
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const imgRef = useRef<HTMLImageElement | null>(null)
@@ -118,12 +120,12 @@ const CropImageModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title="Crop Image"
+      title={t('component.crop_image_modal.title')}
       open={open}
       onOk={handleSubmit}
       onCancel={handleCancel}
-      okText="Upload"
-      cancelText="Cancel"
+      okText={t('component.crop_image_modal.upload')}
+      cancelText={t('component.crop_image_modal.cancel')}
       confirmLoading={isProcessing || parentLoading}
       cancelButtonProps={{ disabled: parentLoading }}
       okButtonProps={{ className: cn('bg-primary', 'hover:opacity-90') }}
@@ -139,7 +141,7 @@ const CropImageModal: React.FC<Props> = ({
             variant='p'
             customClassName='text-caption whitespace-nowrap'
           >
-            Zoom:
+            {t('component.crop_image_modal.zoom')}
           </MtbTypography>
           <MtbSlider
             min={1}
@@ -156,7 +158,7 @@ const CropImageModal: React.FC<Props> = ({
             variant='p'
             customClassName='text-caption mr-2'
           >
-            Rotate:
+            {t('component.crop_image_modal.rotate')}
           </MtbTypography>
           <MtbButton
             icon={<RotateLeftOutlined />}

@@ -5,47 +5,42 @@ import TestimonialsSection from '@app/components/TestimonialsSection/Testimonial
 import Button from '@app/mtb-ui/Button'
 import mezonScreenshot from '@app/assets/images/mezon-screenshot.png'
 
-function Main() {
-  const stats = [
-    { number: '10000', description: 'Community, App, & Bot Advertisers' },
-    { number: '15M', description: 'Impressions per Week' },
-    { number: '300%', description: 'Platform Growth' }
-  ]
+import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
 
-  const testimonials = [
+function Main() {
+  const { t } = useTranslation()
+
+  const stats = useMemo(() => [
+    { number: '10000', description: t('about.stats.community') },
+    { number: '15M', description: t('about.stats.impressions') },
+    { number: '300%', description: t('about.stats.growth') }
+  ], [t])
+
+  const testimonials = useMemo(() => [
     {
-      title: 'Our Vision',
+      title: t('about.vision.title'),
       type: '',
-      description:
-        'We aim to be the ultimate listing hub for Mezon-based applications, fostering a thriving community where ' +
-        'developers and users can connect, share, and grow. By providing a structured and transparent overview of ' +
-        'applications, we empower users to make informed decisions and developers to gain visibility for their projects.'
+      description: t('about.vision.description')
     },
     {
-      title: 'What We Offer',
+      title: t('about.offer.title'),
       type: '',
-      description:
-        'Curated selection of top Mezon-powered applications.\n\n' +
-        'Detailed descriptions, standout features, and real-world use cases.\n\n' +
-        'Ratings, reviews, and discussions that spark collaboration.\n\n' +
-        'A stage to promote your projects and reach a wider audience.'
+      description: t('about.offer.description')
     },
     {
-      title: 'Why Choose We?',
+      title: t('about.choose_us.title'),
       type: '',
-      description:
-        'Mezon Top Board bridges the gap between users and Mezon-powered applications\n\n' +
-        "Whether you're a developer seeking visibility or a user searching for the next great" +
-        'app, we provide the tools, resources, and community to support your journey.'
+      description: t('about.choose_us.description')
     }
-  ]
+  ], [t])
 
   return (
     <div className='flex flex-col justify-center pt-8 pb-12 w-[80%] m-auto'>
       <div className='flex flex-col items-center text-center mt-10'>
-        <MtbTypography variant='h1'>Power your discovery and growth with Mezon Bots</MtbTypography>
+        <MtbTypography variant='h1'>{t('about.hero.title')}</MtbTypography>
         <p className='text-secondary'>
-          Gain millions of impressions for your app or community on the #1 platform for bot and server discovery
+          {t('about.hero.subtitle')}
         </p>
       </div>
 
@@ -53,22 +48,21 @@ function Main() {
       <Divider className='bg-border' />
 
       <div className='flex flex-col items-center text-center mt-10'>
-        <MtbTypography variant='h1'>Why Mezon Top Board? Here's Everything!</MtbTypography>
-        <p className='text-secondary'>Hear from our trusted partners - our customers say it best</p>
+        <MtbTypography variant='h1'>{t('about.testimonials.title')}</MtbTypography>
+        <p className='text-secondary'>{t('about.testimonials.subtitle')}</p>
       </div>
 
       <TestimonialsSection testimonials={testimonials} />
       <Divider className='bg-border' />
 
       <div className='flex flex-col items-center text-center mt-10'>
-        <MtbTypography variant='h1'>Have we got your attention?</MtbTypography>
+        <MtbTypography variant='h1'>{t('about.cta.title')}</MtbTypography>
         <p className='text-secondary'>
-          Join us in exploring the future of applications built on Mezon. Discover, engage, and innovate with Mezon Top
-          Board!
+          {t('about.cta.description')}
         </p>
         <div className='pt-6'>
           <Button color='primary' variant='solid' size='large'>
-            Get Started
+            {t('about.cta.button')}
           </Button>
         </div>
       </div>

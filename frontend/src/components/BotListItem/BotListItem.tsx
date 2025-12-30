@@ -22,15 +22,17 @@ import TagPill from '@app/components/TagPill/TagPill';
 import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
+import { useTranslation } from 'react-i18next'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
+  const { t } = useTranslation()
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(80%-150px)]' : 'md:max-w-[calc(70%-100px)]';
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
-  const title = data?.name || 'Check out this app!'
+  const title = data?.name || t('component.bot_list_item.default_headline')
   const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
 
@@ -83,10 +85,10 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
           </div>
 
           <div className='flex gap-1 flex-wrap'>
-            {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>UNPUBLISHED</Tag>}
+            {data?.status !== AppStatus.PUBLISHED && <Tag color='red'>{t('component.bot_list_item.unpublished')}</Tag>}
             {userInfo?.id && data?.owner?.id === userInfo?.id && data?.hasNewUpdate && (
               <Tag color='blue'>
-                NEW VERSION
+                {t('component.bot_list_item.new_version')}
               </Tag>
             )}
             <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
@@ -105,10 +107,10 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
             )}
             <MessageButton data={data!} />
             <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
-              Invite
+              {t('component.bot_list_item.invite')}
             </Button>
             <Popover
-              content={<ShareButton text={`Check out ${title} Mezon Bot on top.nccsoft.vn, the #1 Mezon Bot and Mezon App List!`} url={safeConcatUrl(shareUrl, data?.id || '')} />}
+              content={<ShareButton text={t('component.bot_list_item.share_text', { title })} url={safeConcatUrl(shareUrl, data?.id || '')} />}
               trigger='click'
               placement='bottomRight'
               arrow={false}

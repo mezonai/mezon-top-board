@@ -7,6 +7,8 @@ import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
 import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
+import { useTranslation } from 'react-i18next';
+import { mapStatusToText } from '@app/utils/mezonApp';
 
 interface Props {
     open: boolean
@@ -18,26 +20,25 @@ interface Props {
 const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
+    const { t } = useTranslation()
+
     const renderStatusTag = (status?: AppStatus) => {
         if (status === null || status === undefined) return '-'
         let color: string | undefined = undefined
-        let label = AppStatus[status] ?? String(status)
+        const label = t(mapStatusToText(status))
+
         switch (status) {
             case AppStatus.PUBLISHED:
                 color = 'green'
-                label = 'Published'
                 break
             case AppStatus.APPROVED:
                 color = 'blue'
-                label = 'Approved'
                 break
             case AppStatus.PENDING:
                 color = 'orange'
-                label = 'Pending'
                 break
             case AppStatus.REJECTED:
                 color = 'red'
-                label = 'Rejected'
                 break
             default:
                 color = undefined
@@ -51,7 +52,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
             footer={null}
             width={720}
             centered
-            title={appData ? 'App Details' : 'Loading...'}
+            title={appData ? t('component.preview_modal.title') : t('component.preview_modal.loading')}
             styles={{
                 body: {
                     padding: '20px 24px',
@@ -82,7 +83,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                             <Text type='secondary' className='block md:inline'>{latestVersion?.headline}</Text>
                                             <div className='mt-1'>
                                                 <Text type='secondary' style={{ fontSize: 12 }}>
-                                                    Owner: {appData.owner?.name || '—'}
+                                                    {t('component.preview_modal.owner_label', { name: appData.owner?.name || '—' })}
                                                 </Text>
                                             </div>
                                         </div>
@@ -99,7 +100,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
 
                         {latestVersion?.description
                             ? <div dangerouslySetInnerHTML={{ __html: latestVersion.description }} />
-                            : <Paragraph>No description</Paragraph>
+                            : <Paragraph>{t('component.preview_modal.no_description')}</Paragraph>
                         }
 
                         <div className='flex flex-wrap gap-2'>
@@ -112,7 +113,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                     </div>
                     <Divider />
                     <Descriptions
-                        title="Latest version"
+                        title={t('component.preview_modal.latest_version_title')}
                         bordered size="small"
                         column={1}
                         labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
@@ -120,22 +121,22 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                     >
                         {latestVersion ? (
                             <>
-                                <Descriptions.Item label="Version">
+                                <Descriptions.Item label={t('component.preview_modal.version_label')}>
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Status">
+                                <Descriptions.Item label={t('component.preview_modal.status_label')}>
                                     {renderStatusTag(latestVersion.status)}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Auto Publish">
-                                    {latestVersion.isAutoPublished ? 'Yes' : 'No'}
+                                <Descriptions.Item label={t('component.preview_modal.auto_publish_label')}>
+                                    {latestVersion.isAutoPublished ? t('component.preview_modal.yes') : t('component.preview_modal.no')}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Prefix">
+                                <Descriptions.Item label={t('component.preview_modal.prefix_label')}>
                                     {latestVersion.prefix ?? '-'}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Submitted">
+                                <Descriptions.Item label={t('component.preview_modal.submitted_label')}>
                                     {formatDate(latestVersion.updatedAt)}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Support URL">
+                                <Descriptions.Item label={t('component.preview_modal.support_url_label')}>
                                     {latestVersion.supportUrl ? (
                                         <a href={latestVersion.supportUrl} target="_blank" rel="noreferrer">
                                             {latestVersion.supportUrl}
@@ -144,13 +145,13 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                         '-'
                                     )}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Price">
+                                <Descriptions.Item label={t('component.preview_modal.price_label')}>
                                     {latestVersion.price ?? 0}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="App ID">
+                                <Descriptions.Item label={t('component.preview_modal.app_id_label')}>
                                     {appData.mezonAppId || '-'}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Install Link">
+                                <Descriptions.Item label={t('component.preview_modal.install_link_label')}>
                                     {appData.mezonAppId ? (
                                         <a
                                             href={getMezonInstallLink(appData.type, appData.mezonAppId)}
@@ -163,26 +164,26 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                         '-'
                                     )}
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Change Log">
+                                <Descriptions.Item label={t('component.preview_modal.changelog_label')}>
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
                                         {latestVersion.changelog || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
-                                <Descriptions.Item label="Note">
+                                <Descriptions.Item label={t('component.preview_modal.note_label')}>
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
                                         {latestVersion.remark || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
                             </>
                         ) : (
-                            <Descriptions.Item label="Status">
-                                <Text type="secondary">No versions available</Text>
+                            <Descriptions.Item label={t('component.preview_modal.status_label')}>
+                                <Text type="secondary">{t('component.preview_modal.no_versions')}</Text>
                             </Descriptions.Item>
                         )}
                     </Descriptions>
                     <Divider />
                     <div>
-                        <Title level={5} style={{ marginTop: 0 }}>Social Links</Title>
+                        <Title level={5} style={{ marginTop: 0 }}>{t('component.preview_modal.social_links_title')}</Title>
                         {(latestVersion?.socialLinks && latestVersion.socialLinks.length > 0) ? (
                             <div className='flex flex-col gap-2'>
                                 {latestVersion.socialLinks.map((link) => (
@@ -203,7 +204,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                 ))}
                             </div>
                         ) : (
-                            <Text type='secondary'>No social links</Text>
+                            <Text type='secondary'>{t('component.preview_modal.no_social_links')}</Text>
                         )}
                     </div>
                 </div>

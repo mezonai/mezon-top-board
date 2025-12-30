@@ -7,11 +7,14 @@ import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/m
 import dataURLtoFile from '@app/utils/file'
 import { ApiError } from '@app/types/API.types'
 
+import { useTranslation } from 'react-i18next'
+
 export const useOnSubmitBotForm = (
   isEdit: boolean,
   onSuccess: (id: string) => void,
   onError: () => void
 ) => {
+  const { t } = useTranslation()
   const { botId } = useParams()
   const [uploadMedia] = useMediaControllerCreateMediaMutation()
   const [addBot] = useMezonAppControllerCreateMezonAppMutation()
@@ -54,7 +57,7 @@ export const useOnSubmitBotForm = (
 
       if (!isEdit) {
         const result = await addBot({ createMezonAppRequest: payload }).unwrap()
-        toast.success(`${formData.type} created successfully!`)
+        toast.success(t('hooks.submit_success_created', { type: formData.type }))
         result.id && onSuccess(result.id)
       } else if (botId) {
         const result = await updateBot({
@@ -63,14 +66,14 @@ export const useOnSubmitBotForm = (
             id: botId,
           }
         }).unwrap()
-        toast.success(`${formData.type} updated successfully!`)
+        toast.success(t('hooks.submit_success_updated', { type: formData.type }))
         result.id && onSuccess(result.id)
       }
     } catch (err: unknown) {
       const error = err as ApiError
       const message = Array.isArray(error?.data?.message)
         ? error.data.message.join('\n')
-        : error?.data?.message || 'Something went wrong'
+        : error?.data?.message || t('hooks.generic_error')
       toast.error(message)
       onError()
     }

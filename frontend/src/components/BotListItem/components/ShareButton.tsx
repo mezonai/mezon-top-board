@@ -3,6 +3,7 @@ import {
     LinkedinFilled,
     TwitterCircleFilled,
 } from "@ant-design/icons";
+import { useTranslation } from 'react-i18next';
 import { cn } from "@app/utils/cn";
 
 type ShareButtonProps = {
@@ -11,9 +12,10 @@ type ShareButtonProps = {
 };
 
 const ShareButton = ({ text, url }: ShareButtonProps) => {
+    const { t } = useTranslation();
     const shareOptions = [
         {
-            label: "Facebook",
+            label: t('component.share_button.facebook'),
             icon: <FacebookFilled className="text-lg" />,
             bgColor: "bg-blue-600",
             hoverColor: "hover:bg-blue-700",
@@ -21,7 +23,7 @@ const ShareButton = ({ text, url }: ShareButtonProps) => {
                 `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(text)}`,
         },
         {
-            label: "Twitter",
+            label: t('component.share_button.twitter'),
             icon: <TwitterCircleFilled className="text-lg" />,
             bgColor: "bg-blue-400",
             hoverColor: "hover:bg-blue-500",
@@ -31,7 +33,7 @@ const ShareButton = ({ text, url }: ShareButtonProps) => {
                 )}`,
         },
         {
-            label: "LinkedIn",
+            label: t('component.share_button.linkedin'),
             icon: <LinkedinFilled className="text-lg" />,
             bgColor: "bg-blue-700",
             hoverColor: "hover:bg-blue-800",
@@ -54,7 +56,7 @@ const ShareButton = ({ text, url }: ShareButtonProps) => {
                 "card-base"
             )}
         >
-            <h3 className="text-heading-4 mb-3">Share now</h3>
+            <h3 className="text-heading-4 mb-3">{t('component.share_button.title')}</h3>
             <div className="flex flex-col gap-2">
                 {shareOptions.map(({ label, icon, bgColor, hoverColor, getUrl }) => (
                     <button

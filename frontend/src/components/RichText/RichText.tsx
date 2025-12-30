@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import { toast } from 'react-toastify'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { useTranslation } from 'react-i18next'
 import styles from './RichText.module.scss'
 
 export const isMimeTypeValid = (mimeType: string, mimeTypes: string[]): boolean => mimeTypes.includes(mimeType)
@@ -20,6 +21,7 @@ interface IRichTextEditorProps {
 }
 
 function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, customClass }: IRichTextEditorProps) {
+  const { t } = useTranslation()
   const quillRef = useRef<ReactQuill | null>(null)
   function transformMediaSrc(html: string): string {
     const parser = new DOMParser();
@@ -47,13 +49,13 @@ function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, cu
       if (!file) return
 
       if (!isMimeTypeValid(file.type, imageMimeTypes)) {
-        toast.error('Please upload a valid image file!')
+        toast.error(t('component.rich_text.error_invalid_mime'))
         return
       }
 
       const maxImageSize = 4 * 1024 * 1024
       if (file.size > maxImageSize) {
-        toast.error(`${file.name} upload failed (exceeds 4MB)`)
+        toast.error(t('component.rich_text.error_size_limit', { fileName: file.name }))
         return
       }
       const reader = new FileReader()
@@ -109,7 +111,7 @@ function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, cu
       theme='snow'
       value={transformMediaSrc(value || '')}
       onChange={handleChange}
-      placeholder={placeholder}
+      placeholder={placeholder === 'Type here...' ? t('component.rich_text.placeholder') : placeholder}
       modules={modules}
       className={`${customClass || ''} ${styles['rich-text-container']}`}
     />

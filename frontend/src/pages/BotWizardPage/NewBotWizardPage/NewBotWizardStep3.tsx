@@ -1,10 +1,12 @@
 import { useFormContext } from 'react-hook-form'
+import { useTranslation } from "react-i18next";
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 import { useBotGeneratorControllerGetIntegrationsQuery } from '@app/services/api/botGenerator/botGenerator'
 import { Checkbox, Card, Spin } from 'antd'
 import { cn } from '@app/utils/cn'
 
 export default function NewBotWizardStep3() {
+    const { t } = useTranslation();
     const { setValue, watch } = useFormContext<BotWizardRequest>()
     const language = watch('language') || 'nestjs'
     const selectedIntegrations = watch('integrations') || []
@@ -21,14 +23,13 @@ export default function NewBotWizardStep3() {
         setValue('integrations', Array.from(current))
     }
 
-    if (isLoading) return <div className="flex justify-center p-10"><Spin tip="Loading integrations..." /></div>
-    if (isError) return <div className="text-danger">Failed to load integrations for {language}.</div>
+    if (isLoading) return <div className="flex justify-center p-10"><Spin tip={t('new_bot_wizard.step3.loading')} /></div>
+    if (isError) return <div className="text-danger">{t('new_bot_wizard.step3.failed', { language })}</div>
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <p className="text-sm mb-8 col-span-2">
-                Select the integrations you want to include in your bot.
-                Click on a card or checkbox to enable or disable an integration.
+                {t('new_bot_wizard.step3.intro')}
             </p>
             {options.map((opt) => (
                 <Card
@@ -47,14 +48,14 @@ export default function NewBotWizardStep3() {
                         />
                         <div className="flex flex-col">
                             <span className="font-semibold capitalize">{opt}</span>
-                            <span className="text-xs text-gray-500">Enable {opt} integration</span>
+                            <span className="text-xs text-gray-500">{t('new_bot_wizard.step3.enable_integration', { name: opt })}</span>
                         </div>
                     </div>
                 </Card>
             ))}
             {!isLoading && options.length === 0 && (
                 <div className="text-gray-500 col-span-2 text-center">
-                    No integrations available for this language.
+                    {t('new_bot_wizard.step3.no_integrations')}
                 </div>
             )}
         </div>

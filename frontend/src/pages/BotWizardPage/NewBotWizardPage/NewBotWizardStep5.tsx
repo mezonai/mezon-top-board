@@ -1,11 +1,13 @@
 import { useFormContext } from 'react-hook-form'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from "react-i18next";
 import Button from '@app/mtb-ui/Button'
 import { Tooltip } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 
 export default function NewBotWizardStep5() {
+    const { t } = useTranslation();
     const { getValues, setValue } = useFormContext<BotWizardRequest>()
     const values = getValues()
     const {templateJson, ...rest} = values
@@ -27,8 +29,8 @@ export default function NewBotWizardStep5() {
         <div className='flex flex-col gap-3'>
             <div className='p-4 border border-border rounded-xl bg-container shadow-sm'>
                 <div className='flex items-center justify-between mb-3'>
-                    <div className='font-semibold'>Configuration Payload Preview</div>
-                    <Tooltip title={copied ? 'Copied!' : 'Copy JSON'}>
+                    <div className='font-semibold'>{t('new_bot_wizard.step5.preview_title')}</div>
+                    <Tooltip title={copied ? t('new_bot_wizard.step5.copied') : t('new_bot_wizard.step5.copy_tooltip')}>
                         <Button size='small' variant='outlined' onClick={copyData}>
                             <CopyOutlined />
                         </Button>
@@ -40,7 +42,7 @@ export default function NewBotWizardStep5() {
                     </pre>
                 </div>
                 <div className="mt-2 text-xs text-secondary text-center font-semibold">
-                    Review your configuration before submitting.
+                    {t('new_bot_wizard.step5.review_msg')}
                 </div>
             </div>
         </div>
