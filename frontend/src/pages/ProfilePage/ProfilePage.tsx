@@ -101,9 +101,7 @@ function ProfilePage() {
     }
   }, [ownerId]);
 
-  if (!userId) {
-    useAuthRedirect()
-  }
+  useAuthRedirect(!userId)
 
   useEffect(() => {
     if (!userId) {
@@ -114,7 +112,7 @@ function ProfilePage() {
     if (publicUserInfo) {
       setUserInfo(publicUserInfo)
     }
-  }, [myInfo, publicUserInfo]);
+  }, [userId, myInfo, publicUserInfo]);
 
   const handleProfileSearch = (
     query: string | undefined,
