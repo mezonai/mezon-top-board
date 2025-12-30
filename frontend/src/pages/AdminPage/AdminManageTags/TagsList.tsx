@@ -5,6 +5,7 @@ import {
   useTagControllerDeleteTagMutation,
   useTagControllerUpdateTagMutation
 } from '@app/services/api/tag/tag'
+import { TagResponse } from '@app/services/api/tag/tag.types'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { generateSlug } from '@app/utils/stringHelper'
@@ -65,7 +66,7 @@ function TagsList() {
       values.slug = generateSlug(values.name)
     }
     values.name = values.name.trim()
-    const isDuplicate = tagList?.data?.some((tag) =>
+    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
       (tag.name.trim() === values.name || tag.slug === values.slug)
     )
     if (isDuplicate) {
@@ -84,7 +85,7 @@ function TagsList() {
   }
 
   const handleUpdate = async (id: string) => {
-    const isDuplicate = tagList?.data?.some((tag) =>
+    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
       (tag.name === editingTag.name.trim() || tag.slug === editingTag.slug) &&
       tag.id !== id
     )
@@ -111,7 +112,7 @@ function TagsList() {
   }
 
   const handleDelete = async (id: string) => {
-    if (tagList?.data?.some((tag) => tag.id === id && tag.botCount > 0) ) {
+    if (tagList?.data?.some((tag: TagResponse) => tag.id === id && tag.botCount > 0) ) {
       toast.error('Tag is in use and cannot be deleted')
       return
     }
@@ -241,12 +242,12 @@ function TagsList() {
             <Input
               ref={searchRef}
               placeholder='Search by name or slug'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
+              prefix={<SearchOutlined className='text-secondary' />}
               onPressEnter={() => searchForm.submit()}
             />
           </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} color='default' variant='outlined' onClick={() => searchForm.submit()}>
+        <MtbButton icon={<SearchOutlined />} variant='solid' onClick={() => searchForm.submit()}>
           Search
         </MtbButton>
         <MtbButton variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
@@ -265,7 +266,7 @@ function TagsList() {
             pageSizeOptions: pageOptions.map(String)
           }}/>
       ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-gray-500'>
+        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-secondary'>
           No result
         </MtbTypography>
       )}

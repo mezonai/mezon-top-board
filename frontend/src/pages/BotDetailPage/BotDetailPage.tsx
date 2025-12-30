@@ -1,5 +1,5 @@
-import BotCard from '@app/components/BotCard/BotCard'
-import CompactBotCard from '@app/components/CompactBotCard/CompactBotCard'
+import BotListItem from '@app/components/BotListItem/BotListItem'
+import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import { TypographyStyle } from '@app/enums/typography.enum'
 import { useMezonAppSearch } from '@app/hook/useSearch'
 import MtbProgress from '@app/mtb-ui/ProgressBar/ProgressBar'
@@ -18,7 +18,7 @@ import { IRatingStore } from '@app/store/rating'
 import { ITagStore } from '@app/store/tag'
 import { ApiError } from '@app/types/API.types'
 import { Carousel, Divider, Spin } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -28,9 +28,11 @@ import RatingForm from './components/RatingForm/RatingForm'
 import useOwnershipCheck from '@app/hook/useOwnershipCheck'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
-import { debounce } from 'lodash'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
+import { IUserStore } from '@app/store/user'
+import { getPluralSuffix } from '@app/utils/stringHelper'
+
 function BotDetailPage() {
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
@@ -42,6 +44,7 @@ function BotDetailPage() {
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { ratings, allRatings } = useSelector<RootState, IRatingStore>((s) => s.rating)
+  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { checkOwnership } = useOwnershipCheck();
   const ratingCounts = allRatings?.data?.reduce(
     (acc, rating) => {
@@ -58,7 +61,6 @@ function BotDetailPage() {
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { isLogin } = useAuth()
-  const [dragging, setDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -99,13 +101,16 @@ function BotDetailPage() {
       }
     }
   }, [isError, error]);
-  useEffect(() => {
-    // TODO: improve logic
-    if (getMezonAppDetailApiResponse?.data && getMezonAppDetailApiResponse?.data?.status !== AppStatus.PUBLISHED) {
-      checkOwnership(getMezonAppDetailApiResponse.data?.owner?.id, true);
-    }
-  }, [getMezonAppDetailApiResponse])
 
+  useEffect(() => {
+    if (
+      userInfo?.id &&
+      getMezonAppDetailApiResponse?.data &&
+      getMezonAppDetailApiResponse.data.status !== AppStatus.PUBLISHED
+    ) {
+      checkOwnership(getMezonAppDetailApiResponse.data.owner?.id, true);
+    }
+  }, [getMezonAppDetailApiResponse, userInfo])
   const onLoadMore = async () => {
     if (botId && botId !== 'undefined' && botId.trim() !== '') {
       try {
@@ -158,16 +163,8 @@ function BotDetailPage() {
     }
   ]
 
-  const handleAfterChange = useMemo(
-    () =>
-      debounce(() => {
-        setDragging(false);
-      }, 100),
-    []
-  );
-
   return (
-    <div className='m-auto pt-10 pb-10 w-[75%]'>
+    <div className='max-w-6xl mx-auto pt-10 pb-10 px-6'>
       <MtbTypography>Explore milions of mezon bots</MtbTypography>
       <div className='pt-5'>
         <SearchBar
@@ -177,7 +174,7 @@ function BotDetailPage() {
         ></SearchBar>
       </div>
       <div className='pt-5 pb-5'>
-        <BotCard readonly={true} data={mezonAppDetail} canNavigateOnClick={false}></BotCard>
+        <BotListItem readonly={true} data={mezonAppDetail} canNavigateOnClick={false}></BotListItem>
       </div>
       <div className='sm:flex sm:gap-10 pt-5 pb-5 sm:flex-row-reverse'>
         <div className='flex-1 sm:max-w-1/4'>
@@ -187,38 +184,46 @@ function BotDetailPage() {
           <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>
             Overview
           </MtbTypography>
-          <Divider className='bg-gray-200'></Divider>
+          <Divider className='bg-border'></Divider>
           <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
           <div className='pt-5'>
             <MtbTypography variant='h3'>More like this</MtbTypography>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-border'></Divider>
             {relatedMezonApp?.length > 0 ? (
-              <Carousel arrows={!isMobile} infinite={true} draggable swipeToSlide={true} touchThreshold={5} variableWidth={false} 
-                slidesToShow={4}  responsive={responsive} className='text-center' 
-                beforeChange={() => setDragging(true)}
-                afterChange={handleAfterChange}>
+              <Carousel
+                arrows={!isMobile}
+                infinite={true}
+                draggable
+                swipeToSlide={true}
+                touchThreshold={5}
+                variableWidth={false}
+                slidesToShow={4}
+                responsive={responsive} className='text-center'
+              >
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
-                    <CompactBotCard data={bot} isDragging={dragging} />
+                    <BotGridItem data={bot} />
                   </div>
                 ))}
               </Carousel>
             ) : (
-              <MtbTypography variant='h4' weight='normal' customClassName='!text-gray-500 !text-center !block'>
+              <MtbTypography variant='h4' weight='normal' customClassName='!text-secondary !text-center !block'>
                 No related bot
               </MtbTypography>
             )}
           </div>
           <div className='pt-8'>
             <MtbTypography variant='h3'>Ratings & Reviews</MtbTypography>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-border'></Divider>
             <div className='flex justify-between gap-4 max-lg:flex-col max-2xl:flex-col'>
               <div className='flex-1'>
                 <div className='flex items-center gap-10 max-lg:justify-between max-2xl:justify-between'>
                   <p className='text-6xl'>{mezonAppDetail.rateScore}</p>
                   <div>
                     <MtbRate readonly={true} value={mezonAppDetail.rateScore}></MtbRate>
-                    <p className='pt-2'>{ratings?.totalCount} reviews</p>
+                    <p className='pt-2'>
+                      {ratings?.totalCount ?? 0} {getPluralSuffix('review', ratings?.totalCount)}
+                    </p>
                   </div>
                 </div>
                 <p className='pt-5 max-lg:pt-7 max-2xl:pt-7'>
@@ -238,14 +243,14 @@ function BotDetailPage() {
                     return (
                       <div key={ratingValue} className='flex items-center gap-2 pb-2'>
                         <p className='whitespace-nowrap'>{ratingValue} stars</p>
-                        <MtbProgress percent={Number(percent)} strokeColor={'red'} showInfo={false}></MtbProgress>
+                        <MtbProgress percent={Number(percent)} strokeColor={'var(--accent-primary)'} showInfo={false}></MtbProgress>
                         <p className='align-middle'>{ratingCount}</p>
                       </div>
                     )
                   })}
               </div>
             </div>
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-border'></Divider>
               {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
                 <RatingForm
                   onSubmitted={() => {
@@ -256,7 +261,7 @@ function BotDetailPage() {
                   }}
                 />
               )}
-            <Divider className='bg-gray-200'></Divider>
+            <Divider className='bg-border'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (
                 <Spin size='large' />

@@ -1,5 +1,5 @@
 import Button from '@app/mtb-ui/Button'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { Result } from 'antd'
 import { capitalize } from 'lodash'
 import { useFormContext, useWatch } from 'react-hook-form'
@@ -27,33 +27,37 @@ const Step5Submit = ({
       : `Your ${formattedType} has been submitted for review. You can now view it or return to homepage.`
 
     return (
-      <Result
-        status="success"
-        title={title}
-        subTitle={subTitle}
-        extra={[
-          <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
-            {isEdit ? 'View Bot' : 'Go to Bot'}
-          </Button>,
-          <Button color="default" variant='outlined' key="go-home" onClick={() => navigate('/')}>
-            Go Home
-          </Button>
-        ]}
-      />
+      <>
+        <Result
+          status="success"
+          title={<div className="text-primary">{title}</div>}
+          subTitle={<div className="text-secondary">{subTitle}</div>}
+          extra={[
+            <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
+              {isEdit ? 'View Bot' : 'Go to Bot'}
+            </Button>,
+            <Button color="default" variant='outlined' key="go-home" onClick={() => navigate('/')}>
+              Go Home
+            </Button>
+          ]}
+        />
+      </>
     )
   }
 
   return (
-    <Result
-      status="error"
-      title={isEdit ? 'Update Failed' : 'Submission Failed'}
-      subTitle="Something went wrong. Please go back and check your input before trying again."
-      extra={[
-        <Button key="back" onClick={() => navigate(-1)}>
-          Go Back
-        </Button>
-      ]}
-    />
+    <>
+      <Result
+        status="error"
+        title={<div className="text-primary">{isEdit ? 'Update Failed' : 'Submission Failed'}</div>}
+        subTitle={<div className="text-secondary">Something went wrong. Please go back and check your input before trying again.</div>}
+        extra={[
+          <Button key="back" onClick={() => navigate(-1)}>
+            Go Back
+          </Button>
+        ]}
+      />
+    </>
   )
 }
 

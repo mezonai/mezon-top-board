@@ -10,6 +10,7 @@ import { join } from "path";
 import { dataSourceOption } from "@config/data-source.config";
 import config, { envFilePath } from "@config/env.config";
 
+import { AppVersionModule } from '@features/app-version/app-version.module';
 import { AuthModule } from "@features/auth/auth.module";
 import { EmailSubscribeModule } from "@features/email-subscribe/email-subscribe.module";
 import { JobModule } from "@features/job/job.module";
@@ -24,6 +25,9 @@ import { UserModule } from "@features/user/user.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
+import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
+import { TempStorageModule } from "@features/temp-storage/temp-storage.module";
+import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module";
 
 @Module({
   imports: [
@@ -56,6 +60,9 @@ import { LoggerModule } from "@libs/logger";
       },
     }),
     ScheduleModule.forRoot(),
+    MezonModule.forRootAsync({
+      imports: [ConfigModule],
+    }),
     LoggerModule,
     MediaModule,
     MezonAppModule,
@@ -69,6 +76,9 @@ import { LoggerModule } from "@libs/logger";
     EmailSubscribeModule,
     MailTemplateModule,
     JobModule,
+    AppVersionModule,
+    TempStorageModule,
+    BotGeneratorModule,
   ],
   controllers: [],
   providers: [],

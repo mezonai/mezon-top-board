@@ -5,14 +5,14 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  GetUserDetailsResponse,
-  UpdateUserRequest,
   useLazyUserControllerSearchUserQuery,
   useUserControllerActivateUserMutation,
   useUserControllerDeactivateUserMutation,
 } from '@app/services/api/user/user'
+import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Alert, Breakpoint, Button, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
+import { Alert, Breakpoint, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
@@ -120,7 +120,7 @@ function UsersList() {
       ellipsis: true,
       width: 100,
       responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[],
-      render: (text: string) => text || <span className='text-gray-400'>No name</span>
+      render: (text: string) => text || <span style={{ color: 'var(--text-secondary)' }}>No name</span>
     },
     {
       title: 'Email',
@@ -150,10 +150,10 @@ function UsersList() {
       fixed: 'right' as const,
       render: (_: any, record: GetUserDetailsResponse) => (
         <div className='flex gap-2'>
-          <Button type='primary' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          <Button type='primary' color='blue' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
           {
             !record.deletedAt ? (
-              <Button type='primary' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <Button type='primary'color='danger' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
             ) : (
               <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
             )
@@ -164,8 +164,8 @@ function UsersList() {
   ]
   
   return (
-    <div className='p-4 bg-white rounded-md shadow-md'>
-      <h2 className='text-lg font-semibold mb-4'>Users List</h2>
+    <div className='p-4 rounded-md shadow-md bg-container'>
+      <h2 className='text-lg font-semibold mb-4 text-primary'>Users List</h2>
 
       {/* Search & Sorting Form */}
       <div className='mb-4'>
@@ -173,49 +173,54 @@ function UsersList() {
           form={form}
           onFinish={handleSubmit}
           initialValues={initialValues}
-          layout='inline'
-          className='flex flex-wrap gap-2 items-end'
+          className='w-full'
         >
-          <Form.Item name='search' className='flex-grow w-full lg:max-w-lg '>
-            <Input
-              ref={searchRef}
-              placeholder='Search by name or email'
-              prefix={<SearchOutlined style={{ color: '#bbb' }} />}
-              onPressEnter={() => form.submit()}
-              style={{ borderRadius: '8px', height: '40px' }}
-              className='w-full'
-            />
-          </Form.Item>
-          
-          <Form.Item name='sortField' className='mb-0 w-30'>
-            <Select 
-              className='w-30'
-              placeholder='Sort Field'
-            >
-              <Option value='createdAt'>Created At</Option>
-              <Option value='name'>Name</Option>
-            </Select>
-          </Form.Item>
+          <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
+            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
+              <Input
+                ref={searchRef}
+                placeholder='Search by name or email'
+                prefix={<SearchOutlined className='text-secondary' />}
+                onPressEnter={() => form.submit()}
+                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
+              />
+            </Form.Item>
 
-          <Form.Item name='sortOrder' className='mb-0 w-30'>
-            <Select 
-              className='w-40'
-              placeholder='Sort Order'
-            >
-              <Option value='ASC'>Ascending</Option>
-              <Option value='DESC'>Descending</Option>
-            </Select>
-          </Form.Item>
+            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
+              <Select 
+                className='w-full h-[40px]'
+                placeholder='Sort Field'
+                popupClassName='bg-container text-primary'
+                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+              >
+                <Option value='createdAt'>Created At</Option>
+                <Option value='name'>Name</Option>
+              </Select>
+            </Form.Item>
 
-          <Form.Item className='mb-0'>
-            <Button 
-              type='primary' 
-              htmlType='submit'
-              icon={<SearchOutlined />}
-            >
-              Search
-            </Button>
-          </Form.Item>
+            <Form.Item name='sortOrder' className='w-full md:w-36 mb-0'>
+              <Select 
+                className='w-full h-[40px]'
+                placeholder='Sort Order'
+                popupClassName='bg-container text-primary'
+                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+              >
+                <Option value='ASC'>Ascending</Option>
+                <Option value='DESC'>Descending</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item className='w-full md:w-auto mb-0'>
+              <Button 
+                type='primary' 
+                htmlType='submit'
+                icon={<SearchOutlined />}
+                className='w-full md:w-auto h-[40px]'
+              >
+                Search
+              </Button>
+            </Form.Item>
+          </div>
         </Form>
       </div>
       
@@ -244,13 +249,12 @@ function UsersList() {
             showSizeChanger: true,
             pageSizeOptions: pageOptions.map(String)
           }}
-          bordered
           scroll={{ x: 'max-content' }}
         />
       )}
 
       {!isLoading && !error && (!users || users.totalCount === 0) && (
-        <div className='text-center p-8 text-gray-500'>
+        <div className='text-center p-8 text-secondary'>
           <p>Không tìm thấy người dùng</p>
         </div>
       )}

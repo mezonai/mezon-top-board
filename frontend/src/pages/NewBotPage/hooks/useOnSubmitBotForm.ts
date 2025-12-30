@@ -1,6 +1,8 @@
 import { toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
-import { useMezonAppControllerCreateMezonAppMutation, useMezonAppControllerUpdateMezonAppMutation, CreateMezonAppRequest, SocialLinkDto } from '@app/services/api/mezonApp/mezonApp'
+import { useMezonAppControllerCreateMezonAppMutation, useMezonAppControllerUpdateMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
+import { SocialLink } from '@app/types'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import dataURLtoFile from '@app/utils/file'
 import { ApiError } from '@app/types/API.types'
@@ -36,8 +38,8 @@ export const useOnSubmitBotForm = (
       )
 
       const updatedDescription = doc.body.innerHTML
-      const formattedLinks: SocialLinkDto[] = (formData.socialLinks || []).map((link: any) => ({
-        url: link.url,
+      const formattedLinks: SocialLink[] = (formData.socialLinks || []).map((link) => ({
+        url: link?.url,
         linkTypeId: link.linkTypeId
       }))
 
@@ -59,7 +61,6 @@ export const useOnSubmitBotForm = (
           updateMezonAppRequest: {
             ...payload,
             id: botId,
-            mezonAppId: payload.mezonAppId === null ? undefined : payload.mezonAppId
           }
         }).unwrap()
         toast.success(`${formData.type} updated successfully!`)

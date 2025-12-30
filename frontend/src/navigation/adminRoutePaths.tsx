@@ -1,5 +1,3 @@
-// src/routes/adminRoutePaths.ts
-
 import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, MailOutlined, TeamOutlined } from '@ant-design/icons'
 import MezonAppsContainer from '@app/pages/AdminPage/AdminMezonApp/MezonAppsContainer'
 import ReviewHistoryPage from '@app/pages/AdminPage/ReviewHistoryPage/ReviewHistoryPage'
@@ -9,21 +7,23 @@ import LinkTypesList from '@app/pages/AdminPage/AdminManageLinkTypes/LinkTypesLi
 import TagsList from '@app/pages/AdminPage/AdminManageTags/TagsList';
 import MailScheduleList from '@app/pages/AdminPage/AdminManageMailSchedule/MailScheduleList';
 import EmailSubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
+import AppReviewPage from '@app/pages/AdminPage/AppReviewPage/AppReviewPage';
+import SettingsPage from '@app/pages/AdminPage/AdminSettings/SettingsPage';
 
 export const adminRoutePaths: RoutePath[] = [
   {
     index: true,
     path: '/manage/apps',
-    element: <MezonAppsContainer />, // Default page when accessing /admin
+    element: <MezonAppsContainer />, 
     strLabel: 'Apps',
     icon: <AppstoreAddOutlined />,
     isShowMenu: true
   },
   {
-    path: '/manage/tags',
-    element: <TagsList />,
-    strLabel: 'Tags',
-    icon: <TagOutlined />,
+    path: '/manage/review',
+    element: <AppReviewPage />,
+    strLabel: 'App Review',
+    icon: <HistoryOutlined />,
     isShowMenu: true
   },
   {
@@ -31,6 +31,13 @@ export const adminRoutePaths: RoutePath[] = [
     element: <ReviewHistoryPage />,
     strLabel: 'Review History',
     icon: <HistoryOutlined />,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/tags',
+    element: <TagsList />,
+    strLabel: 'Tags',
+    icon: <TagOutlined />,
     isShowMenu: true
   },
   {
@@ -63,7 +70,7 @@ export const adminRoutePaths: RoutePath[] = [
   },
   {
     path: '/manage/settings',
-    element: <h1>Settings</h1>,
+    element: <SettingsPage />,
     strLabel: 'Settings',
     icon: <SettingOutlined />,
     isShowMenu: true

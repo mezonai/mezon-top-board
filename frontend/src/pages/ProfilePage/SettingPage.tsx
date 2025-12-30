@@ -53,7 +53,7 @@ function SettingPage() {
       <div className='pt-3'>
         <SearchBar onSearch={(val, tagIds) => handleSearch(val ?? '', tagIds)} isResultPage={false}></SearchBar>
       </div>
-      <Divider className='bg-gray-100'></Divider>
+      <Divider className='bg-border'></Divider>
       <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
           <CardInfo userInfo={userInfo}></CardInfo>

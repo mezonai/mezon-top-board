@@ -1,6 +1,6 @@
-import { Steps, Upload } from 'antd'
+import { Steps } from 'antd'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
@@ -11,15 +11,16 @@ import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import useAuthRedirect from '@app/hook/useAuthRedirect'
 import useOwnershipCheck from '@app/hook/useOwnershipCheck'
-import { imageMimeTypes } from '@app/constants/mimeTypes'
 import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
-import { CreateMezonAppRequest, useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
+import {
+  useLazyMezonAppControllerGetMezonAppDetailQuery,
+} from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { useLazyLinkTypeControllerGetAllLinksQuery } from '@app/services/api/linkType/linkType'
-import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
 import { RootState } from '@app/store'
 import { IMezonAppStore } from '@app/store/mezonApp'
 import { ITagStore } from '@app/store/tag'
@@ -32,23 +33,21 @@ import Step4Review from './components/AddBotSteps/Step4Review'
 import Step5Submit from './components/AddBotSteps/Step5Submit'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useOnSubmitBotForm } from './hooks/useOnSubmitBotForm'
-import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { AppPricing } from '@app/enums/appPricing'
+import { mapDetailToFormData } from './helpers'
+import { IUserStore } from '@app/store/user'
+
+type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
 function NewBotPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
+  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
-
-  const imgUrl = botId && mezonAppDetail.featuredImage
-    ? getUrlMedia(mezonAppDetail.featuredImage)
-    : avatarBotDefault
-  const [avatar, setAvatar] = useState<string>(imgUrl)
-  const [imgSrc, setImgSrc] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const fileRef = useRef<File | null>(null)
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
@@ -58,12 +57,14 @@ function NewBotPage() {
       headline: '',
       description: '',
       prefix: '',
+      featuredImage: '',
       tagIds: [],
       pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
       remark: '',
-      isAutoPublished: false,
+      //TODO: isAutoPublished will be implemented later
+      isAutoPublished: true,
       socialLinks: []
     },
     resolver: yupResolver(ADD_BOT_SCHEMA),
@@ -73,10 +74,16 @@ function NewBotPage() {
   const { setValue, reset, watch, trigger, handleSubmit } = methods
   const nameValue = watch('name')
   const headlineValue = watch('headline')
+  const featuredImageValue = watch('featuredImage')
 
+  const imgUrl = useMemo(() => {
+    return botId && featuredImageValue
+      ? getUrlMedia(featuredImageValue)
+      : avatarBotDefault
+  }, [botId, featuredImageValue])
+  const [avatar, setAvatar] = useState<string>(imgUrl)
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getSocialLink] = useLazyLinkTypeControllerGetAllLinksQuery()
-  const [uploadImage, { isLoading: isUpdatingAvatar }] = useMediaControllerCreateMediaMutation()
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submittedBotId, setSubmittedBotId] = useState<string>('')
@@ -88,7 +95,7 @@ function NewBotPage() {
   useEffect(() => {
     if (isEmpty(tagList.data)) getTagList()
     getSocialLink()
-  }, [])
+  }, [getTagList, getSocialLink, tagList.data])
 
   useEffect(() => {
     if (!botId) {
@@ -96,74 +103,73 @@ function NewBotPage() {
       return
     }
     getMezonAppDetails({ id: botId })
-  }, [botId])
+  }, [botId, getMezonAppDetails, reset])
 
   useEffect(() => {
-    const { owner, tags, rateScore, featuredImage, status, ...rest } = mezonAppDetail
-    if (mezonAppDetail && botId) {
-      if (!checkOwnership(mezonAppDetail?.owner?.id)) {
-        return;
-      }
-
-      reset({
-        ...rest,
-        tagIds: mezonAppDetail.tags?.map(tag => tag.id),
-        mezonAppId: mezonAppDetail.mezonAppId,
-        type: mezonAppDetail.type
-      })
-    }
     setAvatar(imgUrl)
-  }, [mezonAppDetail])
+  }, [imgUrl])
 
-  const handleBeforeUpload = (file: File) => {
-    if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!')
-      return false
-    }
-    const maxFileSize = 4 * 1024 * 1024
-    if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
-      return false
-    }
+  useEffect(() => {
+    if (!mezonAppDetail.id || !botId) return;
 
-    fileRef.current = file
-    setImgSrc(URL.createObjectURL(file))
-    setIsModalVisible(true)
+    if (!userInfo?.id) return;
 
-    return false
-  }
+    if (!checkOwnership(mezonAppDetail.owner?.id)) return;
+
+    const formData = mapDetailToFormData(mezonAppDetail);
+    reset(formData);
+  }, [mezonAppDetail.id, botId, userInfo?.id, reset]);
 
   const handleModalCancel = () => {
     setIsModalVisible(false)
-    setImgSrc('')
-    fileRef.current = null
   }
 
-  const handleModalConfirm = async (croppedFile: File) => {
-    try {
-      const formData = new FormData()
-      formData.append('file', croppedFile)
-      const response = await uploadImage(formData).unwrap()
+  const handleAvatarClick = () => {
+    setIsModalVisible(true)
+  }
 
-      if (response?.statusCode === 200) {
-        setAvatar(getUrlMedia(response.data?.filePath))
-        setValue('featuredImage', response.data?.filePath)
-      }
-
-      toast.success('Upload Success')
-    } catch (error) {
-      toast.error('Upload failed!')
-    } finally {
-      handleModalCancel()
+  const handleMediaSelect = async (selection: string) => {
+    setIsModalVisible(false);
+    if (selection) {
+      setValue('featuredImage', selection)
+      setAvatar(getUrlMedia(selection))
+    } else {
+      toast.error('No image selected')
     }
   }
-  const stepFieldMap: Record<number, FieldPath<CreateMezonAppRequest>[]> = {
-    0: ['type'],
-    1: ['mezonAppId'],
-    2: ['name', 'headline', 'description', 'prefix', 'tagIds', 'pricingTag', 'price', 'supportUrl'],
-    3: [],
-    4: []
-  }
+
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+    'name',
+    'headline',
+    'description',
+    'prefix',
+    'tagIds',
+    'pricingTag',
+    'price',
+    'supportUrl',
+    'featuredImage',
+    'socialLinks',
+    'remark',
+    'isAutoPublished'
+  ]
+
+  const stepFieldMap = useMemo((): StepFieldMap => {
+    if (isEditMode) {
+      return {
+        0: step3FillDetailsFields,
+        1: [],
+        2: []
+      }
+    }
+    return {
+      0: ['type'],
+      1: ['mezonAppId'],
+      2: step3FillDetailsFields,
+      3: [],
+      4: []
+    }
+
+  }, [isEditMode, step3FillDetailsFields])
 
   const next = async () => {
     const fieldsToValidate = stepFieldMap[currentStep] || []
@@ -181,7 +187,7 @@ function NewBotPage() {
   const createSteps = [
     { title: 'Choose Type', content: <Step1ChooseType /> },
     { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-    { title: 'Fill Details', content: <Step3FillDetails /> },
+    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -193,7 +199,7 @@ function NewBotPage() {
   ]
 
   const editSteps = [
-    { title: 'Edit Bot Info', content: <Step3FillDetails /> },
+    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
     {
       title: 'Review',
       content: (<Step4Review isEdit={isEditMode} />)
@@ -236,37 +242,40 @@ function NewBotPage() {
       <div className='flex items-center justify-between'>
         <div className='flex gap-6'>
           <div className='w-[80px] object-cover flex-shrink-0'>
-            <Upload accept={imageMimeTypes.join(',')} beforeUpload={handleBeforeUpload} showUploadList={false}>
-              <MTBAvatar imgUrl={avatar} isAllowUpdate={true} isUpdatingAvatar={isUpdatingAvatar} />
-            </Upload>
-            <CropImageModal
-              open={isModalVisible}
-              imgSrc={imgSrc}
-              originalFileName={fileRef.current?.name}
-              aspect={1}
-              onCancel={handleModalCancel}
-              onConfirm={handleModalConfirm}
-              parentLoading={isUpdatingAvatar}
+            <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
+              <MTBAvatar imgUrl={avatar} isAllowUpdate={true} />
+            </div>
+            <MediaManagerModal
+              isVisible={isModalVisible}
+              onChoose={handleMediaSelect}
+              onClose={handleModalCancel}
             />
           </div>
           <div>
-            <MtbTypography variant='h4'>{nameValue || 'Name'}</MtbTypography>
-            <MtbTypography variant='p'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
+            <MtbTypography variant='h4' customClassName='text-primary'>{nameValue || 'Name'}</MtbTypography>
+            <MtbTypography variant='p' customClassName='text-secondary'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
           </div>
         </div>
       </div>
 
       <div className='pt-8'>
         <FormProvider {...methods}>
-          <div className='bg-white p-6 rounded-md shadow-md'>
-            <Steps labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'} current={currentStep} items={steps.map(step => ({ title: step.title }))} />
+          <div className='bg-container p-6 rounded-md shadow-md border border-transparent dark:border-border'>
+            <Steps
+              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'}
+              current={currentStep}
+              items={steps.map((step, idx) => ({
+                title: (
+                  <span className={idx <= currentStep ? 'text-primary' : 'text-secondary'}>
+                    {step.title}
+                  </span>
+                )
+              }))}
+            />
+
             <div className='pt-6'>{steps[currentStep].content}</div>
-            <div
-              className={`flex pt-8 ${(!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)
-                ? 'justify-end'
-                : 'justify-between'
-                }`}
-            >
+
+            <div className={`flex pt-8 ${((!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)) ? 'justify-end' : 'justify-between'}`}>
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
                 <Button color="default" variant="outlined" onClick={prev} >
                   Back
@@ -274,7 +283,7 @@ function NewBotPage() {
               )}
 
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
-                <Button variant="outlined" onClick={next}>
+                <Button variant='outlined' onClick={next}>
                   Next
                 </Button>
               )}

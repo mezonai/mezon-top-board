@@ -1,4 +1,4 @@
-import { GetPublicProfileResponse, GetUserDetailsResponse, UserControllerSearchUserApiResponse } from '@app/services/api/user/user'
+import { GetPublicProfileResponse, GetUserDetailsResponse, UserControllerSearchUserApiResponse } from '@app/services/api/user/user.types'
 import { createSlice } from '@reduxjs/toolkit'
 import { manageUsersExtraReducers } from './extraReducer'
 

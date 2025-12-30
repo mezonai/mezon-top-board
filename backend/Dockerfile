@@ -11,10 +11,11 @@ COPY . .
 RUN yarn build
 
 # Stage 2: Runtime Stage
-FROM node:22-alpine
+FROM node:22-slim
 
 COPY --chown=node:node --from=build /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/bot-gen-templates ./bot-gen-templates
 
 ENV ENV=prod
 

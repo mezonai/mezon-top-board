@@ -6,11 +6,15 @@ import { toast } from 'react-toastify'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import {
   useLazyMediaControllerGetAllMediaQuery,
+  useMediaControllerCreateMediaMutation
 } from '@app/services/api/media/media'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import Button from '@app/mtb-ui/Button'
 import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
+import { IUserStore } from '@app/store/user'
+import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { cn } from '@app/utils/cn'
 
 const MediaManagerModal = ({
   isVisible,
@@ -18,28 +22,34 @@ const MediaManagerModal = ({
   onClose
 }: {
   isVisible: boolean
-  onChoose: (path: File | string) => void
+  onChoose: (path: string) => void
   onClose: () => void
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
+  const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
+  const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()
   const mediaList = useAppSelector((state: RootState) => state.media.mediaList)
+  const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const pageSize = 24
 
   useEffect(() => {
+    if (!isVisible) return; 
+    if (!userInfo?.id) return; 
     getMediasList()
-  }, [page])
+  }, [page, isVisible, userInfo?.id])
 
   const getMediasList = () => {
     getAllMedia({
       pageNumber: page,
       pageSize: pageSize,
       sortField: 'createdAt',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      ownerId: userInfo?.id
     })
   }
 
@@ -55,9 +65,30 @@ const MediaManagerModal = ({
       onError(new Error('Invalid file type'))
       return
     }
-    setSelectedFile(file);
-    setSelectedImage(URL.createObjectURL(file))
+    setSelectedFile(file)
     onSuccess('ok')
+    setIsCropModalOpen(true)
+  }
+
+  const handleUploadFileToServer = async (file: File) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await uploadImage(formData).unwrap()
+      const serverPath = response.data.filePath
+      getMediasList()
+      setSelectedImage(getUrlMedia(serverPath))
+      return getUrlMedia(serverPath)
+    } catch (error) {
+      toast.error('Upload failed. Please try again.')
+      return ''
+    }
+  }
+
+  const handleCropConfirm = (file: File) => {
+    setSelectedFile(file)
+    setSelectedImage(URL.createObjectURL(file))
+    setIsCropModalOpen(false)
   }
 
   const tabItems = [
@@ -71,12 +102,12 @@ const MediaManagerModal = ({
               Click to Upload
             </Button>
           </Upload>
-          <i>Choose an image in your browser</i>
+          <i className='text-secondary'>Choose an image in your browser</i>
           {selectedFile && (
             <img
               src={selectedImage || ''}
               alt=''
-              className="w-[100px] h-[100px] object-cover mt-[10px]"
+              className="w-[100px] h-[100px] object-cover mt-2"
             />
           )}
         </div>
@@ -97,10 +128,7 @@ const MediaManagerModal = ({
                   key={item.id}
                   src={url}
                   alt=''
-                  className='w-[6.5rem] h-[6.5rem] object-cover cursor-pointer'
-                  style={{
-                    border: selectedImage === url ? '2px solid blue' : '1px solid #ccc'
-                  }}
+                  className={cn('w-[6.5rem] h-[6.5rem] object-cover cursor-pointer', selectedImage === url ? 'border-2 border-primary' : 'border border-border')}
                   onClick={() => setSelectedImage(url)}
                 />
               );
@@ -120,28 +148,24 @@ const MediaManagerModal = ({
   ]
 
   const handleChoose = async () => {
-    try {
-      if (selectedFile) {
-        const formData = new FormData()
-        formData.append('file', selectedFile)
-        onChoose(selectedFile)
+    if (selectedFile) {
+      const uploadedUrl = await handleUploadFileToServer(selectedFile);
+      if (uploadedUrl) {
+        onChoose(uploadedUrl);
+        handleCancel();
       }
-      else if (selectedImage) {
-        onChoose(selectedImage)
-      } else {
-        toast.error('Please select an image')
-        return
-      }
-
-      setSelectedImage(null)
-      setSelectedFile(null)
-      setActiveTab('1')
-      setPage(1)
-      onClose()
-    } catch (error) {
-      toast.error('Upload failed!')
+      return; 
     }
-  }
+
+    if (selectedImage) {
+      onChoose(selectedImage);
+      handleCancel();
+      return;
+    }
+    
+    toast.error('Please select an image first');
+  };
+
 
   const handleCancel = () => {
     setActiveTab('1')
@@ -151,43 +175,64 @@ const MediaManagerModal = ({
     onClose()
   }
 
-  return (
-    <Modal zIndex={3}
-      width={'59rem'}
-      centered
-      title='Choose Icon'
-      open={isVisible}
-      onCancel={handleCancel}
-      onOk={handleChoose}
-      footer={
-        <div className="flex justify-between items-center">
-          {activeTab === '2' && (
-            <div className="text-sm text-gray-500 pl-2">
-              Total {mediaList?.totalCount || 0} image(s)
-            </div>
-          )}
+  const handleCloseModal = () => {
+    if (!isUploading) {
+      setIsCropModalOpen(false)
+      setSelectedFile(null)
+    }
+  }
 
-          <div className="ml-auto flex gap-2">
-            <Button onClick={handleCancel} color="default">
-              Cancel
-            </Button>
-            <Button onClick={handleChoose}>OK</Button>
+  const handleTabChange = (key: string) => {
+    setActiveTab(key)
+    setSelectedImage(null)
+    setSelectedFile(null)
+  }
+
+  return (
+    <>
+      <Modal
+        zIndex={3}
+        width={'59rem'}
+        centered
+        title='Choose Icon'
+        open={isVisible}
+        onCancel={handleCancel}
+        onOk={handleChoose}
+        wrapClassName={cn('card-base', 'media-manager-modal')}
+        footer={
+          <div className="flex justify-between items-center">
+            {activeTab === '2' && (
+              <div className='text-sm text-secondary pl-2'>
+                Total {mediaList?.totalCount || 0} image(s)
+              </div>
+            )}
+
+            <div className="ml-auto flex gap-2">
+              <Button onClick={handleCancel} color='default'>
+                Cancel
+              </Button>
+              <Button onClick={handleChoose}>OK</Button>
+            </div>
           </div>
-        </div>
-      }
-    >
-      <Tabs className=''
-        activeKey={activeTab}
-        onChange={(key) => {
-          setActiveTab(key)
-          if (key === '2') {
-            setSelectedFile(null)
-          }
-        }}
-        type='card'
-        items={tabItems}
+        }
+      >
+        <Tabs
+          activeKey={activeTab}
+          onChange={handleTabChange}
+          type='card'
+          items={tabItems}
+        />
+      </Modal>
+      <CropImageModal
+        open={isCropModalOpen}
+        imgSrc={selectedFile ? URL.createObjectURL(selectedFile) : ''}
+        originalFileName={selectedFile?.name}
+        aspect={1}
+        onCancel={handleCloseModal}
+        onConfirm={handleCropConfirm}
+        parentLoading={isUploading}
       />
-    </Modal>
+    </>
   )
 }
 

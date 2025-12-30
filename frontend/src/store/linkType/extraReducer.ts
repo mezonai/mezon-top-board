@@ -1,5 +1,6 @@
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit'
-import { linkTypeService, LinkTypeResponse } from '@app/services/api/linkType/linkType'
+import { linkTypeService } from '@app/services/api/linkType/linkType'
+import { LinkTypeResponse } from '@app/services/api/linkType/linkType.types'
 import { ILinkTypeStore } from '.'
 
 export const linkTypeExtraReducers = (builder: ActionReducerMapBuilder<ILinkTypeStore>) => {

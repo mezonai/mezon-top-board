@@ -35,6 +35,9 @@ export class SearchUserResponse {
     public profileImage: string;
     @Expose()
     @ApiProperty()
+    public isFirstLogin: boolean;
+    @Expose()
+    @ApiProperty()
     public deletedAt: Date | null;
 }
 

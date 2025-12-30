@@ -1,5 +1,6 @@
 import { useMezonAppControllerCreateMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import { Form, Input, Modal, Switch } from "antd";
+import Button from "@app/mtb-ui/Button";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -33,7 +34,7 @@ const CreateAppModal = () => {
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={[
-          <Button key="cancel" onClick={() => setIsModalVisible(false)}>Cancel</Button>,
+          <Button key="cancel" variant='outlined' onClick={() => setIsModalVisible(false)}>Cancel</Button>,
           <Button key="save" type="primary" loading={isLoading} onClick={handleSave}>Save</Button>,
         ]}
         width={700}

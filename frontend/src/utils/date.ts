@@ -1,7 +1,9 @@
 import moment from 'moment'
 
 export const formatDate = (date?: moment.MomentInput, format: string = 'DD/MM/YYYY HH:mm:ss') => {
-  return date ? moment(date).format(format) : ''
+   return date
+    ? moment(date).local().format(format)
+    : ''
 }
 
 export const formatAgo = (date?: moment.MomentInput): string => {

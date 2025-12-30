@@ -41,7 +41,7 @@ const CreateTagModal = ({ open, onClose, onCreate }: CreateTagModalProps) => {
       <Form
         form={form}
         layout="vertical"
-        className="!pt-2"
+        className="pt-2"
         onFinish={(values) => {
           if (!values.slug?.trim()) {
             values.slug = generateSlug(values.name)

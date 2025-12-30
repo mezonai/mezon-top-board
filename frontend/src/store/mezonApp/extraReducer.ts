@@ -1,4 +1,5 @@
-import { App, mezonAppService } from "@app/services/api/mezonApp/mezonApp"
+import { mezonAppService } from "@app/services/api/mezonApp/mezonApp"
+import { App } from "@app/types"
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit"
 
 export const mezonAppExtraReducers = (builder: ActionReducerMapBuilder<any>) => {

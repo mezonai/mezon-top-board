@@ -1,12 +1,13 @@
-import { Button, Checkbox, Form, Input, Modal, Select } from 'antd'
+import { Checkbox, Form, Input, Modal, Select } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import RichTextEditor from '@app/components/RichText/RichText'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { RepeatInterval } from '@app/enums/subscribe'
 import TimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/TimePicker'
 import moment from 'moment'
-import { MailTemplate, useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
-
+import { useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
+import { MailTemplate } from '@app/types'
 
 export interface MailFormValues {
   subject: string,
@@ -114,7 +115,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       open={open}
       onCancel={onClose}
       footer={[
-        <Button key="cancel" onClick={handleCancel}>
+        <Button key="cancel" variant='outlined' onClick={handleCancel}>
           Cancel
         </Button>,
         <Button key="send" type="primary" onClick={selectMail ? handleUpdateMailSchedule : handleCreateMailSchedule} disabled={isLoading}>

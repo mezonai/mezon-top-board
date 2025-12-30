@@ -1,12 +1,39 @@
 .admin-layout {
   min-height: 100vh;
+  background: var(--bg-body);
 }
 
 .sider {
-  background: #001529;
-  color: white;
+  background: var(--bg-sidebar) !important;
+  color: var(--text-sidebar);
   padding-top: 20px;
   min-height: 100vh;
+  
+  :global(.ant-menu) {
+    background: var(--bg-sidebar) !important;
+    color: var(--text-sidebar);
+  }
+  
+  :global(.ant-menu-item) {
+    color: var(--text-sidebar) !important;
+    opacity: 0.85;
+    
+    &:hover {
+      background: var(--bg-container-secondary) !important;
+      color: var(--primary-color, #d1006b) !important;
+      opacity: 1;
+    }
+  }
+  
+  :global(.ant-menu-item-selected) {
+    background: var(--bg-container-secondary) !important;
+    color: var(--primary-color, #d1006b) !important;
+    opacity: 1;
+  }
+  
+  :global(.ant-menu-item a) {
+    color: inherit !important;
+  }
 }
 
 .header {
@@ -14,10 +41,32 @@
   align-items: center;
   justify-content: start;
   height: 64px;
-  /* Default Ant Design Header height */
-  background: #fff;
+  background: var(--bg-container) !important;
   padding: 0 20px;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  
+  :global(.ant-breadcrumb) {
+    color: var(--text-breadcrumb) !important;
+  }
+  
+  :global(.ant-breadcrumb-link),
+  :global(.ant-breadcrumb-link a),
+  :global(.ant-breadcrumb a) {
+    color: var(--text-breadcrumb) !important;
+  }
+  
+  :global(.ant-breadcrumb-separator) {
+    color: var(--text-breadcrumb) !important;
+  }
+  
+  :global(.ant-breadcrumb > span:last-child) {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+  }
+  
+  :global(.ant-breadcrumb > span:last-child .ant-breadcrumb-link) {
+    color: var(--text-primary) !important;
+  }
 }
 
 .breadcrumbContainer {
@@ -28,25 +77,305 @@
 
 .activeBreadcrumb {
   font-weight: bold;
-  color: #001529;
-  /* Ant Design primary blue */
+  color: var(--bg-sidebar);
 }
 
 .content {
   padding: 20px;
-  background: #f0f2f5;
+  background: var(--bg-content) !important;
   min-height: calc(100vh - 64px - 70px);
+  
+  :global(.ant-table) {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-table-thead > tr > th) {
+    background: var(--bg-table-header) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 2px solid var(--border-table) !important;
+    border-color: var(--border-table) !important;
+    font-weight: 500 !important;
+  }
+  
+  :global(.ant-table-tbody > tr > td) {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-table) !important;
+  }
+  
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: var(--bg-table-header) !important;
+  }
+  
+  :global(.ant-table-container) {
+    border: 1px solid var(--border-table) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+  }
+  
+  :global(.ant-pagination) {
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-pagination-item) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    
+    a {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  :global(.ant-pagination-item-active) {
+    background: var(--primary-color, #1890ff) !important;
+    border-color: var(--primary-color, #1890ff) !important;
+    
+    a {
+      color: #ffffff !important;
+    }
+  }
+  
+  :global(.ant-select-selector) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-select-selection-placeholder) {
+    color: var(--text-secondary) !important;
+    opacity: 0.65 !important;
+  }
+  
+  :global(.ant-select-arrow) {
+    color: var(--text-secondary) !important;
+  }
+  
+  :global(.ant-input) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+    }
+  }
+  
+  :global(textarea.ant-input) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+    }
+  }
+  
+  :global(.ant-tag:not(.ant-tag-success):not(.ant-tag-error):not(.ant-tag-warning):not(.ant-tag-processing):not(.ant-tag-blue):not(.ant-tag-green):not(.ant-tag-red):not(.ant-tag-orange):not(.ant-tag-gold):not(.ant-tag-cyan):not([class*="ant-tag-"])) {
+    background: var(--bg-container-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  :global(.ant-form-item-label > label) {
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-radio-wrapper) {
+    color: var(--text-primary) !important;
+    
+    :global(.ant-radio-inner) {
+      background: var(--bg-container) !important;
+      border-color: var(--border-color) !important;
+    }
+    
+    &:hover :global(.ant-radio-inner) {
+      border-color: var(--primary-color, #1890ff) !important;
+    }
+  }
+  
+  :global(.ant-radio-checked) {
+    :global(.ant-radio-inner) {
+      border-color: var(--primary-color, #1890ff) !important;
+      
+      &::after {
+        background-color: var(--primary-color, #1890ff) !important;
+      }
+    }
+  }
+  
+  :global(.ant-card) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    
+    :global(.ant-card-head) {
+      color: var(--text-primary) !important;
+      border-bottom-color: var(--border-color) !important;
+      background: var(--bg-container) !important;
+    }
+    
+    :global(.ant-card-body) {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  :global(.ant-popconfirm) {
+    :global(.ant-popover-inner) {
+      background: var(--bg-container) !important;
+      
+      :global(.ant-popover-inner-content) {
+        color: var(--text-primary) !important;
+      }
+    }
+    
+    :global(.ant-popover-arrow::before) {
+      background: var(--bg-container) !important;
+    }
+  }
+}
+
+:global(.ant-modal) {
+  :global(.ant-modal-content) {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-modal-header) {
+    background: var(--bg-container) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    
+    :global(.ant-modal-title) {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  :global(.ant-modal-body) {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-modal-footer) {
+    background: var(--bg-container) !important;
+    border-top: 1px solid var(--border-color) !important;
+  }
+  
+  :global(.ant-modal-close) {
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-btn-default) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    
+    &:hover {
+      border-color: var(--primary-color, #1890ff) !important;
+      color: var(--primary-color, #1890ff) !important;
+    }
+  }
+  
+  :global(textarea.ant-input) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+      opacity: 0.65 !important;
+    }
+  }
+  
+  :global(input.ant-input) {
+    background: var(--bg-container) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+      opacity: 0.65 !important;
+    }
+  }
+  
+  :global(.ant-typography) {
+    color: var(--text-primary) !important;
+  }
+  
+  :global(.ant-typography-secondary) {
+    color: var(--text-secondary) !important;
+  }
+  
+  :global(h1.ant-typography),
+  :global(h2.ant-typography),
+  :global(h3.ant-typography),
+  :global(h4.ant-typography),
+  :global(h5.ant-typography) {
+    color: var(--text-primary) !important;
+  }
+  
+  :global(a) {
+    color: var(--primary-color, #1890ff) !important;
+    
+    &:hover {
+      color: var(--primary-color, #1890ff) !important;
+      opacity: 0.8;
+    }
+  }
+  
+  :global(.ant-divider) {
+    border-color: var(--border-color) !important;
+  }
+}
+
+:global(.ant-switch) {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  
+  &.ant-switch-checked {
+    background-color: var(--primary-color, #1890ff) !important;
+  }
+}
+
+[data-theme='dark'] {
+  :global(.ant-switch) {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    
+    &.ant-switch-checked {
+      background-color: var(--primary-color, #1890ff) !important;
+    }
+  }
+}
+
+:global(.ant-descriptions) {
+  :global(.ant-descriptions-view) {
+    border-color: var(--border-color) !important;
+  }
+  
+  :global(.ant-descriptions-item-label) {
+    background: var(--bg-container-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  :global(.ant-descriptions-item-content) {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  :global(.ant-descriptions-row) {
+    border-color: var(--border-color) !important;
+  }
 }
 
 .footer {
   text-align: center;
-  background: #fff;
+  background: var(--bg-container) !important;
+  color: var(--text-primary);
   padding: 20px 50px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-footer);
 }
 
 .sider-divider {
-  background: white;
+  background: var(--bg-sidebar-divider);
   padding: 1px 0px;
   margin: 10px 0px;
 }

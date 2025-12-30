@@ -57,3 +57,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 uploads/*
 !uploads/.gitkeep
+tmp/*
+!tmp/.gitkeep
+# Mezon cache
+/mezon-cache

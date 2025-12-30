@@ -3,10 +3,12 @@ import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
+import { cn } from '@app/utils/cn'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
+import styles from './SearchBar.module.scss'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
@@ -30,7 +32,7 @@ const SearchBar = ({
 
   const defaultTags = searchParams.get('tags')?.split(',') || []
 
-  const [showAllTags, setShowAllTags] = useState(false)
+  const [showAllTags] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(defaultTags)
   const [searchText, setSearchText] = useState<string>(searchParams.get('q') || '')
   const [selectedType, setSelectedType] = useState<MezonAppType>()
@@ -44,12 +46,17 @@ const SearchBar = ({
 
   const handleClear = () => {
     setSearchText('')
-    setSelectedTagIds([])
-    setSearchParams({})
-    setSelectedType(undefined)
     if (isResultPage) {
-      onSearch('', [])
+      updateSearchParams('', selectedTagIds, selectedType)
+      onSearch('', selectedTagIds, selectedType)
     }
+  }
+
+  const handleClearTags = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedTagIds([]);
+    handleSearch([], selectedType); 
   }
 
   const updateSearchParams = (q: string, tags: string[], type?: MezonAppType) => {
@@ -82,7 +89,6 @@ const SearchBar = ({
   }
 
   const totalTags = tagList?.data?.length || 0
-  const hiddenTagsCount = totalTags - MAX_VISIBLE_TAGS
   const visibleTags = tagList?.data?.filter((tag, index) =>
     showAllTags ||
     index < MAX_VISIBLE_TAGS ||
@@ -108,28 +114,20 @@ const SearchBar = ({
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div className="flex flex-1 w-full items-center !rounded-full my-select-container">
-          <style>
-            {`
-              .my-select-container .ant-select .ant-select-selector {
-                border-radius:0 100px 100px 0 !important;
-                border-left: none !important;
-              }
-            `}
-          </style>
+        <div className={cn('flex flex-1 w-full items-center !rounded-full', styles.container)}>
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             placeholder={placeholder}
             prefix={<SearchOutlined style={{ color: '#bbb' }} />}
             suffix={
-              allowClear && (searchText || selectedTagIds.length) ? (
+              allowClear && searchText ? (
                 <button onClick={handleClear} className='cursor-pointer flex align-middle'>
                   <CloseCircleOutlined className='text-sm' />
                 </button>
               ) : null
             }
-            className="!rounded-l-full h-[50px] "
+            className='!rounded-l-full h-[50px] !bg-container !text-primary !border-border hover:!border-border focus:!border-border'
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
@@ -137,6 +135,7 @@ const SearchBar = ({
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder="All Types"
+            popupClassName="custom-search-dropdown"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
             data-e2e="selectType"
           />
@@ -153,7 +152,6 @@ const SearchBar = ({
           <Tag.CheckableTag
             key={tag.id}
             checked={selectedTagIds.includes(tag.id)}
-            className='!border !border-gray-300'
             onClick={() => handleSearchTag(tag.id)}
           >
             {tag.name}
@@ -181,6 +179,7 @@ const SearchBar = ({
               onBlur={() => setIsSelectVisible(false)}
               style={{ width: '120px', marginTop: '8px' }}
               dropdownStyle={{ width: '200px' }}
+              popupClassName="custom-search-dropdown"
               maxTagCount={0}
               maxTagPlaceholder={() => `+${remainingHiddenTagCount} tags`}
               filterOption={(input, option) =>
@@ -192,6 +191,14 @@ const SearchBar = ({
               }))}
             />
           )
+        )}
+        {selectedTagIds.length > 0 && (
+          <Tag 
+            className="clear-tags-btn !cursor-pointer !items-center !gap-1" 
+            onClick={handleClearTags}
+          >
+            <CloseCircleOutlined /> Clear tags
+          </Tag>
         )}
       </div>
     </>

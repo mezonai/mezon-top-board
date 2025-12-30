@@ -4,6 +4,7 @@ import { useCallback, useRef } from 'react'
 import { imageMimeTypes } from '@app/constants/mimeTypes'
 import { toast } from 'react-toastify'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import styles from './RichText.module.scss'
 
 export const isMimeTypeValid = (mimeType: string, mimeTypes: string[]): boolean => mimeTypes.includes(mimeType)
 
@@ -110,7 +111,7 @@ function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, cu
       onChange={handleChange}
       placeholder={placeholder}
       modules={modules}
-      className={customClass}
+      className={`${customClass || ''} ${styles['rich-text-container']}`}
     />
   )
 }

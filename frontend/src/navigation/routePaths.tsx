@@ -9,10 +9,13 @@ import NewBotPage from '@app/pages/NewBotPage/NewBotPage'
 import NotFoundPage from '@app/pages/NotFoundPage/NotFoundPage'
 import ProfilePage from '@app/pages/ProfilePage/ProfilePage'
 import SettingPage from '@app/pages/ProfilePage/SettingPage'
+import GalleryPage from '@app/pages/ProfilePage/GalleryPage'
 import SearchPage from '@app/pages/SearchPage/SearchPage'
 import TermsPage from '@app/pages/TermsPage/TermsPage'
 import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
+import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
+import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 
 export const routePaths: RoutePath[] = [
   {
@@ -22,6 +25,14 @@ export const routePaths: RoutePath[] = [
     strLabel: 'Home',
     isShowMenu: true,
     requireAuth: false,
+  },
+  {
+    index: false,
+    path: '/welcome',
+    element: <OnboardingPage />,
+    strLabel: 'Welcome',
+    isShowMenu: false,
+    requireAuth: true,
   },
   {
     index: false,
@@ -52,7 +63,7 @@ export const routePaths: RoutePath[] = [
     path: '/profile',
     element: <ProfilePage></ProfilePage>,
     strLabel: 'My Profile',
-    isShowMenu: true,
+    isShowMenu: false,
     requireAuth: true
   },
   {
@@ -60,6 +71,14 @@ export const routePaths: RoutePath[] = [
     path: '/profile/setting',
     element: <SettingPage></SettingPage>,
     strLabel: 'Personal Settings',
+    isShowMenu: false,
+    requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/profile/gallery',
+    element: <GalleryPage />,
+    strLabel: 'My Media Gallery',
     isShowMenu: false,
     requireAuth: true,
   },
@@ -107,6 +126,22 @@ export const routePaths: RoutePath[] = [
         path: '/contact-us',
       },
     ]
+  },
+  {
+    index: false,
+    path: '/bot-wizard',
+    element: <BotWizardPage />,
+    strLabel: 'Bot Wizard',
+    isShowMenu: true,
+    requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/bot-wizard/new',
+    element: <BotWizardPage />,
+    strLabel: 'Bot Wizard',
+    isShowMenu: false,
+    requireAuth: true,
   },
   {
     index: false,

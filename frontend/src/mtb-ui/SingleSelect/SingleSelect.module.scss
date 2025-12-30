@@ -1,0 +1,92 @@
+.singleSelect {
+  :global(.ant-select-selector) {
+    background-color: var(--bg-container-secondary) !important; 
+    
+    border: none !important;
+    border-radius: 10px !important;
+    height: 3rem !important;
+    color: var(--text-primary) !important;
+    padding: 0 12px !important;
+    box-shadow: none !important; 
+
+    :global(.ant-select-selection-item) {
+      color: var(--text-primary) !important;
+      line-height: 3rem !important;
+    }
+  }
+
+  &:hover :global(.ant-select-selector) {
+    background-color: var(--bg-container-secondary) !important; 
+    border: none !important;
+  }
+
+  &:global(.ant-select-focused) :global(.ant-select-selector),
+  &:global(.ant-select-open) :global(.ant-select-selector) {
+    background-color: var(--bg-container-secondary) !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.dropdown {
+  background: var(--bg-container) !important;
+  color: var(--text-primary) !important;
+  padding: 8px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dropdownTitle {
+  font-size: 12px !important;
+  padding-bottom: 8px !important;
+  text-transform: uppercase !important;
+  color: var(--text-secondary) !important;
+}
+
+.option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  color: var(--text-primary) !important;
+  transition: background 0.2s ease !important;
+  
+  &:hover {
+    background: var(--bg-container-secondary) !important;
+  }
+  
+  &.selected {
+    background: var(--bg-container-secondary) !important;
+  }
+}
+
+.optionLabel {
+  font-size: 16px !important;
+  color: var(--text-primary) !important;
+}
+
+.checkIcon {
+  color: var(--text-primary) !important;
+}
+
+[data-theme='dark'] {
+  .dropdown {
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
+  }
+}
+
+.arrowIcon {
+  color: var(--text-primary) !important; 
+  font-size: 12px;
+  pointer-events: none; 
+}
+
+.popupReset {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+}

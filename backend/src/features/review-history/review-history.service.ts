@@ -5,7 +5,11 @@ import { Brackets, EntityManager } from "typeorm";
 import { RequestWithId } from "@domain/common/dtos/request.dto";
 import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
-import { App, AppReviewHistory, Rating, User } from "@domain/entities";
+import { SortField } from "@domain/common/enum/sortField";
+import { SortOrder } from "@domain/common/enum/sortOder";
+import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
+
+import { AppVersionService } from "@features/app-version/app-version.service";
 
 import { ErrorMessages, SuccessMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -19,16 +23,24 @@ import {
   UpdateAppReviewRequest,
 } from "./dtos/request";
 import { AppReviewResponse } from "./dtos/response";
+import { MezonClientService } from "@features/mezon-noti-bot/mezon-client.service";
+import { EMarkdownType } from "mezon-sdk";
 
 @Injectable()
 export class ReviewHistoryService {
   private readonly appRepository: GenericRepository<App>;
+  private readonly appVersionRepository: GenericRepository<AppVersion>;
   private readonly appReviewRepository: GenericRepository<AppReviewHistory>;
   private readonly userRepository: GenericRepository<User>;
   private readonly ratingRepository: GenericRepository<Rating>;
 
-  constructor(private manager: EntityManager) {
+  constructor(
+    private manager: EntityManager,
+    private readonly appVersionService: AppVersionService,
+    private readonly mezonClientService: MezonClientService
+  ) {
     this.appRepository = new GenericRepository(App, manager);
+    this.appVersionRepository = new GenericRepository(AppVersion, manager);
     this.appReviewRepository = new GenericRepository(AppReviewHistory, manager);
     this.userRepository = new GenericRepository(User, manager);
     this.ratingRepository = new GenericRepository(Rating, manager);
@@ -36,19 +48,48 @@ export class ReviewHistoryService {
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
     const mezonApp = await this.appRepository.findById(body.appId);
-    if (!mezonApp || mezonApp.status !== AppStatus.PENDING) {
+    if (!mezonApp || mezonApp.hasNewUpdate === false) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
 
-    const newStatus = body.isApproved
-      ? AppStatus.PUBLISHED
-      : AppStatus.REJECTED;
-    await this.appRepository.update(body.appId, { status: newStatus });
+    const mezonAppVersion = await this.appVersionRepository.findOne({
+      where: { appId: body.appId, status: AppStatus.PENDING },
+      order: { version: 'DESC' },
+    });
+    if (!mezonAppVersion) {
+      throw new BadRequestException("No pending app version found");
+    }
+
+    if (body.isApproved) {
+      await this.appVersionService.approveVersion(mezonAppVersion.id);
+    } else {
+      await this.appVersionService.rejectVersion(mezonAppVersion.id);
+    }
 
     const data = await this.appReviewRepository.create({
       ...body,
+      appVersionId: mezonAppVersion.id,
       reviewerId: reviewer.id,
     });
+
+    if (mezonApp.ownerId) {
+      const user = await this.userRepository.findById(mezonApp.ownerId);
+      const statusText = body.isApproved ? "APPROVED" : "REJECTED";
+      
+      const text =`Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+
+      await this.mezonClientService.sendMessageToUser({
+        userId: user.mezonUserId,
+        textContent: text,
+        messOptions: {
+          mk: [{ s: text.indexOf(mezonApp.name), e: text.indexOf(mezonApp.name) + mezonApp.name.length, type: EMarkdownType.BOLD },
+               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
+          mention_everyone: false,
+          anonymous_message: false,
+        },
+      });
+    }
+
     return new Result({
       data: Mapper(AppReviewResponse, data),
     });
@@ -91,12 +132,23 @@ export class ReviewHistoryService {
       };
     }
 
+    if (query.appVersionId) {
+      const appVersion = await this.appVersionRepository.findById(query.appVersionId);
+      if (!appVersion) {
+        throw new BadRequestException(ErrorMessages.INVALID_APP);
+      }
+
+      whereBuilder = {
+        appVersionId: query.appVersionId,
+      };
+    }
+
     return paginate<AppReviewHistory, AppReviewResponse>(
       () =>
         this.appReviewRepository.findMany({
           ...query,
           where: () => whereBuilder,
-          relations: ["app", "reviewer"],
+          relations: ["app", "reviewer", "appVersion"],
         }),
       query.pageSize,
       query.pageNumber,
@@ -112,7 +164,8 @@ export class ReviewHistoryService {
       .getRepository()
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.app', 'app')
-      .leftJoinAndSelect('review.reviewer', 'reviewer');
+      .leftJoinAndSelect('review.reviewer', 'reviewer')
+      .leftJoinAndSelect('review.appVersion', 'appVersion');
   
     if (query.search) {
       qb.andWhere(
@@ -127,6 +180,16 @@ export class ReviewHistoryService {
     if (query.appId) {
       qb.andWhere('review.appId = :appId', { appId: query.appId });
     }
+    if (query.appVersionId) {
+      qb.andWhere('review.appVersionId = :appVersionId', { appVersionId: query.appVersionId });
+    }
+    const invalidSortField = Object.values(SortField).includes(query.sortField as SortField);
+    const invalidSortOrder = Object.values(SortOrder).includes(query.sortOrder as SortOrder);
+    const sortField = invalidSortField ? query.sortField : SortField.NAME;
+    const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
+
+    qb.orderBy(`review.${sortField}`, sortOrder);
+    
 
     return paginate<AppReviewHistory, AppReviewResponse>(
       () =>

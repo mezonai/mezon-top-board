@@ -2,7 +2,8 @@ import avatar from '@app/assets/images/default-user.webp'
 import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { CreateRatingRequest, useRatingControllerCreateRatingMutation } from '@app/services/api/rating/rating'
+import { useRatingControllerCreateRatingMutation } from '@app/services/api/rating/rating'
+import { CreateRatingRequest } from '@app/services/api/rating/rating.types'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
 import { IUserStore } from '@app/store/user'
@@ -38,11 +39,19 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
   }
 
   return (
-    <div className='flex items-start gap-8 p-4 rounded-lg'>
-      <img src={userInfo?.profileImage ? getUrlMedia(userInfo?.profileImage) : avatar} alt={userInfo.name} className='w-15 h-15 rounded-full object-cover mt-1' />
-      <div className='flex-1 flex flex-col gap-2'>
-        <MtbTypography variant='h4'>{userInfo.name}</MtbTypography>
-        <Form onFinish={handleSubmit(onSubmit)}>
+    <div className='flex items-start gap-8 p-4 rounded-lg bg-container border border-transparent dark:border-border'>
+      <img
+        src={userInfo?.profileImage ? getUrlMedia(userInfo?.profileImage) : avatar}
+        alt={userInfo.name}
+        className='w-15 h-15 rounded-full object-cover mt-1 bg-container-secondary'
+      />
+
+      <div className='flex-1 flex flex-col gap-2 mt-4'>
+        <MtbTypography variant='h4' customClassName='!text-primary'>
+          {userInfo.name}
+        </MtbTypography>
+        
+        <Form onFinish={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
           <Controller
             name="score"
             control={control}
@@ -51,18 +60,20 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
           <Controller
             name="comment"
             control={control}
-            render={({ field }) => <Input.TextArea
-              {...field}
-              rows={3}
-              placeholder='Write your comment...'
-              className='border-gray-300 rounded-md focus:border-primary focus:ring-primary mt-3'
-            />}
+            render={({ field }) => (
+              <Input.TextArea
+                {...field}
+                rows={3}
+                placeholder='Write your comment...'
+                className='rounded-md mt-3 !bg-container !text-primary !border-border dark:!border-border focus:!border-primary focus:!ring-primary placeholder:!text-secondary'
+              />
+            )}
           />
-          <Button htmlType='submit' customClassName='self-start mt-2 bg-primary hover:bg-primary-dark text-white rounded-md px-4 py-2' size='large'>
+
+          <Button htmlType='submit' customClassName='self-start bg-primary hover:bg-primary/90 text-white rounded-md px-4 py-2' size='large'>
             Post Rating
           </Button>
         </Form>
-
       </div>
     </div>
   )

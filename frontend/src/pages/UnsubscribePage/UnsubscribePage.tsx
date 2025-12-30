@@ -11,9 +11,7 @@ import { toast } from 'react-toastify';
 const UnsubscribePage = () => {
   const navigate = useNavigate();
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
-  const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery({email:userInfo?.email!}, {
-    skip: !userInfo?.email,
-  });
+  const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery();
 
   useEffect(() => {
     if (userInfo?.email) {
@@ -41,7 +39,7 @@ const UnsubscribePage = () => {
   }, [userInfo?.email, data]);
 
   return (
-    <Flex align='center' justify='center' vertical flex={1} className='!bg-gray-300 fixed inset-0 z-[9999]'>
+    <Flex align='center' justify='center' vertical flex={1} className='bg-content fixed inset-0 z-[9999]'>
       <Spin size='large' />
     </Flex>
   )

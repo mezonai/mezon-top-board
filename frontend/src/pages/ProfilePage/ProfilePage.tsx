@@ -1,11 +1,13 @@
-import CompactBotCard from '@app/components/CompactBotCard/CompactBotCard'
+import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import useAuthRedirect from '@app/hook/useAuthRedirect'
 import Button from '@app/mtb-ui/Button'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useLazyMezonAppControllerSearchMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
-import { GetPublicProfileResponse, useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
+import { useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
+import { GetPublicProfileResponse } from '@app/services/api/user/user.types'
+import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
 import { IMezonAppStore } from '@app/store/mezonApp'
@@ -143,7 +145,7 @@ function ProfilePage() {
   return (
     <div className='pt-8 pb-12 w-[75%] m-auto'>
       <MtbTypography variant='h1'>Your Profile</MtbTypography>
-      <Divider className='bg-gray-100'></Divider>
+      <Divider className='bg-border'></Divider>
       <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
           <CardInfo userInfo={userInfo} isPublic={Boolean(userId)}></CardInfo>
@@ -180,7 +182,7 @@ function ProfilePage() {
                     options={pageOptions}
                     placeholder='Select'
                     size='large'
-                    className='w-[10rem]'
+                    className='w-[10rem] text-primary'
                     dropDownTitle='Bots per page'
                     value={pageOptions.find(o => o.value === pageSize)}
                   />
@@ -191,13 +193,13 @@ function ProfilePage() {
 
           {totalPages === 0 ? (
             <div className='pt-8'>
-              <div className='text-center py-12 text-gray-500'>No Result</div>
+              <div className='text-center py-12 text-secondary'>No Result</div>
             </div>
           ) : (
             <>
               <div className='grid grid-cols-1 gap-8 min-lg:grid-cols-2 min-xl:grid-cols-3 max-w-full pt-8'>
-                {mezonApp?.data?.map((item) => (
-                  <CompactBotCard key={item.id} data={item} isPublic={Boolean(userId)} />
+                {mezonApp?.data?.map((item: GetMezonAppDetailsResponse) => (
+                  <BotGridItem key={item.id} data={item} isPublic={Boolean(userId)} />
                 ))}
               </div>
 

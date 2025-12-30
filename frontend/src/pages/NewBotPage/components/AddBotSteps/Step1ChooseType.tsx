@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import FormField from '@app/components/FormField/FormField'
 import { Select } from 'antd'
-import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp'
+import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const Step1ChooseType = () => {
@@ -16,6 +16,9 @@ const Step1ChooseType = () => {
           <Select
             {...field}
             placeholder="Choose Bot or App"
+            className="w-full bg-container text-primary"
+            popupClassName="custom-select-dropdown"
+            dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
             options={[
               { label: 'Bot', value: MezonAppType.BOT },
               { label: 'App', value: MezonAppType.APP },

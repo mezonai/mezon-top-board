@@ -1,7 +1,9 @@
-import { Role } from '@app/services/api/mezonApp/mezonApp'
-import { UpdateUserRequest, useUserControllerUpdateUserMutation } from '@app/services/api/user/user'
+import { Role } from '@app/enums/role.enum'
+import { UpdateUserRequest } from '@app/services/api/user/user.types'
+import { useUserControllerUpdateUserMutation } from '@app/services/api/user/user'
 import { handleMapOption } from '@app/utils/stringHelper'
-import { Button, Form, Input, Modal, Select } from 'antd'
+import { Form, Input, Modal, Select } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
 
 const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () => void }) => {
@@ -25,7 +27,7 @@ const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () 
       title='Edit User'
       onCancel={onClose}
       footer={[
-        <Button key='cancel' onClick={onClose} disabled={isLoading}>
+        <Button key='cancel' variant='outlined'onClick={onClose} disabled={isLoading}>
           Cancel
         </Button>,
         <Button key='submit' type='primary' onClick={() => form.submit()} loading={isLoading}>

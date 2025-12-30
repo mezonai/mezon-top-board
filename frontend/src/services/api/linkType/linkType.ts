@@ -1,6 +1,15 @@
-import { HttpResponse } from '@app/types/API.types'
 import { api } from '../../apiInstance'
-import { RequestWithId } from '../mezonApp/mezonApp'
+import type {
+  LinkTypeControllerGetAllLinksApiResponse,
+  LinkTypeControllerGetAllLinksApiArg,
+  LinkTypeControllerCreateLinkTypeApiResponse,
+  LinkTypeControllerCreateLinkTypeApiArg,
+  LinkTypeControllerUpdateLinkTypeApiResponse,
+  LinkTypeControllerUpdateLinkTypeApiArg,
+  LinkTypeControllerDeleteLinkTypeApiResponse,
+  LinkTypeControllerDeleteLinkTypeApiArg
+} from './linkType.types'
+
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     linkTypeControllerGetAllLinks: build.query<
@@ -39,41 +48,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false
 })
 export { injectedRtkApi as linkTypeService }
-export type LinkTypeControllerGetAllLinksApiResponse = HttpResponse<LinkTypeResponse[]>
-export type LinkTypeControllerGetAllLinksApiArg = void
-export type LinkTypeResponse = {
-  id: string
-  name: string
-  icon: string
-  prefixUrl: string
-}
-export type LinkTypeControllerUpdateLinkTypeApiResponse = HttpResponse<LinkTypeResponse>
-export type LinkTypeControllerUpdateLinkTypeApiArg = {
-  updateLinkTypeRequest: UpdateLinkTypeRequest
-}
 
-export type LinkTypeControllerCreateLinkTypeApiResponse = HttpResponse<LinkTypeResponse>
-export type LinkTypeControllerCreateLinkTypeApiArg = {
-  createLinkTypeRequest: CreateLinkTypeRequest
-}
-
-export type LinkTypeControllerDeleteLinkTypeApiResponse = HttpResponse<LinkTypeResponse>
-export type LinkTypeControllerDeleteLinkTypeApiArg = {
-  requestWithId: RequestWithId
-}
-
-export type UpdateLinkTypeRequest = {
-  id: string
-  name?: string
-  icon?: string
-  prefixUrl?: string
-}
-
-export type CreateLinkTypeRequest = {
-  name: string
-  icon: string
-  prefixUrl: string
-}
 
 export const {
   useLinkTypeControllerGetAllLinksQuery,

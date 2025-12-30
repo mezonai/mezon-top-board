@@ -1,0 +1,521 @@
+@layer components {
+  %btn-structure {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 ease-in-out outline-none;
+    @apply focus:ring-2 focus:ring-offset-2 focus:ring-transparent; 
+  }
+  %badge-structure {
+    @apply inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border;
+  }
+
+  // Button Styles
+  .btn-base {
+    @extend %btn-structure;
+    @apply focus:ring-black/10; 
+  }
+
+  .btn-primary {
+    @extend %btn-structure;
+    background-color: var(--accent-primary);
+    @apply text-white hover:opacity-90 active:opacity-80;
+    @apply focus:ring-[rgba(242,56,90,0.5)];
+  }
+
+  .btn-secondary {
+    @extend %btn-structure;
+    background-color: var(--accent-secondary);
+    @apply text-white hover:opacity-90 active:opacity-80;
+  }
+
+  .btn-outline {
+    @extend %btn-structure;
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
+    @apply bg-transparent;
+
+    &:hover {
+      background-color: var(--accent-primary);
+      @apply text-white;
+    }
+  }
+
+  .btn-danger {
+    @extend %btn-structure;
+    background-color: var(--color-danger);
+    @apply text-white hover:opacity-90;
+  }
+
+  .btn-success {
+    @extend %btn-structure;
+    background-color: var(--color-success);
+    @apply text-white hover:opacity-90;
+  }
+
+  // Card Styles
+  .card-base {
+    @apply rounded-xl border transition-all duration-200 ease-in-out;
+    border-color: var(--border-color);
+    background-color: var(--bg-container);
+  }
+
+  .card-hover {
+    @extend .card-base; 
+    &:hover {
+      @apply shadow-md;
+      border-color: rgba(242, 56, 90, 0.3);
+    }
+  }
+
+  .card-elevated {
+    @extend .card-base;
+    @apply shadow-xl;
+  }
+
+  // Input Styles
+  .input-base {
+    @apply w-full px-3 py-2 rounded-lg border transition-all duration-200 ease-in-out outline-none;
+    background-color: var(--bg-container);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+
+    &::placeholder {
+      color: var(--text-secondary);
+      @apply opacity-70;
+    }
+
+    &:focus {
+      @apply ring-2 ring-offset-2 ring-[rgba(242,56,90,0.5)];
+      border-color: var(--accent-primary);
+    }
+  }
+
+  .input-error {
+    @apply w-full px-3 py-2 rounded-lg border transition-all duration-200 ease-in-out outline-none;
+    background-color: var(--bg-container);
+    color: var(--text-primary);
+    border-color: var(--color-danger);
+
+    &:focus {
+      @apply ring-2 ring-offset-2 ring-[rgba(255,77,79,0.5)];
+      border-color: var(--color-danger);
+    }
+  }
+
+  // Text Styles 
+  .text-heading-1 { @apply text-3xl font-bold; color: var(--text-primary); }
+  .text-heading-2 { @apply text-2xl font-semibold; color: var(--text-primary); }
+  .text-heading-3 { @apply text-xl font-semibold; color: var(--text-primary); }
+  .text-heading-4 { @apply text-lg font-medium; color: var(--text-primary); }
+  .text-body      { @apply text-sm; color: var(--text-primary); }
+  .text-caption   { @apply text-xs; color: var(--text-secondary); }
+  .text-label     { @apply text-sm font-medium; color: var(--text-primary); }
+
+  // Container Styles
+  .container-base {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-[80rem];
+  }
+
+  .container-narrow {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-[56rem];
+  }
+
+  // Flexbox Utilities  
+  .flex-center { @apply flex items-center justify-center; }
+  .flex-between { @apply flex items-center justify-between; }
+  .flex-col-center { @apply flex flex-col items-center justify-center; }
+
+  // Badge Styles
+  .badge-base {
+    @extend %badge-structure;
+  }
+
+  .badge-primary {
+    @extend %badge-structure;
+    background-color: rgba(242, 56, 90, 0.1);
+    color: var(--accent-primary);
+    border-color: rgba(242, 56, 90, 0.2);
+  }
+
+  .badge-success {
+    @extend %badge-structure;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+    border-color: var(--color-success-border);
+  }
+
+  .badge-warning {
+    @extend %badge-structure;
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+    border-color: var(--color-warning-border);
+  }
+
+  .badge-danger {
+    @extend %badge-structure;
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+  }
+
+  .badge-info {
+    @extend %badge-structure;
+    background-color: var(--color-info-bg);
+    color: var(--color-info);
+    border-color: var(--color-info-border);
+  }
+
+  // Misc Utilities
+  .link-base {
+    color: var(--accent-primary);
+    @apply underline-offset-4 transition-colors duration-200 ease-in-out;
+    
+    &:hover {
+      @apply underline;
+      color: rgba(242, 56, 90, 0.8);
+    }
+  }
+
+  .link-subtle {
+    color: var(--text-secondary);
+    @apply transition-colors duration-200 ease-in-out;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .divider-horizontal {
+    @apply border-t my-4;
+    border-color: var(--border-color);
+  }
+
+  .divider-vertical {
+    @apply border-l mx-4;
+    border-color: var(--border-color);
+  }
+
+  .overlay {
+    @apply fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-[4px];
+  }
+
+  .spinner {
+    @apply inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin;
+  }
+
+  .transition-base { @apply transition-all duration-200 ease-in-out; }
+  .transition-fast { @apply transition-all duration-150 ease-in-out; }
+  .transition-slow { @apply transition-all duration-300 ease-in-out; }
+}
+
+.ant-table-wrapper {
+  .ant-pagination {
+    color: var(--text-primary);
+
+    .ant-pagination-total-text {
+      color: var(--text-secondary);
+    }
+
+    .ant-pagination-item {
+      background-color: var(--bg-container);
+      border-color: var(--border-color);
+      
+      a { color: var(--text-primary); }
+      &:hover a { color: var(--accent-primary); }
+    }
+
+    .ant-pagination-item-active {
+      border-color: var(--accent-primary);
+      a { color: var(--accent-primary); }
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      .ant-pagination-item-link {
+        color: var(--text-primary);
+        background-color: var(--bg-container);
+        border-color: var(--border-color);
+      }
+
+      &:hover .ant-pagination-item-link {
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
+      }
+    }
+
+    .ant-pagination-disabled {
+      &, &:hover {
+        .ant-pagination-item-link {
+          color: var(--text-secondary);
+          border-color: var(--border-color);
+        }
+      }
+    }
+
+    .ant-pagination-options {
+      .ant-select-selector {
+        background-color: var(--bg-container);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+      }
+      .ant-select-arrow { color: var(--text-secondary); }
+      
+      .ant-select-selection-item,
+      .ant-select-selection-placeholder {
+        color: var(--text-primary);
+      }
+
+      .ant-pagination-options-quick-jumper {
+        color: var(--text-secondary);
+        input {
+          background-color: var(--bg-container);
+          color: var(--text-primary);
+          border-color: var(--border-color);
+        }
+      }
+    }
+  }
+}
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
+}
+
+.ant-modal {
+  .ant-modal-content {
+    background-color: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  }
+
+  .ant-modal-header {
+    background-color: var(--bg-container) !important;
+    border-bottom-color: var(--border-color) !important;
+    .ant-modal-title { color: var(--text-primary) !important; }
+  }
+
+  .ant-modal-close {
+    color: var(--text-secondary) !important;
+    background: transparent !important;
+  }
+
+  .ant-modal-body { color: var(--text-primary) !important; }
+
+  .ant-modal-footer {
+    border-top-color: var(--border-color) !important;
+
+    .ant-btn {
+      background-color: var(--bg-container) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--bg-container) !important;
+        border-color: var(--accent-primary) !important;
+        color: var(--accent-primary) !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+    }
+
+    .ant-btn-primary {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+
+    .ant-btn-dangerous {
+      background-color: var(--color-danger) !important;
+      border-color: var(--color-danger) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--color-danger) !important;
+        border-color: var(--color-danger) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+  }
+}
+
+.ant-modal-confirm {
+  .ant-modal-confirm-title { color: var(--text-primary) !important; }
+  .ant-modal-confirm-content { color: var(--text-secondary) !important; }
+
+  .anticon { color: var(--accent-primary) !important; }
+  &.ant-modal-confirm-error   .anticon { color: var(--color-danger) !important; }
+  &.ant-modal-confirm-warning .anticon { color: var(--color-warning) !important; }
+  &.ant-modal-confirm-success .anticon { color: var(--color-success) !important; }
+
+  .ant-modal-confirm-btns {
+    .ant-btn {
+      background-color: var(--bg-container) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--bg-container) !important;
+        border-color: var(--accent-primary) !important;
+        color: var(--accent-primary) !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+    }
+    .ant-btn-primary {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+    .ant-btn-dangerous {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--border-color) !important;
+      color: #fff !important;
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--accent-primary) !important;
+        border-color: var(--border-color) !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        filter: brightness(0.95) !important;
+      }
+    }
+  }
+}
+
+.ant-select {
+  .ant-select-arrow {
+    color: var(--text-secondary) !important;
+    transition: color 0.2s ease-in-out;
+  }
+  &:hover .ant-select-arrow {
+    color: var(--text-primary) !important;
+  }
+
+  &.ant-select-focused .ant-select-arrow,
+  &.ant-select-open .ant-select-arrow {
+    color: var(--accent-primary) !important;
+  }
+
+  &.ant-select-disabled .ant-select-arrow {
+    color: var(--text-secondary) !important;
+    opacity: 0.5;
+  }
+  
+  &.ant-select-status-error .ant-select-arrow {
+    color: var(--color-danger) !important;
+  }
+}
+
+.ant-select-clear {
+  color: var(--text-secondary) !important;
+  background: var(--bg-container) !important; 
+  
+  &:hover {
+    color: var(--text-primary) !important;
+  }
+}
+
+.ant-select-dropdown {
+  background-color: var(--bg-container) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+
+  .ant-select-item { color: var(--text-primary) !important; }
+  
+  .ant-select-item-option-active {
+    background-color: var(--bg-container-secondary) !important;
+  }
+  
+  .ant-select-item-option-selected {
+    background-color: var(--bg-container-secondary) !important;
+    color: var(--accent-primary) !important;
+
+    .ant-select-item-option-state {
+      color: var(--text-primary) !important;
+    }
+  }
+  
+  .ant-select-item-option-content { color: inherit !important; }
+}
+
+.ant-select-focused .ant-select-selector,
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--accent-primary) !important;
+}
+
+.ant-steps {
+  .ant-steps-item-process {
+    .ant-steps-item-icon {
+      background-color: var(--accent-primary) !important;
+      border-color: var(--accent-primary) !important;
+      .ant-steps-icon {
+        color: white !important; 
+      }
+    }
+    .ant-steps-item-title {
+      color: var(--text-primary) !important;
+      font-weight: 600;
+    }
+  }
+
+  .ant-steps-item-finish {
+    .ant-steps-item-icon {
+      background-color: transparent !important;
+      border-color: var(--accent-primary) !important;
+      .ant-steps-icon {
+        color: var(--accent-primary) !important;
+      }
+    }
+
+    .ant-steps-item-tail::after {
+      background-color: var(--accent-primary) !important;
+    }
+
+    .ant-steps-item-title {
+      color: var(--text-primary) !important; 
+    }
+  }
+
+  .ant-steps-item-wait {
+    .ant-steps-item-icon {
+      background-color: transparent !important;
+      border-color: var(--border-color) !important; 
+      
+      .ant-steps-icon {
+        color: var(--text-secondary) !important;
+      }
+    }
+
+    .ant-steps-item-title {
+      color: var(--text-secondary) !important;
+    }
+
+    .ant-steps-item-tail::after {
+      background-color: var(--border-color) !important;
+    }
+  }
+}
