@@ -13,7 +13,7 @@ const UnsubscribePage = () => {
   const navigate = useNavigate();
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
   const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['components']);
 
   useEffect(() => {
     if (userInfo?.email) {

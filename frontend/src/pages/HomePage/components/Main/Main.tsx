@@ -27,7 +27,7 @@ const pageOptions = [5, 10, 15]
 type ViewMode = 'list' | 'grid';
 
 function Main({ isSearchPage = false }: IMainProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['home_page'])
   
   const translatedSortOptions = useMemo(() => [
     { value: "createdAt_DESC", label: t('homepage.sort_options.created_newest') },

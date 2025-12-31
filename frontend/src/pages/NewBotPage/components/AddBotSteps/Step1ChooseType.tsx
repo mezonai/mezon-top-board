@@ -6,7 +6,7 @@ import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const Step1ChooseType = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['new_bot_page', 'validation'])
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
 
   return (

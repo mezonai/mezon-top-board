@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from "react-i18next";
 
 const ConfirmSubscribePage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['components']);
   const navigate = useNavigate();
 
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 

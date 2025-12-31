@@ -23,7 +23,7 @@ const defaultValues: BotWizardRequest = {
 }
 
 function NewBotWizardPage() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const methods = useForm<BotWizardRequest>({ defaultValues, mode: 'onChange' })
     const [current, setCurrent] = useState(0)
     const navigate = useNavigate()

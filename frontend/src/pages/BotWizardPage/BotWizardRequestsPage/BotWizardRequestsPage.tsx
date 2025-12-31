@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 const pageOptions = [6, 9, 12]
 
 export default function BotWizardRequestsPage() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
 
     const statusOptions: IOption[] = useMemo(() => [
         { label: t('bot_wizard_requests.status.all'), value: 'all' },

@@ -1,0 +1,34 @@
+{
+    "about": {
+        "hero": {
+            "title": "Khám phá và phát triển cùng Mezon Bots",
+            "subtitle": "Tiếp cận hàng triệu lượt xem cho ứng dụng hoặc cộng đồng của bạn trên nền tảng số 1 về khám phá bot và máy chủ"
+        },
+        "stats": {
+            "community": "Nhà quảng cáo Cộng đồng, Ứng dụng & Bot",
+            "impressions": "Lượt hiển thị mỗi tuần",
+            "growth": "Tăng trưởng nền tảng"
+        },
+        "testimonials": {
+            "title": "Tại sao chọn Mezon Top Board?",
+            "subtitle": "Lắng nghe đối tác tin cậy của chúng tôi - khách hàng nói là chuẩn nhất"
+        },
+        "vision": {
+            "title": "Tầm nhìn của chúng tôi",
+            "description": "Chúng tôi hướng tới việc trở thành trung tâm liệt kê tối ưu cho các ứng dụng dựa trên Mezon, nuôi dưỡng một cộng đồng thịnh vượng nơi các nhà phát triển và người dùng có thể kết nối, chia sẻ và phát triển. Bằng cách cung cấp cái nhìn tổng quan minh bạch về các ứng dụng, chúng tôi trao quyền cho người dùng đưa ra quyết định sáng suốt và giúp các nhà phát triển tăng cường khả năng hiển thị cho dự án của họ."
+        },
+        "offer": {
+            "title": "Chúng tôi cung cấp gì",
+            "description": "Tuyển chọn các ứng dụng hàng đầu được hỗ trợ bởi Mezon.\n\nMô tả chi tiết, tính năng nổi bật và trường hợp sử dụng thực tế.\n\nĐánh giá, nhận xét và thảo luận thúc đẩy sự cộng tác.\n\nMột sân khấu để quảng bá dự án của bạn và tiếp cận khán giả rộng lớn hơn."
+        },
+        "choose_us": {
+            "title": "Tại sao chọn chúng tôi?",
+            "description": "Mezon Top Board thu hẹp khoảng cách giữa người dùng và các ứng dụng Mezon\n\nCho dù bạn là nhà phát triển đang tìm kiếm sự hiển thị hay người dùng đang tìm kiếm ứng dụng tuyệt vời tiếp theo, chúng tôi cung cấp các công cụ, tài nguyên và cộng đồng để hỗ trợ hành trình của bạn."
+        },
+        "cta": {
+            "title": "Bạn đã thấy hứng thú chưa?",
+            "description": "Hãy tham gia cùng chúng tôi khám phá tương lai của các ứng dụng được xây dựng trên Mezon. Khám phá, tham gia và đổi mới cùng Mezon Top Board!",
+            "button": "Bắt đầu ngay"
+        }
+    }
+}

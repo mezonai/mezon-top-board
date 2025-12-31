@@ -6,7 +6,7 @@ import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.ty
 import { useBotGeneratorControllerGetLanguagesQuery } from '@app/services/api/botGenerator/botGenerator'
 
 export default function NewBotWizardStep1() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const { control, formState: { errors } } = useFormContext<BotWizardRequest>()
     const { data, isLoading } = useBotGeneratorControllerGetLanguagesQuery();
 

@@ -7,7 +7,7 @@ import { CopyOutlined } from '@ant-design/icons'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 
 export default function NewBotWizardStep5() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const { getValues, setValue } = useFormContext<BotWizardRequest>()
     const values = getValues()
     const {templateJson, ...rest} = values

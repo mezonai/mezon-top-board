@@ -23,7 +23,7 @@ import { useAuth } from '@app/hook/useAuth'
 import { useTranslation } from "react-i18next";
 
 function ProfilePage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['profile_page']);
   const pageOptions = useMemo(() => [
     { value: 6, label: t('profile.bots_per_page_option', { count: 6 }) },
     { value: 12, label: t('profile.bots_per_page_option', { count: 12 }) },

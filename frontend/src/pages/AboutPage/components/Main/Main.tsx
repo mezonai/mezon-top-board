@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 
 function Main() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['about_page'])
 
   const stats = useMemo(() => [
     { number: '10000', description: t('about.stats.community') },

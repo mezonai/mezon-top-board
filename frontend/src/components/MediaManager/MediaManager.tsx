@@ -31,7 +31,7 @@ const MediaManagerModal = ({
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components'])
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()

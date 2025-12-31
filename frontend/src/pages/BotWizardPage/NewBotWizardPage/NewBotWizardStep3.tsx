@@ -6,7 +6,7 @@ import { Checkbox, Card, Spin } from 'antd'
 import { cn } from '@app/utils/cn'
 
 export default function NewBotWizardStep3() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const { setValue, watch } = useFormContext<BotWizardRequest>()
     const language = watch('language') || 'nestjs'
     const selectedIntegrations = watch('integrations') || []

@@ -55,7 +55,7 @@ export const renderRoutes = () => {
 export const renderMenu = (isHasActive: boolean) => {
   const location = useLocation()
   const { isLogin } = useSelector<RootState, IAuthStore>((s) => s.auth)
-  const {t} = useTranslation()
+  const {t} = useTranslation(['common'])
 
   return routePaths
     .filter((route) => route.isShowMenu && (isLogin || !route.requireAuth))

@@ -28,9 +28,9 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
-  const { t } = useTranslation()
-  const { control, setValue, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
+const Step3FillDetails = ({  }: { isEdit: boolean }) => {
+  const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
+  const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
@@ -165,7 +165,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
           control={control}
           name='description'
           render={({ field }) => (
-            <RichTextEditor value={field.value || ''} onChange={field.onChange} />
+            <RichTextEditor value={field.value || ''} onChange={field.onChange} placeholder={t('new_bot_page.step3.description_desc')} />
           )}
         />
       </FormField>
@@ -260,7 +260,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
               placeholder={t('new_bot_page.step3.placeholders.tag_price')}
               status={errors?.pricingTag?.message ? 'error' : ''}
               options={Object.values(AppPricing).map(value => ({
-                label: t(`enums.app_pricing.${value}`),
+                label: t(`enums.app_pricing.${value}`, { ns: 'common' }),
                 value,
               }))}
               onChange={(value) => field.onChange(value)}

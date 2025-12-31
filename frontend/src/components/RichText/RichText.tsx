@@ -20,8 +20,8 @@ interface IRichTextEditorProps {
   customClass?: string
 }
 
-function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, customClass }: IRichTextEditorProps) {
-  const { t } = useTranslation()
+function RichTextEditor({ value = '', placeholder, onChange, customClass }: IRichTextEditorProps) {
+  const { t } = useTranslation(['components'])
   const quillRef = useRef<ReactQuill | null>(null)
   function transformMediaSrc(html: string): string {
     const parser = new DOMParser();
@@ -111,7 +111,7 @@ function RichTextEditor({ value = '', placeholder = 'Type here...', onChange, cu
       theme='snow'
       value={transformMediaSrc(value || '')}
       onChange={handleChange}
-      placeholder={placeholder === 'Type here...' ? t('component.rich_text.placeholder') : placeholder}
+      placeholder={placeholder}
       modules={modules}
       className={`${customClass || ''} ${styles['rich-text-container']}`}
     />

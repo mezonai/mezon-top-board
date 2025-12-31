@@ -44,7 +44,7 @@ import { IUserStore } from '@app/store/user'
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
 function NewBotPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['new_bot_page', 'validation'])
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
@@ -71,7 +71,7 @@ function NewBotPage() {
       isAutoPublished: true,
       socialLinks: []
     },
-    resolver: yupResolver(getAddBotSchema(t)),
+    resolver: yupResolver(getAddBotSchema),
     mode: 'onChange'
   })
 

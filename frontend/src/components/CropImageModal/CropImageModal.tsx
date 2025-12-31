@@ -29,7 +29,7 @@ const CropImageModal: React.FC<Props> = ({
   onConfirm,
   parentLoading = false
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components'])
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const imgRef = useRef<HTMLImageElement | null>(null)

@@ -1,0 +1,97 @@
+{
+    "terms": {
+        "title": "Terms of Service",
+        "last_updated": "Last Updated: {{date}}",
+        "intro": "Welcome to Mezon Top Board! These Terms and Conditions (\"Terms\") govern your access to and use of our platform, including all related services, content, and features. By using Mezon Top Board, you agree to comply with these Terms. If you do not agree, please discontinue use immediately.",
+        "section1": {
+            "title": "1. Definitions",
+            "items": [
+                "\"Platform\" refers to Mezon Top Board, its website, applications, and all related services.",
+                "\"User\" refers to any individual or entity accessing or using Mezon Top Board.",
+                "\"Developer\" refers to individuals or entities submitting applications for listing on Mezon Top Board.",
+                "\"Content\" includes all text, images, videos, applications, and other material available on the platform."
+            ]
+        },
+        "section2": {
+            "title": "2. Use of the Platform",
+            "sub1": {
+                "title": "2.1 Eligibility",
+                "content": "You must be at least 18 years old to use Mezon Top Board. By using the platform, you confirm that you meet this requirement."
+            },
+            "sub2": {
+                "title": "2.2 Account Registration",
+                "items": [
+                    "Some features may require account registration.",
+                    "You are responsible for maintaining the confidentiality of your account credentials.",
+                    "Mezon Top Board reserves the right to suspend or terminate accounts violating these Terms."
+                ]
+            },
+            "sub3": {
+                "title": "2.3 Acceptable Use",
+                "intro": "By using Mezon Top Board, you agree NOT to:",
+                "items": [
+                    "Violate any applicable laws or regulations.",
+                    "Submit false or misleading information.",
+                    "Engage in harmful, abusive, or fraudulent activities.",
+                    "Attempt to disrupt or compromise the platform’s security."
+                ]
+            }
+        },
+        "section3": {
+            "title": "3. Application Listings",
+            "sub1": {
+                "title": "3.1 Submission Guidelines",
+                "items": [
+                    "Developers must ensure their applications comply with Mezon’s technical and ethical guidelines.",
+                    "Mezon Top Board reserves the right to accept, reject, or remove listings at its discretion."
+                ]
+            },
+            "sub2": {
+                "title": "3.2 Intellectual Property Rights",
+                "items": [
+                    "Developers retain ownership of their applications.",
+                    "By submitting an application, developers grant Mezon Top Board a license to display and promote their content."
+                ]
+            }
+        },
+        "section4": {
+            "title": "4. Content Ownership and Copyright",
+            "items": [
+                "Mezon Top Board respects intellectual property rights.",
+                "Users and developers must ensure they have the rights to any content they submit.",
+                "Unauthorized use of copyrighted material may result in account suspension or legal action."
+            ]
+        },
+        "section5": {
+            "title": "5. Disclaimers and Limitation of Liability",
+            "items": [
+                "Mezon Top Board provides information \"as is\" without warranties of any kind.",
+                "We do not guarantee the accuracy, reliability, or availability of listed applications.",
+                "Mezon Top Board is not responsible for any direct, indirect, incidental, or consequential damages arising from the use of the platform."
+            ]
+        },
+        "section6": {
+            "title": "6. Privacy Policy",
+            "items": [
+                "By using Mezon Top Board, you consent to our data collection and usage practices as outlined in our Privacy Policy.",
+                "We do not sell user data to third parties"
+            ]
+        },
+        "section7": {
+            "title": "7. Modifications to Terms",
+            "content": "Mezon Top Board reserves the right to modify these Terms at any time. Users will be notified of significant changes, and continued use of the platform constitutes acceptance of the revised Terms."
+        },
+        "section8": {
+            "title": "8. Termination of Services",
+            "content": "Mezon Top Board may suspend or terminate services at its discretion, with or without notice, for users violating these Terms."
+        },
+        "section9": {
+            "title": "9. Governing Law",
+            "content": "These Terms shall be governed by and construed in accordance with the laws of {{jurisdiction}}."
+        },
+        "section10": {
+            "title": "10. Contact Information",
+            "content": "For any questions regarding these Terms, please contact us at {{email}}."
+        }
+    }
+}

@@ -23,6 +23,12 @@
         "price_required_paid": "Giá là bắt buộc cho ứng dụng trả phí",
         "link_type_required": "Loại liên kết là bắt buộc",
         "prefix_url_required": "Prefix URL là bắt buộc",
-        "icon_required": "Biểu tượng là bắt buộc"
+        "icon_required": "Biểu tượng là bắt buộc",
+        "invalid_value": "Giá trị không hợp lệ",
+        "invalid_email": "Email không hợp lệ",
+        "invalid_format": "Định dạng không hợp lệ",
+        "min_value": "Giá trị phải lớn hơn hoặc bằng {{min}}",
+        "max_value": "Giá trị phải nhỏ hơn hoặc bằng {{max}}",
+        "at_least_one_item": "Yêu cầu ít nhất {{count}} mục"
     }
 }

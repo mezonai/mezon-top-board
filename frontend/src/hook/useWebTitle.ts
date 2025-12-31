@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 const useWebTitle = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common'])
   const location = useLocation()
   const { publicProfile } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)

@@ -15,7 +15,7 @@ const Step5Submit = ({
   isEdit: boolean
   botId?: string
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['new_bot_page'])
   const navigate = useNavigate()
   const { control } = useFormContext<CreateMezonAppRequest>()
   

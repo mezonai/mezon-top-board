@@ -25,7 +25,7 @@ const RatingForm = ({ onSubmitted }: RatingFormProps) => {
     }
   })
   const [createRating] = useRatingControllerCreateRatingMutation()
-  const {t} = useTranslation()
+  const { t } = useTranslation(['bot_detail_page'])
 
   const onSubmit = async (data: Omit<CreateRatingRequest, "appId">) => {
     try {

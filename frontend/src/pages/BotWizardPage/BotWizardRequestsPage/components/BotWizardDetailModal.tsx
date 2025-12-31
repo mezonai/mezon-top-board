@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default function BotWizardDetailModal({ open, onClose, item }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     return (
         <Modal
             open={open}

@@ -1,36 +1,4 @@
 {
-    "about": {
-        "hero": {
-            "title": "Khám phá và phát triển cùng Mezon Bots",
-            "subtitle": "Tiếp cận hàng triệu lượt xem cho ứng dụng hoặc cộng đồng của bạn trên nền tảng số 1 về khám phá bot và máy chủ"
-        },
-        "stats": {
-            "community": "Nhà quảng cáo Cộng đồng, Ứng dụng & Bot",
-            "impressions": "Lượt hiển thị mỗi tuần",
-            "growth": "Tăng trưởng nền tảng"
-        },
-        "testimonials": {
-            "title": "Tại sao chọn Mezon Top Board?",
-            "subtitle": "Lắng nghe đối tác tin cậy của chúng tôi - khách hàng nói là chuẩn nhất"
-        },
-        "vision": {
-            "title": "Tầm nhìn của chúng tôi",
-            "description": "Chúng tôi hướng tới việc trở thành trung tâm liệt kê tối ưu cho các ứng dụng dựa trên Mezon, nuôi dưỡng một cộng đồng thịnh vượng nơi các nhà phát triển và người dùng có thể kết nối, chia sẻ và phát triển. Bằng cách cung cấp cái nhìn tổng quan minh bạch về các ứng dụng, chúng tôi trao quyền cho người dùng đưa ra quyết định sáng suốt và giúp các nhà phát triển tăng cường khả năng hiển thị cho dự án của họ."
-        },
-        "offer": {
-            "title": "Chúng tôi cung cấp gì",
-            "description": "Tuyển chọn các ứng dụng hàng đầu được hỗ trợ bởi Mezon.\n\nMô tả chi tiết, tính năng nổi bật và trường hợp sử dụng thực tế.\n\nĐánh giá, nhận xét và thảo luận thúc đẩy sự cộng tác.\n\nMột sân khấu để quảng bá dự án của bạn và tiếp cận khán giả rộng lớn hơn."
-        },
-        "choose_us": {
-            "title": "Tại sao chọn chúng tôi?",
-            "description": "Mezon Top Board thu hẹp khoảng cách giữa người dùng và các ứng dụng Mezon\n\nCho dù bạn là nhà phát triển đang tìm kiếm sự hiển thị hay người dùng đang tìm kiếm ứng dụng tuyệt vời tiếp theo, chúng tôi cung cấp các công cụ, tài nguyên và cộng đồng để hỗ trợ hành trình của bạn."
-        },
-        "cta": {
-            "title": "Bạn đã thấy hứng thú chưa?",
-            "description": "Hãy tham gia cùng chúng tôi khám phá tương lai của các ứng dụng được xây dựng trên Mezon. Khám phá, tham gia và đổi mới cùng Mezon Top Board!",
-            "button": "Bắt đầu ngay"
-        }
-    },
     "terms": {
         "title": "Điều khoản dịch vụ",
         "last_updated": "Cập nhật lần cuối: {{date}}",
@@ -124,68 +92,6 @@
         "section10": {
             "title": "10. Thông tin liên hệ",
             "content": "Nếu có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi tại {{email}}."
-        }
-    },
-    "contact": {
-        "title": "Liên Hệ",
-        "form": {
-            "title": "Gửi tin nhắn cho chúng tôi",
-            "name_placeholder": "Tên của bạn",
-            "email_placeholder": "Email của bạn",
-            "info_placeholder": "Thông tin",
-            "captcha_placeholder": "Mã xác nhận",
-            "submit_btn": "Gửi"
-        },
-        "content": {
-            "intro": "Cảm ơn bạn đã quan tâm đến Mezon Top Board. Để nhận thêm thông tin, vui lòng gửi email tới",
-            "or_call": "Hoặc gọi trực tiếp cho chúng tôi",
-            "join_support": "Bạn cũng có thể tham gia clan hỗ trợ của chúng tôi trên Mezon -",
-            "support_clan_name": "TOP MEZON SUPPORT",
-            "at": "tại:",
-            "info_title": "Thông tin liên hệ:",
-            "address_title": "Địa chỉ:",
-            "address_value": "Tầng 2, Tòa nhà CT3 The Pride, đường Tố Hữu, quận Hà Đông, TP Hà Nội, Việt Nam",
-            "phone_title": "Điện thoại:",
-            "phone_value": "(+84) 2466874606",
-            "email_title": "Email:",
-            "email_value": "sales@ncc.asia"
-        }
-    },
-    "onboarding": {
-        "step1": {
-            "welcome_title": "Chào mừng đến với Mezon Top Board",
-            "welcome_desc": "Mezon Top Board — #1 Bot Listing cho Mezon.\nKhám phá các ứng dụng tốt nhất được xây dựng trên hệ sinh thái Mezon.\nChúng tôi tuyển chọn và giới thiệu các ứng dụng hàng đầu tận dụng công nghệ tiên tiến của Mezon, giúp người dùng và nhà phát triển khám phá các giải pháp sáng tạo một cách dễ dàng.",
-            "cards": {
-                "top_listings": "Top Listings",
-                "top_listings_desc": "Khám phá các ứng dụng Mezon được đánh giá cao và sáng tạo nhất.",
-                "for_users": "Cho Người dùng & Devs",
-                "for_users_desc": "Tìm công cụ, giải pháp và nguồn cảm hứng trên toàn hệ sinh thái.",
-                "discover": "Khám phá nhanh hơn",
-                "discover_desc": "Điều hướng các danh mục ứng dụng được tuyển chọn một cách dễ dàng.",
-                "stay_updated": "Cập nhật liên tục",
-                "stay_updated_desc": "Theo dõi các ứng dụng thịnh hành và những đột phá mới trong công nghệ Mezon."
-            },
-            "ready_title": "Sẵn sàng để bắt đầu?",
-            "ready_desc": "Hãy thiết lập hồ sơ của bạn để cá nhân hóa trải nghiệm.",
-            "skip": "Bỏ qua",
-            "get_started": "Bắt đầu ngay"
-        },
-        "step2": {
-            "title": "Thông tin hồ sơ",
-            "description": "Thông tin của bạn đã được điền sẵn từ tài khoản Mezon",
-            "from_mezon": "Từ Mezon",
-            "upload_tooltip": "Tải ảnh mới",
-            "display_name": "Tên hiển thị",
-            "display_name_desc": "3-50 ký tự. Đây là cách người khác sẽ nhìn thấy tên bạn.",
-            "display_name_placeholder": "Nguyễn Văn A",
-            "email": "Email",
-            "bio": "Tiểu sử (Tùy chọn)",
-            "bio_placeholder": "Giới thiệu về bản thân bạn...",
-            "bio_desc_1": "Chia sẻ một lời giới thiệu ngắn.",
-            "bio_desc_2": "{{current}}/{{max}} ký tự",
-            "save_continue": "Lưu & Tiếp tục",
-            "update_success": "Cập nhật hồ sơ thành công!",
-            "update_fail": "Cập nhật hồ sơ thất bại."
         }
     }
 }

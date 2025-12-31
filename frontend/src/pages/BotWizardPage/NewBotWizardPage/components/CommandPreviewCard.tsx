@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function CommandPreviewCard({ data, onRemove }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const aliases = data.aliases || []
 
     return (

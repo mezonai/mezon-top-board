@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import screenshot from '@app/assets/images/screenshot.png'
 
 function Hero() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['home_page'])
   return (
     <section className='py-10 px-6 md:px-20'>
       <div className='grid grid-cols-1 xl:grid-cols-2 items-center gap-8'>

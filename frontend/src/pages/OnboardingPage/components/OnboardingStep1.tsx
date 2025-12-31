@@ -10,7 +10,7 @@ interface Props {
 }
 
 function OnboardingStep1({ onSkip, onNext }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['onboarding_page']);
     return (
         <div className='flex flex-col items-center py-10 px-6 w-full'>
                 <RocketOutlined className='text-8xl !text-heading mb-4' />

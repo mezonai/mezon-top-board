@@ -86,7 +86,6 @@
             "linkedin": "LinkedIn"
         },
         "rich_text": {
-            "placeholder": "Nhập nội dung...",
             "error_invalid_mime": "Vui lòng tải lên tệp hình ảnh hợp lệ!",
             "error_size_limit": "Tải lên {{fileName}} thất bại (vượt quá 4MB)"
         }

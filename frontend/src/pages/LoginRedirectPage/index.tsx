@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 export const LoginRedirectPage = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common'])
   const [verifyOauth2Service] = useAuthControllerVerifyOAuth2Mutation()
   const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
 

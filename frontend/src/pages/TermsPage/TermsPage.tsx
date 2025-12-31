@@ -8,7 +8,7 @@ type Props = {
 }
 
 function TermsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['terms_page'])
   const Section = ({ title, children }: Props) => (
     <div className='mt-8'>
       <MtbTypography variant='h3'>{title}</MtbTypography>

@@ -1,0 +1,27 @@
+{
+    "contact": {
+        "title": "Liên Hệ",
+        "form": {
+            "title": "Gửi tin nhắn cho chúng tôi",
+            "name_placeholder": "Tên của bạn",
+            "email_placeholder": "Email của bạn",
+            "info_placeholder": "Thông tin",
+            "captcha_placeholder": "Mã xác nhận",
+            "submit_btn": "Gửi"
+        },
+        "content": {
+            "intro": "Cảm ơn bạn đã quan tâm đến Mezon Top Board. Để nhận thêm thông tin, vui lòng gửi email tới",
+            "or_call": "Hoặc gọi trực tiếp cho chúng tôi",
+            "join_support": "Bạn cũng có thể tham gia clan hỗ trợ của chúng tôi trên Mezon -",
+            "support_clan_name": "TOP MEZON SUPPORT",
+            "at": "tại:",
+            "info_title": "Thông tin liên hệ:",
+            "address_title": "Địa chỉ:",
+            "address_value": "Tầng 2, Tòa nhà CT3 The Pride, đường Tố Hữu, quận Hà Đông, TP Hà Nội, Việt Nam",
+            "phone_title": "Điện thoại:",
+            "phone_value": "(+84) 2466874606",
+            "email_title": "Email:",
+            "email_value": "sales@ncc.asia"
+        }
+    }
+}

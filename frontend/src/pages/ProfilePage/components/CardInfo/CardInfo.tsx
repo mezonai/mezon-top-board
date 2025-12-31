@@ -25,7 +25,7 @@ import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { useTranslation } from "react-i18next";
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['profile_page']);
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()

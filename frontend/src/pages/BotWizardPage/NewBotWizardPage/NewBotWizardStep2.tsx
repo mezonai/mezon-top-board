@@ -8,7 +8,7 @@ import { useState } from 'react'
 import CommandPreviewCard from './components/CommandPreviewCard'
 
 export default function NewBotWizardStep2() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const { control } = useFormContext<BotWizardRequest>()
     const { fields, append, remove } = useFieldArray({ control, name: 'commands' })
 

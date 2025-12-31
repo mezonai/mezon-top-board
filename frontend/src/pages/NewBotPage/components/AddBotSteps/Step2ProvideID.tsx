@@ -7,7 +7,7 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { capitalize } from 'lodash'
 
 const Step2ProvideID = ({ type }: { type: MezonAppType }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['new_bot_page', 'validation'])
   const { control, formState: { errors } } = useFormContext<CreateMezonAppRequest>()
   const formattedType = capitalize(type)
   return (

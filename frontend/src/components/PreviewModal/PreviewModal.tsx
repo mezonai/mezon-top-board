@@ -20,7 +20,7 @@ interface Props {
 const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
-    const { t } = useTranslation()
+    const { t } = useTranslation(['components'])
 
     const renderStatusTag = (status?: AppStatus) => {
         if (status === null || status === undefined) return '-'

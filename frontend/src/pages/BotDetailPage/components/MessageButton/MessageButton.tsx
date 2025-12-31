@@ -8,7 +8,7 @@ import { avatarBotDefault } from '@app/assets'
 import Button from '@app/mtb-ui/Button'
 
 const MessageButton = ({ data }: { data: GetMezonAppDetailsResponse }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['bot_detail_page'])
   const [dataBot, setDataBot] = useState('')
   useEffect(() => {
     if (!data) return

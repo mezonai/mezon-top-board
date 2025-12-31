@@ -14,7 +14,7 @@ import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 
 function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)

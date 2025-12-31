@@ -17,7 +17,7 @@ import { getStatusColor } from '../helpers'
 import { BotWizard } from '@app/types/botWizard.types'
 
 export default function BotWizardCard({ item }: { item: BotWizard }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const [open, setOpen] = useState(false)
     const [downloadTrigger, { isLoading: isDownloading }] = useLazyTempFilesDownloadQuery()
 

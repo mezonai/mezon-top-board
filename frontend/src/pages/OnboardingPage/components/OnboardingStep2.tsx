@@ -28,7 +28,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
   const [updateUser, { isLoading: isUpdating }] = useUserControllerSelfUpdateUserMutation();
   const [_, { isLoading: isUploadingAvatar }] = useMediaControllerCreateMediaMutation();
   const [isMediaManagerOpen, setIsMediaManagerOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t } = useTranslation(['onboarding_page']);
   const methods = useForm<SelfUpdateUserRequest>();
   const { control, handleSubmit, reset, formState: { errors }, setValue, watch } = methods;
   const profileImageValue = watch('profileImage');

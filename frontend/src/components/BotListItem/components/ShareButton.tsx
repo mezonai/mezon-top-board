@@ -12,7 +12,7 @@ type ShareButtonProps = {
 };
 
 const ShareButton = ({ text, url }: ShareButtonProps) => {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['components']);
     const shareOptions = [
         {
             label: t('component.share_button.facebook'),

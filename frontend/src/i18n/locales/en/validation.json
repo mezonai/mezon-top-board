@@ -23,6 +23,12 @@
         "price_required_paid": "Price is required for paid apps",
         "link_type_required": "Link Type is required",
         "prefix_url_required": "Prefix URL is required",
-        "icon_required": "Icon is required"
+        "icon_required": "Icon is required",
+        "invalid_value": "Invalid value",
+        "invalid_email": "Invalid email",
+        "invalid_format": "Invalid format",
+        "min_value": "Value must be at least {{min}}",
+        "max_value": "Value must be at most {{max}}",
+        "at_least_one_item": "At least {{count}} item(s) required"
     }
 }

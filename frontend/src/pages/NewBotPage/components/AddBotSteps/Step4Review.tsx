@@ -13,7 +13,7 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['new_bot_page'])
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { control} = useFormContext<CreateMezonAppRequest>()

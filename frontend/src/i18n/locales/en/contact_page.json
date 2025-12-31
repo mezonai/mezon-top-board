@@ -1,0 +1,27 @@
+{
+    "contact": {
+        "title": "Contact Us",
+        "form": {
+            "title": "Send us a message",
+            "name_placeholder": "Your name",
+            "email_placeholder": "Your email",
+            "info_placeholder": "Information",
+            "captcha_placeholder": "Verification code",
+            "submit_btn": "Submit"
+        },
+        "content": {
+            "intro": "Thank you for your interest in Mezon Top Board. To receive further information, please send an email to",
+            "or_call": "Or call us directly",
+            "join_support": "You might also join our support clan on Mezon -",
+            "support_clan_name": "TOP MEZON SUPPORT",
+            "at": "at:",
+            "info_title": "Contact Information:",
+            "address_title": "Address:",
+            "address_value": "2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam",
+            "phone_title": "Telephone:",
+            "phone_value": "(+84) 2466874606",
+            "email_title": "Email:",
+            "email_value": "sales@ncc.asia"
+        }
+    }
+}

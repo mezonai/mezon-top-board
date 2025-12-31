@@ -30,7 +30,7 @@ function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
-  const {t} = useTranslation()
+  const {t} = useTranslation(['common'])
 
   useEffect(() => {
     const handleScroll = () => {

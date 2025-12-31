@@ -5,15 +5,16 @@ import { AppPricing } from '@app/enums/appPricing'
 import { TagPillProps } from './TagPill.types'
 import { cn } from '@app/utils/cn'
 import { useTranslation } from 'react-i18next'
+import { TFunction } from 'i18next';
 
-const getLabel = (value?: string | number, t?: any) => {
+const getLabel = ( t: TFunction, value?: MezonAppType | AppPricing) => {
   if (value === undefined || value === null) return '-'
   
-  if (Object.values(MezonAppType).includes(value as MezonAppType)) {
-      return t(`enums.mezon_app_type.${String(value).toUpperCase()}`)
+  if (value in MezonAppType) {
+      return t(`enums.mezon_app_type.${String(value).toUpperCase()}`, { ns: 'common' })
   }
-  if (Object.values(AppPricing).includes(value as AppPricing)) {
-      return t(`enums.app_pricing.${value}`)
+  if (value in AppPricing) {
+      return t(`enums.app_pricing.${value}`, { ns: 'common' })
   }
 
   return String(value).toUpperCase()
@@ -37,7 +38,7 @@ const getClassName = (value?: MezonAppType | AppPricing) => {
 }
 
 const TagPill: React.FC<TagPillProps> = ({ value, className = '' }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components', 'common'])
   const variantClass = getClassName(value)
 
   return (
@@ -48,7 +49,7 @@ const TagPill: React.FC<TagPillProps> = ({ value, className = '' }) => {
         className
       )}
     >
-      {getLabel(value, t)}
+      {getLabel(t, value)}
     </Tag>
   )
 }

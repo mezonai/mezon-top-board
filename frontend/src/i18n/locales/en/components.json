@@ -86,7 +86,6 @@
             "linkedin": "LinkedIn"
         },
         "rich_text": {
-            "placeholder": "Type here...",
             "error_invalid_mime": "Please upload a valid image file!",
             "error_size_limit": "{{fileName}} upload failed (exceeds 4MB)"
         }

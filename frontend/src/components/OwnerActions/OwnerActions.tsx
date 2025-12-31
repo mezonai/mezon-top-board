@@ -10,7 +10,7 @@ import styles from './OwnerActions.module.scss'
 import { useTranslation } from 'react-i18next'
 
 function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBotCard?: boolean; onNewVersionClick?: (version?: AppVersion) => void }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components'])
   const navigate = useNavigate()
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {

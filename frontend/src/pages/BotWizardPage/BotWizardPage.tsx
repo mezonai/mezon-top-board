@@ -14,7 +14,7 @@ const WIZARD_VIEWS: Record<string, React.ReactNode> = {
 
 function BotWizardPage() {
   const { pathname } = useLocation()
-  const { t } = useTranslation();
+  const { t } = useTranslation(['bot_wizard_page']);
 
   const activeView = useMemo(() => {
     const segment = pathname.split('/').filter(Boolean).pop() ?? ''

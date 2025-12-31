@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 const useAuthRedirect = (shoudSkip?: boolean) => {
   const navigate = useNavigate()
   const { isLogin } = useAuth()
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common'])
 
   useEffect(() => {
     if (!isLogin && !shoudSkip) {

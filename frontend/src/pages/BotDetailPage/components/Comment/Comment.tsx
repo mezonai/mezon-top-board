@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 function Comment({ rating }: { rating: RatingResponse }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['bot_detail_page'])
   return (
     <div className='flex gap-10 p-4 shadow-sm rounded-2xl'>
       <Link to={`/profile/${rating.user.id}`} className='w-15 flex-shrink-0'>

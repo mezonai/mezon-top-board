@@ -31,7 +31,7 @@ const footerLink = [
   }
 ]
 function Footer() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common'])
   const [sendMail, { isLoading }] = useEmailSubscribeControllerSendConfirmMailMutation()
   const [updateStatus] = useEmailSubscribeControllerReSubscribeMutation()
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)

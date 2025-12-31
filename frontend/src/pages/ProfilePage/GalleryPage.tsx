@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 
 
 function GalleryPage() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['profile_page']);
     const pageOptions = [
         { value: 12, label: t('profile.gallery.images_per_page_option', { count: 12 }) },
         { value: 24, label: t('profile.gallery.images_per_page_option', { count: 24 }) },

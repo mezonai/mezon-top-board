@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 const NotFoundPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['components']);
   const navigate = useNavigate();
 
   return (

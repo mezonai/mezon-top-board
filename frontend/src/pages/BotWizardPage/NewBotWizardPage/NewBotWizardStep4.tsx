@@ -5,7 +5,7 @@ import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.ty
 import { NESTJS_EVENTS } from '@app/constants/botWizard.constant'
 
 export default function NewBotWizardStep4() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
     const { setValue, watch } = useFormContext<BotWizardRequest>()
     const selected = watch('events') || []
 

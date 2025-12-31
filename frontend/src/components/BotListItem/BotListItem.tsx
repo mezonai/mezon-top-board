@@ -25,7 +25,7 @@ import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
   const titleMaxWidth = data?.owner?.id === userInfo?.id ? 'md:max-w-[calc(80%-150px)]' : 'md:max-w-[calc(70%-100px)]';

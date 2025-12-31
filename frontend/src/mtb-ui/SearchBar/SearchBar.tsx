@@ -23,7 +23,7 @@ const SearchBar = ({
 }: ISearchBarProps) => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common'])
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
 
   const typeFilterOptions = useMemo(() => [

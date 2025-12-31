@@ -31,17 +31,16 @@ import Button from '@app/mtb-ui/Button'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
-import { getPluralSuffix } from '@app/utils/stringHelper'
 import { useTranslation } from 'react-i18next'
 
 function BotDetailPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['bot_detail_page'])
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [getrelatedMezonApp] = useLazyMezonAppControllerGetRelatedMezonAppQuery()
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getRatingsByApp, { isLoading: isLoadingReview }] = useLazyRatingControllerGetRatingsByAppQuery()
-  const [getAllRatingsByApp, { isLoading: isLoadingAllReview }] = useLazyRatingControllerGetAllRatingsByAppQuery()
+  const [getAllRatingsByApp] = useLazyRatingControllerGetAllRatingsByAppQuery()
 
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)

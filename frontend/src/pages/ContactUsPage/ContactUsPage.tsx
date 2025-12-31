@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useTranslation } from "react-i18next";
 
 function HelpPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['contact_page']);
   const [captcha, setCaptcha] = useState(generateCaptcha())
   const [captchaInput, setCaptchaInput] = useState('')
 

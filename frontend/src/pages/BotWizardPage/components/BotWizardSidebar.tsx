@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 export default function BotWizardSidebar() {
     const { pathname } = useLocation()
-    const { t } = useTranslation();
+    const { t } = useTranslation(['bot_wizard_page']);
 
     const links: WizardLink[] = [
         { name: t('bot_wizard.sidebar.requests'), path: '/bot-wizard', icon: <UnorderedListOutlined /> },

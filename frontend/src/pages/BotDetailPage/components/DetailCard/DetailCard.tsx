@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
-  const {t} = useTranslation()  
+  const { t } = useTranslation(['bot_detail_page'])
 
   return (
     <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>

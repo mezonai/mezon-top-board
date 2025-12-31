@@ -1,0 +1,28 @@
+{
+    "homepage": {
+        "explore_title": "Khám phá hàng triệu Mezon Bot",
+        "mezon_bots": "Mezon Bot",
+        "showing_page": "Hiển thị {{current}} trên {{total}} trang",
+        "no_result": "Không có kết quả",
+        "sort_placeholder": "Sắp xếp theo...",
+        "select_placeholder": "Chọn",
+        "sort_title": "Sắp xếp theo",
+        "title": "Tiêu đề",
+        "sort_options": {
+            "created_newest": "Ngày tạo (Mới nhất)",
+            "created_oldest": "Ngày tạo (Cũ nhất)",
+            "name_az": "Tên (A–Z)",
+            "name_za": "Tên (Z–A)",
+            "updated_newest": "Ngày cập nhật (Mới nhất)",
+            "updated_oldest": "Ngày cập nhật (Cũ nhất)"
+        },
+        "pagination_title": "Số lượng trên trang",
+        "bots_per_page": "{{count}}"
+    },
+    "hero": {
+        "title": "Mezon Top Board",
+        "subtitle": "Nền tảng liệt kê Bot số 1 cho Mezon",
+        "description": "Chào mừng bạn đến với Mezon Top Board, nền tảng hàng đầu để khám phá các ứng dụng tốt nhất được xây dựng trên hệ sinh thái Mezon. Sứ mệnh của chúng tôi là tuyển chọn và giới thiệu các ứng dụng hàng đầu tận dụng công nghệ tiên tiến của Mezon, giúp người dùng và nhà phát triển khám phá các giải pháp sáng tạo một cách dễ dàng.",
+        "get_started": "Bắt đầu ngay"
+    }
+}

@@ -1,0 +1,129 @@
+{
+    "bot_wizard": {
+        "page_title": "Bot Wizard",
+        "page_description": "Manage and review bot generation requests.",
+        "sidebar": {
+            "title": "Navigation",
+            "requests": "Requests",
+            "new_wizard": "Bot Wizard"
+        }
+    },
+    "bot_wizard_requests": {
+        "title": "Bot Wizard Requests",
+        "status": {
+            "all": "All",
+            "processing": "Processing",
+            "completed": "Completed",
+            "expired": "Expired"
+        },
+        "filter_status_placeholder": "Filter by status",
+        "filter_status_title": "Status",
+        "page_size_placeholder": "Page size",
+        "page_size_title": "Page size",
+        "requests_per_page": "{{count}} requests/page",
+        "no_requests": "No requests found."
+    },
+    "new_bot_wizard": {
+        "title": "New Bot Wizard",
+        "steps": {
+            "bot_info": "Bot Info",
+            "commands": "Commands",
+            "integrations": "Integrations",
+            "events": "Events",
+            "preview": "Preview"
+        },
+        "step1": {
+            "bot_name_label": "Bot Name",
+            "bot_name_desc": "Name your bot",
+            "bot_name_placeholder": "MezonBot",
+            "bot_name_required": "Bot name is required",
+            "language_label": "Language",
+            "language_desc": "Framework language",
+            "language_placeholder": "Select language",
+            "language_required": "Language is required"
+        },
+        "step2": {
+            "intro": "Add commands for your bot.\nFill in the command information below and click <b>Add Command</b> to add it to the list.\nYou can add multiple commands.",
+            "command_label": "Command",
+            "command_desc": "Trigger word (e.g. ping)",
+            "description_label": "Description",
+            "description_desc": "Briefly describe what this command does",
+            "description_placeholder": "Explain this command",
+            "category_label": "Category",
+            "category_desc": "Used to group commands",
+            "aliases_label": "Aliases",
+            "aliases_desc": "Comma-separated alternative trigger words",
+            "add_btn": "Add Command",
+            "clear_btn": "Clear",
+            "no_commands": "No commands added yet."
+        },
+        "step3": {
+            "intro": "Select the integrations you want to include in your bot.\nClick on a card or checkbox to enable or disable an integration.",
+            "loading": "Loading integrations...",
+            "failed": "Failed to load integrations for {{language}}.",
+            "enable_integration": "Enable {{name}} integration",
+            "no_integrations": "No integrations available for this language."
+        },
+        "step4": {
+            "gateway_events": "Available Gateway Events",
+            "select_all": "Select All"
+        },
+        "step5": {
+            "preview_title": "Configuration Payload Preview",
+            "copy_tooltip": "Copy JSON",
+            "copied": "Copied!",
+            "review_msg": "Review your configuration before submitting."
+        },
+        "navigation": {
+            "back": "Back",
+            "next": "Next",
+            "finish": "Finish",
+            "redirecting": "Redirecting..."
+        },
+        "messages": {
+            "success": "Request submitted successfully!",
+            "failure": "Failed to submit request. Please try again."
+        },
+        "command_card": {
+            "remove_tooltip": "Remove command"
+        }
+    },
+    "bot_wizard_constants": {
+        "events": {
+            "token_send": "Token Send",
+            "message_button_clicked": "Message Button Clicked",
+            "streaming_joined": "Streaming Joined",
+            "streaming_leaved": "Streaming Leaved",
+            "clan_event_created": "Clan Event Created",
+            "message_reaction": "Message Reaction",
+            "channel_created": "Channel Created",
+            "user_clan_removed": "User Clan Removed",
+            "role_event": "Role Event",
+            "user_channel_added": "User Channel Added",
+            "channel_deleted": "Channel Deleted",
+            "channel_updated": "Channel Updated",
+            "user_channel_removed": "User Channel Removed",
+            "give_coffee": "Give Coffee",
+            "add_clan_user": "Add Clan User",
+            "voice_joined": "Voice Joined",
+            "voice_leaved": "Voice Leaved"
+        }
+    },
+    "bot_wizard_card": {
+        "created": "Created",
+        "view_metadata": "View file metadata",
+        "details": "Details",
+        "download": "Download",
+        "download_failed": "Failed to download file. Please try again later."
+    },
+    "bot_wizard_detail": {
+        "title": "File Metadata",
+        "expired_title": "File Expired",
+        "expired_desc": "This file has been removed from the server and is no longer available for download.",
+        "file_name": "File Name",
+        "status": "Status",
+        "expires_at": "Expires At",
+        "template": "Template",
+        "processing": "[PROCESSING]"
+    }
+}
