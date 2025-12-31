@@ -1,0 +1,49 @@
+{
+    "profile": {
+        "title": "Hồ sơ của bạn",
+        "welcome_user": "Chào mừng đến với hồ sơ của {{name}}",
+        "welcome_you": "Chào mừng đến với hồ sơ của bạn",
+        "add_new_bot": "Thêm bot mới",
+        "showing_page": "Hiển thị {{current}} trên {{total}} trang",
+        "bots_per_page": "Bot mỗi trang",
+        "bots_per_page_option": "{{count}} bot/trang",
+        "no_result": "Không có kết quả",
+        "settings": {
+            "title": "Cài đặt hồ sơ",
+            "explore": "Khám phá hàng triệu Mezon Bot",
+            "name_label": "Tên",
+            "name_desc": "Tên của bạn",
+            "name_placeholder": "Tên của bạn",
+            "bio_label": "Tiểu sử",
+            "bio_desc": "Tiểu sử của bạn",
+            "bio_placeholder": "Tiểu sử của bạn",
+            "save": "Lưu",
+            "update_success": "Cập nhật thành công",
+            "update_failed": "Cập nhật thất bại. Vui lòng thử lại."
+        },
+        "gallery": {
+            "title": "Thư viện phương tiện của bạn",
+            "images_per_page": "Hình ảnh mỗi trang",
+            "images_per_page_option": "{{count}} hình ảnh/trang",
+            "showing_page": "Hiển thị trang {{current}} trên {{total}}",
+            "no_media": "Chưa có phương tiện nào được tải lên."
+        },
+        "card_info": {
+            "generals": "Chung",
+            "overview": "Tổng quan",
+            "gallery": "Thư viện",
+            "invitations": "Lời mời",
+            "subscriptions": "Đăng ký",
+            "settings": "Cài đặt",
+            "sync_mezon": "Đồng bộ từ Mezon",
+            "confirm_sync_title": "Xác nhận đồng bộ từ Mezon",
+            "confirm_sync_desc": "Bạn có chắc chắn muốn đồng bộ tên và ảnh đại diện cho người dùng này không? Hành động này không thể hoàn tác!",
+            "yes": "Có",
+            "no": "Không",
+            "sync_success": "Đồng bộ thành công",
+            "sync_failed": "Đồng bộ thất bại!",
+            "update_success": "Cập nhật thành công",
+            "update_failed": "Cập nhật thất bại!"
+        }
+    }
+}

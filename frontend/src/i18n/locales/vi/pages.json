@@ -1,0 +1,191 @@
+{
+    "about": {
+        "hero": {
+            "title": "Khám phá và phát triển cùng Mezon Bots",
+            "subtitle": "Tiếp cận hàng triệu lượt xem cho ứng dụng hoặc cộng đồng của bạn trên nền tảng số 1 về khám phá bot và máy chủ"
+        },
+        "stats": {
+            "community": "Nhà quảng cáo Cộng đồng, Ứng dụng & Bot",
+            "impressions": "Lượt hiển thị mỗi tuần",
+            "growth": "Tăng trưởng nền tảng"
+        },
+        "testimonials": {
+            "title": "Tại sao chọn Mezon Top Board?",
+            "subtitle": "Lắng nghe đối tác tin cậy của chúng tôi - khách hàng nói là chuẩn nhất"
+        },
+        "vision": {
+            "title": "Tầm nhìn của chúng tôi",
+            "description": "Chúng tôi hướng tới việc trở thành trung tâm liệt kê tối ưu cho các ứng dụng dựa trên Mezon, nuôi dưỡng một cộng đồng thịnh vượng nơi các nhà phát triển và người dùng có thể kết nối, chia sẻ và phát triển. Bằng cách cung cấp cái nhìn tổng quan minh bạch về các ứng dụng, chúng tôi trao quyền cho người dùng đưa ra quyết định sáng suốt và giúp các nhà phát triển tăng cường khả năng hiển thị cho dự án của họ."
+        },
+        "offer": {
+            "title": "Chúng tôi cung cấp gì",
+            "description": "Tuyển chọn các ứng dụng hàng đầu được hỗ trợ bởi Mezon.\n\nMô tả chi tiết, tính năng nổi bật và trường hợp sử dụng thực tế.\n\nĐánh giá, nhận xét và thảo luận thúc đẩy sự cộng tác.\n\nMột sân khấu để quảng bá dự án của bạn và tiếp cận khán giả rộng lớn hơn."
+        },
+        "choose_us": {
+            "title": "Tại sao chọn chúng tôi?",
+            "description": "Mezon Top Board thu hẹp khoảng cách giữa người dùng và các ứng dụng Mezon\n\nCho dù bạn là nhà phát triển đang tìm kiếm sự hiển thị hay người dùng đang tìm kiếm ứng dụng tuyệt vời tiếp theo, chúng tôi cung cấp các công cụ, tài nguyên và cộng đồng để hỗ trợ hành trình của bạn."
+        },
+        "cta": {
+            "title": "Bạn đã thấy hứng thú chưa?",
+            "description": "Hãy tham gia cùng chúng tôi khám phá tương lai của các ứng dụng được xây dựng trên Mezon. Khám phá, tham gia và đổi mới cùng Mezon Top Board!",
+            "button": "Bắt đầu ngay"
+        }
+    },
+    "terms": {
+        "title": "Điều khoản dịch vụ",
+        "last_updated": "Cập nhật lần cuối: {{date}}",
+        "intro": "Chào mừng bạn đến với Mezon Top Board! Các Điều khoản và Điều kiện này (\"Điều khoản\") chi phối quyền truy cập và sử dụng nền tảng của chúng tôi, bao gồm tất cả các dịch vụ, nội dung và tính năng liên quan. Bằng cách sử dụng Mezon Top Board, bạn đồng ý tuân thủ các Điều khoản này. Nếu bạn không đồng ý, vui lòng ngừng sử dụng ngay lập tức.",
+        "section1": {
+            "title": "1. Định nghĩa",
+            "items": [
+                "\"Nền tảng\" đề cập đến Mezon Top Board, trang web, ứng dụng và tất cả các dịch vụ liên quan.",
+                "\"Người dùng\" đề cập đến bất kỳ cá nhân hoặc tổ chức nào truy cập hoặc sử dụng Mezon Top Board.",
+                "\"Nhà phát triển\" đề cập đến các cá nhân hoặc tổ chức gửi ứng dụng để niêm yết trên Mezon Top Board.",
+                "\"Nội dung\" bao gồm tất cả văn bản, hình ảnh, video, ứng dụng và tài liệu khác có trên nền tảng."
+            ]
+        },
+        "section2": {
+            "title": "2. Sử dụng Nền tảng",
+            "sub1": {
+                "title": "2.1 Điều kiện tham gia",
+                "content": "Bạn phải ít nhất 18 tuổi để sử dụng Mezon Top Board. Bằng cách sử dụng nền tảng, bạn xác nhận rằng bạn đáp ứng yêu cầu này."
+            },
+            "sub2": {
+                "title": "2.2 Đăng ký tài khoản",
+                "items": [
+                    "Một số tính năng có thể yêu cầu đăng ký tài khoản.",
+                    "Bạn chịu trách nhiệm bảo mật thông tin đăng nhập tài khoản của mình.",
+                    "Mezon Top Board có quyền đình chỉ hoặc chấm dứt tài khoản vi phạm các Điều khoản này."
+                ]
+            },
+            "sub3": {
+                "title": "2.3 Sử dụng hợp lệ",
+                "intro": "Bằng cách sử dụng Mezon Top Board, bạn đồng ý KHÔNG:",
+                "items": [
+                    "Vi phạm bất kỳ luật hoặc quy định hiện hành nào.",
+                    "Gửi thông tin sai lệch hoặc gây hiểu lầm.",
+                    "Tham gia vào các hoạt động có hại, lạm dụng hoặc gian lận.",
+                    "Cố gắng phá hoại hoặc xâm phạm bảo mật của nền tảng."
+                ]
+            }
+        },
+        "section3": {
+            "title": "3. Niêm yết ứng dụng",
+            "sub1": {
+                "title": "3.1 Hướng dẫn gửi",
+                "items": [
+                    "Các nhà phát triển phải đảm bảo ứng dụng của họ tuân thủ các hướng dẫn kỹ thuật và đạo đức của Mezon.",
+                    "Mezon Top Board có quyền chấp nhận, từ chối hoặc xóa danh sách theo quyết định của mình."
+                ]
+            },
+            "sub2": {
+                "title": "3.2 Quyền sở hữu trí tuệ",
+                "items": [
+                    "Các nhà phát triển giữ quyền sở hữu ứng dụng của họ.",
+                    "Bằng cách gửi ứng dụng, nhà phát triển cấp cho Mezon Top Board giấy phép hiển thị và quảng bá nội dung của họ."
+                ]
+            }
+        },
+        "section4": {
+            "title": "4. Quyền sở hữu nội dung và Bản quyền",
+            "items": [
+                "Mezon Top Board tôn trọng quyền sở hữu trí tuệ.",
+                "Người dùng và nhà phát triển phải đảm bảo họ có quyền đối với bất kỳ nội dung nào họ gửi.",
+                "Việc sử dụng trái phép tài liệu có bản quyền có thể dẫn đến việc đình chỉ tài khoản hoặc hành động pháp lý."
+            ]
+        },
+        "section5": {
+            "title": "5. Tuyên bố từ chối trách nhiệm và Giới hạn trách nhiệm",
+            "items": [
+                "Mezon Top Board cung cấp thông tin \"nguyên trạng\" mà không có bất kỳ bảo đảm nào.",
+                "Chúng tôi không đảm bảo tính chính xác, độ tin cậy hoặc tính khả dụng của các ứng dụng được liệt kê.",
+                "Mezon Top Board không chịu trách nhiệm cho bất kỳ thiệt hại trực tiếp, gián tiếp, ngẫu nhiên hoặc hậu quả nào phát sinh từ việc sử dụng nền tảng."
+            ]
+        },
+        "section6": {
+            "title": "6. Chính sách bảo mật",
+            "items": [
+                "Bằng cách sử dụng Mezon Top Board, bạn đồng ý với các hoạt động thu thập và sử dụng dữ liệu của chúng tôi như được nêu trong Chính sách bảo mật.",
+                "Chúng tôi không bán dữ liệu người dùng cho bên thứ ba."
+            ]
+        },
+        "section7": {
+            "title": "7. Sửa đổi Điều khoản",
+            "content": "Mezon Top Board có quyền sửa đổi các Điều khoản này bất kỳ lúc nào. Người dùng sẽ được thông báo về những thay đổi quan trọng và việc tiếp tục sử dụng nền tảng đồng nghĩa với việc chấp nhận các Điều khoản đã sửa đổi."
+        },
+        "section8": {
+            "title": "8. Chấm dứt Dịch vụ",
+            "content": "Mezon Top Board có thể đình chỉ hoặc chấm dứt dịch vụ theo quyết định của mình, có hoặc không có thông báo, đối với người dùng vi phạm các Điều khoản này."
+        },
+        "section9": {
+            "title": "9. Luật điều chỉnh",
+            "content": "Các Điều khoản này sẽ được điều chỉnh và giải thích theo luật pháp của {{jurisdiction}}."
+        },
+        "section10": {
+            "title": "10. Thông tin liên hệ",
+            "content": "Nếu có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi tại {{email}}."
+        }
+    },
+    "contact": {
+        "title": "Liên Hệ",
+        "form": {
+            "title": "Gửi tin nhắn cho chúng tôi",
+            "name_placeholder": "Tên của bạn",
+            "email_placeholder": "Email của bạn",
+            "info_placeholder": "Thông tin",
+            "captcha_placeholder": "Mã xác nhận",
+            "submit_btn": "Gửi"
+        },
+        "content": {
+            "intro": "Cảm ơn bạn đã quan tâm đến Mezon Top Board. Để nhận thêm thông tin, vui lòng gửi email tới",
+            "or_call": "Hoặc gọi trực tiếp cho chúng tôi",
+            "join_support": "Bạn cũng có thể tham gia clan hỗ trợ của chúng tôi trên Mezon -",
+            "support_clan_name": "TOP MEZON SUPPORT",
+            "at": "tại:",
+            "info_title": "Thông tin liên hệ:",
+            "address_title": "Địa chỉ:",
+            "address_value": "Tầng 2, Tòa nhà CT3 The Pride, đường Tố Hữu, quận Hà Đông, TP Hà Nội, Việt Nam",
+            "phone_title": "Điện thoại:",
+            "phone_value": "(+84) 2466874606",
+            "email_title": "Email:",
+            "email_value": "sales@ncc.asia"
+        }
+    },
+    "onboarding": {
+        "step1": {
+            "welcome_title": "Chào mừng đến với Mezon Top Board",
+            "welcome_desc": "Mezon Top Board — #1 Bot Listing cho Mezon.\nKhám phá các ứng dụng tốt nhất được xây dựng trên hệ sinh thái Mezon.\nChúng tôi tuyển chọn và giới thiệu các ứng dụng hàng đầu tận dụng công nghệ tiên tiến của Mezon, giúp người dùng và nhà phát triển khám phá các giải pháp sáng tạo một cách dễ dàng.",
+            "cards": {
+                "top_listings": "Top Listings",
+                "top_listings_desc": "Khám phá các ứng dụng Mezon được đánh giá cao và sáng tạo nhất.",
+                "for_users": "Cho Người dùng & Devs",
+                "for_users_desc": "Tìm công cụ, giải pháp và nguồn cảm hứng trên toàn hệ sinh thái.",
+                "discover": "Khám phá nhanh hơn",
+                "discover_desc": "Điều hướng các danh mục ứng dụng được tuyển chọn một cách dễ dàng.",
+                "stay_updated": "Cập nhật liên tục",
+                "stay_updated_desc": "Theo dõi các ứng dụng thịnh hành và những đột phá mới trong công nghệ Mezon."
+            },
+            "ready_title": "Sẵn sàng để bắt đầu?",
+            "ready_desc": "Hãy thiết lập hồ sơ của bạn để cá nhân hóa trải nghiệm.",
+            "skip": "Bỏ qua",
+            "get_started": "Bắt đầu ngay"
+        },
+        "step2": {
+            "title": "Thông tin hồ sơ",
+            "description": "Thông tin của bạn đã được điền sẵn từ tài khoản Mezon",
+            "from_mezon": "Từ Mezon",
+            "upload_tooltip": "Tải ảnh mới",
+            "display_name": "Tên hiển thị",
+            "display_name_desc": "3-50 ký tự. Đây là cách người khác sẽ nhìn thấy tên bạn.",
+            "display_name_placeholder": "Nguyễn Văn A",
+            "email": "Email",
+            "bio": "Tiểu sử (Tùy chọn)",
+            "bio_placeholder": "Giới thiệu về bản thân bạn...",
+            "bio_desc_1": "Chia sẻ một lời giới thiệu ngắn.",
+            "bio_desc_2": "{{current}}/{{max}} ký tự",
+            "save_continue": "Lưu & Tiếp tục",
+            "update_success": "Cập nhật hồ sơ thành công!",
+            "update_fail": "Cập nhật hồ sơ thất bại."
+        }
+    }
+}

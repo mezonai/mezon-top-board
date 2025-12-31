@@ -1,0 +1,134 @@
+{
+    "homepage": {
+        "explore_title": "Explore millions of Mezon Bots",
+        "mezon_bots": "Mezon Bots",
+        "showing_page": "Showing {{current}} of {{total}} page",
+        "no_result": "No result",
+        "sort_placeholder": "Sort bots by...",
+        "select_placeholder": "Select",
+        "sort_title": "Sort by",
+        "title": "Title",
+        "sort_options": {
+            "created_newest": "Date Created (Newest → Oldest)",
+            "created_oldest": "Date Created (Oldest → Newest)",
+            "name_az": "Name (A–Z)",
+            "name_za": "Name (Z–A)",
+            "updated_newest": "Date Updated (Newest → Oldest)",
+            "updated_oldest": "Date Updated (Oldest → Newest)"
+        },
+        "pagination_title": "Per page",
+        "bots_per_page": "{{count}}"
+    },
+    "hero": {
+        "title": "Mezon Top Board",
+        "subtitle": "#1 Bot Listing for Mezon",
+        "description": "Welcome to Mezon Top Board, your go-to platform for discovering the best applications built on the Mezon ecosystem. Our mission is to curate and showcase top-tier applications that leverage Mezon's cutting-edge technology, helping users and developers explore innovative solutions with ease.",
+        "get_started": "Get Started"
+    },
+    "search_bar": {
+        "all_types": "All Types",
+        "bot": "Bot",
+        "app": "App",
+        "search_placeholder": "Search",
+        "search_btn": "Search",
+        "tags": "+{{count}} tags",
+        "tags_placeholder": "+{{count}} tags",
+        "clear_tags": "Clear tags"
+    },
+    "footer": {
+        "follow_us": "Follow us",
+        "get_newsletter": "Get Newsletter",
+        "subscribe": "Subscribe",
+        "sending": "Sending...",
+        "login_required": "Please log in to subscribe to the newsletter.",
+        "error_occurred": "An error occurred.",
+        "resubscribe_title": "Resubscribe?",
+        "resubscribe_content": "You have unsubscribed from our newsletter. Would you like to subscribe again?",
+        "yes": "Yes",
+        "no": "No",
+        "resubscribe_failed": "Failed to resubscribe. Please try again later..",
+        "address": "Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam"
+    },
+    "header_menu": {
+        "profile": "Profile",
+        "colors": "Colors",
+        "language": "Language",
+        "color_mode": "Color Mode",
+        "logout": "Log out",
+        "light": "Light",
+        "dark": "Dark"
+    },
+    "colors": {
+        "red": "Red",
+        "pink": "Pink",
+        "purple": "Purple",
+        "blue": "Blue",
+        "green": "Green",
+        "yellow": "Yellow",
+        "orange": "Orange"
+    },
+    "nav": {
+        "home": "Home",
+        "about": "About Us",
+        "terms": "Terms of Service",
+        "help": "Help",
+        "welcome": "Welcome",
+        "login_redirect": "Login Redirect",
+        "my_profile": "My Profile",
+        "personal_settings": "Personal Settings",
+        "my_media_gallery": "My Media Gallery",
+        "search": "Search",
+        "how_to_use": "How to use",
+        "contact_us": "Contact Us",
+        "bot_wizard": "Bot Wizard",
+        "new_bot": "New Bot",
+        "login": "Login",
+        "confirm_subscription": "Confirm Subscription",
+        "unsubscription": "Unsubscription",
+        "not_found": "Not Found"
+    },
+    "header": {
+        "login": "Login",
+        "menu_title": "Menu"
+    },
+    "enums": {
+        "mezon_app_type": {
+            "BOT": "Bot",
+            "APP": "App"
+        },
+        "app_pricing": {
+            "FREE": "FREE",
+            "PAID": "PAID"
+        }
+    },
+    "time": {
+        "just_now": "Just now",
+        "minutes_ago": "{{count}} minutes ago",
+        "hours_ago": "{{count}} hours ago",
+        "yesterday": "Yesterday"
+    },
+    "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "published": "Published",
+        "unknown": "Unknown"
+    },
+    "login_redirect": {
+        "fail_generic": "Login failed: Something went wrong!",
+        "fail": "Login failed!",
+        "success": "Login successfully!"
+    },
+    "hooks": {
+        "auth_redirect_warning": "Sorry, you are not authorized to access this page",
+        "ownership_check_login": "You need to login to access this page.",
+        "ownership_check_permission": "You do not have permission to access this page.",
+        "submit_success_created": "{{type}} created successfully!",
+        "submit_success_updated": "{{type}} updated successfully!",
+        "generic_error": "Something went wrong"
+    },
+    "confirm_subscribe": {
+        "email_not_found": "Subscription confirmation failed\nEmail not found, please log in.",
+        "already_confirmed": "Subscription confirmation failed\nSubscription already confirmed."
+    }
+}

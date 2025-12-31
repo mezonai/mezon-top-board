@@ -1,0 +1,94 @@
+{
+    "component": {
+        "bot_grid_item": {
+            "default_name": "Name"
+        },
+        "bot_list_item": {
+            "unpublished": "UNPUBLISHED",
+            "new_version": "NEW VERSION",
+            "invite": "Invite",
+            "default_headline": "Check out this app!",
+            "share_text": "Check out {{title}} Mezon Bot on top.nccsoft.vn, the #1 Mezon Bot and Mezon App List!"
+        },
+        "owner_actions": {
+            "delete_confirm_title": "Are you sure you want to delete this bot?",
+            "delete_confirm_content": "This action cannot be undone.",
+            "delete_confirm_ok": "Yes, delete it",
+            "cancel": "Cancel",
+            "delete_success": "Bot deleted successfully.",
+            "delete_error": "Failed to delete bot.",
+            "new_version": "New version",
+            "edit": "Edit",
+            "delete": "Delete",
+            "invalid_id": "Invalid bot ID."
+        },
+        "preview_modal": {
+            "title": "App Details",
+            "loading": "Loading...",
+            "owner_label": "Owner: {{name}}",
+            "no_description": "No description",
+            "latest_version_title": "Latest version",
+            "version_label": "Version",
+            "status_label": "Status",
+            "auto_publish_label": "Auto Publish",
+            "prefix_label": "Prefix",
+            "submitted_label": "Submitted",
+            "support_url_label": "Support URL",
+            "price_label": "Price",
+            "app_id_label": "App ID",
+            "install_link_label": "Install Link",
+            "changelog_label": "Change Log",
+            "note_label": "Note",
+            "no_versions": "No versions available",
+            "social_links_title": "Social Links",
+            "no_social_links": "No social links",
+            "yes": "Yes",
+            "no": "No"
+        },
+        "crop_image_modal": {
+            "title": "Crop Image",
+            "upload": "Upload",
+            "cancel": "Cancel",
+            "zoom": "Zoom:",
+            "rotate": "Rotate:"
+        },
+        "media_manager": {
+            "title": "Choose Icon",
+            "upload_tab": "Upload from device",
+            "gallery_tab": "Choose from gallery",
+            "click_upload": "Click to Upload",
+            "browser_hint": "Choose an image in your browser",
+            "total_images": "Total {{count}} image(s)",
+            "cancel": "Cancel",
+            "ok": "OK",
+            "upload_error_size": "{{fileName}} file upload failed (exceeds 4MB)",
+            "upload_error_type": "Please upload a valid image file!",
+            "upload_failed": "Upload failed. Please try again.",
+            "select_first": "Please select an image first"
+        },
+        "not_found_page": {
+            "title": "404",
+            "subtitle": "This page is not available.",
+            "back_home": "Back Home"
+        },
+        "confirm_subscribe": {
+            "email_not_found": "Email not found",
+            "already_confirmed": "Already confirmed"
+        },
+        "unsubscribe_page": {
+            "failed_email": "Unsubscribe failed\nEmail not found, please log in.",
+            "failed_already": "Unsubscribe failed\nUnsubscribed already."
+        },
+        "share_button": {
+            "title": "Share now",
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "linkedin": "LinkedIn"
+        },
+        "rich_text": {
+            "placeholder": "Type here...",
+            "error_invalid_mime": "Please upload a valid image file!",
+            "error_size_limit": "{{fileName}} upload failed (exceeds 4MB)"
+        }
+    }
+}

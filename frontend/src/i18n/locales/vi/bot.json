@@ -1,0 +1,263 @@
+{
+    "bot_wizard": {
+        "page_title": "Trình tạo mã nguồn",
+        "page_description": "Quản lý và xem xét các yêu cầu tạo bot.",
+        "sidebar": {
+            "title": "Điều hướng",
+            "requests": "Yêu cầu",
+            "new_wizard": "Trình tạo mã nguồn"
+        }
+    },
+    "bot_wizard_requests": {
+        "title": "Yêu cầu tạo mã nguồn",
+        "status": {
+            "all": "Tất cả",
+            "processing": "Đang xử lý",
+            "completed": "Hoàn thành",
+            "expired": "Đã hết hạn"
+        },
+        "filter_status_placeholder": "Lọc theo trạng thái",
+        "filter_status_title": "Trạng thái",
+        "page_size_placeholder": "Kích thước trang",
+        "page_size_title": "Kích thước trang",
+        "requests_per_page": "{{count}} yêu cầu/trang",
+        "no_requests": "Không tìm thấy yêu cầu nào."
+    },
+    "new_bot_wizard": {
+        "title": "Trình tạo mã nguồn mới",
+        "steps": {
+            "bot_info": "Thông tin Bot",
+            "commands": "Lệnh",
+            "integrations": "Tích hợp",
+            "events": "Sự kiện",
+            "preview": "Xem trước"
+        },
+        "step1": {
+            "bot_name_label": "Tên Bot",
+            "bot_name_desc": "Đặt tên cho bot của bạn",
+            "bot_name_placeholder": "MezonBot",
+            "bot_name_required": "Tên bot là bắt buộc",
+            "language_label": "Ngôn ngữ",
+            "language_desc": "Ngôn ngữ Framework",
+            "language_placeholder": "Chọn ngôn ngữ",
+            "language_required": "Ngôn ngữ là bắt buộc"
+        },
+        "step2": {
+            "intro": "Thêm các lệnh cho bot của bạn.\nĐiền thông tin lệnh bên dưới và nhấp <b>Thêm Lệnh</b> để thêm vào danh sách.\nBạn có thể thêm nhiều lệnh.",
+            "command_label": "Lệnh",
+            "command_desc": "Từ kích hoạt (ví dụ: ping)",
+            "description_label": "Mô tả",
+            "description_desc": "Mô tả ngắn gọn lệnh này làm gì",
+            "description_placeholder": "Giải thích lệnh này",
+            "category_label": "Danh mục",
+            "category_desc": "Dùng để nhóm các lệnh",
+            "aliases_label": "Biệt danh",
+            "aliases_desc": "Các từ kích hoạt thay thế ngăn cách bằng dấu phẩy",
+            "add_btn": "Thêm Lệnh",
+            "clear_btn": "Xóa",
+            "no_commands": "Chưa có lệnh nào được thêm."
+        },
+        "step3": {
+            "intro": "Chọn các tích hợp bạn muốn thêm vào bot.\nNhấp vào thẻ hoặc ô chọn để bật hoặc tắt tích hợp.",
+            "loading": "Đang tải tích hợp...",
+            "failed": "Không thể tải tích hợp cho {{language}}.",
+            "enable_integration": "Bật tích hợp {{name}}",
+            "no_integrations": "Không có tích hợp nào cho ngôn ngữ này."
+        },
+        "step4": {
+            "gateway_events": "Sự kiện Gateway có sẵn",
+            "select_all": "Chọn tất cả"
+        },
+        "step5": {
+            "preview_title": "Xem trước cấu hình",
+            "copy_tooltip": "Sao chép JSON",
+            "copied": "Đã sao chép!",
+            "review_msg": "Xem lại cấu hình trước khi gửi."
+        },
+        "navigation": {
+            "back": "Quay lại",
+            "next": "Tiếp theo",
+            "finish": "Hoàn tất",
+            "redirecting": "Đang chuyển hướng..."
+        },
+        "messages": {
+            "success": "Gửi yêu cầu thành công!",
+            "failure": "Gửi yêu cầu thất bại. Vui lòng thử lại."
+        },
+        "command_card": {
+            "remove_tooltip": "Xóa lệnh"
+        }
+    },
+    "bot_wizard_constants": {
+        "events": {
+            "token_send": "Gửi Token",
+            "message_button_clicked": "Đã nhấn nút tin nhắn",
+            "streaming_joined": "Đã tham gia luồng",
+            "streaming_leaved": "Đã rời luồng",
+            "clan_event_created": "Sự kiện Clan được tạo",
+            "message_reaction": "Phản ứng tin nhắn",
+            "channel_created": "Kênh được tạo",
+            "user_clan_removed": "Người dùng bị xóa khỏi Clan",
+            "role_event": "Sự kiện vai trò",
+            "user_channel_added": "Người dùng được thêm vào kênh",
+            "channel_deleted": "Kênh bị xóa",
+            "channel_updated": "Kênh được cập nhật",
+            "user_channel_removed": "Người dùng bị xóa khỏi kênh",
+            "give_coffee": "Tặng cà phê",
+            "add_clan_user": "Thêm người dùng Clan",
+            "voice_joined": "Đã tham gia Voice",
+            "voice_leaved": "Đã rời Voice"
+        }
+    },
+    "bot_wizard_card": {
+        "created": "Đã tạo",
+        "view_metadata": "Xem siêu dữ liệu tệp",
+        "details": "Chi tiết",
+        "download": "Tải xuống",
+        "download_failed": "Tải xuống tệp thất bại. Vui lòng thử lại sau."
+    },
+    "bot_wizard_detail": {
+        "title": "Siêu dữ liệu tệp",
+        "expired_title": "Tệp đã hết hạn",
+        "expired_desc": "Tệp này đã bị xóa khỏi máy chủ và không còn khả dụng để tải xuống.",
+        "file_name": "Tên tệp",
+        "status": "Trạng thái",
+        "expires_at": "Hết hạn vào",
+        "template": "Mẫu",
+        "processing": "[ĐANG XỬ LÝ]"
+    },
+    "bot_detail": {
+        "explore_title": "Khám phá hàng triệu Mezon Bot",
+        "overview": "Tổng quan",
+        "more_like_this": "Tương tự",
+        "no_related_bot": "Không có bot liên quan",
+        "ratings_reviews": "Đánh giá & Nhận xét",
+        "review_count": "nhận xét",
+        "review_guidelines": "Chỉ người dùng đã đăng ký mới có thể để lại nhận xét. Tất cả nhận xét đều được kiểm duyệt bởi người kiểm duyệt của chúng tôi. Vui lòng đảm bảo kiểm tra hướng dẫn của chúng tôi trước khi đăng.",
+        "stars": "sao",
+        "load_more": "Tải thêm",
+        "error_loading_more": "Lỗi khi tải thêm",
+        "details": "Chi tiết",
+        "prefix": "Prefix: {{prefix}}",
+        "socials": "Mạng xã hội",
+        "support_link": "Liên kết hỗ trợ của {{name}}",
+        "categories": "Danh mục",
+        "creators": "Người tạo",
+        "owner_avatar_alt": "Ảnh đại diện người tạo",
+        "user_avatar_alt": "Ảnh đại diện người dùng",
+        "bad_request": "Yêu cầu không hợp lệ!",
+        "chat_now": "Chat ngay",
+        "success": "Thành công",
+        "comment_placeholder": "Viết nhận xét của bạn...",
+        "post_rating": "Gửi đánh giá"
+    },
+    "new_bot_page": {
+        "steps": {
+            "choose_type": "Chọn Loại",
+            "provide_id": "Cung cấp ID",
+            "fill_details": "Điền chi tiết",
+            "review": "Xem lại",
+            "result": "Kết quả",
+            "edit_info": "Chỉnh sửa thông tin Bot"
+        },
+        "buttons": {
+            "back": "Quay lại",
+            "next": "Tiếp theo",
+            "submit": "Gửi duyệt",
+            "update": "Cập nhật",
+            "view_bot": "Xem Bot",
+            "go_bot": "Đi tới Bot",
+            "go_home": "Về trang chủ",
+            "go_back": "Quay lại",
+            "add": "Thêm",
+            "delete": "Xóa"
+        },
+        "step1": {
+            "select_type": "Chọn loại",
+            "placeholder": "Chọn Bot hoặc App",
+            "bot": "Bot",
+            "app": "App"
+        },
+        "step2": {
+            "enter_id": "Nhập ID {{type}} của bạn",
+            "label_id": "ID {{type}}"
+        },
+        "step3": {
+            "name": "Tên",
+            "name_desc": "Đặt tên cho bot của bạn",
+            "headline": "Tiêu đề",
+            "headline_desc": "Cung cấp một cụm từ ngắn gọn và hấp dẫn mô tả bot của bạn.",
+            "description": "Mô tả đầy đủ",
+            "description_desc": "Cho chúng tôi biết bot của bạn có thể làm gì. Chúng tôi muốn nghe toàn bộ câu chuyện!",
+            "auto_publish": "Tự động xuất bản?",
+            "install_link": "Liên kết cài đặt",
+            "install_link_desc": "Nơi người dùng có thể cài đặt bot của bạn trên máy chủ Mezon của họ.",
+            "prefix": "Prefix",
+            "prefix_desc": "Từ khóa hoặc cụm từ nào bot của bạn phản ứng?",
+            "tags": "Thẻ",
+            "tags_desc": "Chọn tối đa 12 danh mục đại diện tốt nhất cho cộng đồng của bạn.",
+            "tag_price": "Giá thẻ",
+            "tag_price_desc": "Chọn thẻ MIỄN PHÍ hoặc TRẢ PHÍ",
+            "price": "Giá",
+            "price_desc": "Đặt giá cho bot của bạn",
+            "support_url": "URL hỗ trợ",
+            "support_url_desc": "Mọi người có thể có nhiều câu hỏi về bot của bạn, hãy chắc chắn rằng bạn có thể trả lời họ!",
+            "note": "Ghi chú",
+            "note_desc": "Nếu bạn có bất kỳ thông tin quan trọng nào cho người đánh giá, bạn có thể chia sẻ tại đây",
+            "social_links": "Liên kết xã hội",
+            "social_links_desc": "Liên kết các kênh xã hội của bạn",
+            "placeholders": {
+                "name": "MezonBot",
+                "headline": "Một bot vai trò mạnh mẽ và đa chức năng",
+                "tags": "Tìm kiếm thẻ",
+                "tag_price": "Chọn giá thẻ",
+                "note": "Vui lòng chia sẻ bất kỳ thông tin hoặc chi tiết quan trọng nào về bot của bạn mà người đánh giá của chúng tôi nên biết",
+                "link_type": "Loại liên kết",
+                "price": "Nhập giá",
+                "prefix": "!",
+                "support_url": "https://yourdomain.com/support"
+            },
+            "errors": {
+                "link_exists": "Liên kết này đã tồn tại.",
+                "link_duplicate": "Liên kết này bị trùng lặp.",
+                "no_image_selected": "Chưa chọn ảnh"
+            }
+        },
+        "step4": {
+            "review_update": "Xem lại thông tin cập nhật của bạn",
+            "review_info": "Xem lại thông tin của bạn",
+            "type": "Loại:",
+            "id": "ID Bot/App:",
+            "name": "Tên:",
+            "headline": "Tiêu đề:",
+            "prefix": "Prefix:",
+            "auto_publish": "Tự động xuất bản:",
+            "install_link": "Liên kết cài đặt:",
+            "tags": "Thẻ:",
+            "tag_price": "Giá thẻ:",
+            "price": "Giá:",
+            "support_url": "URL hỗ trợ:",
+            "social_links": "Liên kết xã hội:",
+            "note": "Ghi chú:",
+            "changelog": "Nhật ký thay đổi:",
+            "description": "Mô tả:",
+            "yes": "Có",
+            "no": "Không",
+            "no_tags": "Không có thẻ nào được chọn",
+            "no_links": "Không có liên kết xã hội nào được thêm",
+            "none": "Không có"
+        },
+        "step5": {
+            "success_title": "{{type}} đã được gửi thành công!",
+            "update_title": "{{type}} đã được cập nhật thành công!",
+            "success_subtitle": "{{type}} của bạn đã được gửi để xem xét. Bây giờ bạn có thể xem nó hoặc quay lại trang chủ.",
+            "update_subtitle": "{{type}} của bạn đã được cập nhật. Bây giờ bạn có thể quay lại để xem nó hoặc về trang chủ.",
+            "fail_title": "Gửi thất bại",
+            "update_fail_title": "Cập nhật thất bại",
+            "fail_subtitle": "Đã xảy ra lỗi. Vui lòng quay lại và kiểm tra thông tin nhập của bạn trước khi thử lại."
+        },
+        "validation_failed": "Xác thực biểu mẫu thất bại!",
+        "avatar_name": "Tên",
+        "avatar_headline": "Tiêu đề (Mô tả ngắn)"
+    }
+}

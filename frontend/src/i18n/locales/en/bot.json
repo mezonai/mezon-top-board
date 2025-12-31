@@ -1,0 +1,263 @@
+{
+    "bot_wizard": {
+        "page_title": "Bot Wizard",
+        "page_description": "Manage and review bot generation requests.",
+        "sidebar": {
+            "title": "Navigation",
+            "requests": "Requests",
+            "new_wizard": "Bot Wizard"
+        }
+    },
+    "bot_wizard_requests": {
+        "title": "Bot Wizard Requests",
+        "status": {
+            "all": "All",
+            "processing": "Processing",
+            "completed": "Completed",
+            "expired": "Expired"
+        },
+        "filter_status_placeholder": "Filter by status",
+        "filter_status_title": "Status",
+        "page_size_placeholder": "Page size",
+        "page_size_title": "Page size",
+        "requests_per_page": "{{count}} requests/page",
+        "no_requests": "No requests found."
+    },
+    "new_bot_wizard": {
+        "title": "New Bot Wizard",
+        "steps": {
+            "bot_info": "Bot Info",
+            "commands": "Commands",
+            "integrations": "Integrations",
+            "events": "Events",
+            "preview": "Preview"
+        },
+        "step1": {
+            "bot_name_label": "Bot Name",
+            "bot_name_desc": "Name your bot",
+            "bot_name_placeholder": "MezonBot",
+            "bot_name_required": "Bot name is required",
+            "language_label": "Language",
+            "language_desc": "Framework language",
+            "language_placeholder": "Select language",
+            "language_required": "Language is required"
+        },
+        "step2": {
+            "intro": "Add commands for your bot.\nFill in the command information below and click <b>Add Command</b> to add it to the list.\nYou can add multiple commands.",
+            "command_label": "Command",
+            "command_desc": "Trigger word (e.g. ping)",
+            "description_label": "Description",
+            "description_desc": "Briefly describe what this command does",
+            "description_placeholder": "Explain this command",
+            "category_label": "Category",
+            "category_desc": "Used to group commands",
+            "aliases_label": "Aliases",
+            "aliases_desc": "Comma-separated alternative trigger words",
+            "add_btn": "Add Command",
+            "clear_btn": "Clear",
+            "no_commands": "No commands added yet."
+        },
+        "step3": {
+            "intro": "Select the integrations you want to include in your bot.\nClick on a card or checkbox to enable or disable an integration.",
+            "loading": "Loading integrations...",
+            "failed": "Failed to load integrations for {{language}}.",
+            "enable_integration": "Enable {{name}} integration",
+            "no_integrations": "No integrations available for this language."
+        },
+        "step4": {
+            "gateway_events": "Available Gateway Events",
+            "select_all": "Select All"
+        },
+        "step5": {
+            "preview_title": "Configuration Payload Preview",
+            "copy_tooltip": "Copy JSON",
+            "copied": "Copied!",
+            "review_msg": "Review your configuration before submitting."
+        },
+        "navigation": {
+            "back": "Back",
+            "next": "Next",
+            "finish": "Finish",
+            "redirecting": "Redirecting..."
+        },
+        "messages": {
+            "success": "Request submitted successfully!",
+            "failure": "Failed to submit request. Please try again."
+        },
+        "command_card": {
+            "remove_tooltip": "Remove command"
+        }
+    },
+    "bot_wizard_constants": {
+        "events": {
+            "token_send": "Token Send",
+            "message_button_clicked": "Message Button Clicked",
+            "streaming_joined": "Streaming Joined",
+            "streaming_leaved": "Streaming Leaved",
+            "clan_event_created": "Clan Event Created",
+            "message_reaction": "Message Reaction",
+            "channel_created": "Channel Created",
+            "user_clan_removed": "User Clan Removed",
+            "role_event": "Role Event",
+            "user_channel_added": "User Channel Added",
+            "channel_deleted": "Channel Deleted",
+            "channel_updated": "Channel Updated",
+            "user_channel_removed": "User Channel Removed",
+            "give_coffee": "Give Coffee",
+            "add_clan_user": "Add Clan User",
+            "voice_joined": "Voice Joined",
+            "voice_leaved": "Voice Leaved"
+        }
+    },
+    "bot_wizard_card": {
+        "created": "Created",
+        "view_metadata": "View file metadata",
+        "details": "Details",
+        "download": "Download",
+        "download_failed": "Failed to download file. Please try again later."
+    },
+    "bot_wizard_detail": {
+        "title": "File Metadata",
+        "expired_title": "File Expired",
+        "expired_desc": "This file has been removed from the server and is no longer available for download.",
+        "file_name": "File Name",
+        "status": "Status",
+        "expires_at": "Expires At",
+        "template": "Template",
+        "processing": "[PROCESSING]"
+    },
+    "bot_detail": {
+        "explore_title": "Explore millions of Mezon Bots",
+        "overview": "Overview",
+        "more_like_this": "More like this",
+        "no_related_bot": "No related bot",
+        "ratings_reviews": "Ratings & Reviews",
+        "review_count": "reviews",
+        "review_guidelines": "Reviews can be left only by registered users. All reviews are moderated by our moderators. Please make sure to check our guidelines before posting.",
+        "stars": "stars",
+        "load_more": "Load More",
+        "error_loading_more": "Error loading more",
+        "details": "Details",
+        "prefix": "Prefix: {{prefix}}",
+        "socials": "Socials",
+        "support_link": "{{name}}'s Support link",
+        "categories": "Categories",
+        "creators": "Creators",
+        "owner_avatar_alt": "Owner avatar",
+        "user_avatar_alt": "User avatar",
+        "bad_request": "Bad Request!",
+        "chat_now": "Chat now",
+        "success": "Successfully",
+        "comment_placeholder": "Write your comment...",
+        "post_rating": "Post Rating"
+    },
+    "new_bot_page": {
+        "steps": {
+            "choose_type": "Choose Type",
+            "provide_id": "Provide ID",
+            "fill_details": "Fill Details",
+            "review": "Review",
+            "result": "Result",
+            "edit_info": "Edit Bot Info"
+        },
+        "buttons": {
+            "back": "Back",
+            "next": "Next",
+            "submit": "Submit for Review",
+            "update": "Update",
+            "view_bot": "View Bot",
+            "go_bot": "Go to Bot",
+            "go_home": "Go Home",
+            "go_back": "Go Back",
+            "add": "Add",
+            "delete": "Delete"
+        },
+        "step1": {
+            "select_type": "Select Type",
+            "placeholder": "Choose Bot or App",
+            "bot": "Bot",
+            "app": "App"
+        },
+        "step2": {
+            "enter_id": "Enter your {{type}} ID",
+            "label_id": "{{type}} ID"
+        },
+        "step3": {
+            "name": "Name",
+            "name_desc": "Name your bot",
+            "headline": "Headline",
+            "headline_desc": "Provide a short and catchy phrase that describes your bot.",
+            "description": "Full Description",
+            "description_desc": "Tell us what your bot can do. We want to hear the whole story!",
+            "auto_publish": "Auto-Publish?",
+            "install_link": "Install Link",
+            "install_link_desc": "A place where users can install your bot on their Mezon server.",
+            "prefix": "Prefix",
+            "prefix_desc": "What keyword or phrase does your bot react to?",
+            "tags": "Tags",
+            "tags_desc": "Select the top 12 categories that best represent your community.",
+            "tag_price": "Tag Price",
+            "tag_price_desc": "Select FREE or PAID tag",
+            "price": "Price",
+            "price_desc": "Set a price for your bot",
+            "support_url": "Support URL",
+            "support_url_desc": "People might have many questions about your bot, make sure you can answer them!",
+            "note": "Note",
+            "note_desc": "If you have any important information for the reviewer, you can share it here",
+            "social_links": "Social Links",
+            "social_links_desc": "Link your social channels",
+            "placeholders": {
+                "name": "MezonBot",
+                "headline": "A powerful and multi-functional role bot",
+                "tags": "Search for tags",
+                "tag_price": "Select tag price",
+                "note": "Please share any important information or details about your bot that our reviewers should know",
+                "link_type": "Link Type",
+                "price": "Enter price",
+                "prefix": "!",
+                "support_url": "https://yourdomain.com/support"
+            },
+            "errors": {
+                "link_exists": "This link already exists.",
+                "link_duplicate": "This link is duplicated.",
+                "no_image_selected": "No image selected"
+            }
+        },
+        "step4": {
+            "review_update": "Review Your Update Information",
+            "review_info": "Review Your Information",
+            "type": "Type:",
+            "id": "Bot/App ID:",
+            "name": "Name:",
+            "headline": "Headline:",
+            "prefix": "Prefix:",
+            "auto_publish": "Auto Publish:",
+            "install_link": "Install Link:",
+            "tags": "Tags:",
+            "tag_price": "Tag Price:",
+            "price": "Price:",
+            "support_url": "Support URL:",
+            "social_links": "Social Links:",
+            "note": "Note:",
+            "changelog": "Changelog:",
+            "description": "Description:",
+            "yes": "Yes",
+            "no": "No",
+            "no_tags": "No tags selected",
+            "no_links": "No social links added",
+            "none": "None"
+        },
+        "step5": {
+            "success_title": "{{type}} submitted successfully!",
+            "update_title": "{{type}} updated successfully!",
+            "success_subtitle": "Your {{type}} has been submitted for review. You can now view it or return to homepage.",
+            "update_subtitle": "Your {{type}} has been updated. You can now return to view it or go back to home.",
+            "fail_title": "Submission Failed",
+            "update_fail_title": "Update Failed",
+            "fail_subtitle": "Something went wrong. Please go back and check your input before trying again."
+        },
+        "validation_failed": "Form validation failed!",
+        "avatar_name": "Name",
+        "avatar_headline": "Headline (Short description)"
+    }
+}
