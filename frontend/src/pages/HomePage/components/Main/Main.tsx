@@ -186,7 +186,7 @@ function Main({ isSearchPage = false }: IMainProps) {
 
 
   return (
-    <div ref={mainRef} className='flex flex-col justify-center pt-8 pb-12 max-w-6xl mx-auto relative z-1'>
+    <div ref={mainRef} className='flex flex-col justify-center pt-8 pb-12 max-w-6xl mx-auto relative z-1 md:px-6 px-2 w-full'>
       <Divider variant='solid' className='!border-bg-secondary'>
         <MtbTypography variant='h1' customClassName='max-md:whitespace-normal'>
           {t('homepage.explore_title')}

@@ -107,7 +107,7 @@ function Header() {
           <img
             src={imgUrl}
             alt="avatar"
-            className="w-10 h-10 rounded-full object-cover border border-accent-primary/50 transition-transform hover:scale-105"
+            className="w-10 h-10 rounded-full object-cover border border-accent-primary/50 transition-transform hover:scale-105 cursor-pointer"
           />
         ) : (
           <span className={cn(`rounded-full px-2 py-1 hover:bg-accent-primary/20 cursor-pointer transition-base text-${size}`)}>

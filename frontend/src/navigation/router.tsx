@@ -65,6 +65,7 @@ export const renderMenu = (isHasActive: boolean) => {
       const linkClasses = cn(
         "py-2 transition-all duration-300 border-b-[3px] block", 
         "text-primary dark:text-white", 
+        "cursor-pointer",
         isActive 
           ? "border-primary text-primary" 
           : "border-transparent hover:text-primary hover:border-primary/50" 

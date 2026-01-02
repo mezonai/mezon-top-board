@@ -65,38 +65,44 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
 
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
-  }  
+  }
   return (
     <GlassCard
       hoverEffect={true}
       className={cn(
-        'p-4 relative select-none',
+        'relative select-none',
       )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {!isPublic && <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />}
-      <div className='relative'>
-        <div className='w-20 m-auto'>
-          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
+      {!isPublic && (
+        <>
+          <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
+          <div className="owner-actions absolute top-2 right-2">
+            <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
+          </div>
+        </>
+      )}
+      <div className='p-4'>
+        <div className='relative'>
+          <div className='w-20 m-auto'>
+            <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
+          </div>
         </div>
-        {!isPublic && (<div className='owner-actions absolute top-2 right-2'>
-          <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
-        </div>)}
-      </div>
-      <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
-        {data?.name || t('component.bot_grid_item.default_name')}
-      </div>
-      <div className='flex justify-between items-center text-secondary text-sm font-medium'>
-        <p className='flex items-center gap-1'>
-          <StarOutlined className="text-warning" /> 
-          <span className='text-primary'>{data?.rateScore || 0}</span>
-        </p>
-        <p className='flex items-center gap-1'>
-          <RiseOutlined className="text-success" />
-          <span className='text-primary'>841,999</span>
-        </p>
+        <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
+          {data?.name || t('component.bot_grid_item.default_name')}
+        </div>
+        <div className='flex justify-between items-center text-secondary text-sm font-medium'>
+          <p className='flex items-center gap-1'>
+            <StarOutlined className="text-warning" />
+            <span className='text-primary'>{data?.rateScore || 0}</span>
+          </p>
+          <p className='flex items-center gap-1'>
+            <RiseOutlined className="text-success" />
+            <span className='text-primary'>841,999</span>
+          </p>
+        </div>
       </div>
       <PreviewModal
         open={!!previewVersion}
