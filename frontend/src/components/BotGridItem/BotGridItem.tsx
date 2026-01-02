@@ -11,8 +11,10 @@ import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
+import { useTranslation } from 'react-i18next'
 
 function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
+  const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
@@ -74,7 +76,7 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {!isPublic && <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)} />}
+      {!isPublic && <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />}
       <div className='relative'>
         <div className='w-20 m-auto'>
           <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
@@ -84,7 +86,7 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
         </div>)}
       </div>
       <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
-        {data?.name || 'Name'}
+        {data?.name || t('component.bot_grid_item.default_name')}
       </div>
       <div className='flex justify-between items-center text-secondary text-sm font-medium'>
         <p className='flex items-center gap-1'>

@@ -1,0 +1,27 @@
+{
+    "bot_detail": {
+        "explore_title": "Explore millions of Mezon Bots",
+        "overview": "Overview",
+        "more_like_this": "More like this",
+        "no_related_bot": "No related bot",
+        "ratings_reviews": "Ratings & Reviews",
+        "review_count": "reviews",
+        "review_guidelines": "Reviews can be left only by registered users. All reviews are moderated by our moderators. Please make sure to check our guidelines before posting.",
+        "stars": "stars",
+        "load_more": "Load More",
+        "error_loading_more": "Error loading more",
+        "details": "Details",
+        "prefix": "Prefix: {{prefix}}",
+        "socials": "Socials",
+        "support_link": "{{name}}'s Support link",
+        "categories": "Categories",
+        "creators": "Creators",
+        "owner_avatar_alt": "Owner avatar",
+        "user_avatar_alt": "User avatar",
+        "bad_request": "Bad Request!",
+        "chat_now": "Chat now",
+        "success": "Successfully",
+        "comment_placeholder": "Write your comment...",
+        "post_rating": "Post Rating"
+    }
+}

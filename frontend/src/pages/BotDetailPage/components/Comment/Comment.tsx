@@ -5,14 +5,16 @@ import { RatingResponse } from '@app/services/api/rating/rating.types'
 import { formatAgo } from '@app/utils/date'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 function Comment({ rating }: { rating: RatingResponse }) {
+  const { t } = useTranslation(['bot_detail_page'])
   return (
     <div className='flex gap-10 p-4 shadow-sm rounded-2xl'>
       <Link to={`/profile/${rating.user.id}`} className='w-15 flex-shrink-0'>
         <img
           src={rating.user?.profileImage ? getUrlMedia(rating.user?.profileImage) : avatar}
-          alt={rating.user?.name || 'User avatar'}
+          alt={rating.user?.name || t('bot_detail.user_avatar_alt')}
           className='rounded-full w-full aspect-square object-cover'
         />
       </Link>
@@ -26,7 +28,7 @@ function Comment({ rating }: { rating: RatingResponse }) {
           </Link>
 
           <MtbTypography variant='p' weight='italic' customClassName='text-tertiary'>
-            {formatAgo(rating.updatedAt)}
+            {formatAgo(rating.updatedAt, t)}
           </MtbTypography>
         </div>
 

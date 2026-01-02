@@ -1,0 +1,28 @@
+{
+    "homepage": {
+        "explore_title": "Explore millions of Mezon Bots",
+        "mezon_bots": "Mezon Bots",
+        "showing_page": "Showing {{current}} of {{total}} page",
+        "no_result": "No result",
+        "sort_placeholder": "Sort bots by...",
+        "select_placeholder": "Select",
+        "sort_title": "Sort by",
+        "title": "Title",
+        "sort_options": {
+            "created_newest": "Date Created (Newest → Oldest)",
+            "created_oldest": "Date Created (Oldest → Newest)",
+            "name_az": "Name (A–Z)",
+            "name_za": "Name (Z–A)",
+            "updated_newest": "Date Updated (Newest → Oldest)",
+            "updated_oldest": "Date Updated (Oldest → Newest)"
+        },
+        "pagination_title": "Per page",
+        "bots_per_page": "{{count}}"
+    },
+    "hero": {
+        "title": "Mezon Top Board",
+        "subtitle": "#1 Bot Listing for Mezon",
+        "description": "Welcome to Mezon Top Board, your go-to platform for discovering the best applications built on the Mezon ecosystem. Our mission is to curate and showcase top-tier applications that leverage Mezon's cutting-edge technology, helping users and developers explore innovative solutions with ease.",
+        "get_started": "Get Started"
+    }
+}

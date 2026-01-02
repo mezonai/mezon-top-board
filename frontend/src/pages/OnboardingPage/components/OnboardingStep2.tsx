@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Input, Spin, Tooltip } from 'antd';
@@ -25,8 +26,9 @@ interface Props {
 function OnboardingStep2({ onSubmitSuccess }: Props) {
   const { data: userResponse, isLoading: isLoadingUser } = useUserControllerGetUserDetailsQuery();
   const [updateUser, { isLoading: isUpdating }] = useUserControllerSelfUpdateUserMutation();
-  const [uploadImage, { isLoading: isUploadingAvatar }] = useMediaControllerCreateMediaMutation();
+  const [_, { isLoading: isUploadingAvatar }] = useMediaControllerCreateMediaMutation();
   const [isMediaManagerOpen, setIsMediaManagerOpen] = useState(false);
+  const { t } = useTranslation(['onboarding_page']);
   const methods = useForm<SelfUpdateUserRequest>();
   const { control, handleSubmit, reset, formState: { errors }, setValue, watch } = methods;
   const profileImageValue = watch('profileImage');
@@ -46,12 +48,12 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
   const onSubmit = async (formData: SelfUpdateUserRequest) => {
     try {
       await updateUser({ selfUpdateUserRequest: formData }).unwrap();
-      toast.success('Profile updated successfully!');
+      toast.success(t('onboarding.step2.update_success'));
       
       onSubmitSuccess(); 
       
     } catch (err) {
-      toast.error('Failed to update profile.');
+      toast.error(t('onboarding.step2.update_fail'));
     }
   };
 
@@ -71,14 +73,14 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
           <div className='flex items-center gap-3'>
             <div>
               <MtbTypography variant='h2' customClassName='text-primary mb-0'>
-                Profile Information
+                {t('onboarding.step2.title')}
               </MtbTypography>
               <MtbTypography variant='p' customClassName='text-secondary text-sm mt-0 !font-normal'>
-                Your information has been pre-filled from your Mezon account
+                {t('onboarding.step2.description')}
               </MtbTypography>
             </div>
           </div>
-          <span className='px-3 py-1 text-xs rounded-full bg-primary-100 text-primary h-fit'>From Mezon</span>
+          <span className='px-3 py-1 text-xs rounded-full bg-primary-100 text-primary h-fit'>{t('onboarding.step2.from_mezon')}</span>
         </div>
 
         <div className='flex flex-col items-center mb-4'>
@@ -90,7 +92,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
                 isUpdatingAvatar={isUploadingAvatar}
               />
             </div>
-            <Tooltip title='Upload new photo'>
+            <Tooltip title={t('onboarding.step2.upload_tooltip')}>
               <button
                 type='button'
                 onClick={() => setIsMediaManagerOpen(true)}
@@ -102,32 +104,32 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
           </div>
         </div>
 
-        <FormField label='Display Name *' errorText={errors.name?.message}>
+        <FormField label={t('onboarding.step2.display_name') + ' *'} errorText={errors.name?.message}>
           <Controller
             name='name'
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder='Alex Johnson' status={errorStatus(errors.name)} />
+              <Input {...field} placeholder={t('onboarding.step2.display_name_placeholder')} status={errorStatus(errors.name)} />
             )}
           />
-          <p className='text-xs text-secondary mt-1'>3-50 characters. This is how others will see your name.</p>
+          <p className='text-xs text-secondary mt-1'>{t('onboarding.step2.display_name_desc')}</p>
         </FormField>
         
-        <FormField label='Email'>
+        <FormField label={t('onboarding.step2.email')}>
           <Input value={userResponse?.data?.email} className='!text-secondary' disabled />
         </FormField>
         
-        <FormField label='Bio (Optional)' errorText={errors.bio?.message}>
+        <FormField label={t('onboarding.step2.bio')} errorText={errors.bio?.message}>
           <Controller
             name='bio'
             control={control}
             render={({ field }) => (
-              <Input.TextArea {...field} rows={3} placeholder='Tell us about yourself...' />
+              <Input.TextArea {...field} rows={3} placeholder={t('onboarding.step2.bio_placeholder')} />
             )}
           />
           <div className='flex justify-between text-xs text-secondary mt-1'>
-            <span>Share a short introduction.</span>
-            <span>{bioValue?.length}/500 characters</span>
+            <span>{t('onboarding.step2.bio_desc_1')}</span>
+            <span>{t('onboarding.step2.bio_desc_2', { current: bioValue?.length || 0, max: 500 })}</span>
           </div>
         </FormField>
         
@@ -141,7 +143,7 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
             onClick={() => handleSubmit(onSubmit)()}
             className='hover:bg-primary text-sm p-5'
           >
-            Save & Continue
+            {t('onboarding.step2.save_continue')}
           </MtbButton>
         </div>
 

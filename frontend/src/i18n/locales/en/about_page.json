@@ -1,0 +1,34 @@
+{
+    "about": {
+        "hero": {
+            "title": "Power your discovery and growth with Mezon Bots",
+            "subtitle": "Gain millions of impressions for your app or community on the #1 platform for bot and server discovery"
+        },
+        "stats": {
+            "community": "Community, App, & Bot Advertisers",
+            "impressions": "Impressions per Week",
+            "growth": "Platform Growth"
+        },
+        "testimonials": {
+            "title": "Why Mezon Top Board? Here's Everything!",
+            "subtitle": "Hear from our trusted partners - our customers say it best"
+        },
+        "vision": {
+            "title": "Our Vision",
+            "description": "We aim to be the ultimate listing hub for Mezon-based applications, fostering a thriving community where developers and users can connect, share, and grow. By providing a structured and transparent overview of applications, we empower users to make informed decisions and developers to gain visibility for their projects."
+        },
+        "offer": {
+            "title": "What We Offer",
+            "description": "Curated selection of top Mezon-powered applications.\n\nDetailed descriptions, standout features, and real-world use cases.\n\nRatings, reviews, and discussions that spark collaboration.\n\nA stage to promote your projects and reach a wider audience."
+        },
+        "choose_us": {
+            "title": "Why Choose We?",
+            "description": "Mezon Top Board bridges the gap between users and Mezon-powered applications\n\nWhether you're a developer seeking visibility or a user searching for the next greatapp, we provide the tools, resources, and community to support your journey."
+        },
+        "cta": {
+            "title": "Have we got your attention?",
+            "description": "Join us in exploring the future of applications built on Mezon. Discover, engage, and innovate with Mezon Top Board!",
+            "button": "Get Started"
+        }
+    }
+}

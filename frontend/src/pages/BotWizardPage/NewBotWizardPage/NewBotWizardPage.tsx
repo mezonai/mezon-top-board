@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Steps, message } from 'antd'
+import { useTranslation } from "react-i18next";
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import Button from '@app/mtb-ui/Button'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -22,6 +23,7 @@ const defaultValues: BotWizardRequest = {
 }
 
 function NewBotWizardPage() {
+    const { t } = useTranslation(['bot_wizard_page']);
     const methods = useForm<BotWizardRequest>({ defaultValues, mode: 'onChange' })
     const [current, setCurrent] = useState(0)
     const navigate = useNavigate()
@@ -31,13 +33,13 @@ function NewBotWizardPage() {
 
     const steps = useMemo(
         () => [
-            { title: 'Bot Info', content: <NewBotWizardStep1 /> },
-            { title: 'Commands', content: <NewBotWizardStep2 /> },
-            { title: 'Integrations', content: <NewBotWizardStep3 /> },
-            { title: 'Events', content: <NewBotWizardStep4 /> },
-            { title: 'Preview', content: <NewBotWizardStep5 /> },
+            { title: t('new_bot_wizard.steps.bot_info'), content: <NewBotWizardStep1 /> },
+            { title: t('new_bot_wizard.steps.commands'), content: <NewBotWizardStep2 /> },
+            { title: t('new_bot_wizard.steps.integrations'), content: <NewBotWizardStep3 /> },
+            { title: t('new_bot_wizard.steps.events'), content: <NewBotWizardStep4 /> },
+            { title: t('new_bot_wizard.steps.preview'), content: <NewBotWizardStep5 /> },
         ],
-        [],
+        [t],
     )
 
     const next = async () => {
@@ -48,13 +50,13 @@ function NewBotWizardPage() {
             const values = methods.getValues()
             try {
                 await generateBot(values).unwrap()
-                message.success('Request submitted successfully!')
+                message.success(t('new_bot_wizard.messages.success'))
                 setIsRedirecting(true)
                 setTimeout(() => {
                     navigate('/bot-wizard')
                 }, 1000) 
             } catch (error) {
-                message.error('Failed to submit request. Please try again.')
+                message.error(t('new_bot_wizard.messages.failure'))
                 setIsRedirecting(false) 
             }
             return
@@ -68,7 +70,7 @@ function NewBotWizardPage() {
 
     return (
         <div className='w-full text-body'>
-            <MtbTypography variant='h2'>New Bot Wizard</MtbTypography>   
+            <MtbTypography variant='h2'>{t('new_bot_wizard.title')}</MtbTypography>   
             <div className='divider-horizontal' />
 
             <FormProvider {...methods}>
@@ -89,7 +91,7 @@ function NewBotWizardPage() {
                                 variant='outlined' 
                                 onClick={prev}
                             >
-                                Back
+                                {t('new_bot_wizard.navigation.back')}
                             </Button>
                         )}
                         <Button 
@@ -99,8 +101,8 @@ function NewBotWizardPage() {
                             loading={isLoadingState}
                         >
                             {current === steps.length - 1 
-                                ? (isRedirecting ? 'Redirecting...' : 'Finish') 
-                                : 'Next'}
+                                ? (isRedirecting ? t('new_bot_wizard.navigation.redirecting') : t('new_bot_wizard.navigation.finish')) 
+                                : t('new_bot_wizard.navigation.next')}
                         </Button>
                     </div>
                 </div>

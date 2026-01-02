@@ -15,6 +15,7 @@ import Button from '@app/mtb-ui/Button'
 import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
@@ -22,18 +23,21 @@ import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.
 import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
-const sortOptions = [
-  { value: "createdAt_DESC", label: "Created (Newest)" },
-  { value: "createdAt_ASC", label: "Created (Oldest)" },
-  { value: "name_ASC", label: "Name (A–Z)" },
-  { value: "name_DESC", label: "Name (Z–A)" },
-  { value: "updatedAt_DESC", label: "Updated (Newest)" },
-  { value: "updatedAt_ASC", label: "Updated (Oldest)" },
-];
 
 type ViewMode = 'list' | 'grid';
 
 function Main({ isSearchPage = false }: IMainProps) {
+  const { t } = useTranslation(['home_page'])
+  
+  const translatedSortOptions = useMemo(() => [
+    { value: "createdAt_DESC", label: t('homepage.sort_options.created_newest') },
+    { value: "createdAt_ASC", label: t('homepage.sort_options.created_oldest') },
+    { value: "name_ASC", label: t('homepage.sort_options.name_az') },
+    { value: "name_DESC", label: t('homepage.sort_options.name_za') },
+    { value: "updatedAt_DESC", label: t('homepage.sort_options.updated_newest') },
+    { value: "updatedAt_ASC", label: t('homepage.sort_options.updated_oldest') },
+  ], [t])
+
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
   const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -52,7 +56,10 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [sortField, setSortField] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
-  const [selectedSort, setSelectedSort] = useState<IOption>(sortOptions[0]);
+  const [selectedSort, setSelectedSort] = useState<IOption>(() => ({
+    value: "createdAt_DESC",
+    label: t('homepage.sort_options.created_newest')
+  }));
 
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
   const [page, setPage] = useState<number>(() => getPageFromParams(searchParams))
@@ -104,10 +111,10 @@ function Main({ isSearchPage = false }: IMainProps) {
   }, [searchParams])
 
   useEffect(() => {
-    setSelectedSort(sortOptions[0])
+    setSelectedSort(translatedSortOptions[0])
     setSortField('createdAt')
     setSortOrder('DESC')
-  }, [searchQuery])
+  }, [searchQuery, translatedSortOptions])
 
   const searchMezonAppList = (searchQuery?: string, tagIds?: string[], type?: MezonAppType) => {
     getMezonApp({
@@ -124,9 +131,9 @@ function Main({ isSearchPage = false }: IMainProps) {
   const listOptions = useMemo(() => {
     return pageOptions.map((value) => ({
       value,
-      label: `${value}`
+      label: t('homepage.bots_per_page', { count: value })
     }))
-  }, [])
+  }, [t])
 
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
@@ -182,7 +189,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     <div ref={mainRef} className='flex flex-col justify-center pt-8 pb-12 max-w-6xl mx-auto relative z-1'>
       <Divider variant='solid' className='!border-bg-secondary'>
         <MtbTypography variant='h1' customClassName='max-md:whitespace-normal'>
-          Explore millions of Mezon Bots
+          {t('homepage.explore_title')}
         </MtbTypography>
       </Divider>
       <div className='pt-3'>
@@ -195,24 +202,24 @@ function Main({ isSearchPage = false }: IMainProps) {
       <div className='pt-8'>
         <Flex justify="space-between" wrap="wrap" align='center' className="gap-4">
           <div className='flex-shrink-0'>
-            <MtbTypography variant='h3'>Mezon Bots</MtbTypography>
+            <MtbTypography variant='h3'>{t('homepage.mezon_bots')}</MtbTypography>
             <MtbTypography variant='h5' weight='normal'>
-              Showing 1 of {mezonApp.totalPages ?? 0} page
+              {t('homepage.showing_page', { current: 1, total: mezonApp.totalPages ?? 0 })}
             </MtbTypography>
           </div>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 justify-end">
             <div className="flex items-center gap-2">
-              <span className="text-secondary whitespace-nowrap">Sort by:</span>
+              <span className="text-secondary whitespace-nowrap">{t('homepage.sort_title')}:</span>
               <SingleSelect
                 getPopupContainer={(trigger) => trigger.parentElement}
-                options={sortOptions}
-                value={selectedSort}
+                options={translatedSortOptions}
+                value={translatedSortOptions.find(o => o.value === selectedSort.value) || selectedSort}
                 onChange={handleSortChange}
                 size='large'
-                placeholder="Sort by"
+                placeholder={t('homepage.sort_placeholder')}
                 className='min-w-[160px]'
                 dropdownStyle={{ width: '13rem' }}
-                defaultValue={sortOptions[0]}
+                defaultValue={translatedSortOptions[0]}
                 data-e2e="selectSortOptions"
               />
             </div>
@@ -221,7 +228,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               <>
                 <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
                 <div className="flex items-center gap-2">
-                  <span className="text-secondary whitespace-nowrap">Per page:</span>
+                  <span className="text-secondary whitespace-nowrap">{t('homepage.pagination_title')}:</span>
                   <SingleSelect
                     getPopupContainer={(trigger) => trigger.parentElement}
                     onChange={handlePageSizeChange}
@@ -293,7 +300,7 @@ function Main({ isSearchPage = false }: IMainProps) {
             </div>
           ) : (
             <MtbTypography variant='h4' weight='normal' customClassName='!text-center !block !text-secondary'>
-              No result
+              {t('homepage.no_result')}
             </MtbTypography>
           )}
           <div className='flex flex-col items-center gap-5 pt-10'>

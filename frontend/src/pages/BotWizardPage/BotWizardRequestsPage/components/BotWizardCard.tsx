@@ -1,4 +1,5 @@
 import { message, Tag, Tooltip } from 'antd'
+import { useTranslation } from "react-i18next";
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import MtbButton from '@app/mtb-ui/Button'
 import { useState } from 'react'
@@ -16,6 +17,7 @@ import { getStatusColor } from '../helpers'
 import { BotWizard } from '@app/types/botWizard.types'
 
 export default function BotWizardCard({ item }: { item: BotWizard }) {
+    const { t } = useTranslation(['bot_wizard_page']);
     const [open, setOpen] = useState(false)
     const [downloadTrigger, { isLoading: isDownloading }] = useLazyTempFilesDownloadQuery()
 
@@ -31,7 +33,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
             link.click()
             link.remove()
         } catch (err) {
-            message.error('Failed to download file. Please try again later.')
+            message.error(t('bot_wizard_card.download_failed'))
         }
     }
 
@@ -48,23 +50,23 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                         </div>
                     </div>
                     <Tag color={getStatusColor(item.status)} className='m-0 capitalize'>
-                        {item.status.toLowerCase()}
+                        {t(`bot_wizard_requests.status.${item.status.toLowerCase()}`)}
                     </Tag>
                 </div>
 
                 <div className='flex items-center gap-2 text-sm bg-container p-2 rounded-md'>
                     <CalendarOutlined />
-                    <span>Created: <span className='font-medium'>{formatDate(item?.createdAt)}</span></span>
+                    <span>{t('bot_wizard_card.created')}: <span className='font-medium'>{formatDate(item?.createdAt)}</span></span>
                 </div>
 
                 <div className='flex flex-wrap gap-2'>
-                    <Tooltip title="View file metadata">
+                    <Tooltip title={t('bot_wizard_card.view_metadata')}>
                         <MtbButton 
                             variant='outlined' 
                             onClick={() => setOpen(true)}
                             icon={<InfoCircleOutlined />}
                         >
-                            Details
+                            {t('bot_wizard_card.details')}
                         </MtbButton>
                     </Tooltip>
 
@@ -76,7 +78,7 @@ export default function BotWizardCard({ item }: { item: BotWizard }) {
                             loading={isDownloading}
                             icon={<DownloadOutlined />}
                         >
-                            Download
+                            {t('bot_wizard_card.download')}
                         </MtbButton>
                     )}
                 </div>

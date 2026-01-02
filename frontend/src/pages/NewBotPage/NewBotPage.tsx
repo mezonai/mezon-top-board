@@ -1,4 +1,5 @@
 import { Steps } from 'antd'
+import { useTranslation } from 'react-i18next'
 import Button from '@app/mtb-ui/Button'
 import { useState, useEffect, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
@@ -14,7 +15,9 @@ import useOwnershipCheck from '@app/hook/useOwnershipCheck'
 import { avatarBotDefault } from '@app/assets'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
-import { ADD_BOT_SCHEMA } from '@app/validations/addBot.validations'
+import { getAddBotSchema } from '@app/validations/addBot.validations'
+
+
 import {
   useLazyMezonAppControllerGetMezonAppDetailQuery,
 } from '@app/services/api/mezonApp/mezonApp'
@@ -41,6 +44,7 @@ import { IUserStore } from '@app/store/user'
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
 function NewBotPage() {
+  const { t } = useTranslation(['new_bot_page', 'validation'])
   const [currentStep, setCurrentStep] = useState(0)
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
@@ -67,7 +71,7 @@ function NewBotPage() {
       isAutoPublished: true,
       socialLinks: []
     },
-    resolver: yupResolver(ADD_BOT_SCHEMA),
+    resolver: yupResolver(getAddBotSchema),
     mode: 'onChange'
   })
 
@@ -134,7 +138,7 @@ function NewBotPage() {
       setValue('featuredImage', selection)
       setAvatar(getUrlMedia(selection))
     } else {
-      toast.error('No image selected')
+      toast.error(t('new_bot_page.errors.no_image_selected'))
     }
   }
 
@@ -185,26 +189,26 @@ function NewBotPage() {
   const prev = () => setCurrentStep((prev) => Math.max(prev - 1, 0))
 
   const createSteps = [
-    { title: 'Choose Type', content: <Step1ChooseType /> },
-    { title: 'Provide ID', content: <Step2ProvideID type={watch('type')} /> },
-    { title: 'Fill Details', content: <Step3FillDetails isEdit={false} /> },
+    { title: t('new_bot_page.steps.choose_type'), content: <Step1ChooseType /> },
+    { title: t('new_bot_page.steps.provide_id'), content: <Step2ProvideID type={watch('type')} /> },
+    { title: t('new_bot_page.steps.fill_details'), content: <Step3FillDetails isEdit={false} /> },
     {
-      title: 'Review',
+      title: t('new_bot_page.steps.review'),
       content: (<Step4Review isEdit={isEditMode} />)
     },
     {
-      title: 'Result',
+      title: t('new_bot_page.steps.result'),
       content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={false} />
     }
   ]
 
   const editSteps = [
-    { title: 'Edit Bot Info', content: <Step3FillDetails isEdit={true} /> },
+    { title: t('new_bot_page.steps.edit_info'), content: <Step3FillDetails isEdit={true} /> },
     {
-      title: 'Review',
+      title: t('new_bot_page.steps.review'),
       content: (<Step4Review isEdit={isEditMode} />)
     },
-    { title: 'Result', content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true} /> }
+    { title: t('new_bot_page.steps.result'), content: <Step5Submit isSuccess={submitStatus === 'success'} botId={submittedBotId} isEdit={true} /> }
   ]
   const steps = isEditMode ? editSteps : createSteps
 
@@ -234,7 +238,7 @@ function NewBotPage() {
   )
 
   const SubmitForm = handleSubmit(onSubmit, () => {
-    toast.error('Form validation failed!')
+    toast.error(t('new_bot_page.validation_failed'))
   })
 
   return (
@@ -252,8 +256,8 @@ function NewBotPage() {
             />
           </div>
           <div>
-            <MtbTypography variant='h4' customClassName='text-primary'>{nameValue || 'Name'}</MtbTypography>
-            <MtbTypography variant='p' customClassName='text-secondary'>{headlineValue || 'Headline (Short description)'}</MtbTypography>
+            <MtbTypography variant='h4' customClassName='text-primary'>{nameValue || t('new_bot_page.avatar_name')}</MtbTypography>
+            <MtbTypography variant='p' customClassName='text-secondary'>{headlineValue || t('new_bot_page.avatar_headline')}</MtbTypography>
           </div>
         </div>
       </div>
@@ -278,25 +282,25 @@ function NewBotPage() {
             <div className={`flex pt-8 ${((!isEditMode && currentStep === 0) || (isEditMode && currentStep === 0)) ? 'justify-end' : 'justify-between'}`}>
               {currentStep > 0 && currentStep !== (isEditMode ? 2 : 4) && (
                 <Button color="default" variant="outlined" onClick={prev} >
-                  Back
+                  {t('new_bot_page.buttons.back')}
                 </Button>
               )}
 
               {((!isEditMode && currentStep < 3) || (isEditMode && currentStep === 0)) && (
                 <Button variant='outlined' onClick={next}>
-                  Next
+                  {t('new_bot_page.buttons.next')}
                 </Button>
               )}
 
               {(currentStep === 3 && !isEditMode) && (
                 <Button onClick={SubmitForm}>
-                  Submit for Review
+                  {t('new_bot_page.buttons.submit')}
                 </Button>
               )}
 
               {(currentStep === 1 && isEditMode) && (
                 <Button onClick={SubmitForm}>
-                  Update
+                  {t('new_bot_page.buttons.update')}
                 </Button>
               )}
             </div>

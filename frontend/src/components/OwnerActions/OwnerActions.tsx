@@ -7,8 +7,10 @@ import { AppVersion } from '@app/types/appVersion.types'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import styles from './OwnerActions.module.scss'
+import { useTranslation } from 'react-i18next'
 
 function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBotCard?: boolean; onNewVersionClick?: (version?: AppVersion) => void }) {
+  const { t } = useTranslation(['components'])
   const navigate = useNavigate()
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -19,26 +21,26 @@ function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBot
 
   const handleDeleteBot = (botId: string) => {
     confirm({
-      title: 'Are you sure you want to delete this bot?',
+      title: t('component.owner_actions.delete_confirm_title'),
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone.',
-      okText: 'Yes, delete it',
+      content: t('component.owner_actions.delete_confirm_content'),
+      okText: t('component.owner_actions.delete_confirm_ok'),
       okType: 'danger',
-      cancelText: 'Cancel',
+      cancelText: t('component.owner_actions.cancel'),
       onOk: async () => {
         try {
           await deleteBot({ requestWithId: { id: botId } }).unwrap()
           navigate('/')
-          toast.success('Bot deleted successfully.')
+          toast.success(t('component.owner_actions.delete_success'))
         } catch (error) {
-          toast.error('Failed to delete bot.')
+          toast.error(t('component.owner_actions.delete_error'))
         }
       }
     })
   }
   const newVersionItems = data?.hasNewUpdate
     ? [{
-        label: 'New version',
+        label: t('component.owner_actions.new_version'),
         style: { whiteSpace: 'nowrap' },
         key: '0',
         icon: <ExclamationCircleOutlined />,
@@ -51,7 +53,7 @@ function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBot
   const items: MenuProps['items'] = [
     ...newVersionItems,
     {
-      label: 'Edit',
+      label: t('component.owner_actions.edit'),
       key: '1',
       icon: <EditOutlined />,
       onClick: () => {
@@ -59,13 +61,13 @@ function OwnerActions({ data, isBotCard, onNewVersionClick }: { data: any; isBot
       }
     },
     {
-      label: 'Delete',
+      label: t('component.owner_actions.delete'),
       key: '2',
       danger: true,
       icon: <DeleteOutlined />,
       onClick: () => {
         if (!data?.id) {
-          toast.error('Invalid bot ID.')
+          toast.error(t('component.owner_actions.invalid_id'))
           return
         }
         handleDeleteBot(data?.id)

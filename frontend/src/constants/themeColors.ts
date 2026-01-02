@@ -17,11 +17,11 @@ type ColorOption = {
 };
 
 export const COLOR_OPTIONS: ColorOption[] = [
-  { key: "red",    label: "Red",    tailwindClass: "bg-[#F2385A]" },
-  { key: "pink",   label: "Pink",   tailwindClass: "bg-[#E91E63]" },
-  { key: "purple", label: "Purple", tailwindClass: "bg-[#9C27B0]" },
-  { key: "blue",   label: "Blue",   tailwindClass: "bg-[#1890FF]" },
-  { key: "green",  label: "Green",  tailwindClass: "bg-[#52C41A]" },
-  { key: "yellow", label: "Yellow", tailwindClass: "bg-[#FADB14]" },
-  { key: "orange", label: "Orange", tailwindClass: "bg-[#FA8C16]" },
+  { key: "red",    label: "colors.red",    tailwindClass: "bg-[#F2385A]" },
+  { key: "pink",   label: "colors.pink",   tailwindClass: "bg-[#E91E63]" },
+  { key: "purple", label: "colors.purple", tailwindClass: "bg-[#9C27B0]" },
+  { key: "blue",   label: "colors.blue",   tailwindClass: "bg-[#1890FF]" },
+  { key: "green",  label: "colors.green",  tailwindClass: "bg-[#52C41A]" },
+  { key: "yellow", label: "colors.yellow", tailwindClass: "bg-[#FADB14]" },
+  { key: "orange", label: "colors.orange", tailwindClass: "bg-[#FA8C16]" },
 ];

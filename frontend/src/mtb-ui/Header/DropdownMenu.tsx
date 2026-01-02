@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@app/utils/cn";
 import { COLOR_OPTIONS, THEME_COLORS } from "@app/constants/themeColors";
 import { lighten } from "@app/utils/colors";
+import { LANGUAGES } from "@app/constants/language";
+import { useTranslation } from "react-i18next";
 
-type ViewState = "main" | "colors" | "mode";
+type ViewState = "main" | "colors" | "mode" | "language";
 type Mode = 'Light' | 'Dark';
 const MODES: Mode[] = ['Light', 'Dark'];
 
@@ -57,9 +59,10 @@ const MenuHeader = ({ title, onBack }: { title: string; onBack: () => void }) =>
 export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boolean, handleLogout: () => void }) {
   const [view, setView] = useState<ViewState>("main")
   const { theme, setTheme, primaryColor, setPrimaryColor } = useTheme()
+  const { i18n, t } = useTranslation()
   const navigate = useNavigate()
 
-  const currentMode = theme === 'dark' ? 'Dark' : 'Light';
+  const currentMode = theme === 'dark' ? t('header_menu.dark') : t('header_menu.light');
   const activeColorClass = COLOR_OPTIONS.find(c => c.key === primaryColor)?.tailwindClass || 'bg-red-500';
   const activeColorHex = THEME_COLORS[primaryColor as keyof typeof THEME_COLORS] || 'bg-red-500';
 
@@ -73,7 +76,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
           {isLogin && (
             <>
               <MenuItem 
-                label="Profile" 
+                label={t('header_menu.profile')}
                 onClick={() => { navigate(`/profile`) }} 
               />
               <div className="divider-horizontal my-1 opacity-50" />
@@ -81,7 +84,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
           )}
 
           <MenuItem
-            label="Colors"
+            label={t('header_menu.colors')}
             right={
               <>
                 <span
@@ -95,7 +98,20 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
           />
 
           <MenuItem
-            label="Color Mode"
+            label={t('header_menu.language')}
+            right={
+              <>
+                <span className="uppercase font-semibold text-xs">
+                  {LANGUAGES.find(l => l.key === i18n.language)?.label || t('header_menu.language')}
+                </span>
+                <RightOutlined className="ml-2" />
+              </>
+            }
+            onClick={() => setView("language")}
+          />
+
+          <MenuItem
+            label={t('header_menu.color_mode')}
             right={
               <>
                 <span className="uppercase font-semibold text-xs">{currentMode}</span>
@@ -109,7 +125,7 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
             <>
               <div className="divider-horizontal my-1 opacity-50" />
               <MenuItem 
-                label="Log out" 
+                label={t('header_menu.logout')}
                 onClick={handleLogout} 
               />
             </>
@@ -117,16 +133,31 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
         </>
       )}
 
+      {view === "language" && (<>
+        <MenuHeader title={t('header_menu.language')} onBack={() => setView("main")} />
+        <div className="max-h-[330px] overflow-y-auto custom-scrollbar flex flex-col gap-1">
+          {LANGUAGES.map((l) => (
+            <MenuItem
+              key={l.key}
+              label={l.label}
+              className={l.key === i18n.language ? "bg-hover" : ""} 
+              isActive={l.key === i18n.language}
+              onClick={() => i18n.changeLanguage(l.key)}
+            />
+          ))}
+        </div>
+      </>)}
+
       {view === "colors" && (
         <>
-          <MenuHeader title="Colors" onBack={() => setView("main")} />
+          <MenuHeader title={t('header_menu.colors')} onBack={() => setView("main")} />
           <div className="max-h-[330px] overflow-y-auto custom-scrollbar flex flex-col gap-1">
             {COLOR_OPTIONS.map((c) => {
               const isSelected = primaryColor === c.key;
               return (
                 <MenuItem
                   key={c.key}
-                  label={c.label}
+                  label={t(c.label)}
                   icon={
                     <span
                       className={cn(
@@ -148,11 +179,11 @@ export default function DropdownMenu({ isLogin, handleLogout }: { isLogin: boole
 
       {view === "mode" && (
         <>
-          <MenuHeader title="Color Mode" onBack={() => setView("main")} />
+          <MenuHeader title={t('header_menu.color_mode')} onBack={() => setView("main")} />
           {MODES.map((m) => (
             <MenuItem
               key={m}
-              label={m}
+              label={m === 'Light' ? t('header_menu.light') : t('header_menu.dark')}
               isActive={theme === m.toLowerCase()}
               onClick={() => setTheme(m.toLowerCase() as 'light' | 'dark')}
             />
