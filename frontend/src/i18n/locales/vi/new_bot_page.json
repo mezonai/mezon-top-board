@@ -3,7 +3,7 @@
         "steps": {
             "choose_type": "Chọn Loại",
             "provide_id": "Cung cấp ID",
-            "fill_details": "Điền chi tiết",
+            "fill_details": "Thông tin chi tiết",
             "review": "Xem lại",
             "result": "Kết quả",
             "edit_info": "Chỉnh sửa thông tin Bot"
@@ -41,7 +41,7 @@
             "install_link": "Liên kết cài đặt",
             "install_link_desc": "Nơi người dùng có thể cài đặt bot của bạn trên máy chủ Mezon của họ.",
             "prefix": "Prefix",
-            "prefix_desc": "Từ khóa hoặc cụm từ nào bot của bạn phản ứng?",
+            "prefix_desc": "Từ khóa hoặc cụm từ nào bot của bạn hoạt động?",
             "tags": "Thẻ",
             "tags_desc": "Chọn tối đa 12 danh mục đại diện tốt nhất cho cộng đồng của bạn.",
             "tag_price": "Giá thẻ",

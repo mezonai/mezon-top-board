@@ -43,8 +43,8 @@
     },
     "nav": {
         "home": "Home",
-        "about": "About Us",
-        "terms": "Terms of Service",
+        "about": "About",
+        "terms": "Terms",
         "help": "Help",
         "welcome": "Welcome",
         "login_redirect": "Login Redirect",

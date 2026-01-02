@@ -1,15 +1,15 @@
 {
     "bot_wizard": {
         "page_title": "Trình tạo mã nguồn",
-        "page_description": "Quản lý và xem xét các yêu cầu tạo bot.",
+        "page_description": "Quản lý các yêu cầu tạo mã nguồn bot.",
         "sidebar": {
             "title": "Điều hướng",
-            "requests": "Yêu cầu",
+            "requests": "Lịch sử",
             "new_wizard": "Trình tạo mã nguồn"
         }
     },
     "bot_wizard_requests": {
-        "title": "Yêu cầu tạo mã nguồn",
+        "title": "Lịch sử tạo mã nguồn bot",
         "status": {
             "all": "Tất cả",
             "processing": "Đang xử lý",

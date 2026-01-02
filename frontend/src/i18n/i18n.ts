@@ -82,7 +82,7 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
     defaultNS: 'common',
 
     detection: {
-        order: ['localStorage', 'navigator'],
+        order: ['localStorage'],
         lookupLocalStorage: 'i18nextLng',
         caches: ['localStorage']
     },

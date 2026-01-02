@@ -118,7 +118,7 @@ function GalleryPage() {
                                             />
                                         </div>
                                         <div className='px-1'>
-                                            <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate'>
+                                            <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate block w-full'>
                                                 {item.fileName}
                                             </MtbTypography>
                                             <MtbTypography variant='p' size={12} weight='normal' customClassName='!pl-0 text-secondary'>

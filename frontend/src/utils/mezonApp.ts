@@ -19,15 +19,15 @@ export function mapStatusToColor(status: number) {
 export function mapStatusToText(status: number) {
   switch (status) {
     case AppStatus.PENDING:
-      return 'status.pending';
+      return 'pending';
     case AppStatus.APPROVED:
-      return 'status.approved';
+      return 'approved';
     case AppStatus.REJECTED:
-      return 'status.rejected';
+      return 'rejected';
     case AppStatus.PUBLISHED:
-      return 'status.published';
+      return 'published';
     default:
-      return 'status.unknown';
+      return 'unknown';
   }
 }
 
