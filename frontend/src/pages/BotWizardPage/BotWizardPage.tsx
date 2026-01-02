@@ -2,6 +2,7 @@ import { Divider } from 'antd'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useLocation } from 'react-router-dom'
 import { useMemo } from 'react'
+import { useTranslation } from "react-i18next";
 import BotWizardSidebar from './components/BotWizardSidebar'
 import BotWizardRequestsPage from './BotWizardRequestsPage/BotWizardRequestsPage'
 import NewBotWizardPage from './NewBotWizardPage/NewBotWizardPage'
@@ -13,6 +14,7 @@ const WIZARD_VIEWS: Record<string, React.ReactNode> = {
 
 function BotWizardPage() {
   const { pathname } = useLocation()
+  const { t } = useTranslation(['bot_wizard_page']);
 
   const activeView = useMemo(() => {
     const segment = pathname.split('/').filter(Boolean).pop() ?? ''
@@ -21,9 +23,9 @@ function BotWizardPage() {
 
   return (
     <div className='pt-8 pb-12 w-[90%] m-auto'>
-      <MtbTypography variant='h1'>Bot Wizard</MtbTypography>
+      <MtbTypography variant='h1'>{t('bot_wizard.page_title')}</MtbTypography>
       <MtbTypography variant='h3' customClassName='!pl-0 text-gray-500 !font-normal'>
-        Manage and review bot generation requests.
+        {t('bot_wizard.page_description')}
       </MtbTypography>
       <Divider className='bg-border' />
       

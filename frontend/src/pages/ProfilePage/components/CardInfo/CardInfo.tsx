@@ -22,8 +22,10 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
+import { useTranslation } from "react-i18next";
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
+  const { t } = useTranslation(['profile_page']);
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
@@ -32,31 +34,31 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const cardInfoLink = [
     {
       icon: <InfoCircleOutlined />,
-      name: 'Overview',
+      name: t('profile.card_info.overview'),
       path: isPublic ? `/profile/${userInfo?.id}` : `/profile`,
       isPublic: true
     },
     {
       icon: <FileImageOutlined />,
-      name: 'Gallery',
+      name: t('profile.card_info.gallery'),
       path: '/profile/gallery',
       isPublic: false
     },
     {
       icon: <UserAddOutlined />,
-      name: 'Invitations',
+      name: t('profile.card_info.invitations'),
       path: '/profile',
       isPublic: false
     },
     {
       icon: <CreditCardOutlined />,
-      name: 'Subscriptions',
+      name: t('profile.card_info.subscriptions'),
       path: '/profile',
       isPublic: false
     },
     {
       icon: <SettingOutlined />,
-      name: 'Settings',
+      name: t('profile.card_info.settings'),
       path: '/profile/setting',
       isPublic: false
     }
@@ -74,9 +76,9 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           profileImage: selection
         }
       }).unwrap();
-      toast.success('Update Success');
+      toast.success(t('profile.card_info.update_success'));
     } catch (error) {
-      toast.error('Update failed!');
+      toast.error(t('profile.card_info.update_failed'));
     }
   }
 
@@ -86,9 +88,9 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
     try {
       await syncMezon(undefined).unwrap()
       window.dispatchEvent(new Event(AppEvent.SYNC_MEZON));
-      toast.success('Sync Success')
+      toast.success(t('profile.card_info.sync_success'))
     } catch (error) {
-      toast.error('Sync failed!')
+      toast.error(t('profile.card_info.sync_failed'))
     }
   }
 
@@ -110,7 +112,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       </div>
       <div>
         <MtbTypography variant='p' customClassName='!pl-0' weight='bold' textStyle={[TypographyStyle.UPPERCASE]}>
-          Generals
+          {t('profile.card_info.generals')}
         </MtbTypography>
         <MtbTypography variant='p' customClassName='!pl-0 !text-gray-500' size={14}>
           {userInfo?.bio}
@@ -131,11 +133,11 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       </div>
       {!isPublic &&
         <Popconfirm
-          title='Confirm Sync from Mezon'
-          description='Are you sure to sync name and avatar for this user? This action cannot be undone!'
+          title={t('profile.card_info.confirm_sync_title')}
+          description={t('profile.card_info.confirm_sync_desc')}
           onConfirm={handleSyncMezon}
-          okText='Yes'
-          cancelText='No'
+          okText={t('profile.card_info.yes')}
+          cancelText={t('profile.card_info.no')}
         >
           <Button
             className='mt-2'
@@ -143,7 +145,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             variant='outlined'
             icon={<SyncOutlined />}
           >
-            Sync from Mezon
+            {t('profile.card_info.sync_mezon')}
           </Button>
         </Popconfirm>
       }

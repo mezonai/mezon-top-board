@@ -3,7 +3,10 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import Button from '@app/mtb-ui/Button'
 import { useState } from 'react'
 
+import { useTranslation } from "react-i18next";
+
 function HelpPage() {
+  const { t } = useTranslation(['contact_page']);
   const [captcha, setCaptcha] = useState(generateCaptcha())
   const [captchaInput, setCaptchaInput] = useState('')
 
@@ -18,22 +21,22 @@ function HelpPage() {
     <main className='p-6'>
       <div className="container m-auto mt-2 pb-3">
         <header className='relative mb-10 flex justify-center'>
-          <MtbTypography variant='h2'>Contact Us</MtbTypography>
+          <MtbTypography variant='h2'>{t('contact.title')}</MtbTypography>
           <span className="absolute left-1/2 bottom-[-16px] w-28 h-[3px] bg-heading -translate-x-1/2"></span>
         </header>
         <section className='flex flex-col lg:flex-row lg:gap-36 xl:mx-12 xl:mr-20'>
           {/* Form */}
           <form action='' className='bg-secondary dark:bg-container p-6 w-full lg:w-1/2 rounded-xl shadow-md border border-transparent dark:border-border transition-colors duration-300'>
-            <MtbTypography variant='h4' label='Send us a message' />
+            <MtbTypography variant='h4' label={t('contact.form.title')} />
             <div className='flex gap-4 mb-4'>
-              <input type='text' placeholder='Your name' className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
-              <input type='email' placeholder='Your email' className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
+              <input type='text' placeholder={t('contact.form.name_placeholder')} className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
+              <input type='email' placeholder={t('contact.form.email_placeholder')} className='w-1/2 p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary' required />
             </div>
-            <textarea placeholder='Information' className='w-full p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary mb-4 h-24' required></textarea>
+            <textarea placeholder={t('contact.form.info_placeholder')} className='w-full p-2 rounded bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary mb-4 h-24' required></textarea>
             <div className="flex items-center gap-2 mb-4">
               <input
                 type="text"
-                placeholder="Verification code"
+                placeholder={t('contact.form.captcha_placeholder')}
                 className="p-2 rounded w-2/3 bg-body dark:bg-container-secondary text-primary border border-transparent dark:border-border placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary"
                 required
                 value={captchaInput}
@@ -48,7 +51,7 @@ function HelpPage() {
             </div>
             <div className='text-center'>
               <Button variant='submit' size='large'>
-                Submit
+                {t('contact.form.submit_btn')}
               </Button>
             </div>
           </form>
@@ -56,27 +59,27 @@ function HelpPage() {
           {/* Content */}
           <div className='w-full lg:w-1/2 p-6 max-lg:mt-6'>
             <p>
-              Thank you for your interest in Mezon Top Board. To receive further information, please send an email to
-              <span className='text-heading font-bold'> sales@ncc.asia</span> Or call us
-              directly (+84) 2466874606.
+              {t('contact.content.intro')}
+              <span className='text-heading font-bold'> {t('contact.content.email_value')}</span> {t('contact.content.or_call')}{" "}
+              {t('contact.content.phone_value')}.
             </p>
             <h5 className='mt-8 mb-1.5'>
-              You might also join our support clan on Mezon - <strong>TOP MEZON SUPPORT</strong> at: <a href="https://mezon.ai/invite/1840680946488053760" className='text-heading font-bold' target='_blank'>https://mezon.ai/invite/1840680946488053760</a>
+              {t('contact.content.join_support')} <strong>{t('contact.content.support_clan_name')}</strong> {t('contact.content.at')} <a href="https://mezon.ai/invite/1840680946488053760" className='text-heading font-bold' target='_blank'>https://mezon.ai/invite/1840680946488053760</a>
             </h5>
             <p className='mt-8'>
               <div className='mb-1.5'>
-                <strong>Contact Information: </strong>
+                <strong>{t('contact.content.info_title')} </strong>
               </div>
               <div className='mb-1.5'>
-                <strong>Address: </strong>
-                2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam
+                <strong>{t('contact.content.address_title')} </strong>
+                {t('contact.content.address_value')}
               </div>
               <div className='mb-1.5'>
-                <strong>Telephone: </strong>
-                (+84) 2466874606
+                <strong>{t('contact.content.phone_title')} </strong>
+                {t('contact.content.phone_value')}
               </div>
-              <strong>Email: </strong>
-              sales@ncc.asia
+              <strong>{t('contact.content.email_title')} </strong>
+              {t('contact.content.email_value')}
             </p>
           </div>
         </section>

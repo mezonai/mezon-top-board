@@ -6,23 +6,23 @@ export const formatDate = (date?: moment.MomentInput, format: string = 'DD/MM/YY
     : ''
 }
 
-export const formatAgo = (date?: moment.MomentInput): string => {
+export const formatAgo = (date?: moment.MomentInput, t?: any): string => {
   if (!date) return '';
 
   const inputDate = moment(date);
   const now = moment();
 
   const diffInSeconds = now.diff(inputDate, 'seconds');
-  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 60) return t ? t('time.just_now') : 'Just now';
 
   const diffInMinutes = now.diff(inputDate, 'minutes');
-  if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+  if (diffInMinutes < 60) return t ? t('time.minutes_ago', { count: diffInMinutes }) : `${diffInMinutes} minutes ago`;
 
   const diffInHours = now.diff(inputDate, 'hours');
-  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 24) return t ? t('time.hours_ago', { count: diffInHours }) : `${diffInHours} hours ago`;
 
   const diffInDays = now.diff(inputDate, 'days');
-  if (diffInDays === 1) return 'Yesterday';
+  if (diffInDays === 1) return t ? t('time.yesterday') : 'Yesterday';
 
   if (diffInDays < 365) return inputDate.format('D MMM HH:mm');
 

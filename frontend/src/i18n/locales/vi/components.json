@@ -1,0 +1,93 @@
+{
+    "component": {
+        "bot_grid_item": {
+            "default_name": "Tên"
+        },
+        "bot_list_item": {
+            "unpublished": "CHƯA XUẤT BẢN",
+            "new_version": "PHIÊN BẢN MỚI",
+            "invite": "Mời",
+            "default_headline": "Hãy xem ứng dụng này!",
+            "share_text": "Hãy xem {{title}} Mezon Bot trên top.nccsoft.vn, Danh sách Mezon Bot và Mezon App số 1!"
+        },
+        "owner_actions": {
+            "delete_confirm_title": "Bạn có chắc chắn muốn xóa bot này không?",
+            "delete_confirm_content": "Hành động này không thể hoàn tác.",
+            "delete_confirm_ok": "Có, xóa nó",
+            "cancel": "Hủy",
+            "delete_success": "Xóa bot thành công.",
+            "delete_error": "Xóa bot thất bại.",
+            "new_version": "Phiên bản mới",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa",
+            "invalid_id": "ID bot không hợp lệ."
+        },
+        "preview_modal": {
+            "title": "Chi tiết ứng dụng",
+            "loading": "Đang tải...",
+            "owner_label": "Chủ sở hữu: {{name}}",
+            "no_description": "Không có mô tả",
+            "latest_version_title": "Phiên bản mới nhất",
+            "version_label": "Phiên bản",
+            "status_label": "Trạng thái",
+            "auto_publish_label": "Tự động xuất bản",
+            "prefix_label": "Prefix",
+            "submitted_label": "Đã gửi",
+            "support_url_label": "URL hỗ trợ",
+            "price_label": "Giá",
+            "app_id_label": "ID ứng dụng",
+            "install_link_label": "Liên kết cài đặt",
+            "changelog_label": "Nhật ký thay đổi",
+            "note_label": "Ghi chú",
+            "no_versions": "Không có phiên bản nào",
+            "social_links_title": "Liên kết xã hội",
+            "no_social_links": "Không có liên kết xã hội",
+            "yes": "Có",
+            "no": "Không"
+        },
+        "crop_image_modal": {
+            "title": "Cắt ảnh",
+            "upload": "Tải lên",
+            "cancel": "Hủy",
+            "zoom": "Phóng to:",
+            "rotate": "Xoay:"
+        },
+        "media_manager": {
+            "title": "Chọn biểu tượng",
+            "upload_tab": "Tải lên từ thiết bị",
+            "gallery_tab": "Chọn từ thư viện",
+            "click_upload": "Nhấn để tải lên",
+            "browser_hint": "Chọn ảnh trong trình duyệt của bạn",
+            "total_images": "Tổng cộng {{count}} ảnh",
+            "cancel": "Hủy",
+            "ok": "Đồng ý",
+            "upload_error_size": "Tải lên tệp {{fileName}} thất bại (vượt quá 4MB)",
+            "upload_error_type": "Vui lòng tải lên tệp hình ảnh hợp lệ!",
+            "upload_failed": "Tải lên thất bại. Vui lòng thử lại.",
+            "select_first": "Vui lòng chọn ảnh trước"
+        },
+        "not_found_page": {
+            "title": "404",
+            "subtitle": "Trang này không tồn tại.",
+            "back_home": "Về trang chủ"
+        },
+        "confirm_subscribe": {
+            "email_not_found": "Không tìm thấy email",
+            "already_confirmed": "Đã xác nhận"
+        },
+        "unsubscribe_page": {
+            "failed_email": "Hủy đăng ký thất bại\nKhông tìm thấy email, vui lòng đăng nhập.",
+            "failed_already": "Hủy đăng ký thất bại\nĐã hủy đăng ký rồi."
+        },
+        "share_button": {
+            "title": "Chia sẻ ngay",
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "linkedin": "LinkedIn"
+        },
+        "rich_text": {
+            "error_invalid_mime": "Vui lòng tải lên tệp hình ảnh hợp lệ!",
+            "error_size_limit": "Tải lên {{fileName}} thất bại (vượt quá 4MB)"
+        }
+    }
+}

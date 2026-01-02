@@ -1,0 +1,111 @@
+{
+    "new_bot_page": {
+        "steps": {
+            "choose_type": "Choose Type",
+            "provide_id": "Provide ID",
+            "fill_details": "Fill Details",
+            "review": "Review",
+            "result": "Result",
+            "edit_info": "Edit Bot Info"
+        },
+        "buttons": {
+            "back": "Back",
+            "next": "Next",
+            "submit": "Submit for Review",
+            "update": "Update",
+            "view_bot": "View Bot",
+            "go_bot": "Go to Bot",
+            "go_home": "Go Home",
+            "go_back": "Go Back",
+            "add": "Add",
+            "delete": "Delete"
+        },
+        "step1": {
+            "select_type": "Select Type",
+            "placeholder": "Choose Bot or App",
+            "bot": "Bot",
+            "app": "App"
+        },
+        "step2": {
+            "enter_id": "Enter your {{type}} ID",
+            "label_id": "{{type}} ID"
+        },
+        "step3": {
+            "name": "Name",
+            "name_desc": "Name your bot",
+            "headline": "Headline",
+            "headline_desc": "Provide a short and catchy phrase that describes your bot.",
+            "description": "Full Description",
+            "description_desc": "Tell us what your bot can do. We want to hear the whole story!",
+            "auto_publish": "Auto-Publish?",
+            "install_link": "Install Link",
+            "install_link_desc": "A place where users can install your bot on their Mezon server.",
+            "prefix": "Prefix",
+            "prefix_desc": "What keyword or phrase does your bot react to?",
+            "tags": "Tags",
+            "tags_desc": "Select the top 12 categories that best represent your community.",
+            "tag_price": "Tag Price",
+            "tag_price_desc": "Select FREE or PAID tag",
+            "price": "Price",
+            "price_desc": "Set a price for your bot",
+            "support_url": "Support URL",
+            "support_url_desc": "People might have many questions about your bot, make sure you can answer them!",
+            "note": "Note",
+            "note_desc": "If you have any important information for the reviewer, you can share it here",
+            "social_links": "Social Links",
+            "social_links_desc": "Link your social channels",
+            "placeholders": {
+                "name": "MezonBot",
+                "headline": "A powerful and multi-functional role bot",
+                "tags": "Search for tags",
+                "tag_price": "Select tag price",
+                "note": "Please share any important information or details about your bot that our reviewers should know",
+                "link_type": "Link Type",
+                "price": "Enter price",
+                "prefix": "!",
+                "support_url": "https://yourdomain.com/support"
+            },
+            "errors": {
+                "link_exists": "This link already exists.",
+                "link_duplicate": "This link is duplicated.",
+                "no_image_selected": "No image selected"
+            }
+        },
+        "step4": {
+            "review_update": "Review Your Update Information",
+            "review_info": "Review Your Information",
+            "type": "Type:",
+            "id": "Bot/App ID:",
+            "name": "Name:",
+            "headline": "Headline:",
+            "prefix": "Prefix:",
+            "auto_publish": "Auto Publish:",
+            "install_link": "Install Link:",
+            "tags": "Tags:",
+            "tag_price": "Tag Price:",
+            "price": "Price:",
+            "support_url": "Support URL:",
+            "social_links": "Social Links:",
+            "note": "Note:",
+            "changelog": "Changelog:",
+            "description": "Description:",
+            "yes": "Yes",
+            "no": "No",
+            "no_tags": "No tags selected",
+            "no_links": "No social links added",
+            "none": "None"
+        },
+        "step5": {
+            "success_title": "{{type}} submitted successfully!",
+            "update_title": "{{type}} updated successfully!",
+            "success_subtitle": "Your {{type}} has been submitted for review. You can now view it or return to homepage.",
+            "update_subtitle": "Your {{type}} has been updated. You can now return to view it or go back to home.",
+            "fail_title": "Submission Failed",
+            "update_fail_title": "Update Failed",
+            "fail_subtitle": "Something went wrong. Please go back and check your input before trying again."
+        },
+        "validation_failed": "Form validation failed!",
+        "avatar_name": "Name",
+        "avatar_headline": "Headline (Short description)"
+    }
+}

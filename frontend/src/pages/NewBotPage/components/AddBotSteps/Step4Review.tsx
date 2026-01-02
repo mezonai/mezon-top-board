@@ -1,5 +1,6 @@
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { useFormContext, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Tag } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
@@ -12,6 +13,7 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { getUrlMedia } from '@app/utils/stringHelper'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
+  const { t } = useTranslation(['new_bot_page'])
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { control} = useFormContext<CreateMezonAppRequest>()
@@ -23,17 +25,17 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
 
   return (
     <div className="text-primary">
-      <h3 className='text-xl font-semibold mb-4'>{isEdit ? 'Review Your Update Information' : 'Review Your Information'}</h3>
+      <h3 className='text-xl font-semibold mb-4'>{isEdit ? t('new_bot_page.step4.review_update') : t('new_bot_page.step4.review_info')}</h3>
       <ul className='space-y-2 text-primary'>
-        <li><strong>Type:</strong> {values.type}</li>
-        <li><strong>Bot/App ID:</strong> {values.mezonAppId}</li>
-        <li><strong>Name:</strong> {values.name}</li>
-        <li className='break-words'><strong>Headline:</strong> {values.headline}</li>
-        {type === MezonAppType.BOT && <li><strong>Prefix:</strong> {values.prefix}</li>}
-        <li><strong>Auto Publish:</strong> {values.isAutoPublished ? 'Yes' : 'No'}</li>
-        <li className='break-words'><strong>Install Link:</strong> <span className="text-secondary">{getMezonInstallLink(values.type, values.mezonAppId)}</span></li>
+        <li><strong>{t('new_bot_page.step4.type')}</strong> {values.type}</li>
+        <li><strong>{t('new_bot_page.step4.id')}</strong> {values.mezonAppId}</li>
+        <li><strong>{t('new_bot_page.step4.name')}</strong> {values.name}</li>
+        <li className='break-words'><strong>{t('new_bot_page.step4.headline')}</strong> {values.headline}</li>
+        {type === MezonAppType.BOT && <li><strong>{t('new_bot_page.step4.prefix')}</strong> {values.prefix}</li>}
+        <li><strong>{t('new_bot_page.step4.auto_publish')}</strong> {values.isAutoPublished ? t('new_bot_page.step4.yes') : t('new_bot_page.step4.no')}</li>
+        <li className='break-words'><strong>{t('new_bot_page.step4.install_link')}</strong> <span className="text-secondary">{getMezonInstallLink(values.type, values.mezonAppId)}</span></li>
         <li>
-          <strong>Tags:</strong>
+          <strong>{t('new_bot_page.step4.tags')}</strong>
           <div className='gap-2 flex flex-wrap mt-1'>
             {selectedTags.length > 0 ? (
               selectedTags.map((tag: TagResponse) => (
@@ -42,19 +44,19 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
                 </Tag>
               ))
             ) : (
-              <span className="text-secondary italic ml-2">No tags selected</span>
+              <span className="text-secondary italic ml-2">{t('new_bot_page.step4.no_tags')}</span>
             )}
           </div>
         </li>
         <li>
-          <strong>Tag Price:</strong> {values.pricingTag}
+          <strong>{t('new_bot_page.step4.tag_price')}</strong> {values.pricingTag}
         </li>
         <li>
-          <strong>Price: </strong> {values.price}
+          <strong>{t('new_bot_page.step4.price')}</strong> {values.price}
         </li>
-        <li className='break-words'><strong>Support URL: </strong>{values.supportUrl}</li>
+        <li className='break-words'><strong>{t('new_bot_page.step4.support_url')} </strong>{values.supportUrl}</li>
         <li>
-          <strong>Social Links:</strong>
+          <strong>{t('new_bot_page.step4.social_links')}</strong>
           <div className="mt-2 flex flex-col gap-2">
             {(values.socialLinks ?? []).length > 0 ? (
               values.socialLinks.map((link: SocialLink, idx: number) => (
@@ -69,15 +71,15 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
                 </div>
               ))
             ) : (
-              <span className="text-secondary italic ml-2">No social links added</span>
+              <span className="text-secondary italic ml-2">{t('new_bot_page.step4.no_links')}</span>
             )}
           </div>
         </li>
-        <li><strong>Note: </strong>{values.remark ==='' ? 'None' : values.remark}</li>
+        <li><strong>{t('new_bot_page.step4.note')} </strong>{values.remark ==='' ? t('new_bot_page.step4.none') : values.remark}</li>
         {isEdit && (
-          <li className='break-words'><strong>Changelog: </strong>{values.changelog ? values.changelog : 'None'}</li>
+          <li className='break-words'><strong>{t('new_bot_page.step4.changelog')} </strong>{values.changelog ? values.changelog : t('new_bot_page.step4.none')}</li>
         )}
-        <li><strong>Description:</strong></li>
+        <li><strong>{t('new_bot_page.step4.description')}</strong></li>
         <div className='border border-border p-3 rounded-md text-sm description break-words bg-container' 
           dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />
       </ul>
