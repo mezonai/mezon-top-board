@@ -34,7 +34,8 @@ export class MailTemplateService {
 
   async sendNewsletter(emails: string[], subject: string, content: string) {
     await this.emailJob.addToQueue({
-      to: emails,
+      to: 'newsletter@yourdomain.com',
+      bcc: emails,
       subject,
       template: 'marketing-mail',
       context: {

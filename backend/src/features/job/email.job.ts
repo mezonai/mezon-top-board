@@ -26,19 +26,17 @@ export class EmailJob implements OnModuleInit {
   }
 
   async handleJob(job) {
-    const { to, subject, template, context } = job.data;
-    if (typeof to === 'string' || (Array.isArray(to) && to.length > 0)) {
-      await this.mailerService.sendMail({
-        to,
-        subject,
-        template,
-        context,
-      });
-      console.log(`sent to ${to}`);
-    } else {
-      console.log('no mail to send')
-    }
+    const { to, subject, template, context, bcc } = job.data;
 
+    await this.mailerService.sendMail({
+      to,
+      bcc,
+      subject,
+      template,
+      context,
+    });
+    console.log(`sent to ${to}`);
+    if (bcc?.length) console.log(`bulk sent to ${bcc.length} recipients`);
   }
 
   async addToQueue(data: MarketingMailJobData) {
