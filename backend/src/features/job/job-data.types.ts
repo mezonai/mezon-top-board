@@ -1,9 +1,9 @@
 import { BotWizardRequest } from "@features/bot-generator/dtos/request";
 
 export type MarketingMailJobData = {
-    to?: string;
+    to: string;
     subject: string;
-    template?: string;
+    template: string;
     context: Record<string, string | number | boolean>
     bcc?: string[];
 }
