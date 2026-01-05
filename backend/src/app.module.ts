@@ -48,7 +48,7 @@ import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module
         },
       },
       defaults: {
-        from: `Mezon-Top-Board`,
+        from: `"Mezon Top Board" <${config().SMTP_EMAIL}>`,
       },
       template: {
         dir: join(process.cwd(), "dist", "templates"),
