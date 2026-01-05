@@ -35,13 +35,9 @@ export class MailTemplateService {
     this.mailRepository = new GenericRepository(MailTemplate, manager);
   }
 
-  async enqueueCampaign(mailTemplateId: string) {
+  async enqueueCampaign(mailTemplate: MailTemplate) {
     await this.queue.send<MarketingCampaignJobData>(
-      'marketing-campaign',
-      {
-        mailTemplateId,
-        campaignId: crypto.randomUUID(),
-      }
+      'marketing-campaign',{ mailTemplate }
     );
   }
 
@@ -123,7 +119,7 @@ export class MailTemplateService {
 
     for (const mail of mails) {
       if (this.shouldSendNow(mail, now)) {
-        await this.enqueueCampaign(mail.id);
+        await this.enqueueCampaign(mail);
       }
     }
   }

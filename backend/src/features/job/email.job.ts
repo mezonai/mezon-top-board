@@ -17,16 +17,14 @@ export class EmailJob implements OnModuleInit {
 
     await this.boss.work<SendEmailJobData>(
       this.queueName,
-      async (jobs) => {
-        for (const job of jobs) {
-          await this.handleJob(job);
-        }
-      }
+      async ([job]) => {
+        await this.handle(job.data);
+      },
     );
   }
 
-  async handleJob(job) {
-    const { to, subject, template, context } = job.data;
+  async handle(data: SendEmailJobData) {
+    const { to, subject, template, context } = data;
 
     await this.mailerService.sendMail({
       to,

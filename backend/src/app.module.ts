@@ -28,6 +28,7 @@ import { LoggerModule } from "@libs/logger";
 import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
 import { TempStorageModule } from "@features/temp-storage/temp-storage.module";
 import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
   imports: [
@@ -62,6 +63,11 @@ import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module
     ScheduleModule.forRoot(),
     MezonModule.forRootAsync({
       imports: [ConfigModule],
+    }),
+    CacheModule.register({
+      ttl: config().CACHE_TTL,
+      max: 100,
+      isGlobal: true,
     }),
     LoggerModule,
     MediaModule,

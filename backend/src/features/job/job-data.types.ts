@@ -1,3 +1,4 @@
+import { MailTemplate } from "@domain/entities/schema/mailTemplate.entity";
 import { BotWizardRequest } from "@features/bot-generator/dtos/request";
 
 export type SendEmailJobData = {
@@ -5,12 +6,10 @@ export type SendEmailJobData = {
   subject: string;
   template: string;
   context: Record<string, string | number | boolean>
-  campaignId?: string;
 };
 
 export type MarketingCampaignJobData = {
-  mailTemplateId: string;
-  campaignId: string;
+  mailTemplate: MailTemplate;
 };
 
 export type BotGeneratorJobData = {

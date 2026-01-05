@@ -1,27 +1,30 @@
 import { EmailSubscriptionStatus } from "@domain/common/enum/subscribeTypes";
-import { MailTemplate } from "@domain/entities/schema/mailTemplate.entity";
 import { Subscriber } from "@domain/entities/schema/subscriber.entity";
 import { EmailJob } from "@features/job/email.job";
 import { MarketingCampaignJobData } from "@features/job/job-data.types";
 import { QueueService } from "@features/queue/queue.service";
 import { GenericRepository } from "@libs/repository/genericRepository";
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import config from "@config/env.config";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from 'cache-manager';
+import envConfig from "@config/env.config";
+import { ACTIVE_SUBSCRIBERS_CACHE_KEY } from "@domain/common/constants/cache";
 
 @Injectable()
 export class MarketingCampaignJob implements OnModuleInit {
   private readonly queueName = 'marketing-campaign';
   private readonly subscribeRepository: GenericRepository<Subscriber>;
-  private readonly mailRepository: GenericRepository<MailTemplate>;
 
   constructor(
     private readonly boss: QueueService,
     private readonly emailJob: EmailJob,
-    private readonly manager: EntityManager
+    private readonly manager: EntityManager,
+    @Inject(CACHE_MANAGER)
+    private readonly cache: Cache,
   ) {
     this.subscribeRepository = new GenericRepository(Subscriber, manager);
-    this.mailRepository = new GenericRepository(MailTemplate, manager);
   }
 
   async onModuleInit() {
@@ -35,33 +38,37 @@ export class MarketingCampaignJob implements OnModuleInit {
     );
   }
 
-  async handle({ mailTemplateId, campaignId }: MarketingCampaignJobData) {
-    const mail = await this.mailRepository.findById(mailTemplateId);
-    if (!mail) return;
+  async handle({ mailTemplate }: MarketingCampaignJobData) {
+    let subscribers = await this.cache.get<{ email: string }[]>(
+      ACTIVE_SUBSCRIBERS_CACHE_KEY,
+    );
 
-    const subscribers = await this.subscribeRepository.find({
-      where: { status: EmailSubscriptionStatus.ACTIVE },
-    });
+    if (!subscribers) {
+      subscribers = await this.subscribeRepository.find({
+        where: { status: EmailSubscriptionStatus.ACTIVE },
+      });
 
-    const chunkSize = 100;
+      await this.cache.set(
+        ACTIVE_SUBSCRIBERS_CACHE_KEY,
+        subscribers,
+        envConfig().CACHE_TTL,
+      );
+    }
 
-    for (let i = 0; i < subscribers.length; i += chunkSize) {
-      const chunk = subscribers.slice(i, i + chunkSize);
-
-      for (const sub of chunk) {
-        await this.emailJob.addToQueue({
+    await Promise.all(
+      subscribers.map(sub =>
+        this.emailJob.addToQueue({
           to: sub.email,
-          subject: mail.subject,
+          subject: mailTemplate.subject,
           template: 'marketing-mail',
-          campaignId,
           context: {
-            content: mail.content,
+            content: mailTemplate.content,
             showUnsubscribe: true,
             unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
             year: new Date().getFullYear(),
           },
-        });
-      }
-    }
+        })
+      )
+    );
   }
 }
