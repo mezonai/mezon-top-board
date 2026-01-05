@@ -1,8 +1,8 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { App, User } from "@domain/entities";
 
-@Entity("user_favorites")
-export class UserFavorite {
+@Entity("favorite_apps")
+export class FavoriteApp {
     @PrimaryColumn()
     userId: string;
 

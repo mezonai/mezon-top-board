@@ -1,25 +1,23 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { EntityManager } from "typeorm";
-import { User, App, UserFavorite } from "@domain/entities";
+import { User, App, FavoriteApp } from "@domain/entities";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { ErrorMessages } from "@libs/constant/messages";
 import { paginate } from "@libs/utils/paginate";
 import { Result } from "@domain/common/dtos/result.dto";
-import { GetFavoritesRequest } from "./dtos/request";
+import { GetFavoritesAppRequest } from "./dtos/request";
 
 @Injectable()
-export class FavoriteService {
+export class FavoriteAppService {
     private readonly appRepository: GenericRepository<App>;
-    private readonly userRepository: GenericRepository<User>;
-    private readonly userFavoriteRepository: GenericRepository<UserFavorite>;
+    private readonly favoriteAppRepository: GenericRepository<FavoriteApp>;
 
     constructor(private readonly manager: EntityManager) {
         this.appRepository = new GenericRepository(App, manager);
-        this.userRepository = new GenericRepository(User, manager);
-        this.userFavoriteRepository = new GenericRepository(UserFavorite, manager);
+        this.favoriteAppRepository = new GenericRepository(FavoriteApp, manager);
     }
 
-    async getMyFavorites(userId: string, query: GetFavoritesRequest) {
+    async getMyFavoriteApps(userId: string, query: GetFavoritesAppRequest) {
         const skip = (query.pageNumber - 1) * query.pageSize;
         const take = query.pageSize;
 
@@ -41,7 +39,7 @@ export class FavoriteService {
         );
     }
 
-    async getFavoriteDetail(userId: string, appId: string) {
+    async getFavoriteAppDetail(userId: string, appId: string) {
         const app = await this.appRepository.getRepository()
             .createQueryBuilder("app")
             .innerJoin("app.favorites", "favorite")
@@ -59,16 +57,16 @@ export class FavoriteService {
         return new Result({ data: app });
     }
 
-    async addFavorite(userId: string, appId: string) {
+    async addFavoriteApp(userId: string, appId: string) {
         const app = await this.appRepository.findById(appId);
         if (!app) throw new NotFoundException(ErrorMessages.NOT_FOUND_MSG);
 
-        const existing = await this.userFavoriteRepository.findOne({
+        const existing = await this.favoriteAppRepository.findOne({
             where: { userId, appId }
         });
 
         if (!existing) {
-            await this.userFavoriteRepository.create({
+            await this.favoriteAppRepository.create({
                 userId,
                 appId
             });
@@ -77,8 +75,8 @@ export class FavoriteService {
         return new Result({ message: "Added to favorites" });
     }
 
-    async removeFavorite(userId: string, appId: string) {
-        await this.userFavoriteRepository.getRepository().delete({
+    async removeFavoriteApp(userId: string, appId: string) {
+        await this.favoriteAppRepository.getRepository().delete({
             userId,
             appId
         });

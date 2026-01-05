@@ -3,48 +3,48 @@ import { ApiBearerAuth, ApiTags, ApiResponse } from "@nestjs/swagger";
 
 import { User } from "@domain/entities";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
-import { FavoriteService } from "./favorite.service";
-import { AddFavoriteRequest, GetFavoritesRequest } from "./dtos/request";
+import { FavoriteAppService } from "./favorite-app.service";
+import { AddFavoriteAppRequest, GetFavoritesAppRequest } from "./dtos/request";
 
 @ApiTags("Favorites")
 @Controller("favorites")
 @ApiBearerAuth()
-export class FavoriteController {
-    constructor(private readonly favoriteService: FavoriteService) {}
+export class FavoriteAppController {
+    constructor(private readonly favoriteAppService: FavoriteAppService) {}
 
     @Get()
     @ApiResponse({ status: 200, description: "Get list of favorite bots" })
-    async getFavorites(
+    async getFavoriteApps(
         @GetUserFromHeader() user: User,
-        @Query() query: GetFavoritesRequest
+        @Query() query: GetFavoritesAppRequest
     ) {
-        return this.favoriteService.getMyFavorites(user.id, query);
+        return this.favoriteAppService.getMyFavoriteApps(user.id, query);
     }
 
     @Get(":id")
     @ApiResponse({ status: 200, description: "Get favorite bot detail" })
-    async getFavoriteDetail(
+    async getFavoriteAppDetail(
         @GetUserFromHeader() user: User,
         @Param("id") id: string
     ) {
-        return this.favoriteService.getFavoriteDetail(user.id, id);
+        return this.favoriteAppService.getFavoriteAppDetail(user.id, id);
     }
 
     @Post()
     @ApiResponse({ status: 201, description: "Bot added to favorites successfully" })
-    async addFavorite(
+    async addFavoriteApp(
         @GetUserFromHeader() user: User,
-        @Body() body: AddFavoriteRequest
+        @Body() body: AddFavoriteAppRequest
     ) {
-        return this.favoriteService.addFavorite(user.id, body.id);
+        return this.favoriteAppService.addFavoriteApp(user.id, body.id);
     }
 
     @Delete(":id")
     @ApiResponse({ status: 200, description: "Bot removed from favorites successfully" })
-    async removeFavorite(
+    async removeFavoriteApp(
         @GetUserFromHeader() user: User,
         @Param("id") id: string
     ) {
-        return this.favoriteService.removeFavorite(user.id, id);
+        return this.favoriteAppService.removeFavoriteApp(user.id, id);
     }
 }

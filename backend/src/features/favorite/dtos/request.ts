@@ -2,11 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsUUID } from "class-validator";
 import { PaginationQuery } from "@domain/common/dtos/request.dto";
 
-export class AddFavoriteRequest {
+export class AddFavoriteAppRequest {
     @ApiProperty()
     @IsUUID()
     id: string;
 }
 
-export class GetFavoritesRequest extends PaginationQuery {
+export class GetFavoritesAppRequest extends PaginationQuery {
 }
