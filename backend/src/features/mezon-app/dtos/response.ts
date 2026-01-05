@@ -9,6 +9,12 @@ import { AppStatus } from "@domain/common/enum/appStatus";
 import { GetAppInfoDetailsResponse } from "@domain/common/dtos/appInfo.dto";
 import { GetAppVersionDetailsResponse } from "@features/app-version/dtos/response";
 
+export class UserFavoriteItemResponse {
+  @Expose()
+  @ApiProperty()
+  public userId: string;
+}
+
 export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
@@ -33,6 +39,10 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public rateScore: number;
+
+  @Expose()
+  @ApiProperty({ type: () => [UserFavoriteItemResponse] })
+  public favorites: UserFavoriteItemResponse[];
 
   @Expose()
   @ApiProperty({ type: () => [GetAppVersionDetailsResponse] })

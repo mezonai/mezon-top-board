@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 import { AppStatus } from "@domain/common/enum/appStatus";
-import { Link, AppReviewHistory, Rating, Tag, User, AppVersion } from "@domain/entities";
+import { Link, AppReviewHistory, Rating, Tag, User, AppVersion, UserFavorite } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
@@ -36,6 +36,9 @@ export class App extends BaseApp {
     @ManyToMany(() => Link, (link) => link.apps)
     @JoinTable()
     public socialLinks: Link[];
+
+    @OneToMany(() => UserFavorite, (favorite) => favorite.app)
+    public favorites: UserFavorite[];
 
     @OneToMany(() => AppReviewHistory, (review) => review.app)
     reviewHistories: AppReviewHistory[];

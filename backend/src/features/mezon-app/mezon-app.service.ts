@@ -80,6 +80,7 @@ export class MezonAppService {
       "versions.tags",
       "versions.socialLinks",
       "versions.socialLinks.type",
+      "favorites"
     ]);
 
     if (!mezonApp) {
@@ -91,6 +92,10 @@ export class MezonAppService {
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
 
+    detail.favorites = mezonApp.favorites 
+        ? mezonApp.favorites.map(f => ({ userId: f.userId })) 
+        : [];
+    
     detail.rateScore = this.getAverageRating(mezonApp);
     detail.owner = {
       id: owner.id,
