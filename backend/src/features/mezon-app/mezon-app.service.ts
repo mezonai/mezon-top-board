@@ -70,13 +70,13 @@ export class MezonAppService {
     return Math.round(averageScore * 2) / 2;
   }
 
-  private async getFavoritesMap(appIds: string[], userId?: string): Promise<Record<string, boolean>> {
-    if (!userId || appIds.length === 0) return {};
+  private async getFavoritesMap(appIds: string[], userId?: string): Promise<Map<string, boolean>> {
+    if (!userId || appIds.length === 0) return new Map();
 
     const rawResults = await this.appRepository.getRepository()
         .createQueryBuilder('app')
         .leftJoin(
-          'favorite_apps',
+          'favorite_app',
           'ufa',
           'ufa."appId" = app.id AND ufa."userId" = :userId',
           { userId },
@@ -88,9 +88,10 @@ export class MezonAppService {
         ])
         .getRawMany();
 
-    const map: Record<string, boolean> = {};
+    const map = new Map<string, boolean>();
+    
     rawResults.forEach(row => {
-        map[row.appId] = row.isFavorited;
+        map.set(row.appId, row.isFavorited);
     });
     return map;
   }
@@ -112,7 +113,7 @@ export class MezonAppService {
     }
 
     const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
-    const isFavorited = favoritesMap[mezonApp.id] || false;
+    const isFavorited = favoritesMap.get(mezonApp.id) || false;
     const owner = await this.userRepository.findById(mezonApp.ownerId);
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
@@ -286,7 +287,7 @@ export class MezonAppService {
           id: tag.id,
           name: tag.name,
         }));
-        mappedMezonApp.isFavorited = favoritesMap[entity.id] || false;
+        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
       },
     );
@@ -543,6 +544,8 @@ export class MezonAppService {
       ownerId: userId,
     });
     const data = await apps.getMany();
+    const appIds = data.map(app => app.id);
+    const favoritesMap = await this.getFavoritesMap(appIds, userId);
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
@@ -561,6 +564,7 @@ export class MezonAppService {
           name: entity.owner.name,
           profileImage: entity.owner.profileImage,
         }
+        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
       },
     );

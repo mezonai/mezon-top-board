@@ -1,12 +1,13 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { App, User } from "@domain/entities";
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
+import { App, BaseSoftDelete, User } from "@domain/entities";
 
-@Entity("favorite_apps")
-export class FavoriteApp {
-    @PrimaryColumn()
+@Entity("favorite_app")
+@Unique(["userId", "appId"]) 
+export class FavoriteApp extends BaseSoftDelete {
+    @Column()
     userId: string;
 
-    @PrimaryColumn()
+    @Column()
     appId: string;
 
     @ManyToOne(() => User)

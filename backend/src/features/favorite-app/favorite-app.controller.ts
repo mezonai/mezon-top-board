@@ -7,7 +7,7 @@ import { FavoriteAppService } from "./favorite-app.service";
 import { AddFavoriteAppRequest, GetFavoritesAppRequest } from "./dtos/request";
 
 @ApiTags("FavoriteApps")
-@Controller("favorite-apps")
+@Controller("favorite-app")
 @ApiBearerAuth()
 export class FavoriteAppController {
     constructor(private readonly favoriteAppService: FavoriteAppService) {}

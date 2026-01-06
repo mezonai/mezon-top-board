@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 
@@ -15,7 +16,7 @@ import { User } from "@domain/entities";
 
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
-import { GetOptionalUser } from "@libs/decorator/getOptionalUser.decorator";
+import { OptionalAuth } from "@libs/decorator/optionalAuth.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
 import { Logger } from "@libs/logger";
 
@@ -69,16 +70,17 @@ export class MezonAppController {
     }
   }
 
-  @Public()
+  @OptionalAuth()
   @ApiBearerAuth()
   @Get()
   @ApiResponse({ type: GetMezonAppDetailsResponse })
   getMezonAppDetail(
     @Query() query: RequestWithId,
-    @GetOptionalUser() user?: User,
+    @Req() req,
   ) {
+    const userId = req.user ? req.user.id : null;
     try {
-      return this.mezonAppService.getMezonAppDetail(query, user?.id);
+      return this.mezonAppService.getMezonAppDetail(query, userId);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;
@@ -97,15 +99,16 @@ export class MezonAppController {
     }
   }
 
-  @Public()
+  @OptionalAuth()
   @ApiBearerAuth()
   @Get("search")
   searchMezonApp(
     @Query() query: SearchMezonAppRequest,
-    @GetOptionalUser() user?: User,
+    @Req() req,
   ) {
+    const userId = req.user ? req.user.id : null;
     try {
-      return this.mezonAppService.searchMezonApp(query, user?.id);
+      return this.mezonAppService.searchMezonApp(query, userId);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;
