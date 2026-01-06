@@ -6,33 +6,81 @@
 .sider {
   background: var(--bg-sidebar) !important;
   color: var(--text-sidebar);
-  padding-top: 20px;
-  min-height: 100vh;
+  padding: 20px 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-color);
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 30px;
+    gap: 8px;
+
+    img {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-text {
+      color: var(--text-sidebar);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+  }
+
+  .menu-label {
+    padding: 0 20px;
+    margin-bottom: 16px;
+    color: var(--text-sidebar-label);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
   
   :global(.ant-menu) {
-    background: var(--bg-sidebar) !important;
+    background: transparent !important;
+    border: none !important;
     color: var(--text-sidebar);
+    padding: 0 12px;
   }
   
   :global(.ant-menu-item) {
+    height: 44px !important;
+    line-height: 44px !important;
     color: var(--text-sidebar) !important;
-    opacity: 0.85;
+    border-radius: 8px !important;
     
     &:hover {
-      background: var(--bg-container-secondary) !important;
-      color: var(--primary-color, #d1006b) !important;
-      opacity: 1;
+      background: var(--bg-sidebar-active) !important;
+      color: var(--text-sidebar-active) !important;
+    }
+
+    :global(.ant-menu-item-icon) {
+      font-size: 16px !important;
+      min-width: 16px;
     }
   }
   
   :global(.ant-menu-item-selected) {
-    background: var(--bg-container-secondary) !important;
-    color: var(--primary-color, #d1006b) !important;
-    opacity: 1;
+    background: var(--bg-sidebar-active) !important;
+    color: var(--text-sidebar-active) !important;
+    font-weight: 500;
+
+    &::after {
+      display: none !important;
+    }
   }
   
   :global(.ant-menu-item a) {
     color: inherit !important;
+    font-size: 14px;
   }
 }
 
@@ -372,10 +420,4 @@
   color: var(--text-primary);
   padding: 20px 50px;
   border-top: 1px solid var(--border-footer);
-}
-
-.sider-divider {
-  background: var(--bg-sidebar-divider);
-  padding: 1px 0px;
-  margin: 10px 0px;
 }

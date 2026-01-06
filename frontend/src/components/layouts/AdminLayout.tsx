@@ -4,34 +4,34 @@ import { adminRoutePaths } from '@app/navigation/adminRoutePaths'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import styles from './AdminLayout.module.scss'; // Import the styles
-import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { useEffect } from 'react'
 import useAdminCheck from '@app/hook/useAdminCheck'
+import { useTheme } from '@app/hook/useTheme'
+
 const { Header, Footer, Sider, Content } = Layout
 
 function AdminLayout() {
   document.title = 'Management - Mezon Top Board'
   const location = useLocation()
   const pathSnippets = location.pathname.split('/').filter((i) => i)
+  const { theme } = useTheme()
 
-  const { checkAdmin } = useAdminCheck()
-  useAuthRedirect()
-  useEffect(() => {
-    checkAdmin()
-  }, [])
+  // const { checkAdmin } = useAdminCheck()
+  // useAuthRedirect()
+  // useEffect(() => {
+  //   checkAdmin()
+  // }, [])
 
   return (
     <Layout className={styles['admin-layout']}>
-      <Sider width={250} className={styles.sider}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', margin: '0px' }}>
-          <div className='h-[30px]'>
-            <img src={logo} alt='' style={{ height: '100%', objectFit: 'contain' }} />
-          </div>
-          <MtbTypography variant='p' style={{ color: 'var(--text-sidebar)' }} weight='bold'>
-            MTB Management
-          </MtbTypography>
+      <Sider width={250} className={styles.sider} theme={theme}>
+        <div className={styles['logo-container']}>
+          <img src={logo} alt='MTB Logo' />
+          <span className={styles['logo-text']}>MTB Admin</span>
         </div>
-        <div className={styles['sider-divider']} />
+        
+        <div className={styles['menu-label']}>MENU</div>
+
         <Menu mode='vertical' defaultSelectedKeys={['/admin']} selectedKeys={[location.pathname]}>
           {adminRoutePaths.filter((route) => route.isShowMenu).map((route) => (
             <Menu.Item key={route.path} icon={route.icon}>
