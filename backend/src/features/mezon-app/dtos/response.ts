@@ -9,12 +9,6 @@ import { AppStatus } from "@domain/common/enum/appStatus";
 import { GetAppInfoDetailsResponse } from "@domain/common/dtos/appInfo.dto";
 import { GetAppVersionDetailsResponse } from "@features/app-version/dtos/response";
 
-export class UserFavoriteItemResponse {
-  @Expose()
-  @ApiProperty()
-  public userId: string;
-}
-
 export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
@@ -41,8 +35,8 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   public rateScore: number;
 
   @Expose()
-  @ApiProperty({ type: () => [UserFavoriteItemResponse] })
-  public favorites: UserFavoriteItemResponse[];
+  @ApiProperty()
+  public isFavorited: boolean;
 
   @Expose()
   @ApiProperty({ type: () => [GetAppVersionDetailsResponse] })
@@ -64,7 +58,8 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "rateScore",
   "owner",
   "versions",
-  "hasNewUpdate"
+  "hasNewUpdate",
+  "isFavorited",
 ]) { }
 
 export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {

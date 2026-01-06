@@ -6,8 +6,8 @@ import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { FavoriteAppService } from "./favorite-app.service";
 import { AddFavoriteAppRequest, GetFavoritesAppRequest } from "./dtos/request";
 
-@ApiTags("Favorites")
-@Controller("favorites")
+@ApiTags("FavoriteApps")
+@Controller("favorite-apps")
 @ApiBearerAuth()
 export class FavoriteAppController {
     constructor(private readonly favoriteAppService: FavoriteAppService) {}

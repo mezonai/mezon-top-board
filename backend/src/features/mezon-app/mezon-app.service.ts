@@ -70,7 +70,32 @@ export class MezonAppService {
     return Math.round(averageScore * 2) / 2;
   }
 
-  async getMezonAppDetail(query: RequestWithId) {
+  private async getFavoritesMap(appIds: string[], userId?: string): Promise<Record<string, boolean>> {
+    if (!userId || appIds.length === 0) return {};
+
+    const rawResults = await this.appRepository.getRepository()
+        .createQueryBuilder('app')
+        .leftJoin(
+          'favorite_apps',
+          'ufa',
+          'ufa."appId" = app.id AND ufa."userId" = :userId',
+          { userId },
+        )
+        .whereInIds(appIds)
+        .select([
+            'app.id AS "appId"',
+            `CASE WHEN ufa."userId" IS NOT NULL THEN true ELSE false END AS "isFavorited"`
+        ])
+        .getRawMany();
+
+    const map: Record<string, boolean> = {};
+    rawResults.forEach(row => {
+        map[row.appId] = row.isFavorited;
+    });
+    return map;
+  }
+
+  async getMezonAppDetail(query: RequestWithId, userId?: string) {
     const mezonApp = await this.appRepository.findById(query.id, [
       "tags",
       "socialLinks",
@@ -80,21 +105,18 @@ export class MezonAppService {
       "versions.tags",
       "versions.socialLinks",
       "versions.socialLinks.type",
-      "favorites"
     ]);
 
     if (!mezonApp) {
       throw new NotFoundException("App not found");
     }
 
-
+    const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
+    const isFavorited = favoritesMap[mezonApp.id] || false;
     const owner = await this.userRepository.findById(mezonApp.ownerId);
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
-
-    detail.favorites = mezonApp.favorites 
-        ? mezonApp.favorites.map(f => ({ userId: f.userId })) 
-        : [];
+    detail.isFavorited = isFavorited;
     
     detail.rateScore = this.getAverageRating(mezonApp);
     detail.owner = {
@@ -248,9 +270,11 @@ export class MezonAppService {
     return { apps, total };
   }
 
-  async searchMezonApp(query: SearchMezonAppRequest) {
+  async searchMezonApp(query: SearchMezonAppRequest, userId?: string) {
     const { apps, total } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
     const data = await apps.getMany();
+    const appIds = data.map(app => app.id);
+    const favoritesMap = await this.getFavoritesMap(appIds, userId);
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
@@ -262,6 +286,7 @@ export class MezonAppService {
           id: tag.id,
           name: tag.name,
         }));
+        mappedMezonApp.isFavorited = favoritesMap[entity.id] || false;
         return mappedMezonApp;
       },
     );

@@ -37,9 +37,6 @@ export class App extends BaseApp {
     @JoinTable()
     public socialLinks: Link[];
 
-    @OneToMany(() => FavoriteApp, (favoriteApp) => favoriteApp.app)
-    public favorites: FavoriteApp[];
-
     @OneToMany(() => AppReviewHistory, (review) => review.app)
     reviewHistories: AppReviewHistory[];
 
@@ -52,4 +49,7 @@ export class App extends BaseApp {
 
     @OneToMany(() => AppVersion, (version) => version.app)
     public versions: AppVersion[];
+
+    @OneToMany(() => FavoriteApp, (favoriteApp) => favoriteApp.app)
+    public favorites: FavoriteApp[];
 }

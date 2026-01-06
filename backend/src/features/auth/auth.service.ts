@@ -101,7 +101,7 @@ export class AuthService {
     user: User,
     providedSessionToken?: string,
   ) {
-    const { email } = user;
+    const { email, id } = user;
     const {
       JWT_ACCESS_TOKEN_SECRET: jwtSecret,
       JWT_REFRESH_TOKEN_SECRET: refreshSecret,
@@ -117,14 +117,14 @@ export class AuthService {
       .toDate();
 
     const accessToken = this.jwtService.sign(
-      { email, sessionToken, expireTime },
+      { sub:id, email, sessionToken, expireTime },
       {
         secret: jwtSecret,
       },
     );
 
     const refreshToken = this.jwtService.sign(
-      { email, sessionToken, expireTime: refreshTokenExpireTime },
+      { sub:id, email, sessionToken, expireTime: refreshTokenExpireTime },
       {
         secret: refreshSecret,
       },

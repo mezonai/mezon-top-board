@@ -15,6 +15,7 @@ import { User } from "@domain/entities";
 
 import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
+import { GetOptionalUser } from "@libs/decorator/getOptionalUser.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
 import { Logger } from "@libs/logger";
 
@@ -69,11 +70,15 @@ export class MezonAppController {
   }
 
   @Public()
+  @ApiBearerAuth()
   @Get()
   @ApiResponse({ type: GetMezonAppDetailsResponse })
-  getMezonAppDetail(@Query() query: RequestWithId) {
+  getMezonAppDetail(
+    @Query() query: RequestWithId,
+    @GetOptionalUser() user?: User,
+  ) {
     try {
-      return this.mezonAppService.getMezonAppDetail(query);
+      return this.mezonAppService.getMezonAppDetail(query, user?.id);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;
@@ -93,10 +98,14 @@ export class MezonAppController {
   }
 
   @Public()
+  @ApiBearerAuth()
   @Get("search")
-  searchMezonApp(@Query() query: SearchMezonAppRequest) {
+  searchMezonApp(
+    @Query() query: SearchMezonAppRequest,
+    @GetOptionalUser() user?: User,
+  ) {
     try {
-      return this.mezonAppService.searchMezonApp(query);
+      return this.mezonAppService.searchMezonApp(query, user?.id);
     } catch (error) {
       this.logger.error("An error occured", error);
       throw error;

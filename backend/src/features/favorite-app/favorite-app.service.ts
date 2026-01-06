@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { EntityManager } from "typeorm";
-import { User, App, FavoriteApp } from "@domain/entities";
+import { App, FavoriteApp } from "@domain/entities";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { ErrorMessages } from "@libs/constant/messages";
 import { paginate } from "@libs/utils/paginate";
