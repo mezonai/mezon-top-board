@@ -13,10 +13,6 @@ import { MailTemplateService } from '@features/marketing-mail/marketing-mail.ser
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-import { Inject } from '@nestjs/common';
-import { ACTIVE_SUBSCRIBERS_CACHE_KEY } from '@domain/common/constants/cache';
 
 @Injectable()
 export class EmailSubscribeService {
@@ -25,8 +21,6 @@ export class EmailSubscribeService {
   constructor(
     private manager: EntityManager,
     private readonly mailService: MailTemplateService,
-    @Inject(CACHE_MANAGER)
-    private readonly cache: Cache,
   ) {
     this.subscribeRepository = new GenericRepository(Subscriber, manager);
   }
@@ -63,9 +57,6 @@ export class EmailSubscribeService {
     await this.subscribeRepository.update(subscribe.id, {
       status: EmailSubscriptionStatus.ACTIVE,
     });
-
-    await this.cache.del(ACTIVE_SUBSCRIBERS_CACHE_KEY);
-
     return new Result({ message: 'Subscription confirmed successfully' });
   }
 
@@ -77,9 +68,6 @@ export class EmailSubscribeService {
     await this.subscribeRepository.update(subscribe.id, {
       status: EmailSubscriptionStatus.UNSUBSCRIBED,
     });
-
-    await this.cache.del(ACTIVE_SUBSCRIBERS_CACHE_KEY);
-
     return new Result({ message: 'Unsubscribed successfully' });
   }
 
@@ -114,9 +102,6 @@ export class EmailSubscribeService {
     });
     if (!subscribe) throw new BadGatewayException('Subscriber not found or still active');
     const updatedSubscribe = await this.subscribeRepository.update(subscribe.id, data);
-
-    await this.cache.del(ACTIVE_SUBSCRIBERS_CACHE_KEY);
-
     return new Result({ message: 'Subscription preferences updated successfully', data: updatedSubscribe });
   }
 
@@ -128,8 +113,6 @@ export class EmailSubscribeService {
     if (!subscriber) throw new BadGatewayException('Subscriber not found or still active');
 
     await this.subscribeRepository.delete(subscriber.id);
-
-    await this.cache.del(ACTIVE_SUBSCRIBERS_CACHE_KEY);
 
     return new Result({ message: 'Subscriber deleted successfully' });
   }

@@ -7,9 +7,7 @@ import { GenericRepository } from "@libs/repository/genericRepository";
 import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import config from "@config/env.config";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { Cache } from 'cache-manager';
-import envConfig from "@config/env.config";
+import { CacheService } from '@libs/cache';
 import { ACTIVE_SUBSCRIBERS_CACHE_KEY } from "@domain/common/constants/cache";
 
 @Injectable()
@@ -21,8 +19,7 @@ export class MarketingCampaignJob implements OnModuleInit {
     private readonly boss: QueueService,
     private readonly emailJob: EmailJob,
     private readonly manager: EntityManager,
-    @Inject(CACHE_MANAGER)
-    private readonly cache: Cache,
+    private readonly cacheService: CacheService,
   ) {
     this.subscribeRepository = new GenericRepository(Subscriber, manager);
   }
@@ -39,21 +36,14 @@ export class MarketingCampaignJob implements OnModuleInit {
   }
 
   async handle({ mailTemplate }: MarketingCampaignJobData) {
-    let subscribers = await this.cache.get<{ email: string }[]>(
+    const subscribers = await this.cacheService.wrap(
       ACTIVE_SUBSCRIBERS_CACHE_KEY,
+      +config().CACHE_TTL,
+      async () =>
+        this.subscribeRepository.find({
+          where: { status: EmailSubscriptionStatus.ACTIVE },
+        }),
     );
-
-    if (!subscribers) {
-      subscribers = await this.subscribeRepository.find({
-        where: { status: EmailSubscriptionStatus.ACTIVE },
-      });
-
-      await this.cache.set(
-        ACTIVE_SUBSCRIBERS_CACHE_KEY,
-        subscribers,
-        envConfig().CACHE_TTL,
-      );
-    }
 
     await Promise.all(
       subscribers.map(sub =>
