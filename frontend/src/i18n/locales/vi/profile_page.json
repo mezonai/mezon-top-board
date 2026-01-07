@@ -28,10 +28,15 @@
             "showing_page": "Hiển thị trang {{current}} trên {{total}}",
             "no_media": "Chưa có phương tiện nào được tải lên."
         },
+        "my_favorites": {
+            "title": "Danh sách yêu thích của tôi",
+            "no_favorites": "Chưa có mục yêu thích nào."
+        },
         "card_info": {
             "generals": "Chung",
             "overview": "Tổng quan",
             "gallery": "Thư viện",
+            "favorites": "Yêu thích",
             "invitations": "Lời mời",
             "subscriptions": "Đăng ký",
             "settings": "Cài đặt",

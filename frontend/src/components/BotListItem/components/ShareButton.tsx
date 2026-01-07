@@ -1,81 +1,136 @@
 import {
-    FacebookFilled,
-    LinkedinFilled,
-    TwitterCircleFilled,
+  FacebookFilled,
+  HeartFilled,
+  HeartOutlined,
+  LinkedinFilled,
+  ShareAltOutlined,
+  TwitterCircleFilled,
+  MenuOutlined,
 } from "@ant-design/icons";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { Button, Dropdown, MenuProps, message } from "antd";
+import { useState, useEffect } from "react";
+import styles from "./ShareButton.module.scss";
+import {
+  useFavoriteAppControllerAddFavoriteAppMutation,
+  useFavoriteAppControllerRemoveFavoriteAppMutation,
+} from "@app/services/api/favoriteApp/favoriteApp";
+import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
+import { useSelector } from "react-redux";
+import { RootState } from "@app/store";
+import { IUserStore } from "@app/store/user";
 import { cn } from "@app/utils/cn";
 
 type ShareButtonProps = {
-    text: string;
-    url: string;
+  data: GetMezonAppDetailsResponse;
+  url: string;
 };
 
-const ShareButton = ({ text, url }: ShareButtonProps) => {
-    const { t } = useTranslation(['components']);
-    const shareOptions = [
-        {
-            label: t('component.share_button.facebook'),
-            icon: <FacebookFilled className="text-lg" />,
-            bgColor: "bg-blue-600",
-            hoverColor: "hover:bg-blue-700",
-            getUrl: () =>
-                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(text)}`,
-        },
-        {
-            label: t('component.share_button.twitter'),
-            icon: <TwitterCircleFilled className="text-lg" />,
-            bgColor: "bg-blue-400",
-            hoverColor: "hover:bg-blue-500",
-            getUrl: () =>
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                    `${text} ${url}`
-                )}`,
-        },
-        {
-            label: t('component.share_button.linkedin'),
-            icon: <LinkedinFilled className="text-lg" />,
-            bgColor: "bg-blue-700",
-            hoverColor: "hover:bg-blue-800",
-            getUrl: () =>
-                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                    url
-                )}`,
-        },
-    ];
+const ShareButton = ({ data, url }: ShareButtonProps) => {
+  const { t } = useTranslation(["components"]);
+  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user);
+  const [isFavorited, setIsFavorited] = useState(data.isFavorited);
+  
+  const [addFavorite, { isLoading: isAdding }] = useFavoriteAppControllerAddFavoriteAppMutation();
+  const [removeFavorite, { isLoading: isRemoving }] = useFavoriteAppControllerRemoveFavoriteAppMutation();
 
-    const handleShare = (getUrl: () => string) => {
-        window.open(getUrl(), "_blank");
-    };
+  useEffect(() => {
+    setIsFavorited(data.isFavorited);
+  }, [data.isFavorited]);
 
-    return (
-        <div
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-                "p-3 w-full max-w-[250px]",
-                "card-base"
-            )}
-        >
-            <h3 className="text-heading-4 mb-3">{t('component.share_button.title')}</h3>
-            <div className="flex flex-col gap-2">
-                {shareOptions.map(({ label, icon, bgColor, hoverColor, getUrl }) => (
-                    <button
-                        key={label}
-                        onClick={() => handleShare(getUrl)}
-                        className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-lg",
-                            "text-white font-medium transition-base cursor-pointer",
-                            bgColor,
-                            hoverColor
-                        )}
-                    >
-                        <span className="text-lg">{icon}</span>
-                        <span>{label}</span>
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
+  const handleToggleFavorite = async () => {
+    if (!userInfo?.id) {
+      message.warning(t("component.share_button.login_required"));
+      return;
+    }
+
+    const newState = !isFavorited;
+    setIsFavorited(newState);
+
+    try {
+      if (newState) {
+        await addFavorite({ id: data.id }).unwrap();
+        message.success(t("component.share_button.added_favorite"));
+      } else {
+        await removeFavorite({ id: data.id }).unwrap();
+        message.success(t("component.share_button.removed_favorite"));
+      }
+    } catch (error) {
+      setIsFavorited(!newState);
+      message.error(t("component.share_button.error"));
+    }
+  };
+
+  const handleShareSocial = (platformUrl: string) => {
+    window.open(platformUrl, "_blank");
+  };
+
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "favorite",
+      label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
+      icon: isFavorited ? <HeartFilled className="!text-red-500 !text-sm" /> : <HeartOutlined className="!text-red-500 !text-sm" />,
+      onClick: handleToggleFavorite,
+      disabled: isAdding || isRemoving,
+    },
+    {
+      key: "share",
+      label: t("component.share_button.share"),
+      icon: <ShareAltOutlined className="!text-blue-500 !text-sm"/>,
+      popupClassName: styles.shareButton,
+      children: [
+        {
+          key: "facebook",
+          label: t("component.share_button.facebook"),
+          icon: <FacebookFilled className="!text-blue-600 !text-sm" />,
+          onClick: () =>
+            handleShareSocial(
+              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+            ),
+        },
+        {
+          key: "twitter",
+          label: t("component.share_button.twitter"),
+          icon: <TwitterCircleFilled className="!text-blue-400 !text-sm" />,
+          onClick: () =>
+            handleShareSocial(
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                `${data.name} ${url}`
+              )}`
+            ),
+        },
+        {
+          key: "linkedin",
+          label: t("component.share_button.linkedin"),
+          icon: <LinkedinFilled className="!text-blue-700 !text-sm" />,
+          onClick: () =>
+            handleShareSocial(
+              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+            ),
+        },
+      ],
+    },
+  ];
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <Dropdown
+        menu={{ items: menuItems }}
+        overlayClassName={styles.shareButton}
+        trigger={["click"]}
+        placement="bottomRight"
+        arrow
+      >
+        <Button
+          size="large"
+          color="default"
+          variant="outlined"
+          icon={<MenuOutlined className="!text-secondary" />}
+          className={cn("bg-transparent border-border hover:bg-container-secondary")}
+        />
+      </Dropdown>
+    </div>
+  );
 };
 
 export default ShareButton;

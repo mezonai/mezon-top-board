@@ -4,7 +4,8 @@ import {
   InfoCircleOutlined,
   SettingOutlined,
   SyncOutlined,
-  UserAddOutlined
+  UserAddOutlined,
+  HeartOutlined
 } from '@ant-design/icons'
 import avatar from '@app/assets/images/default-user.webp'
 import { AppEvent } from '@app/enums/AppEvent.enum'
@@ -42,6 +43,12 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       icon: <FileImageOutlined />,
       name: t('profile.card_info.gallery'),
       path: '/profile/gallery',
+      isPublic: false
+    },
+    {
+      icon: <HeartOutlined />,
+      name: t('profile.card_info.favorites'),
+      path: '/profile/my-favorites',
       isPublic: false
     },
     {

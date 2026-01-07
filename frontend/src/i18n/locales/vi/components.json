@@ -83,7 +83,16 @@
             "title": "Chia sẻ ngay",
             "facebook": "Facebook",
             "twitter": "Twitter",
-            "linkedin": "LinkedIn"
+            "linkedin": "LinkedIn",
+            "login_required": "Bạn phải đăng nhập trước!",
+            "add_favorite": "Yêu thích",
+            "remove_favorite": "Bỏ yêu thích",
+            "added_favorite": "Đã thêm vào mục yêu thích",
+            "removed_favorite": "Đã gỡ khỏi mục yêu thích",
+            "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+            "share": "Chia sẻ",
+            "favorite": "Yêu thích",
+            "unfavorite": "Bỏ yêu thích"
         },
         "rich_text": {
             "error_invalid_mime": "Vui lòng tải lên tệp hình ảnh hợp lệ!",

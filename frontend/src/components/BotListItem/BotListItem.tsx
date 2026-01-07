@@ -1,4 +1,3 @@
-import { UploadOutlined } from '@ant-design/icons'
 import { avatarBotDefault } from '@app/assets'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
@@ -7,7 +6,7 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotListItemProps } from './BotListItem.types'
 import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
 import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
-import { Popover, Tag } from 'antd'
+import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import ShareButton from './components/ShareButton'
 import { useSelector } from 'react-redux'
@@ -38,9 +37,6 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
   const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     window.open(inviteUrl, '_blank')
-  }
-  const handleShare = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
   }
 
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
@@ -103,15 +99,10 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
               <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
                 {t('component.bot_list_item.invite')}
               </Button>
-              <Popover
-                content={<ShareButton text={t('component.bot_list_item.share_text', { title })} url={safeConcatUrl(shareUrl, data?.id || '')} />}
-                trigger='click'
-                placement='bottomRight'
-                arrow={false}
-                overlayClassName={cn('mt-8', 'min-w-[200px]', 'max-w-[300px]')}
-              >
-                <Button size='large' color='default' variant='outlined' icon={<UploadOutlined />} onClick={handleShare} />
-              </Popover>
+              <ShareButton 
+                data={data!} 
+                url={safeConcatUrl(shareUrl, data?.id || '')} 
+              />
             </div>
 
           </div>

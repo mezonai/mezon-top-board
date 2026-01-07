@@ -83,7 +83,16 @@
             "title": "Share now",
             "facebook": "Facebook",
             "twitter": "Twitter",
-            "linkedin": "LinkedIn"
+            "linkedin": "LinkedIn",
+            "login_required": "You must log in first!",
+            "add_favorite": "Add to favorites",
+            "remove_favorite": "Remove from favorites",
+            "added_favorite": "Added to favorites",
+            "removed_favorite": "Removed from favorites",
+            "error": "An error occurred. Please try again.",
+            "share": "Share",
+            "favorite": "Favorite",
+            "unfavorite": "Unfavorite"
         },
         "rich_text": {
             "error_invalid_mime": "Please upload a valid image file!",
