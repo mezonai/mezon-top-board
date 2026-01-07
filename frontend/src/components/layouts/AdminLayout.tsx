@@ -23,14 +23,14 @@ function AdminLayout() {
   }, [])
 
   return (
-    <Layout className={styles['admin-layout']}>
-      <Sider width={250} className={styles.sider} theme={theme}>
-        <div className={styles['logo-container']}>
-          <img src={logo} alt='MTB Logo' />
-          <span className={styles['logo-text']}>MTB Admin</span>
+    <Layout className="min-h-screen bg-body">
+      <Sider width={250} className={`py-5 h-screen sticky top-0 left-0 overflow-y-auto border-r border-border !bg-sidebar text-sidebar ${styles.sider}`} theme={theme}>
+        <div className="flex items-center px-5 mb-7 gap-2">
+          <img src={logo} alt='MTB Logo' className="h-8 w-auto" />
+          <span className="text-sidebar text-lg font-bold tracking-tight">MTB Admin</span>
         </div>
         
-        <div className={styles['menu-label']}>MENU</div>
+        <div className="px-5 mb-4 text-sidebar-label text-sm font-medium uppercase tracking-wider">MENU</div>
 
         <Menu mode='vertical' defaultSelectedKeys={['/admin']} selectedKeys={[location.pathname]}>
           {adminRoutePaths.filter((route) => route.isShowMenu).map((route) => (
@@ -41,8 +41,8 @@ function AdminLayout() {
         </Menu>
       </Sider>
       <Layout>
-        <Header className={styles.header}>
-          <div className={styles.breadcrumbContainer}>
+        <Header className={`flex items-center justify-start h-16 !bg-container px-5 shadow-[0px_2px_8px_rgba(0,0,0,0.1)] ${styles.header}`}>
+          <div className="flex-center">
             <Breadcrumb>
               {pathSnippets.map((snippet, index) => {
                 const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
@@ -55,12 +55,12 @@ function AdminLayout() {
             </Breadcrumb>
           </div>
         </Header>
-        <Content className={styles.content}>
+        <Content className={`p-5 !bg-content min-h-[calc(100vh-64px-70px)] ${styles.content}`}>
           <Outlet />
         </Content>
-        <Footer className={styles.footer}>Footer</Footer>
+        <Footer className="text-center !bg-container text-primary py-5 px-12 border-t border-border-footer">Footer</Footer>
       </Layout>
-    </Layout >
+    </Layout>
   )
 }
 

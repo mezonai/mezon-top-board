@@ -66,6 +66,8 @@ const tailwindPreset: Config = {
         tertiary: 'var(--text-tertiary)',
         breadcrumb: 'var(--text-breadcrumb)',
         sidebar: 'var(--text-sidebar)',
+        'sidebar-label': 'var(--text-sidebar-label)',
+        'sidebar-active': 'var(--text-sidebar-active)',
       },
       spacing: {
         '0': '0px',
