@@ -7,6 +7,7 @@ import styles from './AdminLayout.module.scss'; // Import the styles
 import { useEffect } from 'react'
 import useAdminCheck from '@app/hook/useAdminCheck'
 import { useTheme } from '@app/hook/useTheme'
+import { cn } from '@app/utils/cn'
 
 const { Header, Footer, Sider, Content } = Layout
 
@@ -16,15 +17,23 @@ function AdminLayout() {
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const { theme } = useTheme()
 
-  const { checkAdmin } = useAdminCheck()
-  useAuthRedirect()
-  useEffect(() => {
-    checkAdmin()
-  }, [])
+  // const { checkAdmin } = useAdminCheck()
+  // useAuthRedirect()
+  // useEffect(() => {
+  //   checkAdmin()
+  // }, [])
 
   return (
-    <Layout className="min-h-screen bg-body">
-      <Sider width={250} className={`py-5 h-screen sticky top-0 left-0 overflow-y-auto border-r border-border !bg-sidebar text-sidebar ${styles.sider}`} theme={theme}>
+    <Layout className="h-screen bg-body overflow-hidden">
+      <Sider
+        width={250}
+        theme={theme}
+        className={cn(
+          'py-5 h-screen sticky top-0 left-0 overflow-y-auto',
+          'border-r border-border !bg-sidebar text-sidebar',
+          styles.sider
+        )}
+      >
         <div className="flex items-center px-5 mb-7 gap-2">
           <img src={logo} alt='MTB Logo' className="h-8 w-auto" />
           <span className="text-sidebar text-lg font-bold tracking-tight">MTB Admin</span>
@@ -40,8 +49,14 @@ function AdminLayout() {
           ))}
         </Menu>
       </Sider>
-      <Layout>
-        <Header className={`flex items-center justify-start h-16 !bg-container px-5 shadow-[0px_2px_8px_rgba(0,0,0,0.1)] ${styles.header}`}>
+      <Layout className="min-h-screen flex flex-col overflow-hidden">
+        <Header
+          className={cn(
+            'flex items-center justify-start h-16 !px-5 flex-shrink-0',
+            '!bg-container shadow-header',
+            styles.header
+          )}
+        >
           <div className="flex-center">
             <Breadcrumb>
               {pathSnippets.map((snippet, index) => {
@@ -55,10 +70,10 @@ function AdminLayout() {
             </Breadcrumb>
           </div>
         </Header>
-        <Content className={`p-5 !bg-content min-h-[calc(100vh-64px-70px)] ${styles.content}`}>
+        <Content className={cn('p-5 !bg-content flex-1 overflow-y-auto', styles.content)}>
           <Outlet />
         </Content>
-        <Footer className="text-center !bg-container text-primary py-5 px-12 border-t border-border-footer">Footer</Footer>
+        <Footer className="text-center !bg-container text-primary py-5 px-12 border-t border-border-footer flex-shrink-0">Footer</Footer>
       </Layout>
     </Layout>
   )
