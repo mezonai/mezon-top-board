@@ -268,14 +268,16 @@ export class MezonAppService {
     } else apps.orderBy(`app.${sortField}`, sortOrder);
     apps.addOrderBy("version.version", "DESC");
 
-    return { apps, total };
+    return { apps, total, ids };
   }
 
   async searchMezonApp(query: SearchMezonAppRequest, userId?: string) {
-    const { apps, total } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
-    const data = await apps.getMany();
-    const appIds = data.map(app => app.id);
-    const favoritesMap = await this.getFavoritesMap(appIds, userId);
+    const { apps, total, ids } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
+    const [data, favoritesMap] = await Promise.all([
+        apps.getMany(),
+        this.getFavoritesMap(ids, userId)
+    ]);
+
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
@@ -540,12 +542,14 @@ export class MezonAppService {
   }
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
-    const { apps, total } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
+    const { apps, total, ids } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
       ownerId: userId,
     });
-    const data = await apps.getMany();
-    const appIds = data.map(app => app.id);
-    const favoritesMap = await this.getFavoritesMap(appIds, userId);
+    const [data, favoritesMap] = await Promise.all([
+        apps.getMany(),
+        this.getFavoritesMap(ids, userId)
+    ]);
+
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
