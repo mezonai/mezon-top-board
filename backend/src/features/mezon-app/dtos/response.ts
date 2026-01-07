@@ -35,6 +35,10 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   public rateScore: number;
 
   @Expose()
+  @ApiProperty()
+  public isFavorited: boolean;
+
+  @Expose()
   @ApiProperty({ type: () => [GetAppVersionDetailsResponse] })
   public versions: GetAppVersionDetailsResponse[];
 }
@@ -54,7 +58,8 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "rateScore",
   "owner",
   "versions",
-  "hasNewUpdate"
+  "hasNewUpdate",
+  "isFavorited",
 ]) { }
 
 export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {

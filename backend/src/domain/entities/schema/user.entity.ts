@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 import { Role } from "@domain/common/enum/role";
-import { App, Link, Media, Rating, TempFile } from "@domain/entities";
+import { App, Link, Media, Rating, TempFile, FavoriteApp } from "@domain/entities"; 
 
 import { BaseSoftDelete } from "../base";
 import { BotWizard } from "@domain/entities/schema/botWizard.entity";
@@ -41,6 +41,9 @@ export class User extends BaseSoftDelete {
 
     @Column({ nullable: false, default: false })
     public isFirstLogin: boolean;
+
+    @OneToMany(() => FavoriteApp, (favoriteApp) => favoriteApp.user)
+    public favoriteApps: FavoriteApp[];
 
     @OneToMany(() => Rating, (rating) => rating.user)
     public ratings: Rating[];
