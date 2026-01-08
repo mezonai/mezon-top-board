@@ -4,15 +4,15 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotListItemProps } from './BotListItem.types'
-import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
-import { getUrlMedia, safeConcatUrl, uuidToNumber } from '@app/utils/stringHelper'
+import { randomColor } from '@app/utils/mezonApp'
+import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
 import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import ShareButton from './components/ShareButton'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
-import OwnerActions from '../OwnerActions/OwnerActions'
+import BotActions from '../BotActions/BotActions'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
@@ -23,25 +23,23 @@ import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
+import { useBotInteractions } from '@app/hook/useBotInteractions'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
+  const { handleInvite } = useBotInteractions(data!);
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
-  const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
-  const title = data?.name || t('component.bot_list_item.default_headline')
-  const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
-
-  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    window.open(inviteUrl, '_blank')
-  }
-
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
+  }
+
+  const onInviteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    handleInvite();
   }
 
   return (
@@ -94,21 +92,17 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
 
             <div className='flex gap-3 flex-shrink-0 items-start mt-2 sm:mt-0'>
               {userInfo?.id && data?.owner?.id === userInfo?.id && (
-                <OwnerActions 
+                <BotActions 
                   data={data} 
-                  isBotCard={true} 
                   mode={ViewMode.LIST}
                   onNewVersionClick={handleOwnerNewVersionClick} 
                 />
               )}
               <MessageButton data={data!} />
-              <Button color='primary' variant='solid' size='large' onClick={handleInvite}>
+              <Button color='primary' variant='solid' size='large' onClick={onInviteClick}>
                 {t('component.bot_list_item.invite')}
               </Button>
-              <ShareButton 
-                data={data!} 
-                url={safeConcatUrl(shareUrl, data?.id || '')} 
-              />
+              <ShareButton data={data!} />
             </div>
 
           </div>

@@ -22,6 +22,7 @@ import { IMainProps } from './Main.types'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
 const pageOptions = [5, 10, 15]
 
@@ -138,7 +139,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     setViewMode(mode)
     setPage(1)
     // Default: grid 36 items
-    setBotPerPage(mode === 'grid' ? 36 : pageOptions[0])
+    setBotPerPage(mode === ViewMode.GRID ? 36 : pageOptions[0])
   }
 
   const handleSortChange = (option: IOption) => {
@@ -223,7 +224,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               />
             </div>
 
-            {viewMode === 'list' && (
+            {viewMode === ViewMode.LIST && (
               <>
                 <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
                 <div className="flex items-center gap-2">
@@ -277,12 +278,12 @@ function Main({ isSearchPage = false }: IMainProps) {
           {mezonApp?.data?.length !== 0 ? (
             <div className={cn(
               'pt-8',
-              viewMode === 'grid'
+              viewMode === ViewMode.GRID
                 ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6'
                 : 'flex flex-col gap-4'
             )}>
               {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => (
-                viewMode === 'grid' ? (
+                viewMode === ViewMode.GRID ? (
                   <BotGridItem
                     key={bot.id}
                     data={bot}

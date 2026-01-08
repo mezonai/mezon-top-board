@@ -21,7 +21,9 @@
             "edit": "Edit",
             "delete": "Delete",
             "invalid_id": "Invalid bot ID.",
-            "chat_now": "Chat Now"
+            "invite": "Invite",
+            "share": "Share",
+            "chat_now": "Chat now"
         },
         "preview_modal": {
             "title": "App Details",
@@ -85,15 +87,7 @@
             "facebook": "Facebook",
             "twitter": "Twitter",
             "linkedin": "LinkedIn",
-            "login_required": "You must log in first!",
-            "add_favorite": "Add to favorites",
-            "remove_favorite": "Remove from favorites",
-            "added_favorite": "Added to favorites",
-            "removed_favorite": "Removed from favorites",
-            "error": "An error occurred. Please try again.",
-            "share": "Share",
-            "favorite": "Favorite",
-            "unfavorite": "Unfavorite"
+            "share": "Share"
         },
         "rich_text": {
             "error_invalid_mime": "Please upload a valid image file!",

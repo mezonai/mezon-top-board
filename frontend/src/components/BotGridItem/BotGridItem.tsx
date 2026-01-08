@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
-import OwnerActions from '../OwnerActions/OwnerActions'
+import BotActions from '../BotActions/BotActions'
 import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
 import PreviewModal from '../PreviewModal/PreviewModal'
@@ -45,6 +45,10 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       return
     }
 
+    if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
+      return; 
+    }
+
     const target = e.target as HTMLElement
     if (target.closest('.owner-actions')) return
 
@@ -82,7 +86,7 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       )}
 
       <div className="owner-actions absolute top-2 right-2 z-10">
-        <OwnerActions 
+        <BotActions 
             data={data} 
             mode={ViewMode.GRID} 
             onNewVersionClick={handleOwnerNewVersionClick} 
