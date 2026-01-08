@@ -12,6 +12,7 @@ import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
 function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
@@ -77,13 +78,16 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       onMouseMove={handleMouseMove}
     >
       {!isPublic && (
-        <>
-          <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
-          <div className="owner-actions absolute top-2 right-2">
-            <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
-          </div>
-        </>
+         <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
       )}
+
+      <div className="owner-actions absolute top-2 right-2 z-10">
+        <OwnerActions 
+            data={data} 
+            mode={ViewMode.GRID} 
+            onNewVersionClick={handleOwnerNewVersionClick} 
+        />
+      </div>
       <div className='p-4'>
         <div className='relative'>
           <div className='w-20 m-auto'>

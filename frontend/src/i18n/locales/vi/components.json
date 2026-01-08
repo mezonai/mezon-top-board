@@ -20,7 +20,10 @@
             "new_version": "Phiên bản mới",
             "edit": "Chỉnh sửa",
             "delete": "Xóa",
-            "invalid_id": "ID bot không hợp lệ."
+            "invalid_id": "ID bot không hợp lệ.",
+            "invite": "Mời",
+            "share": "Chia sẻ",
+            "chat_now": "Chat ngay"
         },
         "preview_modal": {
             "title": "Chi tiết ứng dụng",
@@ -83,7 +86,8 @@
             "title": "Chia sẻ ngay",
             "facebook": "Facebook",
             "twitter": "Twitter",
-            "linkedin": "LinkedIn"
+            "linkedin": "LinkedIn",
+            "share": "Chia sẻ"
         },
         "rich_text": {
             "error_invalid_mime": "Vui lòng tải lên tệp hình ảnh hợp lệ!",
