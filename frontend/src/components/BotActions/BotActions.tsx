@@ -48,13 +48,20 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
     })
   }
 
-  const ownerItems: MenuProps['items'] = [
-    ...(data?.hasNewUpdate ? [{
+  const newVersionItems = data?.hasNewUpdate
+    ? [{
         label: t('component.owner_actions.new_version'),
+        style: { whiteSpace: 'nowrap' },
         key: 'new_version',
         icon: <ExclamationCircleOutlined />,
-        onClick: () => onNewVersionClick?.(data?.versions?.[0])
-      }] : []),
+        onClick: () => {
+          onNewVersionClick?.(data?.versions?.[0])
+        }
+      }]
+    : []
+
+  const ownerItems: MenuProps['items'] = [
+    ...newVersionItems,
     {
       label: t('component.owner_actions.edit'),
       key: 'edit',
@@ -66,7 +73,10 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       key: 'delete',
       danger: true,
       icon: <DeleteOutlined />,
-      onClick: () => data?.id ? handleDeleteBot(data.id) : toast.error(t('component.owner_actions.invalid_id'))
+      onClick: () => {
+        if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
+        handleDeleteBot(data?.id)
+      }
     }
   ];
 
@@ -75,13 +85,13 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       key: "chat",
       label: t("component.owner_actions.chat_now"),
       icon: <MessageOutlined />,
-      onClick: handleChatNow
+      onClick: handleChatNow,
     },
     {
       key: "invite",
       label: t('component.bot_list_item.invite'),
       icon: <UserAddOutlined />,
-      onClick: handleInvite
+      onClick: handleInvite,
     },
     {
       key: "share",
@@ -126,7 +136,7 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       <Dropdown.Button
         style={{ display: 'contents' }}
         overlayClassName={styles.botActions}
-        size={mode === ViewMode.LIST ? 'large' : 'middle'}
+        size={mode === ViewMode.LIST ? 'large' : 'middle'} 
         buttonsRender={([_, rightBtn]) => [
           null,
           <span className={mode === ViewMode.LIST ? '' : '!absolute !top-0 !right-0'}>
