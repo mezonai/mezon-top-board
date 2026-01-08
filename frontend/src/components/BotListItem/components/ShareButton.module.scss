@@ -1,0 +1,27 @@
+.shareButton {
+  :global(.ant-dropdown-menu) {
+    background-color: var(--bg-container) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 6px;
+  }
+
+  :global(.ant-dropdown-menu-item),
+  :global(.ant-dropdown-menu-submenu-title) {
+    border-radius: 8px;
+    padding: 10px 12px !important;
+    color: var(--text-primary);
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: var(--bg-container-secondary) !important;
+    }
+    
+    :global(.ant-dropdown-menu-submenu-arrow) {
+      :global(.anticon) {
+         color: var(--text-secondary) !important;
+         margin-right: 0;
+      }
+    }
+  }
+}

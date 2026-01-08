@@ -1,61 +1,29 @@
 import { Dropdown, MenuProps, Modal } from 'antd'
 import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
+  DeleteOutlined, 
+  EditOutlined, 
+  ExclamationCircleOutlined, 
   ShareAltOutlined,
-  UserAddOutlined,
-  MessageOutlined,
+  UserAddOutlined, 
+  MessageOutlined, 
   MoreOutlined,
-  FacebookFilled,
-  TwitterCircleFilled,
+  FacebookFilled, 
+  TwitterCircleFilled, 
   LinkedinFilled
 } from '@ant-design/icons'
-import {
-  useMezonAppControllerDeleteMezonAppMutation
-} from '@app/services/api/mezonApp/mezonApp'
+import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import styles from './OwnerActions.module.scss'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { RootState } from '@app/store'
-import { IUserStore } from '@app/store/user'
-import { getMezonInstallLink } from '@app/utils/mezonApp'
-import { safeConcatUrl, getUrlMedia } from '@app/utils/stringHelper'
-import { avatarBotDefault } from '@app/assets'
 import { OwnerActionsProps } from './OwnerAction.types'
+import { useBotInteractions } from '@app/hook/useBotInteractions'
+import styles from './OwnerActions.module.scss'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
 function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick }: OwnerActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
-  const isOwner = userInfo?.id && data?.owner?.id === userInfo?.id;
-
-  const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/'
-  const fullShareUrl = safeConcatUrl(shareUrl, data?.id || '')
-  const inviteUrl = getMezonInstallLink(data?.type, data?.mezonAppId)
-
-  const handleShareSocial = (platformUrl: string) => {
-    window.open(platformUrl, "_blank");
-  };
-
-  const handleInvite = () => {
-    window.open(inviteUrl, '_blank')
-  }
-
-  const handleChat = () => {
-    if (!data?.mezonAppId) return
-    const payload = {
-      id: data.mezonAppId || '',
-      name: data?.name || 'Unknown',
-      avatar: data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
-    }
-    const dataBot = btoa(encodeURIComponent(JSON.stringify(payload)))
-    const chatUrl = `https://mezon.ai/chat/${data.mezonAppId}?data=${dataBot}`
-    window.open(chatUrl, '_blank')
-  }
+  const { handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
@@ -71,7 +39,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
       onOk: async () => {
         try {
           await deleteBot({ requestWithId: { id: botId } }).unwrap()
-          if(mode === ViewMode.LIST) navigate('/')
+          if(mode === 'list') navigate('/')
           toast.success(t('component.owner_actions.delete_success'))
         } catch (error) {
           toast.error(t('component.owner_actions.delete_error'))
@@ -80,13 +48,9 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
     })
   }
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    e.domEvent.stopPropagation()
-  }
   const ownerItems: MenuProps['items'] = [
     ...(data?.hasNewUpdate ? [{
         label: t('component.owner_actions.new_version'),
-        style: { whiteSpace: 'nowrap' },
         key: 'new_version',
         icon: <ExclamationCircleOutlined />,
         onClick: () => onNewVersionClick?.(data?.versions?.[0])
@@ -102,10 +66,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
       key: 'delete',
       danger: true,
       icon: <DeleteOutlined />,
-      onClick: () => {
-        if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
-        handleDeleteBot(data?.id)
-      }
+      onClick: () => data?.id ? handleDeleteBot(data.id) : toast.error(t('component.owner_actions.invalid_id'))
     }
   ];
 
@@ -114,7 +75,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
       key: "chat",
       label: t("component.owner_actions.chat_now"),
       icon: <MessageOutlined />,
-      onClick: handleChat
+      onClick: handleChatNow
     },
     {
       key: "invite",
@@ -132,43 +93,36 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
           key: "facebook",
           label: t("component.share_button.facebook"),
           icon: <FacebookFilled className="!text-blue-600" />,
-          onClick: () => handleShareSocial(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullShareUrl)}`),
+          onClick: () => handleShareSocial('facebook'),
         },
         {
           key: "twitter",
           label: t("component.share_button.twitter"),
           icon: <TwitterCircleFilled className="!text-blue-400" />,
-          onClick: () => handleShareSocial(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${data.name} ${fullShareUrl}`)}`),
+          onClick: () => handleShareSocial('twitter'),
         },
         {
           key: "linkedin",
           label: t("component.share_button.linkedin"),
           icon: <LinkedinFilled className="!text-blue-700" />,
-          onClick: () => handleShareSocial(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullShareUrl)}`),
+          onClick: () => handleShareSocial('linkedin'),
         },
       ],
     }
   ];
 
   let finalItems: MenuProps['items'] = [];
-
-  if (mode === ViewMode.LIST) {
+  if (mode === 'list') {
      finalItems = ownerItems; 
   } else {
      finalItems = [...publicItems];
-     if (isOwner) {
-       finalItems.push(...ownerItems);
-     }
+     if (isOwner) finalItems.push(...ownerItems);
   }
 
   if (finalItems.length === 0) return null;
 
   return (
-    <div 
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()} 
-      onMouseUp={(e) => e.stopPropagation()}
-    >
+    <div onClick={(e) => e.stopPropagation()}>
       <Dropdown.Button
         style={{ display: 'contents' }}
         overlayClassName={styles.ownerActions}
@@ -184,7 +138,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
           </span>
         ]}
         trigger={['click']}
-        menu={{ items: finalItems, onClick: handleMenuClick }}
+        menu={{ items: finalItems }}
       />
     </div>
   )

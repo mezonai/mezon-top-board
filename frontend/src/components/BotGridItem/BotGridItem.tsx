@@ -45,6 +45,10 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       return
     }
 
+    if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
+      return; 
+    }
+
     const target = e.target as HTMLElement
     if (target.closest('.owner-actions')) return
 
