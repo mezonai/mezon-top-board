@@ -87,7 +87,11 @@
             "facebook": "Facebook",
             "twitter": "Twitter",
             "linkedin": "LinkedIn",
-            "share": "Chia sẻ"
+            "share": "Chia sẻ",
+            "add_favorite": "Yêu thích",
+            "remove_favorite": "Bỏ yêu thích",
+            "added_favorite": "Đã thêm vào mục yêu thích",
+            "removed_favorite": "Đã xóa khỏi mục yêu thích"
         },
         "rich_text": {
             "error_invalid_mime": "Vui lòng tải lên tệp hình ảnh hợp lệ!",

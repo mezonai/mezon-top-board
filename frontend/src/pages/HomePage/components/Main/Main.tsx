@@ -22,7 +22,6 @@ import { IMainProps } from './Main.types'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
-import { ViewMode } from '@app/enums/viewMode.enum'
 
 const pageOptions = [5, 10, 15]
 

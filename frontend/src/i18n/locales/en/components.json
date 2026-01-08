@@ -87,7 +87,11 @@
             "facebook": "Facebook",
             "twitter": "Twitter",
             "linkedin": "LinkedIn",
-            "share": "Share"
+            "share": "Share",
+            "add_favorite": "Add to Favorites",
+            "remove_favorite": "Remove from Favorites",
+            "added_favorite": "Added to Favorites", 
+            "removed_favorite": "Removed from Favorites"
         },
         "rich_text": {
             "error_invalid_mime": "Please upload a valid image file!",

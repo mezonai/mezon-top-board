@@ -9,7 +9,9 @@ import {
   MoreOutlined,
   FacebookFilled, 
   TwitterCircleFilled, 
-  LinkedinFilled
+  LinkedinFilled,
+  HeartFilled,
+  HeartOutlined
 } from '@ant-design/icons'
 import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
@@ -23,7 +25,7 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const { handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
+  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
@@ -92,6 +94,13 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       label: t('component.bot_list_item.invite'),
       icon: <UserAddOutlined />,
       onClick: handleInvite,
+    },
+    {
+      key: "favorite",
+      label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
+      icon: isFavorited ? <HeartFilled className="!text-red-500" /> : <HeartOutlined className="!text-red-500" />,
+      onClick: handleToggleFavorite,
+      disabled: isBusy,
     },
     {
       key: "share",
