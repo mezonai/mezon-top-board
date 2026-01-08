@@ -1,7 +1,7 @@
 import { AppVersion } from "@app/types/appVersion.types";
 import { ViewMode } from "@app/enums/viewMode.enum";
 
-export type OwnerActionsProps = {
+export type BotActionsProps = {
   data: any;
   isBotCard?: boolean;
   mode?: ViewMode;

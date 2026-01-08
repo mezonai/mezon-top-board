@@ -12,7 +12,7 @@ import ShareButton from './components/ShareButton'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
-import OwnerActions from '../OwnerActions/OwnerActions'
+import BotActions from '../BotActions/BotActions'
 import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
@@ -92,7 +92,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
 
             <div className='flex gap-3 flex-shrink-0 items-start mt-2 sm:mt-0'>
               {userInfo?.id && data?.owner?.id === userInfo?.id && (
-                <OwnerActions 
+                <BotActions 
                   data={data} 
                   isBotCard={true} 
                   mode={ViewMode.LIST}

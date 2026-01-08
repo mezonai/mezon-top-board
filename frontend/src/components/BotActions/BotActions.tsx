@@ -15,12 +15,12 @@ import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/m
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { OwnerActionsProps } from './OwnerAction.types'
+import { BotActionsProps } from './BotActions.types'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
-import styles from './OwnerActions.module.scss'
+import styles from './BotActions.module.scss'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
-function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick }: OwnerActionsProps) {
+function BotActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const { handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
@@ -87,7 +87,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
       key: "share",
       label: t("component.share_button.share"),
       icon: <ShareAltOutlined className="!text-blue-500" />,
-      popupClassName: styles.ownerActions,
+      popupClassName: styles.botActions,
       children: [
         {
           key: "facebook",
@@ -112,7 +112,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
   ];
 
   let finalItems: MenuProps['items'] = [];
-  if (mode === 'list') {
+  if (mode === ViewMode.LIST) {
      finalItems = ownerItems; 
   } else {
      finalItems = [...publicItems];
@@ -125,12 +125,12 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
     <div onClick={(e) => e.stopPropagation()}>
       <Dropdown.Button
         style={{ display: 'contents' }}
-        overlayClassName={styles.ownerActions}
+        overlayClassName={styles.botActions}
         size={isBotCard ? 'large' : 'middle'}
         buttonsRender={([_, rightBtn]) => [
           null,
           <span className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
-            {mode === 'grid' ? (
+            {mode === ViewMode.GRID ? (
                 <div className="ant-btn ant-btn-default ant-btn-icon-only cursor-pointer flex items-center justify-center bg-container border border-border rounded-lg w-8 h-8 hover:bg-container-secondary transition-all">
                     <MoreOutlined />
                 </div>
@@ -144,4 +144,4 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
   )
 }
 
-export default OwnerActions
+export default BotActions
