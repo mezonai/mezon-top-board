@@ -121,12 +121,13 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
     }
   ];
 
-  let finalItems: MenuProps['items'] = [];
-  if (mode === ViewMode.LIST) {
-     finalItems = ownerItems; 
-  } else {
-     finalItems = [...publicItems];
-     if (isOwner) finalItems.push(...ownerItems);
+  const finalItems: MenuProps['items'] = [];
+  if (isOwner) {
+    finalItems.push(...ownerItems);
+  }
+
+  if (mode === ViewMode.GRID) {
+    finalItems.unshift(...publicItems);
   }
 
   if (finalItems.length === 0) return null;

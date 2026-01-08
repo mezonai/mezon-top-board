@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@app/store';
 import { IUserStore } from '@app/store/user';
@@ -8,6 +9,10 @@ import { avatarBotDefault } from '@app/assets';
 
 export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user);
+
+  const isOwner = useMemo(() => {
+    return !!(userInfo?.id && data?.owner?.id && userInfo.id === data.owner.id);
+  }, [userInfo?.id, data?.owner?.id]);
 
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/';
   const fullShareUrl = safeConcatUrl(shareUrl, data?.id || '');
@@ -56,7 +61,7 @@ export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
     handleInvite,
     handleChatNow,
     fullShareUrl,
-    isOwner: userInfo?.id && data?.owner?.id === userInfo?.id,
+    isOwner,
     userInfo
   };
 };
