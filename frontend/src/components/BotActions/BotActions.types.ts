@@ -3,7 +3,6 @@ import { ViewMode } from "@app/enums/viewMode.enum";
 
 export type BotActionsProps = {
   data: any;
-  isBotCard?: boolean;
   mode?: ViewMode;
   onNewVersionClick?: (version?: AppVersion) => void
 }

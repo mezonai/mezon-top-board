@@ -94,7 +94,6 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
               {userInfo?.id && data?.owner?.id === userInfo?.id && (
                 <BotActions 
                   data={data} 
-                  isBotCard={true} 
                   mode={ViewMode.LIST}
                   onNewVersionClick={handleOwnerNewVersionClick} 
                 />

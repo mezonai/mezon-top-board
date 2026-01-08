@@ -20,7 +20,7 @@ import { useBotInteractions } from '@app/hook/useBotInteractions'
 import styles from './BotActions.module.scss'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
+function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const { handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
@@ -126,10 +126,10 @@ function BotActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick }
       <Dropdown.Button
         style={{ display: 'contents' }}
         overlayClassName={styles.botActions}
-        size={isBotCard ? 'large' : 'middle'}
+        size={mode === ViewMode.LIST ? 'large' : 'middle'}
         buttonsRender={([_, rightBtn]) => [
           null,
-          <span className={isBotCard ? '' : '!absolute !top-0 !right-0'}>
+          <span className={mode === ViewMode.LIST ? '' : '!absolute !top-0 !right-0'}>
             {mode === ViewMode.GRID ? (
                 <div className="ant-btn ant-btn-default ant-btn-icon-only cursor-pointer flex items-center justify-center bg-container border border-border rounded-lg w-8 h-8 hover:bg-container-secondary transition-all">
                     <MoreOutlined />
