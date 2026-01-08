@@ -20,7 +20,8 @@
             "new_version": "New version",
             "edit": "Edit",
             "delete": "Delete",
-            "invalid_id": "Invalid bot ID."
+            "invalid_id": "Invalid bot ID.",
+            "chat_now": "Chat Now"
         },
         "preview_modal": {
             "title": "App Details",

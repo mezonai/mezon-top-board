@@ -22,6 +22,7 @@ import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
@@ -93,7 +94,12 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
 
             <div className='flex gap-3 flex-shrink-0 items-start mt-2 sm:mt-0'>
               {userInfo?.id && data?.owner?.id === userInfo?.id && (
-                <OwnerActions data={data} isBotCard={true} onNewVersionClick={handleOwnerNewVersionClick} />
+                <OwnerActions 
+                  data={data} 
+                  isBotCard={true} 
+                  mode={ViewMode.LIST}
+                  onNewVersionClick={handleOwnerNewVersionClick} 
+                />
               )}
               <MessageButton data={data!} />
               <Button color='primary' variant='solid' size='large' onClick={handleInvite}>

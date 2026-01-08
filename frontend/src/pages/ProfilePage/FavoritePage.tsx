@@ -12,10 +12,9 @@ import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
 import { useTranslation } from "react-i18next"
 import BotGridItem from '@app/components/BotGridItem/BotGridItem'
 import BotListItem from '@app/components/BotListItem/BotListItem'
+import { ViewMode } from '@app/enums/viewMode.enum'
 import { useFavoriteAppControllerGetFavoriteAppsQuery } from '@app/services/api/favoriteApp/favoriteApp'
 import { cn } from '@app/utils/cn'
-
-type ViewMode = 'list' | 'grid';
 
 function FavoritePage() {
     const { t } = useTranslation(['profile_page', 'home_page']);
@@ -31,7 +30,7 @@ function FavoritePage() {
 
     const [page, setPage] = useState<number>(1)
     const [pageSize, setPageSize] = useState<number>(6)
-    const [viewMode, setViewMode] = useState<ViewMode>('grid')
+    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
 
     const { data: favoriteData, isLoading, isFetching } = useFavoriteAppControllerGetFavoriteAppsQuery({
         pageNumber: page,
@@ -98,10 +97,10 @@ function FavoritePage() {
                                             variant="text"
                                             color="default"
                                             icon={<AppstoreOutlined />}
-                                            onClick={() => handleViewModeChange('grid')}
+                                            onClick={() => handleViewModeChange(ViewMode.GRID)}
                                             className={cn(
                                                 "min-w-8 px-3",
-                                                viewMode === 'grid'
+                                                viewMode === ViewMode.GRID
                                                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                                                     : '!text-secondary hover:!text-accent-primary'
                                             )}
@@ -111,10 +110,10 @@ function FavoritePage() {
                                             variant="text"
                                             color="default"
                                             icon={<BarsOutlined />}
-                                            onClick={() => handleViewModeChange('list')}
+                                            onClick={() => handleViewModeChange(ViewMode.LIST)}
                                             className={cn(
                                                 "min-w-8 px-3",
-                                                viewMode === 'list'
+                                                viewMode === ViewMode.LIST
                                                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                                                     : '!text-secondary hover:!text-accent-primary'
                                             )}

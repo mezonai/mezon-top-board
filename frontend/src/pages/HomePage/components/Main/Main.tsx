@@ -19,12 +19,11 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
+import { ViewMode } from '@app/enums/viewMode.enum'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
-
-type ViewMode = 'list' | 'grid';
 
 function Main({ isSearchPage = false }: IMainProps) {
   const { t } = useTranslation(['home_page'])
@@ -67,7 +66,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
   const [type, setType] = useState<MezonAppType | undefined>(defaultType)
-  const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.LIST)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -249,10 +248,10 @@ function Main({ isSearchPage = false }: IMainProps) {
                 variant="text"
                 color="default"
                 icon={<BarsOutlined />}
-                onClick={() => handleViewModeChange('list')}
+                onClick={() => handleViewModeChange(ViewMode.LIST)}
                 className={cn(
                   "min-w-[40px] px-3",
-                  viewMode === 'list'
+                  viewMode === ViewMode.LIST
                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                     : '!text-secondary hover:!text-accent-primary'
                 )}
@@ -262,10 +261,10 @@ function Main({ isSearchPage = false }: IMainProps) {
                 variant="text"
                 color="default"
                 icon={<AppstoreOutlined />}
-                onClick={() => handleViewModeChange('grid')}
+                onClick={() => handleViewModeChange(ViewMode.GRID)}
                 className={cn(
                   "min-w-[40px] px-3",
-                  viewMode === 'grid'
+                  viewMode === ViewMode.GRID
                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                     : '!text-secondary hover:!text-accent-primary'
                 )}

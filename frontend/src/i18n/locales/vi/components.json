@@ -20,7 +20,8 @@
             "new_version": "Phiên bản mới",
             "edit": "Chỉnh sửa",
             "delete": "Xóa",
-            "invalid_id": "ID bot không hợp lệ."
+            "invalid_id": "ID bot không hợp lệ.",
+            "chat_now": "Chat ngay"
         },
         "preview_modal": {
             "title": "Chi tiết ứng dụng",
