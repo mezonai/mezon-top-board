@@ -39,7 +39,7 @@ function OwnerActions({ data, isBotCard, mode = ViewMode.LIST, onNewVersionClick
       onOk: async () => {
         try {
           await deleteBot({ requestWithId: { id: botId } }).unwrap()
-          if(mode === 'list') navigate('/')
+          navigate('/')
           toast.success(t('component.owner_actions.delete_success'))
         } catch (error) {
           toast.error(t('component.owner_actions.delete_error'))
