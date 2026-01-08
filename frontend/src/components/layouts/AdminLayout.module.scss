@@ -1,50 +1,45 @@
-.admin-layout {
-  min-height: 100vh;
-  background: var(--bg-body);
-}
-
 .sider {
-  background: var(--bg-sidebar) !important;
-  color: var(--text-sidebar);
-  padding-top: 20px;
-  min-height: 100vh;
-  
   :global(.ant-menu) {
-    background: var(--bg-sidebar) !important;
+    background: transparent !important;
+    border: none !important;
     color: var(--text-sidebar);
+    padding: 0 12px;
   }
   
   :global(.ant-menu-item) {
+    height: 44px !important;
+    line-height: 44px !important;
     color: var(--text-sidebar) !important;
-    opacity: 0.85;
+    border-radius: 8px !important;
     
     &:hover {
-      background: var(--bg-container-secondary) !important;
-      color: var(--primary-color, #d1006b) !important;
-      opacity: 1;
+      background: var(--bg-sidebar-active) !important;
+      color: var(--text-sidebar-active) !important;
+    }
+
+    :global(.ant-menu-item-icon) {
+      font-size: 16px !important;
+      min-width: 16px;
     }
   }
   
   :global(.ant-menu-item-selected) {
-    background: var(--bg-container-secondary) !important;
-    color: var(--primary-color, #d1006b) !important;
-    opacity: 1;
+    background: var(--bg-sidebar-active) !important;
+    color: var(--text-sidebar-active) !important;
+    font-weight: 500;
+
+    &::after {
+      display: none !important;
+    }
   }
   
   :global(.ant-menu-item a) {
     color: inherit !important;
+    font-size: 14px;
   }
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  height: 64px;
-  background: var(--bg-container) !important;
-  padding: 0 20px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-  
   :global(.ant-breadcrumb) {
     color: var(--text-breadcrumb) !important;
   }
@@ -69,22 +64,7 @@
   }
 }
 
-.breadcrumbContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.activeBreadcrumb {
-  font-weight: bold;
-  color: var(--bg-sidebar);
-}
-
 .content {
-  padding: 20px;
-  background: var(--bg-content) !important;
-  min-height: calc(100vh - 64px - 70px);
-  
   :global(.ant-table) {
     background: var(--bg-container) !important;
     color: var(--text-primary) !important;
@@ -364,18 +344,4 @@
   :global(.ant-descriptions-row) {
     border-color: var(--border-color) !important;
   }
-}
-
-.footer {
-  text-align: center;
-  background: var(--bg-container) !important;
-  color: var(--text-primary);
-  padding: 20px 50px;
-  border-top: 1px solid var(--border-footer);
-}
-
-.sider-divider {
-  background: var(--bg-sidebar-divider);
-  padding: 1px 0px;
-  margin: 10px 0px;
 }
