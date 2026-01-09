@@ -33,10 +33,6 @@ export class FavoriteAppService {
             .take(take)
             .getManyAndCount();
 
-        data.forEach(app => {
-            app.isFavorited = true;
-        })
-
         return paginate(
             [data, total],
             query.pageSize,
