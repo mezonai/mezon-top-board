@@ -66,22 +66,28 @@
 
 .content {
   :global(.ant-table) {
-    background: var(--bg-container) !important;
+    background: var(--border-table) !important;
     color: var(--text-primary) !important;
   }
   
   :global(.ant-table-thead > tr > th) {
     background: var(--bg-table-header) !important;
-    color: var(--text-primary) !important;
-    border-bottom: 2px solid var(--border-table) !important;
+    color: var(--text-secondary) !important;
     border-color: var(--border-table) !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+
+    &::before {
+      display: none !important;
+    }
   }
   
   :global(.ant-table-tbody > tr > td) {
     background: var(--bg-container) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-table) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
   }
   
   :global(.ant-table-tbody > tr:hover > td) {
@@ -92,6 +98,10 @@
     border: 1px solid var(--border-table) !important;
     border-radius: 8px !important;
     overflow: hidden;
+  }
+  
+  :global(.ant-table-content) {
+    overflow-x: auto;
   }
   
   :global(.ant-pagination) {
@@ -108,8 +118,8 @@
   }
   
   :global(.ant-pagination-item-active) {
-    background: var(--primary-color, #1890ff) !important;
-    border-color: var(--primary-color, #1890ff) !important;
+    background: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
     
     a {
       color: #ffffff !important;
@@ -157,10 +167,6 @@
     border-color: var(--border-color) !important;
   }
   
-  :global(.ant-form-item-label > label) {
-    color: var(--text-primary) !important;
-  }
-  
   :global(.ant-radio-wrapper) {
     color: var(--text-primary) !important;
     
@@ -170,16 +176,16 @@
     }
     
     &:hover :global(.ant-radio-inner) {
-      border-color: var(--primary-color, #1890ff) !important;
+      border-color: var(--accent-primary) !important;
     }
   }
   
   :global(.ant-radio-checked) {
     :global(.ant-radio-inner) {
-      border-color: var(--primary-color, #1890ff) !important;
+      border-color: var(--accent-primary) !important;
       
       &::after {
-        background-color: var(--primary-color, #1890ff) !important;
+        background-color: var(--accent-primary) !important;
       }
     }
   }
@@ -218,11 +224,12 @@
   :global(.ant-modal-content) {
     background: var(--bg-container) !important;
     color: var(--text-primary) !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
   }
   
   :global(.ant-modal-header) {
     background: var(--bg-container) !important;
-    border-bottom: 1px solid var(--border-color) !important;
     
     :global(.ant-modal-title) {
       color: var(--text-primary) !important;
@@ -236,11 +243,16 @@
   
   :global(.ant-modal-footer) {
     background: var(--bg-container) !important;
-    border-top: 1px solid var(--border-color) !important;
   }
   
   :global(.ant-modal-close) {
     color: var(--text-primary) !important;
+    border-radius: 50% !important;
+
+    &:hover {
+      background: var(--bg-container-secondary) !important;
+      color: var(--accent-primary) !important;
+    }
   }
   
   :global(.ant-btn-default) {
@@ -249,8 +261,8 @@
     color: var(--text-primary) !important;
     
     &:hover {
-      border-color: var(--primary-color, #1890ff) !important;
-      color: var(--primary-color, #1890ff) !important;
+      border-color: var(--accent-primary) !important;
+      color: var(--accent-primary) !important;
     }
   }
   
@@ -293,10 +305,10 @@
   }
   
   :global(a) {
-    color: var(--primary-color, #1890ff) !important;
+    color: var(--accent-primary) !important;
     
     &:hover {
-      color: var(--primary-color, #1890ff) !important;
+      color: var(--accent-primary) !important;
       opacity: 0.8;
     }
   }
@@ -306,11 +318,23 @@
   }
 }
 
+:global(.ant-form-item) {
+  margin-bottom: 12px !important;
+}
+
+:global(.ant-form-item-label) {
+  padding-bottom: 4px !important;
+}
+
+:global(.ant-form-item-label > label) {
+  color: var(--text-primary) !important;
+}
+
 :global(.ant-switch) {
   background-color: rgba(0, 0, 0, 0.25) !important;
   
   &.ant-switch-checked {
-    background-color: var(--primary-color, #1890ff) !important;
+    background-color: var(--accent-primary) !important;
   }
 }
 
@@ -319,7 +343,7 @@
     background-color: rgba(255, 255, 255, 0.2) !important;
     
     &.ant-switch-checked {
-      background-color: var(--primary-color, #1890ff) !important;
+      background-color: var(--accent-primary) !important;
     }
   }
 }

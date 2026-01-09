@@ -17,11 +17,11 @@ function AdminLayout() {
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const { theme } = useTheme()
 
-  const { checkAdmin } = useAdminCheck()
-  useAuthRedirect()
-  useEffect(() => {
-    checkAdmin()
-  }, [])
+  // const { checkAdmin } = useAdminCheck()
+  // useAuthRedirect()
+  // useEffect(() => {
+  //   checkAdmin()
+  // }, [])
 
   return (
     <Layout className="h-screen bg-body overflow-hidden">
@@ -75,7 +75,7 @@ function AdminLayout() {
             <Content className={cn('p-5 !bg-content flex-1', styles.content)}>
               <Outlet />
             </Content>
-            <Footer className="text-center !bg-container text-primary py-5 px-12 border-t border-border-footer">
+            <Footer className="text-center !bg-container !text-secondary py-5 px-12 border-t border-border-footer">
               Footer
             </Footer>
           </div>

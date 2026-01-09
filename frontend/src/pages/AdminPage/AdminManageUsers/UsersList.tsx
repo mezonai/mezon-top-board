@@ -1,7 +1,4 @@
 import {
-  DeleteOutlined,
-  EditOutlined,
-  UnlockOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
 import {
@@ -12,13 +9,13 @@ import {
 import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
 import { Alert, Breakpoint, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
-import Button from '@app/mtb-ui/Button'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 
 const { Option } = Select
 const pageOptions = [5, 10, 15]
@@ -150,12 +147,21 @@ function UsersList() {
       fixed: 'right' as const,
       render: (_: any, record: GetUserDetailsResponse) => (
         <div className='flex gap-2'>
-          <Button type='primary' color='blue' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          <TableActionButton
+            actionType="edit"
+            onClick={() => setSelectedUser(record)}
+          />
           {
             !record.deletedAt ? (
-              <Button type='primary'color='danger' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <TableActionButton
+                actionType="delete"
+                onClick={() => handleDeactivate(record.id)}
+              />
             ) : (
-              <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
+              <TableActionButton
+                actionType="activate"
+                onClick={() => handleActivate(record.id)}
+              />
             )
           }
         </div>
@@ -188,6 +194,7 @@ function UsersList() {
 
             <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
               <Select 
+                size='large'
                 className='w-full h-[40px]'
                 placeholder='Sort Field'
                 popupClassName='bg-container text-primary'
@@ -200,6 +207,7 @@ function UsersList() {
 
             <Form.Item name='sortOrder' className='w-full md:w-36 mb-0'>
               <Select 
+                size="large"
                 className='w-full h-[40px]'
                 placeholder='Sort Order'
                 popupClassName='bg-container text-primary'
@@ -211,14 +219,13 @@ function UsersList() {
             </Form.Item>
 
             <Form.Item className='w-full md:w-auto mb-0'>
-              <Button 
-                type='primary' 
-                htmlType='submit'
-                icon={<SearchOutlined />}
-                className='w-full md:w-auto h-[40px]'
+              <TableActionButton
+                actionType="search"
+                htmlType="submit"
+                className="w-full md:w-auto"
               >
                 Search
-              </Button>
+              </TableActionButton>
             </Form.Item>
           </div>
         </Form>

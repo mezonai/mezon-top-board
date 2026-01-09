@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import Button from '@app/mtb-ui/Button'
 import LinkTypeModal, { LinkTypeFormValues } from './components/LinkTypeModal'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { Popconfirm, Table } from 'antd'
 import { toast } from 'react-toastify'
 import {
@@ -12,10 +12,9 @@ import {
 import { UpdateLinkTypeRequest } from '@app/services/api/linkType/linkType.types'
 import { useAppSelector } from '@app/store/hook'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import { ApiError } from '@app/types/API.types'
 import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/media'
-import { getUrlMedia } from '@app/utils/stringHelper'
+import TableImage from '@app/components/TableImage/TableImage'
 
 function LinkTypesList() {
   const [createLinkType] = useLinkTypeControllerCreateLinkTypeMutation()
@@ -152,9 +151,9 @@ function LinkTypesList() {
       title: 'Icon',
       dataIndex: 'icon',
       key: 'icon',
-      width: '15%',
+      width: 80,
       render: (text: string) => (
-        <img src={getUrlMedia(text)} alt='icon' className='w-[40px] h-[40px]' />
+        <TableImage src={text} alt='icon' size={40} />
       )
     },
     {
@@ -173,9 +172,8 @@ function LinkTypesList() {
       width: '20%',
       render: (_: any, record: any) => (
         <div className='flex gap-2'>
-          <Button
-            color='blue'
-            icon={<EditOutlined />}
+          <TableActionButton
+            actionType="edit"
             onClick={() => {
               setIsUpdateModal(true)
               setEditingLinkType({
@@ -193,7 +191,7 @@ function LinkTypesList() {
             okText='Yes'
             cancelText='No'
           >
-            <Button icon={<DeleteOutlined />} color='danger'/>
+            <TableActionButton actionType="delete" />
           </Popconfirm>
         </div>
       )
@@ -203,12 +201,12 @@ function LinkTypesList() {
   return (
     <div>
       <div className='flex justify-end mb-2'>
-        <Button
-          icon={<PlusOutlined />}
+        <TableActionButton
+          actionType="add"
           onClick={handleOpen}
         >
           Add Link Type
-        </Button>
+        </TableActionButton>
       </div>
       {linkTypeList?.data?.length ? (
         <Table dataSource={linkTypeList.data} columns={columns} rowKey='id' pagination={false} />

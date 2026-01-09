@@ -2,10 +2,10 @@ import { RootState } from '@app/store'
 import { Form, Input, InputRef, Popconfirm, Select, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '@app/store/hook'
 import { toast } from 'react-toastify'
-import MtbButton from '@app/mtb-ui/Button'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { EmailSubscriptionStatus } from '@app/enums/subscribe'
 import { IEmailSubscriberStore, setSearchSubscriberList } from '@app/store/emailSubscriber'
 import { useEmailSubscribeControllerDeleteMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscribersQuery, useLazyEmailSubscribeControllerSearchSubscriberQuery } from '@app/services/api/emailSubscribe/emailSubscribe'
@@ -148,25 +148,23 @@ function EmailSubscriberList() {
       render: (_: any, record: any) =>
         editingSubscriber.id === record.id ? (
           <div className='flex gap-2'>
-            <MtbButton 
-              color="blue"
+            <TableActionButton
+              actionType="edit"
               onClick={() => handleUpdate(record.id)}
             >
               Save
-            </MtbButton>
-            <MtbButton 
-              color='danger'
+            </TableActionButton>
+            <TableActionButton
+              actionType="delete"
               onClick={() => setEditingSubscriber({ id: null, status: undefined })}
             >
               Cancel
-            </MtbButton>
+            </TableActionButton>
           </div>
         ) : (
           <div className='flex gap-2'>
-            <MtbButton 
-              variant="solid"
-              color="blue"
-              icon={<EditOutlined />}
+            <TableActionButton
+              actionType="edit"
               onClick={() => setEditingSubscriber({ id: record.id, status: record.status })}
             />
             <Popconfirm 
@@ -176,10 +174,8 @@ function EmailSubscriberList() {
               cancelText='No'
               overlayClassName='bg-container text-primary'
             >
-              <MtbButton 
-                variant="solid"
-                color="danger"
-                icon={<DeleteOutlined />} 
+              <TableActionButton
+                actionType="delete"
               />
             </Popconfirm>
           </div>
@@ -211,6 +207,7 @@ function EmailSubscriberList() {
             </Form.Item>
             <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
               <Select 
+                size='large'
                 className='w-full h-[40px]'
                 placeholder='Status'
                 popupClassName='bg-container text-primary'
@@ -225,13 +222,13 @@ function EmailSubscriberList() {
               </Select>
             </Form.Item>
             <Form.Item className='w-full md:w-auto mb-0'>
-              <MtbButton 
-                htmlType='submit'
-                icon={<SearchOutlined />}
-                className='w-full md:w-auto h-[40px]'
+              <TableActionButton
+                actionType="search"
+                htmlType="submit"
+                className="w-full md:w-auto"
               >
                 Search
-              </MtbButton>
+              </TableActionButton>
             </Form.Item>
           </div>
         </Form>

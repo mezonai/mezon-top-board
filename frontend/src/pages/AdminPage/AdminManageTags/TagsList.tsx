@@ -12,13 +12,12 @@ import { generateSlug } from '@app/utils/stringHelper'
 import { Form, Input, InputRef, Popconfirm, Table, Tag, Tooltip } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { useAppSelector } from '@app/store/hook'
-import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { toast } from 'react-toastify'
 import { SLUG_RULE } from '@app/constants/common.constant'
 
-import MtbButton from '@app/mtb-ui/Button'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import CreateTagModal, { TagFormValues } from './components/CreateTagModal'
 
 interface SearchFormValues {
@@ -31,7 +30,7 @@ function TagsList() {
   const [createTag] = useTagControllerCreateTagMutation()
   const [updateTag] = useTagControllerUpdateTagMutation()
   const [deleteTag] = useTagControllerDeleteTagMutation()
-  const [searchTag] = useLazyTagControllerSearchTagsQuery()
+  const [searchTag, { isLoading }] = useLazyTagControllerSearchTagsQuery()
   const searchTagList = useAppSelector((state: RootState) => state.tag.searchTagList)
 
   const [searchForm] = Form.useForm<SearchFormValues>()
@@ -197,21 +196,28 @@ function TagsList() {
       render: (_: any, record: any) =>
         editingTag.id === record.id ? (
           <div className='flex gap-2'>
-            <MtbButton disabled={editError} color="blue" onClick={() => handleUpdate(record.id)}>
+            <TableActionButton
+              actionType="edit"
+              disabled={editError}
+              onClick={() => handleUpdate(record.id)}
+            >
               Save
-            </MtbButton>
-            <MtbButton color='danger' onClick={() => setEditingTag({ id: null, name: '', slug: '' })}>
+            </TableActionButton>
+            <TableActionButton
+              actionType="delete"
+              onClick={() => setEditingTag({ id: null, name: '', slug: '' })}
+            >
               Cancel
-            </MtbButton>
+            </TableActionButton>
           </div>
         ) : (
           <div className='flex gap-2'>
-            <MtbButton color="blue" 
-              icon={<EditOutlined />}
+            <TableActionButton
+              actionType="edit"
               onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug })}
             />
             <Popconfirm title='Delete this tag?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
-              <MtbButton color='danger'  icon={<DeleteOutlined />} />
+              <TableActionButton actionType="delete" />
             </Popconfirm>
           </div>
         )
@@ -236,40 +242,47 @@ function TagsList() {
   return (
     <div>
       <h2 className='font-bold text-lg mb-4'>Manage Tags</h2>
-      <div className='flex gap-2'>
+      <div className='flex gap-4 mb-3'>
         <Form form={searchForm} onFinish={handleSearch} initialValues={{ search: '' }} className='flex-grow'>
-          <Form.Item name='search' className='w-full'>
+          <Form.Item name='search' className='w-full !mb-0'>
             <Input
               ref={searchRef}
+              size="large"
               placeholder='Search by name or slug'
               prefix={<SearchOutlined className='text-secondary' />}
               onPressEnter={() => searchForm.submit()}
+              className='rounded-lg'
             />
           </Form.Item>
         </Form>
-        <MtbButton icon={<SearchOutlined />} variant='solid' onClick={() => searchForm.submit()}>
+        <TableActionButton
+          actionType="search"
+          onClick={() => searchForm.submit()}
+        >
           Search
-        </MtbButton>
-        <MtbButton variant='outlined' icon={<PlusOutlined />} onClick={() => setIsOpenModal(true)}>
+        </TableActionButton>
+        <TableActionButton
+          actionType="add"
+          onClick={() => setIsOpenModal(true)}
+        >
           Add New Tag
-        </MtbButton>
+        </TableActionButton>
       </div>
 
-      {searchTagList?.data?.length ? (
-        <Table dataSource={searchTagList.data} columns={columns} rowKey='id' 
-          pagination={{
-            current: page,
-            pageSize: botPerPage,
-            total: totals,
-            onChange: handlePageChange,
-            showSizeChanger: true,
-            pageSizeOptions: pageOptions.map(String)
-          }}/>
-      ) : (
-        <MtbTypography variant='h4' weight='normal' customClassName='text-center block text-secondary'>
-          No result
-        </MtbTypography>
-      )}
+      <Table
+        dataSource={searchTagList?.data || []}
+        columns={columns}
+        rowKey='id'
+        loading={isLoading}
+        pagination={{
+          current: page,
+          pageSize: botPerPage,
+          total: totals,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          pageSizeOptions: pageOptions.map(String)
+        }}
+      />
 
       <CreateTagModal
         open={isOpenModal}
