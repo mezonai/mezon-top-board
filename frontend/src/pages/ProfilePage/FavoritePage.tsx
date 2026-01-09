@@ -32,7 +32,7 @@ function FavoritePage() {
     const [pageSize, setPageSize] = useState<number>(6)
     const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
 
-    const { data: favoriteData, isLoading, isFetching } = useFavoriteAppControllerGetFavoriteAppsQuery({
+    const { data: favoriteData, isLoading, isFetching, refetch } = useFavoriteAppControllerGetFavoriteAppsQuery({
         pageNumber: page,
         pageSize: pageSize,
         sortField: 'createdAt',
@@ -58,6 +58,10 @@ function FavoritePage() {
     const handleViewModeChange = (mode: ViewMode) => {
         setViewMode(mode)
     }
+
+    const handleRefresh = () => {
+        refetch();
+    };
 
     return (
         <div className='pt-8 pb-12 w-3/4 m-auto'>
@@ -144,13 +148,14 @@ function FavoritePage() {
                                 {appList.map((item: any) => (
                                     viewMode === 'grid' ? (
                                         <div key={item.id} className="h-full">
-                                            <BotGridItem data={item} isPublic={false} />
+                                            <BotGridItem data={item} isPublic={false} onRefresh={handleRefresh} />
                                         </div>
                                     ) : (
                                         <BotListItem
                                             key={item.id}
                                             data={item}
                                             readonly={true}
+                                            onRefresh={handleRefresh}
                                         />
                                     )
                                 ))}

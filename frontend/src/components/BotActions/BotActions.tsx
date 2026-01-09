@@ -22,13 +22,18 @@ import { useBotInteractions } from '@app/hook/useBotInteractions'
 import styles from './BotActions.module.scss'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
+function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
+
+  const handleFavoriteClick = async () => {
+      await handleToggleFavorite()
+      if (onRefresh) onRefresh()
+  };
 
   const handleDeleteBot = (botId: string) => {
     confirm({
@@ -99,7 +104,7 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       key: "favorite",
       label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
       icon: isFavorited ? <HeartFilled className="!text-red-500" /> : <HeartOutlined className="!text-red-500" />,
-      onClick: handleToggleFavorite,
+      onClick: handleFavoriteClick,
       disabled: isBusy,
     },
     {

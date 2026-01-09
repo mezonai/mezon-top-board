@@ -5,4 +5,5 @@ export type BotActionsProps = {
   data: any;
   mode?: ViewMode;
   onNewVersionClick?: (version?: AppVersion) => void
+  onRefresh?: () => void;
 }

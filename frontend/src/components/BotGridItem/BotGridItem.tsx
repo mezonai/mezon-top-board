@@ -14,7 +14,7 @@ import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
+function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
@@ -90,6 +90,7 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
             data={data} 
             mode={ViewMode.GRID} 
             onNewVersionClick={handleOwnerNewVersionClick} 
+            onRefresh={onRefresh}
         />
       </div>
       <div className='p-4'>
