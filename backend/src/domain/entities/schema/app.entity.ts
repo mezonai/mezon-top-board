@@ -52,4 +52,6 @@ export class App extends BaseApp {
 
     @OneToMany(() => FavoriteApp, (favoriteApp) => favoriteApp.app)
     public favorites: FavoriteApp[];
+
+    public isFavorited?: boolean;
 }

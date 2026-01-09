@@ -6,6 +6,8 @@ import { ErrorMessages } from "@libs/constant/messages";
 import { paginate } from "@libs/utils/paginate";
 import { Result } from "@domain/common/dtos/result.dto";
 import { GetFavoritesAppRequest } from "./dtos/request";
+import { FavoriteAppResponseDto } from "./dtos/response";
+import { Mapper } from '@libs/utils/mapper';
 
 @Injectable()
 export class FavoriteAppService {
@@ -31,11 +33,15 @@ export class FavoriteAppService {
             .take(take)
             .getManyAndCount();
 
+        data.forEach(app => {
+            app.isFavorited = true;
+        })
+
         return paginate(
             [data, total],
             query.pageSize,
             query.pageNumber,
-            (entity) => entity
+            (entity) => Mapper(FavoriteAppResponseDto, entity)
         );
     }
 
@@ -54,7 +60,7 @@ export class FavoriteAppService {
             throw new NotFoundException("Favorite bot not found or not in your list");
         }
 
-        return new Result({ data: app });
+        return new Result({ data: Mapper(FavoriteAppResponseDto, app) });
     }
 
     async addFavoriteApp(userId: string, appId: string) {
