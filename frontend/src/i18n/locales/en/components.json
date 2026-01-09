@@ -91,7 +91,8 @@
             "add_favorite": "Add to Favorites",
             "remove_favorite": "Remove from Favorites",
             "added_favorite": "Added to Favorites", 
-            "removed_favorite": "Removed from Favorites"
+            "removed_favorite": "Removed from Favorites",
+            "login_required": "Please log in to use this feature."
         },
         "rich_text": {
             "error_invalid_mime": "Please upload a valid image file!",
