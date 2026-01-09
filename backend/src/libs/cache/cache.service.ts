@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
+import Keyv from 'keyv';
 
 @Injectable()
 export class CacheService {
-  constructor(private readonly cache: Cache) {}
+  constructor(private readonly cache: Keyv) {}
 
   async get<T>(key: string): Promise<T | null> {
-    return (await this.cache.get<T>(key)) ?? null;
+    return (await this.cache.get(key)) ?? null;
   }
 
   async set<T>(key: string, value: T, ttl?: number) {
-    await this.cache.set(key, value, ttl);
+    await this.cache.set(key, value, ttl ? ttl * 1000 : undefined);
   }
 
   async del(key: string) {
-    await this.cache.del(key);
+    await this.cache.delete(key);
   }
 
   async clear() {
@@ -26,6 +26,11 @@ export class CacheService {
     ttl: number,
     factory: () => Promise<T>,
   ): Promise<T> {
-    return this.cache.wrap(key, factory, ttl);
+    const cached = await this.get<T>(key);
+    if (cached !== null) return cached;
+
+    const value = await factory();
+    await this.set(key, value, ttl);
+    return value;
   }
 }

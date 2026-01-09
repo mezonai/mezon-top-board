@@ -6,11 +6,13 @@ import { createAppCache } from './cache.factory';
 @Module({
   providers: [
     {
+      provide: 'APP_CACHE',
+      useFactory: () => createAppCache(),
+    },
+    {
       provide: CacheService,
-      useFactory: () => {
-        const cache = createAppCache();
-        return new CacheService(cache);
-      },
+      useFactory: (cache) => new CacheService(cache),
+      inject: ['APP_CACHE'],
     },
   ],
   exports: [CacheService],

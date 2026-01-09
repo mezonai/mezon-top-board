@@ -4,7 +4,7 @@ import { EmailJob } from "@features/job/email.job";
 import { MarketingCampaignJobData } from "@features/job/job-data.types";
 import { QueueService } from "@features/queue/queue.service";
 import { GenericRepository } from "@libs/repository/genericRepository";
-import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import config from "@config/env.config";
 import { CacheService } from '@libs/cache';
