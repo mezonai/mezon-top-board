@@ -17,11 +17,11 @@ function AdminLayout() {
   const pathSnippets = location.pathname.split('/').filter((i) => i)
   const { theme } = useTheme()
 
-  // const { checkAdmin } = useAdminCheck()
-  // useAuthRedirect()
-  // useEffect(() => {
-  //   checkAdmin()
-  // }, [])
+  const { checkAdmin } = useAdminCheck()
+  useAuthRedirect()
+  useEffect(() => {
+    checkAdmin()
+  }, [])
 
   return (
     <Layout className="h-screen bg-body overflow-hidden">
