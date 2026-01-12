@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
-import OwnerActions from '../OwnerActions/OwnerActions'
+import BotActions from '../BotActions/BotActions'
 import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
 import PreviewModal from '../PreviewModal/PreviewModal'
@@ -12,8 +12,9 @@ import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
+function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
@@ -42,6 +43,10 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
     if (isDragging) {
       setMouseDownPos(null)
       return
+    }
+
+    if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
+      return; 
     }
 
     const target = e.target as HTMLElement
@@ -77,13 +82,17 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       onMouseMove={handleMouseMove}
     >
       {!isPublic && (
-        <>
-          <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
-          <div className="owner-actions absolute top-2 right-2">
-            <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
-          </div>
-        </>
+         <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
       )}
+
+      <div className="owner-actions absolute top-2 right-2 z-10">
+        <BotActions 
+            data={data} 
+            mode={ViewMode.GRID} 
+            onNewVersionClick={handleOwnerNewVersionClick} 
+            onRefresh={onRefresh}
+        />
+      </div>
       <div className='p-4'>
         <div className='relative'>
           <div className='w-20 m-auto'>

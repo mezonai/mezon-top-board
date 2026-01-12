@@ -19,12 +19,11 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IMainProps } from './Main.types'
+import { ViewMode } from '@app/enums/viewMode.enum'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
 
 const pageOptions = [5, 10, 15]
-
-type ViewMode = 'list' | 'grid';
 
 function Main({ isSearchPage = false }: IMainProps) {
   const { t } = useTranslation(['home_page'])
@@ -67,7 +66,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('q')?.trim() || '')
   const [tagIds, setTagIds] = useState<string[]>(searchParams.get('tags')?.split(',').filter(Boolean) || [])
   const [type, setType] = useState<MezonAppType | undefined>(defaultType)
-  const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.LIST)
   const totals = useMemo(() => mezonApp.totalCount || 0, [mezonApp])
 
   useEffect(() => {
@@ -139,7 +138,7 @@ function Main({ isSearchPage = false }: IMainProps) {
     setViewMode(mode)
     setPage(1)
     // Default: grid 36 items
-    setBotPerPage(mode === 'grid' ? 36 : pageOptions[0])
+    setBotPerPage(mode === ViewMode.GRID ? 36 : pageOptions[0])
   }
 
   const handleSortChange = (option: IOption) => {
@@ -224,7 +223,7 @@ function Main({ isSearchPage = false }: IMainProps) {
               />
             </div>
 
-            {viewMode === 'list' && (
+            {viewMode === ViewMode.LIST && (
               <>
                 <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
                 <div className="flex items-center gap-2">
@@ -249,10 +248,10 @@ function Main({ isSearchPage = false }: IMainProps) {
                 variant="text"
                 color="default"
                 icon={<BarsOutlined />}
-                onClick={() => handleViewModeChange('list')}
+                onClick={() => handleViewModeChange(ViewMode.LIST)}
                 className={cn(
                   "min-w-[40px] px-3",
-                  viewMode === 'list'
+                  viewMode === ViewMode.LIST
                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                     : '!text-secondary hover:!text-accent-primary'
                 )}
@@ -262,10 +261,10 @@ function Main({ isSearchPage = false }: IMainProps) {
                 variant="text"
                 color="default"
                 icon={<AppstoreOutlined />}
-                onClick={() => handleViewModeChange('grid')}
+                onClick={() => handleViewModeChange(ViewMode.GRID)}
                 className={cn(
                   "min-w-[40px] px-3",
-                  viewMode === 'grid'
+                  viewMode === ViewMode.GRID
                     ? '!bg-heading !text-primary !shadow-sm hover:!text-accent-primary'
                     : '!text-secondary hover:!text-accent-primary'
                 )}
@@ -278,12 +277,12 @@ function Main({ isSearchPage = false }: IMainProps) {
           {mezonApp?.data?.length !== 0 ? (
             <div className={cn(
               'pt-8',
-              viewMode === 'grid'
+              viewMode === ViewMode.GRID
                 ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6'
                 : 'flex flex-col gap-4'
             )}>
               {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => (
-                viewMode === 'grid' ? (
+                viewMode === ViewMode.GRID ? (
                   <BotGridItem
                     key={bot.id}
                     data={bot}
