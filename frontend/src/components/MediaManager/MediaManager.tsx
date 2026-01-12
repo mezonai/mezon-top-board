@@ -27,6 +27,7 @@ const MediaManagerModal = ({
   onClose: () => void
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
@@ -79,8 +80,9 @@ const MediaManagerModal = ({
       const response = await uploadImage(formData).unwrap()
       const serverPath = response.data.filePath
       getMediasList()
+      setSelectedPath(serverPath)
       setSelectedImage(getUrlMedia(serverPath))
-      return getUrlMedia(serverPath)
+      return serverPath
     } catch (error) {
       toast.error(t('component.media_manager.upload_failed'))
       return ''
@@ -131,7 +133,10 @@ const MediaManagerModal = ({
                   src={url}
                   alt=''
                   className={cn('w-[6.5rem] h-[6.5rem] object-cover cursor-pointer', selectedImage === url ? 'border-2 border-primary' : 'border border-border')}
-                  onClick={() => setSelectedImage(url)}
+                  onClick={() => {
+                    setSelectedImage(url);
+                    setSelectedPath(item.filePath);
+                  }}
                 />
               );
             })}
@@ -159,8 +164,8 @@ const MediaManagerModal = ({
       return; 
     }
 
-    if (selectedImage) {
-      onChoose(selectedImage);
+    if (selectedPath) {
+      onChoose(selectedPath);
       handleCancel();
       return;
     }
@@ -174,6 +179,7 @@ const MediaManagerModal = ({
     setPage(1)
     setSelectedFile(null)
     setSelectedImage(null)
+    setSelectedPath(null)
     onClose()
   }
 
