@@ -1,0 +1,111 @@
+{
+    "new_bot_page": {
+        "steps": {
+            "choose_type": "Chọn Loại",
+            "provide_id": "Cung cấp ID",
+            "fill_details": "Thông tin chi tiết",
+            "review": "Xem lại",
+            "result": "Kết quả",
+            "edit_info": "Chỉnh sửa thông tin Bot"
+        },
+        "buttons": {
+            "back": "Quay lại",
+            "next": "Tiếp theo",
+            "submit": "Gửi duyệt",
+            "update": "Cập nhật",
+            "view_bot": "Xem Bot",
+            "go_bot": "Đi tới Bot",
+            "go_home": "Về trang chủ",
+            "go_back": "Quay lại",
+            "add": "Thêm",
+            "delete": "Xóa"
+        },
+        "step1": {
+            "select_type": "Chọn loại",
+            "placeholder": "Chọn Bot hoặc App",
+            "bot": "Bot",
+            "app": "App"
+        },
+        "step2": {
+            "enter_id": "Nhập ID {{type}} của bạn",
+            "label_id": "ID {{type}}"
+        },
+        "step3": {
+            "name": "Tên",
+            "name_desc": "Đặt tên cho bot của bạn",
+            "headline": "Tiêu đề",
+            "headline_desc": "Cung cấp một cụm từ ngắn gọn và hấp dẫn mô tả bot của bạn.",
+            "description": "Mô tả đầy đủ",
+            "description_desc": "Cho chúng tôi biết bot của bạn có thể làm gì. Chúng tôi muốn nghe toàn bộ câu chuyện!",
+            "auto_publish": "Tự động xuất bản?",
+            "install_link": "Liên kết cài đặt",
+            "install_link_desc": "Nơi người dùng có thể cài đặt bot của bạn trên máy chủ Mezon của họ.",
+            "prefix": "Prefix",
+            "prefix_desc": "Từ khóa hoặc cụm từ nào bot của bạn hoạt động?",
+            "tags": "Thẻ",
+            "tags_desc": "Chọn tối đa 12 danh mục đại diện tốt nhất cho cộng đồng của bạn.",
+            "tag_price": "Giá thẻ",
+            "tag_price_desc": "Chọn thẻ MIỄN PHÍ hoặc TRẢ PHÍ",
+            "price": "Giá",
+            "price_desc": "Đặt giá cho bot của bạn",
+            "support_url": "URL hỗ trợ",
+            "support_url_desc": "Mọi người có thể có nhiều câu hỏi về bot của bạn, hãy chắc chắn rằng bạn có thể trả lời họ!",
+            "note": "Ghi chú",
+            "note_desc": "Nếu bạn có bất kỳ thông tin quan trọng nào cho người đánh giá, bạn có thể chia sẻ tại đây",
+            "social_links": "Liên kết xã hội",
+            "social_links_desc": "Liên kết các kênh xã hội của bạn",
+            "placeholders": {
+                "name": "MezonBot",
+                "headline": "Một bot vai trò mạnh mẽ và đa chức năng",
+                "tags": "Tìm kiếm thẻ",
+                "tag_price": "Chọn giá thẻ",
+                "note": "Vui lòng chia sẻ bất kỳ thông tin hoặc chi tiết quan trọng nào về bot của bạn mà người đánh giá của chúng tôi nên biết",
+                "link_type": "Loại liên kết",
+                "price": "Nhập giá",
+                "prefix": "!",
+                "support_url": "https://yourdomain.com/support"
+            },
+            "errors": {
+                "link_exists": "Liên kết này đã tồn tại.",
+                "link_duplicate": "Liên kết này bị trùng lặp.",
+                "no_image_selected": "Chưa chọn ảnh"
+            }
+        },
+        "step4": {
+            "review_update": "Xem lại thông tin cập nhật của bạn",
+            "review_info": "Xem lại thông tin của bạn",
+            "type": "Loại:",
+            "id": "ID Bot/App:",
+            "name": "Tên:",
+            "headline": "Tiêu đề:",
+            "prefix": "Prefix:",
+            "auto_publish": "Tự động xuất bản:",
+            "install_link": "Liên kết cài đặt:",
+            "tags": "Thẻ:",
+            "tag_price": "Giá thẻ:",
+            "price": "Giá:",
+            "support_url": "URL hỗ trợ:",
+            "social_links": "Liên kết xã hội:",
+            "note": "Ghi chú:",
+            "changelog": "Nhật ký thay đổi:",
+            "description": "Mô tả:",
+            "yes": "Có",
+            "no": "Không",
+            "no_tags": "Không có thẻ nào được chọn",
+            "no_links": "Không có liên kết xã hội nào được thêm",
+            "none": "Không có"
+        },
+        "step5": {
+            "success_title": "{{type}} đã được gửi thành công!",
+            "update_title": "{{type}} đã được cập nhật thành công!",
+            "success_subtitle": "{{type}} của bạn đã được gửi để xem xét. Bây giờ bạn có thể xem nó hoặc quay lại trang chủ.",
+            "update_subtitle": "{{type}} của bạn đã được cập nhật. Bây giờ bạn có thể quay lại để xem nó hoặc về trang chủ.",
+            "fail_title": "Gửi thất bại",
+            "update_fail_title": "Cập nhật thất bại",
+            "fail_subtitle": "Đã xảy ra lỗi. Vui lòng quay lại và kiểm tra thông tin nhập của bạn trước khi thử lại."
+        },
+        "validation_failed": "Xác thực biểu mẫu thất bại!",
+        "avatar_name": "Tên",
+        "avatar_headline": "Tiêu đề (Mô tả ngắn)"
+    }
+}

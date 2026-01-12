@@ -1,0 +1,39 @@
+{
+    "onboarding": {
+        "step1": {
+            "welcome_title": "Welcome to Mezon Top Board",
+            "welcome_desc": "Mezon Top Board — #1 Bot Listing for Mezon.\nDiscover the best applications built on the Mezon ecosystem.\nWe curate and showcase top-tier apps leveraging Mezon’s cutting-edge technology, helping users and developers explore innovative solutions with ease.",
+            "cards": {
+                "top_listings": "Top Listings",
+                "top_listings_desc": "Explore the highest-rated and most innovative Mezon apps.",
+                "for_users": "For Users & Developers",
+                "for_users_desc": "Find tools, solutions, and inspirations across the ecosystem.",
+                "discover": "Discover Faster",
+                "discover_desc": "Navigate curated app categories with ease.",
+                "stay_updated": "Stay Updated",
+                "stay_updated_desc": "Follow trending apps and new breakthroughs in Mezon tech."
+            },
+            "ready_title": "Ready to get started?",
+            "ready_desc": "Let's set up your profile to personalize your experience.",
+            "skip": "Skip for now",
+            "get_started": "Get Started"
+        },
+        "step2": {
+            "title": "Profile Information",
+            "description": "Your information has been pre-filled from your Mezon account",
+            "from_mezon": "From Mezon",
+            "upload_tooltip": "Upload new photo",
+            "display_name": "Display Name",
+            "display_name_desc": "3-50 characters. This is how others will see your name.",
+            "display_name_placeholder": "Alex Johnson",
+            "email": "Email",
+            "bio": "Bio (Optional)",
+            "bio_placeholder": "Tell us about yourself...",
+            "bio_desc_1": "Share a short introduction.",
+            "bio_desc_2": "{{current}}/{{max}} characters",
+            "save_continue": "Save & Continue",
+            "update_success": "Profile updated successfully!",
+            "update_fail": "Failed to update profile."
+        }
+    }
+}

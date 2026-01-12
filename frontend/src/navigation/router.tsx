@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import { useLazyUserControllerGetUserDetailsQuery } from '@app/services/api/user/user'
 import { Dropdown, MenuProps } from 'antd'
 import { cn } from '@app/utils/cn'
+import { useTranslation } from 'react-i18next'
 
 export const renderRoutes = () => {
   const [getUserInfo] = useLazyUserControllerGetUserDetailsQuery()
@@ -54,6 +55,7 @@ export const renderRoutes = () => {
 export const renderMenu = (isHasActive: boolean) => {
   const location = useLocation()
   const { isLogin } = useSelector<RootState, IAuthStore>((s) => s.auth)
+  const {t} = useTranslation(['common'])
 
   return routePaths
     .filter((route) => route.isShowMenu && (isLogin || !route.requireAuth))
@@ -63,6 +65,7 @@ export const renderMenu = (isHasActive: boolean) => {
       const linkClasses = cn(
         "py-2 transition-all duration-300 border-b-[3px] block", 
         "text-primary dark:text-white", 
+        "cursor-pointer",
         isActive 
           ? "border-primary text-primary" 
           : "border-transparent hover:text-primary hover:border-primary/50" 
@@ -77,11 +80,11 @@ export const renderMenu = (isHasActive: boolean) => {
             key,
             label: isExternal ? (
               <a href={child.path} target="_blank" rel="noopener noreferrer" className="!text-primary hover:!text-heading">
-                {child.strLabel}
+                {t(child.strLabel)}
               </a>
             ) : (
               <a href={child.path} className="!text-primary hover:!text-heading">
-                {child.strLabel}
+                {t(child.strLabel)}
               </a>
             ),
           }
@@ -91,7 +94,7 @@ export const renderMenu = (isHasActive: boolean) => {
           <li key={`${route.path}-${index}`}>
             <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} overlayClassName="menu-dropdown-overlay">
               <a className={linkClasses}>
-                {route.label || route.strLabel} 
+                {route.label || t(route.strLabel)} 
               </a>
             </Dropdown>
           </li>
@@ -101,7 +104,7 @@ export const renderMenu = (isHasActive: boolean) => {
       return (
         <li key={`${route.path}-${index}`}>
           <a href={route.path} className={linkClasses}>
-            {route.label || route.strLabel}
+            {route.label || t(route.strLabel)}
           </a>
         </li>
       )

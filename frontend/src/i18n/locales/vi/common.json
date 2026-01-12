@@ -1,0 +1,104 @@
+{
+    "search_bar": {
+        "all_types": "Tất cả",
+        "bot": "Bot",
+        "app": "App",
+        "search_placeholder": "Tìm kiếm",
+        "search_btn": "Tìm kiếm",
+        "tags": "+{{count}} thẻ",
+        "tags_placeholder": "+{{count}} thẻ",
+        "clear_tags": "Xóa thẻ"
+    },
+    "footer": {
+        "follow_us": "Theo dõi chúng tôi",
+        "get_newsletter": "Nhận thông báo",
+        "subscribe": "Đăng ký",
+        "sending": "Đang gửi...",
+        "login_required": "Vui lòng đăng nhập để đăng ký nhận thông báo.",
+        "error_occurred": "Đã có lỗi xảy ra.",
+        "resubscribe_title": "Đăng ký lại?",
+        "resubscribe_content": "Bạn đã hủy đăng ký nhận thông báo. Bạn có muốn đăng ký lại không?",
+        "yes": "Có",
+        "no": "Không",
+        "resubscribe_failed": "Đăng ký lại thất bại. Vui lòng thử lại sau.",
+        "address": "Địa chỉ: Tầng 2, CT3 The Pride, Đường Tố Hữu, Quận Hà Đông, TP Hà Nội, Việt Nam"
+    },
+    "header_menu": {
+        "profile": "Hồ sơ",
+        "colors": "Màu sắc",
+        "language": "Ngôn ngữ",
+        "color_mode": "Chế độ màu",
+        "logout": "Đăng xuất",
+        "light": "Sáng",
+        "dark": "Tối"
+    },
+    "colors": {
+        "red": "Đỏ",
+        "pink": "Hồng",
+        "purple": "Tím",
+        "blue": "Xanh dương",
+        "green": "Xanh lá",
+        "yellow": "Vàng",
+        "orange": "Cam"
+    },
+    "nav": {
+        "home": "Trang chủ",
+        "about": "Về chúng tôi",
+        "terms": "Điều khoản",
+        "help": "Trợ giúp",
+        "welcome": "Chào mừng",
+        "login_redirect": "Chuyển hướng Đăng nhập",
+        "my_profile": "Hồ sơ của tôi",
+        "personal_settings": "Cài đặt cá nhân",
+        "my_media_gallery": "Thư viện của tôi",
+        "search": "Tìm kiếm",
+        "how_to_use": "Hướng dẫn sử dụng",
+        "contact_us": "Liên hệ",
+        "bot_wizard": "Trình tạo mã nguồn",
+        "new_bot": "Bot mới",
+        "login": "Đăng nhập",
+        "confirm_subscription": "Xác nhận đăng ký",
+        "unsubscription": "Hủy đăng ký",
+        "not_found": "Không tìm thấy"
+    },
+    "header": {
+        "login": "Đăng nhập",
+        "menu_title": "Menu"
+    },
+    "enums": {
+        "mezon_app_type": {
+            "BOT": "Bot",
+            "APP": "App"
+        },
+        "app_pricing": {
+            "FREE": "MIỄN PHÍ",
+            "PAID": "TRẢ PHÍ"
+        }
+    },
+    "time": {
+        "just_now": "Vừa xong",
+        "minutes_ago": "{{count}} phút trước",
+        "hours_ago": "{{count}} giờ trước",
+        "yesterday": "Hôm qua"
+    },
+    "status": {
+        "pending": "Đang chờ",
+        "approved": "Đã duyệt",
+        "rejected": "Bị từ chối",
+        "published": "Đã xuất bản",
+        "unknown": "Không xác định"
+    },
+    "login_redirect": {
+        "fail_generic": "Đăng nhập thất bại: Đã có lỗi xảy ra!",
+        "fail": "Đăng nhập thất bại!",
+        "success": "Đăng nhập thành công!"
+    },
+    "hooks": {
+        "auth_redirect_warning": "Xin lỗi, bạn không có quyền truy cập trang này",
+        "ownership_check_login": "Bạn cần đăng nhập để truy cập trang này.",
+        "ownership_check_permission": "Bạn không có quyền truy cập trang này.",
+        "submit_success_created": "Tạo {{type}} thành công!",
+        "submit_success_updated": "Cập nhật {{type}} thành công!",
+        "generic_error": "Đã có lỗi xảy ra"
+    }
+}

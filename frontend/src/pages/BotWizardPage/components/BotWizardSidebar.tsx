@@ -5,17 +5,20 @@ import MtbTypography from '@app/mtb-ui/Typography/Typography'
 
 type WizardLink = { name: string; path: string; icon: ReactNode }
 
-const links: WizardLink[] = [
-    { name: 'Requests', path: '/bot-wizard', icon: <UnorderedListOutlined /> },
-    { name: 'Bot Wizard', path: '/bot-wizard/new', icon: <PlusOutlined /> },
-]
+import { useTranslation } from "react-i18next";
 
 export default function BotWizardSidebar() {
     const { pathname } = useLocation()
+    const { t } = useTranslation(['bot_wizard_page']);
+
+    const links: WizardLink[] = [
+        { name: t('bot_wizard.sidebar.requests'), path: '/bot-wizard', icon: <UnorderedListOutlined /> },
+        { name: t('bot_wizard.sidebar.new_wizard'), path: '/bot-wizard/new', icon: <PlusOutlined /> },
+    ]
 
     return (
         <div className='flex flex-col gap-5 p-4 shadow-sm rounded-2xl w-full'>
-            <MtbTypography variant='h2'>Navigation</MtbTypography>
+            <MtbTypography variant='h2'>{t('bot_wizard.sidebar.title')}</MtbTypography>
             <ul className='pt-1'>
                 {links.map((l) => {
                     const isActive = pathname === l.path

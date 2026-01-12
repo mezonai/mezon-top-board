@@ -31,15 +31,16 @@ import Button from '@app/mtb-ui/Button'
 import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
-import { getPluralSuffix } from '@app/utils/stringHelper'
+import { useTranslation } from 'react-i18next'
 
 function BotDetailPage() {
+  const { t } = useTranslation(['bot_detail_page'])
   const navigate = useNavigate()
   const [getMezonAppDetail, { isError, error, data: getMezonAppDetailApiResponse }] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [getrelatedMezonApp] = useLazyMezonAppControllerGetRelatedMezonAppQuery()
   const [getTagList] = useLazyTagControllerGetTagsQuery()
   const [getRatingsByApp, { isLoading: isLoadingReview }] = useLazyRatingControllerGetRatingsByAppQuery()
-  const [getAllRatingsByApp, { isLoading: isLoadingAllReview }] = useLazyRatingControllerGetAllRatingsByAppQuery()
+  const [getAllRatingsByApp] = useLazyRatingControllerGetAllRatingsByAppQuery()
 
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -119,7 +120,7 @@ function BotDetailPage() {
         await getRatingsByApp({ appId: botId, pageNumber: nextPage }).unwrap()
         setPage(nextPage)
       } catch (error) {
-        toast.error('Error loading more')
+        toast.error(t('bot_detail.error_loading_more'))
       } finally {
         setIsLoadingMore(false)
       }
@@ -165,7 +166,7 @@ function BotDetailPage() {
 
   return (
     <div className='max-w-6xl mx-auto pt-10 pb-10 px-6'>
-      <MtbTypography>Explore milions of mezon bots</MtbTypography>
+      <MtbTypography>{t('bot_detail.explore_title')}</MtbTypography>
       <div className='pt-5'>
         <SearchBar
           onSearch={(val) => handleSearch(val ?? '')}
@@ -182,12 +183,12 @@ function BotDetailPage() {
         </div>
         <div className='flex-3 sm:max-w-[calc(75%-2.5rem)] max-w-full mt-7'>
           <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>
-            Overview
+            {t('bot_detail.overview')}
           </MtbTypography>
           <Divider className='bg-border'></Divider>
           <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
           <div className='pt-5'>
-            <MtbTypography variant='h3'>More like this</MtbTypography>
+            <MtbTypography variant='h3'>{t('bot_detail.more_like_this')}</MtbTypography>
             <Divider className='bg-border'></Divider>
             {relatedMezonApp?.length > 0 ? (
               <Carousel
@@ -208,12 +209,12 @@ function BotDetailPage() {
               </Carousel>
             ) : (
               <MtbTypography variant='h4' weight='normal' customClassName='!text-secondary !text-center !block'>
-                No related bot
+                {t('bot_detail.no_related_bot')}
               </MtbTypography>
             )}
           </div>
           <div className='pt-8'>
-            <MtbTypography variant='h3'>Ratings & Reviews</MtbTypography>
+            <MtbTypography variant='h3'>{t('bot_detail.ratings_reviews')}</MtbTypography>
             <Divider className='bg-border'></Divider>
             <div className='flex justify-between gap-4 max-lg:flex-col max-2xl:flex-col'>
               <div className='flex-1'>
@@ -222,13 +223,12 @@ function BotDetailPage() {
                   <div>
                     <MtbRate readonly={true} value={mezonAppDetail.rateScore}></MtbRate>
                     <p className='pt-2'>
-                      {ratings?.totalCount ?? 0} {getPluralSuffix('review', ratings?.totalCount)}
+                      {ratings?.totalCount ?? 0} {t('bot_detail.review_count', { count: ratings?.totalCount })}
                     </p>
                   </div>
                 </div>
                 <p className='pt-5 max-lg:pt-7 max-2xl:pt-7'>
-                  Reviews can be left only by registered users. All reviews are moderated by our moderators. Please
-                  make sure to check our guidelines before posting.
+                  {t('bot_detail.review_guidelines')}
                 </p>
               </div>
               <div className='flex-1 flex flex-col gap-1'>
@@ -242,7 +242,7 @@ function BotDetailPage() {
 
                     return (
                       <div key={ratingValue} className='flex items-center gap-2 pb-2'>
-                        <p className='whitespace-nowrap'>{ratingValue} stars</p>
+                        <p className='whitespace-nowrap'>{ratingValue} {t('bot_detail.stars')}</p>
                         <MtbProgress percent={Number(percent)} strokeColor={'var(--accent-primary)'} showInfo={false}></MtbProgress>
                         <p className='align-middle'>{ratingCount}</p>
                       </div>
@@ -268,7 +268,7 @@ function BotDetailPage() {
               ) : (
                 ratings?.data?.map((rating) => <Comment key={rating.id} rating={rating}></Comment>) || null
               )}
-              {ratings.hasNextPage && <Button size='large' disabled={isLoadingMore} loading={isLoadingMore} onClick={onLoadMore}>Load More</Button>}
+              {ratings.hasNextPage && <Button size='large' disabled={isLoadingMore} loading={isLoadingMore} onClick={onLoadMore}>{t('bot_detail.load_more')}</Button>}
             </div>
           </div>
         </div>

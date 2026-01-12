@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { avatarBotDefault } from '@app/assets'
-import OwnerActions from '../OwnerActions/OwnerActions'
+import BotActions from '../BotActions/BotActions'
 import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
 import PreviewModal from '../PreviewModal/PreviewModal'
@@ -11,8 +11,11 @@ import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
+import { useTranslation } from 'react-i18next'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
 function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
+  const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
@@ -42,6 +45,10 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
       return
     }
 
+    if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
+      return; 
+    }
+
     const target = e.target as HTMLElement
     if (target.closest('.owner-actions')) return
 
@@ -63,38 +70,47 @@ function BotGridItem({ data, isPublic = true }: IBotGridItemProps) {
 
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
-  }  
+  }
   return (
     <GlassCard
       hoverEffect={true}
       className={cn(
-        'p-4 relative select-none',
+        'relative select-none',
       )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {!isPublic && <BadgeStatus status={mapStatusToText(data!.status)} color={mapStatusToColor(data!.status)} />}
-      <div className='relative'>
-        <div className='w-20 m-auto'>
-          <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
+      {!isPublic && (
+         <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
+      )}
+
+      <div className="owner-actions absolute top-2 right-2 z-10">
+        <BotActions 
+            data={data} 
+            mode={ViewMode.GRID} 
+            onNewVersionClick={handleOwnerNewVersionClick} 
+        />
+      </div>
+      <div className='p-4'>
+        <div className='relative'>
+          <div className='w-20 m-auto'>
+            <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
+          </div>
         </div>
-        {!isPublic && (<div className='owner-actions absolute top-2 right-2'>
-          <OwnerActions data={data} onNewVersionClick={handleOwnerNewVersionClick} />
-        </div>)}
-      </div>
-      <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
-        {data?.name || 'Name'}
-      </div>
-      <div className='flex justify-between items-center text-secondary text-sm font-medium'>
-        <p className='flex items-center gap-1'>
-          <StarOutlined className="text-warning" /> 
-          <span className='text-primary'>{data?.rateScore || 0}</span>
-        </p>
-        <p className='flex items-center gap-1'>
-          <RiseOutlined className="text-success" />
-          <span className='text-primary'>841,999</span>
-        </p>
+        <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
+          {data?.name || t('component.bot_grid_item.default_name')}
+        </div>
+        <div className='flex justify-between items-center text-secondary text-sm font-medium'>
+          <p className='flex items-center gap-1'>
+            <StarOutlined className="text-warning" />
+            <span className='text-primary'>{data?.rateScore || 0}</span>
+          </p>
+          <p className='flex items-center gap-1'>
+            <RiseOutlined className="text-success" />
+            <span className='text-primary'>841,999</span>
+          </p>
+        </div>
       </div>
       <PreviewModal
         open={!!previewVersion}

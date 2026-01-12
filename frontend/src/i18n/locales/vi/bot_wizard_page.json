@@ -1,0 +1,129 @@
+{
+    "bot_wizard": {
+        "page_title": "Trình tạo mã nguồn",
+        "page_description": "Quản lý các yêu cầu tạo mã nguồn bot.",
+        "sidebar": {
+            "title": "Điều hướng",
+            "requests": "Lịch sử",
+            "new_wizard": "Trình tạo mã nguồn"
+        }
+    },
+    "bot_wizard_requests": {
+        "title": "Lịch sử tạo mã nguồn bot",
+        "status": {
+            "all": "Tất cả",
+            "processing": "Đang xử lý",
+            "completed": "Hoàn thành",
+            "expired": "Đã hết hạn"
+        },
+        "filter_status_placeholder": "Lọc theo trạng thái",
+        "filter_status_title": "Trạng thái",
+        "page_size_placeholder": "Kích thước trang",
+        "page_size_title": "Kích thước trang",
+        "requests_per_page": "{{count}} yêu cầu/trang",
+        "no_requests": "Không tìm thấy yêu cầu nào."
+    },
+    "new_bot_wizard": {
+        "title": "Trình tạo mã nguồn mới",
+        "steps": {
+            "bot_info": "Thông tin Bot",
+            "commands": "Lệnh",
+            "integrations": "Tích hợp",
+            "events": "Sự kiện",
+            "preview": "Xem trước"
+        },
+        "step1": {
+            "bot_name_label": "Tên Bot",
+            "bot_name_desc": "Đặt tên cho bot của bạn",
+            "bot_name_placeholder": "MezonBot",
+            "bot_name_required": "Tên bot là bắt buộc",
+            "language_label": "Ngôn ngữ",
+            "language_desc": "Ngôn ngữ Framework",
+            "language_placeholder": "Chọn ngôn ngữ",
+            "language_required": "Ngôn ngữ là bắt buộc"
+        },
+        "step2": {
+            "intro": "Thêm các lệnh cho bot của bạn.\nĐiền thông tin lệnh bên dưới và nhấp <b>Thêm Lệnh</b> để thêm vào danh sách.\nBạn có thể thêm nhiều lệnh.",
+            "command_label": "Lệnh",
+            "command_desc": "Từ kích hoạt (ví dụ: ping)",
+            "description_label": "Mô tả",
+            "description_desc": "Mô tả ngắn gọn lệnh này làm gì",
+            "description_placeholder": "Giải thích lệnh này",
+            "category_label": "Danh mục",
+            "category_desc": "Dùng để nhóm các lệnh",
+            "aliases_label": "Biệt danh",
+            "aliases_desc": "Các từ kích hoạt thay thế ngăn cách bằng dấu phẩy",
+            "add_btn": "Thêm Lệnh",
+            "clear_btn": "Xóa",
+            "no_commands": "Chưa có lệnh nào được thêm."
+        },
+        "step3": {
+            "intro": "Chọn các tích hợp bạn muốn thêm vào bot.\nNhấp vào thẻ hoặc ô chọn để bật hoặc tắt tích hợp.",
+            "loading": "Đang tải tích hợp...",
+            "failed": "Không thể tải tích hợp cho {{language}}.",
+            "enable_integration": "Bật tích hợp {{name}}",
+            "no_integrations": "Không có tích hợp nào cho ngôn ngữ này."
+        },
+        "step4": {
+            "gateway_events": "Sự kiện Gateway có sẵn",
+            "select_all": "Chọn tất cả"
+        },
+        "step5": {
+            "preview_title": "Xem trước cấu hình",
+            "copy_tooltip": "Sao chép JSON",
+            "copied": "Đã sao chép!",
+            "review_msg": "Xem lại cấu hình trước khi gửi."
+        },
+        "navigation": {
+            "back": "Quay lại",
+            "next": "Tiếp theo",
+            "finish": "Hoàn tất",
+            "redirecting": "Đang chuyển hướng..."
+        },
+        "messages": {
+            "success": "Gửi yêu cầu thành công!",
+            "failure": "Gửi yêu cầu thất bại. Vui lòng thử lại."
+        },
+        "command_card": {
+            "remove_tooltip": "Xóa lệnh"
+        }
+    },
+    "bot_wizard_constants": {
+        "events": {
+            "token_send": "Gửi Token",
+            "message_button_clicked": "Đã nhấn nút tin nhắn",
+            "streaming_joined": "Đã tham gia luồng",
+            "streaming_leaved": "Đã rời luồng",
+            "clan_event_created": "Sự kiện Clan được tạo",
+            "message_reaction": "Phản ứng tin nhắn",
+            "channel_created": "Kênh được tạo",
+            "user_clan_removed": "Người dùng bị xóa khỏi Clan",
+            "role_event": "Sự kiện vai trò",
+            "user_channel_added": "Người dùng được thêm vào kênh",
+            "channel_deleted": "Kênh bị xóa",
+            "channel_updated": "Kênh được cập nhật",
+            "user_channel_removed": "Người dùng bị xóa khỏi kênh",
+            "give_coffee": "Tặng cà phê",
+            "add_clan_user": "Thêm người dùng Clan",
+            "voice_joined": "Đã tham gia Voice",
+            "voice_leaved": "Đã rời Voice"
+        }
+    },
+    "bot_wizard_card": {
+        "created": "Đã tạo",
+        "view_metadata": "Xem siêu dữ liệu tệp",
+        "details": "Chi tiết",
+        "download": "Tải xuống",
+        "download_failed": "Tải xuống tệp thất bại. Vui lòng thử lại sau."
+    },
+    "bot_wizard_detail": {
+        "title": "Siêu dữ liệu tệp",
+        "expired_title": "Tệp đã hết hạn",
+        "expired_desc": "Tệp này đã bị xóa khỏi máy chủ và không còn khả dụng để tải xuống.",
+        "file_name": "Tên tệp",
+        "status": "Trạng thái",
+        "expires_at": "Hết hạn vào",
+        "template": "Mẫu",
+        "processing": "[ĐANG XỬ LÝ]"
+    }
+}

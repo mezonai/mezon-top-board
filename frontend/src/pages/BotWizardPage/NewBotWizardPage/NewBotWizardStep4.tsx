@@ -1,9 +1,11 @@
 import { useFormContext } from 'react-hook-form'
+import { useTranslation } from "react-i18next";
 import { Checkbox } from 'antd'
 import { BotWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
 import { NESTJS_EVENTS } from '@app/constants/botWizard.constant'
 
 export default function NewBotWizardStep4() {
+    const { t } = useTranslation(['bot_wizard_page']);
     const { setValue, watch } = useFormContext<BotWizardRequest>()
     const selected = watch('events') || []
 
@@ -41,13 +43,13 @@ export default function NewBotWizardStep4() {
     return (
         <div className='flex flex-col gap-4'>
             <div className="flex justify-between items-center">
-                <span className="font-semibold">Available Gateway Events</span>
+                <span className="font-semibold">{t('new_bot_wizard.step4.gateway_events')}</span>
                 <Checkbox
                     checked={isAllSelected}
                     indeterminate={isIndeterminate}
                     onChange={(e) => handleSelectAll(e.target.checked)}
                 >
-                    Select All
+                    {t('new_bot_wizard.step4.select_all')}
                 </Checkbox>
             </div>
 
@@ -58,7 +60,7 @@ export default function NewBotWizardStep4() {
                         checked={isSelected(ev.value)}
                         onChange={(e) => toggle(ev.value, e.target.checked)}
                     >
-                        {ev.label}
+                        {t(ev.label)}
                     </Checkbox>
                 ))}
             </div>

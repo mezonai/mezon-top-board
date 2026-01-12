@@ -1,0 +1,49 @@
+{
+    "profile": {
+        "title": "Your Profile",
+        "welcome_user": "Welcome to {{name}}'s profile",
+        "welcome_you": "Welcome to your profile",
+        "add_new_bot": "Add new bot",
+        "showing_page": "Showing {{current}} of {{total}} page",
+        "bots_per_page": "Bots per page",
+        "bots_per_page_option": "{{count}} bots/page",
+        "no_result": "No Result",
+        "settings": {
+            "title": "Profile's setting page",
+            "explore": "Explore millions of Mezon Bots",
+            "name_label": "Name",
+            "name_desc": "Your name",
+            "name_placeholder": "Your name",
+            "bio_label": "Bio",
+            "bio_desc": "Your bio",
+            "bio_placeholder": "Your bio",
+            "save": "Save",
+            "update_success": "Update successfully",
+            "update_failed": "Update failed. Please try again."
+        },
+        "gallery": {
+            "title": "Your Media Gallery",
+            "images_per_page": "Images per page",
+            "images_per_page_option": "{{count}} images/page",
+            "showing_page": "Showing page {{current}} of {{total}}",
+            "no_media": "No media uploaded yet."
+        },
+        "card_info": {
+            "generals": "Generals",
+            "overview": "Overview",
+            "gallery": "Gallery",
+            "invitations": "Invitations",
+            "subscriptions": "Subscriptions",
+            "settings": "Settings",
+            "sync_mezon": "Sync from Mezon",
+            "confirm_sync_title": "Confirm Sync from Mezon",
+            "confirm_sync_desc": "Are you sure to sync name and avatar for this user? This action cannot be undone!",
+            "yes": "Yes",
+            "no": "No",
+            "sync_success": "Sync Success",
+            "sync_failed": "Sync failed!",
+            "update_success": "Update Success",
+            "update_failed": "Update failed!"
+        }
+    }
+}

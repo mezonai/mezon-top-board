@@ -113,7 +113,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
     <Modal
       title="Create Mail Schedule"
       open={open}
-      onCancel={onClose}
+      onCancel={handleCancel}
       footer={[
         <Button key="cancel" variant='outlined' onClick={handleCancel}>
           Cancel
@@ -127,7 +127,16 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       width={700}
     >
       <div className="max-h-[60vh] overflow-y-auto">
-        <Form form={form} layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} className="max-w-full">
+        <Form
+          form={form}
+          layout="horizontal"
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          className="max-w-full"
+          initialValues={{
+            scheduledAt: moment('08:00', 'HH:mm'),
+          }}
+        >
           <Form.Item name="subject" label="Subject" rules={[
             () => ({
               validator(_, value) {
@@ -143,7 +152,6 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
             <TimePicker
               format="HH:mm"
               minuteStep={30}
-              defaultValue={moment('08:00', 'HH:mm')}
               disabledHours={!checked ? disabledHours : undefined}
               disabledMinutes={!checked ? disabledMinutes : undefined}
             />

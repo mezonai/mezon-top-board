@@ -9,28 +9,30 @@ import { IUserStore } from '@app/store/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import { useTranslation } from 'react-i18next'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
+  const { t } = useTranslation(['bot_detail_page'])
 
   return (
     <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>
       <div className='pb-4'>
         <MtbTypography label={<InfoCircleOutlined className='!text-xl !text-heading' />} variant='h3'>
-          Details
+          {t('bot_detail.details')}
         </MtbTypography>
         {mezonAppDetail.prefix && (
           <div className='pt-2'>
             <MtbTypography variant='h5' weight='normal'>
-              Prefix: {mezonAppDetail.prefix}
+              {t('bot_detail.prefix', { prefix: mezonAppDetail.prefix })}
             </MtbTypography>
           </div>
         )}
       </div>
       <div className='pb-4'>
         <MtbTypography variant='h3' label={<RiseOutlined className='text-xl !text-heading' />}>
-          Socials
+          {t('bot_detail.socials')}
         </MtbTypography>
         <div>
           {mezonAppDetail?.supportUrl && (
@@ -41,7 +43,7 @@ function DetailCard() {
                 rel='noopener noreferrer'
                 className='text-primary transition-colors'
               >
-                <u>{mezonAppDetail.name}'s Support link</u>
+                <u>{t('bot_detail.support_link', { name: mezonAppDetail.name })}</u>
               </a>
             </MtbTypography>
           )}
@@ -61,7 +63,7 @@ function DetailCard() {
       </div>
       <div className='pb-5'>
         <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-heading' />}>
-          Categories
+          {t('bot_detail.categories')}
         </MtbTypography>
         <div className='pt-1'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
@@ -76,7 +78,7 @@ function DetailCard() {
       </div>
       <div className='pb-4'>
         <MtbTypography variant='h3' label={<UserOutlined className='text-xl !text-heading' />}>
-          Creators
+          {t('bot_detail.creators')}
         </MtbTypography>
         <div className={`pt-2`}>
           <a href={`/profile/${userInfo.id === mezonAppDetail?.owner?.id ? '' : mezonAppDetail?.owner?.id}`}>
@@ -85,7 +87,7 @@ function DetailCard() {
                 <div className='w-[40px] h-[40px] overflow-hidden rounded-xl flex-shrink-0 bg-border dark:bg-border'>
                   <img
                     src={mezonAppDetail?.owner?.profileImage ? getUrlMedia(mezonAppDetail?.owner.profileImage) : avatar}
-                    alt={mezonAppDetail?.owner?.name || 'Owner avatar'}
+                    alt={mezonAppDetail?.owner?.name || t('bot_detail.owner_avatar_alt')}
                     className='w-full h-full object-cover'
                   />
                 </div>

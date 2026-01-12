@@ -4,23 +4,18 @@ import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
 import { cn } from '@app/utils/cn'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
 import styles from './SearchBar.module.scss'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
-const typeFilterOptions: { label: string; value: MezonAppType | null }[] = [
-  { label: 'All Types', value: null },
-  { label: 'Bot', value: MezonAppType.BOT },
-  { label: 'App', value: MezonAppType.APP },
-]
-
 const MAX_VISIBLE_TAGS = 10
 
 const SearchBar = ({
-  placeholder = 'Search',
+  placeholder,
   allowClear = true,
   onSearch,
   isShowButton = true,
@@ -28,7 +23,14 @@ const SearchBar = ({
 }: ISearchBarProps) => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { t } = useTranslation(['common'])
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
+
+  const typeFilterOptions = useMemo(() => [
+    { label: t('search_bar.all_types'), value: null },
+    { label: t('search_bar.bot'), value: MezonAppType.BOT },
+    { label: t('search_bar.app'), value: MezonAppType.APP },
+  ], [t])
 
   const defaultTags = searchParams.get('tags')?.split(',') || []
 
@@ -118,7 +120,7 @@ const SearchBar = ({
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            placeholder={placeholder}
+            placeholder={placeholder || t('search_bar.search_placeholder')}
             prefix={<SearchOutlined style={{ color: '#bbb' }} />}
             suffix={
               allowClear && searchText ? (
@@ -134,7 +136,7 @@ const SearchBar = ({
             value={selectedType || null}
             onChange={handleTypeChange}
             options={typeFilterOptions}
-            placeholder="All Types"
+            placeholder={t('search_bar.all_types')}
             popupClassName="custom-search-dropdown"
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
             data-e2e="selectType"
@@ -143,7 +145,7 @@ const SearchBar = ({
         {isShowButton && (
           <Button color='primary' variant='solid' size='large' htmlType='submit' style={{ height: '50px', minWidth: '130px' }}
             onClick={() => handleSearch(selectedTagIds, selectedType)}>
-            Search
+            {t('search_bar.search_btn')}
           </Button>
         )}
       </div>
@@ -163,7 +165,7 @@ const SearchBar = ({
               className="!mb-2 cursor-pointer"
               onClick={() => setIsSelectVisible(true)}
             >
-              +{remainingHiddenTagCount} tags
+              {t('search_bar.tags', { count: remainingHiddenTagCount })}
             </Tag>
           ) : (
             <Select
@@ -181,7 +183,7 @@ const SearchBar = ({
               dropdownStyle={{ width: '200px' }}
               popupClassName="custom-search-dropdown"
               maxTagCount={0}
-              maxTagPlaceholder={() => `+${remainingHiddenTagCount} tags`}
+              maxTagPlaceholder={() => t('search_bar.tags_placeholder', { count: remainingHiddenTagCount })}
               filterOption={(input, option) =>
                 (option?.label as string).toLowerCase().includes(input.toLowerCase())
               }
@@ -197,7 +199,7 @@ const SearchBar = ({
             className="clear-tags-btn !cursor-pointer !items-center !gap-1" 
             onClick={handleClearTags}
           >
-            <CloseCircleOutlined /> Clear tags
+            <CloseCircleOutlined /> {t('search_bar.clear_tags')}
           </Tag>
         )}
       </div>

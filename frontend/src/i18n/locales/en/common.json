@@ -1,0 +1,104 @@
+{
+    "search_bar": {
+        "all_types": "All Types",
+        "bot": "Bot",
+        "app": "App",
+        "search_placeholder": "Search",
+        "search_btn": "Search",
+        "tags": "+{{count}} tags",
+        "tags_placeholder": "+{{count}} tags",
+        "clear_tags": "Clear tags"
+    },
+    "footer": {
+        "follow_us": "Follow us",
+        "get_newsletter": "Get Newsletter",
+        "subscribe": "Subscribe",
+        "sending": "Sending...",
+        "login_required": "Please log in to subscribe to the newsletter.",
+        "error_occurred": "An error occurred.",
+        "resubscribe_title": "Resubscribe?",
+        "resubscribe_content": "You have unsubscribed from our newsletter. Would you like to subscribe again?",
+        "yes": "Yes",
+        "no": "No",
+        "resubscribe_failed": "Failed to resubscribe. Please try again later..",
+        "address": "Address: 2nd Floor, CT3 The Pride, To Huu st, Ha Dong District, Ha Noi City, Viet Nam"
+    },
+    "header_menu": {
+        "profile": "Profile",
+        "colors": "Colors",
+        "language": "Language",
+        "color_mode": "Color Mode",
+        "logout": "Log out",
+        "light": "Light",
+        "dark": "Dark"
+    },
+    "colors": {
+        "red": "Red",
+        "pink": "Pink",
+        "purple": "Purple",
+        "blue": "Blue",
+        "green": "Green",
+        "yellow": "Yellow",
+        "orange": "Orange"
+    },
+    "nav": {
+        "home": "Home",
+        "about": "About",
+        "terms": "Terms",
+        "help": "Help",
+        "welcome": "Welcome",
+        "login_redirect": "Login Redirect",
+        "my_profile": "My Profile",
+        "personal_settings": "Personal Settings",
+        "my_media_gallery": "My Media Gallery",
+        "search": "Search",
+        "how_to_use": "How to use",
+        "contact_us": "Contact Us",
+        "bot_wizard": "Bot Wizard",
+        "new_bot": "New Bot",
+        "login": "Login",
+        "confirm_subscription": "Confirm Subscription",
+        "unsubscription": "Unsubscription",
+        "not_found": "Not Found"
+    },
+    "header": {
+        "login": "Login",
+        "menu_title": "Menu"
+    },
+    "enums": {
+        "mezon_app_type": {
+            "BOT": "Bot",
+            "APP": "App"
+        },
+        "app_pricing": {
+            "FREE": "FREE",
+            "PAID": "PAID"
+        }
+    },
+    "time": {
+        "just_now": "Just now",
+        "minutes_ago": "{{count}} minutes ago",
+        "hours_ago": "{{count}} hours ago",
+        "yesterday": "Yesterday"
+    },
+    "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "published": "Published",
+        "unknown": "Unknown"
+    },
+    "login_redirect": {
+        "fail_generic": "Login failed: Something went wrong!",
+        "fail": "Login failed!",
+        "success": "Login successfully!"
+    },
+    "hooks": {
+        "auth_redirect_warning": "Sorry, you are not authorized to access this page",
+        "ownership_check_login": "You need to login to access this page.",
+        "ownership_check_permission": "You do not have permission to access this page.",
+        "submit_success_created": "{{type}} created successfully!",
+        "submit_success_updated": "{{type}} updated successfully!",
+        "generic_error": "Something went wrong"
+    }
+}

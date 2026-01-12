@@ -6,8 +6,10 @@ import { Flex, Spin } from 'antd';
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from "react-i18next";
 
 const ConfirmSubscribePage = () => {
+  const { t } = useTranslation(['components']);
   const navigate = useNavigate();
 
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
@@ -23,12 +25,12 @@ const ConfirmSubscribePage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!userInfo?.email) {
-        toast.error("Subscription confirmation failed\nEmail not found, please log in.");
+        toast.error(t('component.confirm_subscribe.email_not_found'));
         navigate('/');
       }
 
       if (!data) {
-        toast.error("Subscription confirmation failed\nSubscription already confirmed.");
+        toast.error(t('component.confirm_subscribe.already_confirmed'));
         navigate('/');
       } else {
         toast.success(data.message);

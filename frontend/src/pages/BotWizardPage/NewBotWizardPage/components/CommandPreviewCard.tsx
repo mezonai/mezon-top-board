@@ -1,4 +1,5 @@
 import { Tag, Tooltip } from 'antd'
+import { useTranslation } from "react-i18next";
 import Button from '@app/mtb-ui/Button' 
 import { DeleteOutlined } from '@ant-design/icons'
 import { CommandWizardRequest } from '@app/services/api/botGenerator/botGenerator.types'
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function CommandPreviewCard({ data, onRemove }: Props) {
+    const { t } = useTranslation(['bot_wizard_page']);
     const aliases = data.aliases || []
 
     return (
@@ -20,7 +22,7 @@ export default function CommandPreviewCard({ data, onRemove }: Props) {
                     {data.category && <Tag color='blue'>{data.category}</Tag>}
                 </div>
                 
-                <Tooltip title="Remove command">
+                <Tooltip title={t('new_bot_wizard.command_card.remove_tooltip')}>
                     <Button 
                         size="small" 
                         variant="text" 

@@ -12,11 +12,14 @@ import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { CardInfo } from './components'
+import { errorStatus } from '@app/constants/common.constant'
 import useAuthRedirect from '@app/hook/useAuthRedirect'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { PROFILE_SETTING_SCHEMA } from '@app/validations/profileSetting.validations'
+import { getProfileSettingSchema } from '@app/validations/profileSetting.validations'
+import { useTranslation } from "react-i18next";
 
 function SettingPage() {
+  const { t } = useTranslation(['profile_page', 'validation']);
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const [selfUpdate, { isLoading: isUpdating }] = useUserControllerSelfUpdateUserMutation()
   const { control, handleSubmit, reset, formState: { errors }  } = useForm({
@@ -24,7 +27,7 @@ function SettingPage() {
       name: '',
       bio: ''
     },
-    resolver: yupResolver(PROFILE_SETTING_SCHEMA)
+    resolver: yupResolver(getProfileSettingSchema)
   })
 
   useAuthRedirect()
@@ -41,15 +44,15 @@ function SettingPage() {
   const onSubmit = async (data: any) => {
     try {
       await selfUpdate({ selfUpdateUserRequest: { ...data } }).unwrap()
-      toast.success('Update successfully')
+      toast.success(t('profile.settings.update_success'))
     } catch (error) {
-      toast.error('Update failed. Please try again.')
+      toast.error(t('profile.settings.update_failed'))
     }
   }
 
   return (
     <div className='pt-8 pb-12 w-[75%] m-auto'>
-      <MtbTypography variant='h1'>Explore millions of Mezon Bots</MtbTypography>
+      <MtbTypography variant='h1'>{t('profile.settings.explore')}</MtbTypography>
       <div className='pt-3'>
         <SearchBar onSearch={(val, tagIds) => handleSearch(val ?? '', tagIds)} isResultPage={false}></SearchBar>
       </div>
@@ -60,37 +63,47 @@ function SettingPage() {
         </div>
         <div className='flex-1'>
           <div className='flex justify-between items-center pb-10'>
-            <MtbTypography variant='h2'>Profile's setting page</MtbTypography>
+            <MtbTypography variant='h2'>{t('profile.settings.title')}</MtbTypography>
           </div>
           <div>
             <Form onFinish={handleSubmit(onSubmit)}>
-              <FormField label='Name' description='Your name'>
+              <FormField 
+                label={t('profile.settings.name_label')} 
+                description={t('profile.settings.name_desc')}
+                errorText={errors.name?.message}
+              >
               <Controller
                   control={control}
                   name='name'
                   render={({ field }) => (
-                    <Form.Item
-                      validateStatus={errors.name ? 'error' : ''}
-                      help={errors.name ? errors.name.message : ''}
-                    >
-                      <Input 
-                        {...field} 
-                        placeholder='Your name' 
-                      />
-                    </Form.Item>
+                    <Input 
+                      {...field} 
+                      placeholder={t('profile.settings.name_placeholder')}
+                      status={errorStatus(errors.name)}
+                    />
                   )}
                 />
               </FormField>
-              <FormField label='Bio' description='Your bio'>
+              <FormField 
+                label={t('profile.settings.bio_label')} 
+                description={t('profile.settings.bio_desc')}
+                errorText={errors.bio?.message}
+              >
                 <Controller
                   control={control}
                   name='bio'
-                  render={({ field }) => <Input {...field} placeholder='Your bio' />}
+                  render={({ field }) => (
+                    <Input 
+                      {...field} 
+                      placeholder={t('profile.settings.bio_placeholder')} 
+                      status={errorStatus(errors.bio)}
+                    />
+                  )}
                 />
               </FormField>
               <div className='flex items-center justify-center'>
                 <Button htmlType='submit' customClassName='w-[200px] mt-5' loading={isUpdating} disabled={isUpdating}>
-                  Save
+                  {t('profile.settings.save')}
                 </Button>
               </div>
             </Form>

@@ -60,6 +60,7 @@ services:
       MEZON_BOT_ID: ${MEZON_BOT_ID}
       MEZON_TOKEN: ${MEZON_TOKEN}
       APP_CLIENT_URL: ${APP_CLIENT_URL}
+      CACHE_TTL: ${CACHE_TTL}
     ports:
       - "8123:8123"
     networks:

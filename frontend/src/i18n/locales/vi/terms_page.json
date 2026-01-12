@@ -1,0 +1,97 @@
+{
+    "terms": {
+        "title": "Điều khoản dịch vụ",
+        "last_updated": "Cập nhật lần cuối: {{date}}",
+        "intro": "Chào mừng bạn đến với Mezon Top Board! Các Điều khoản và Điều kiện này (\"Điều khoản\") chi phối quyền truy cập và sử dụng nền tảng của chúng tôi, bao gồm tất cả các dịch vụ, nội dung và tính năng liên quan. Bằng cách sử dụng Mezon Top Board, bạn đồng ý tuân thủ các Điều khoản này. Nếu bạn không đồng ý, vui lòng ngừng sử dụng ngay lập tức.",
+        "section1": {
+            "title": "1. Định nghĩa",
+            "items": [
+                "\"Nền tảng\" đề cập đến Mezon Top Board, trang web, ứng dụng và tất cả các dịch vụ liên quan.",
+                "\"Người dùng\" đề cập đến bất kỳ cá nhân hoặc tổ chức nào truy cập hoặc sử dụng Mezon Top Board.",
+                "\"Nhà phát triển\" đề cập đến các cá nhân hoặc tổ chức gửi ứng dụng để niêm yết trên Mezon Top Board.",
+                "\"Nội dung\" bao gồm tất cả văn bản, hình ảnh, video, ứng dụng và tài liệu khác có trên nền tảng."
+            ]
+        },
+        "section2": {
+            "title": "2. Sử dụng Nền tảng",
+            "sub1": {
+                "title": "2.1 Điều kiện tham gia",
+                "content": "Bạn phải ít nhất 18 tuổi để sử dụng Mezon Top Board. Bằng cách sử dụng nền tảng, bạn xác nhận rằng bạn đáp ứng yêu cầu này."
+            },
+            "sub2": {
+                "title": "2.2 Đăng ký tài khoản",
+                "items": [
+                    "Một số tính năng có thể yêu cầu đăng ký tài khoản.",
+                    "Bạn chịu trách nhiệm bảo mật thông tin đăng nhập tài khoản của mình.",
+                    "Mezon Top Board có quyền đình chỉ hoặc chấm dứt tài khoản vi phạm các Điều khoản này."
+                ]
+            },
+            "sub3": {
+                "title": "2.3 Sử dụng hợp lệ",
+                "intro": "Bằng cách sử dụng Mezon Top Board, bạn đồng ý KHÔNG:",
+                "items": [
+                    "Vi phạm bất kỳ luật hoặc quy định hiện hành nào.",
+                    "Gửi thông tin sai lệch hoặc gây hiểu lầm.",
+                    "Tham gia vào các hoạt động có hại, lạm dụng hoặc gian lận.",
+                    "Cố gắng phá hoại hoặc xâm phạm bảo mật của nền tảng."
+                ]
+            }
+        },
+        "section3": {
+            "title": "3. Niêm yết ứng dụng",
+            "sub1": {
+                "title": "3.1 Hướng dẫn gửi",
+                "items": [
+                    "Các nhà phát triển phải đảm bảo ứng dụng của họ tuân thủ các hướng dẫn kỹ thuật và đạo đức của Mezon.",
+                    "Mezon Top Board có quyền chấp nhận, từ chối hoặc xóa danh sách theo quyết định của mình."
+                ]
+            },
+            "sub2": {
+                "title": "3.2 Quyền sở hữu trí tuệ",
+                "items": [
+                    "Các nhà phát triển giữ quyền sở hữu ứng dụng của họ.",
+                    "Bằng cách gửi ứng dụng, nhà phát triển cấp cho Mezon Top Board giấy phép hiển thị và quảng bá nội dung của họ."
+                ]
+            }
+        },
+        "section4": {
+            "title": "4. Quyền sở hữu nội dung và Bản quyền",
+            "items": [
+                "Mezon Top Board tôn trọng quyền sở hữu trí tuệ.",
+                "Người dùng và nhà phát triển phải đảm bảo họ có quyền đối với bất kỳ nội dung nào họ gửi.",
+                "Việc sử dụng trái phép tài liệu có bản quyền có thể dẫn đến việc đình chỉ tài khoản hoặc hành động pháp lý."
+            ]
+        },
+        "section5": {
+            "title": "5. Tuyên bố từ chối trách nhiệm và Giới hạn trách nhiệm",
+            "items": [
+                "Mezon Top Board cung cấp thông tin \"nguyên trạng\" mà không có bất kỳ bảo đảm nào.",
+                "Chúng tôi không đảm bảo tính chính xác, độ tin cậy hoặc tính khả dụng của các ứng dụng được liệt kê.",
+                "Mezon Top Board không chịu trách nhiệm cho bất kỳ thiệt hại trực tiếp, gián tiếp, ngẫu nhiên hoặc hậu quả nào phát sinh từ việc sử dụng nền tảng."
+            ]
+        },
+        "section6": {
+            "title": "6. Chính sách bảo mật",
+            "items": [
+                "Bằng cách sử dụng Mezon Top Board, bạn đồng ý với các hoạt động thu thập và sử dụng dữ liệu của chúng tôi như được nêu trong Chính sách bảo mật.",
+                "Chúng tôi không bán dữ liệu người dùng cho bên thứ ba."
+            ]
+        },
+        "section7": {
+            "title": "7. Sửa đổi Điều khoản",
+            "content": "Mezon Top Board có quyền sửa đổi các Điều khoản này bất kỳ lúc nào. Người dùng sẽ được thông báo về những thay đổi quan trọng và việc tiếp tục sử dụng nền tảng đồng nghĩa với việc chấp nhận các Điều khoản đã sửa đổi."
+        },
+        "section8": {
+            "title": "8. Chấm dứt Dịch vụ",
+            "content": "Mezon Top Board có thể đình chỉ hoặc chấm dứt dịch vụ theo quyết định của mình, có hoặc không có thông báo, đối với người dùng vi phạm các Điều khoản này."
+        },
+        "section9": {
+            "title": "9. Luật điều chỉnh",
+            "content": "Các Điều khoản này sẽ được điều chỉnh và giải thích theo luật pháp của {{jurisdiction}}."
+        },
+        "section10": {
+            "title": "10. Thông tin liên hệ",
+            "content": "Nếu có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi tại {{email}}."
+        }
+    }
+}

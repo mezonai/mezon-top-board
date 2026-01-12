@@ -1,0 +1,39 @@
+{
+    "onboarding": {
+        "step1": {
+            "welcome_title": "Chào mừng đến với Mezon Top Board",
+            "welcome_desc": "Mezon Top Board — #1 Bot Listing cho Mezon.\nKhám phá các ứng dụng tốt nhất được xây dựng trên hệ sinh thái Mezon.\nChúng tôi tuyển chọn và giới thiệu các ứng dụng hàng đầu tận dụng công nghệ tiên tiến của Mezon, giúp người dùng và nhà phát triển khám phá các giải pháp sáng tạo một cách dễ dàng.",
+            "cards": {
+                "top_listings": "Top Listings",
+                "top_listings_desc": "Khám phá các ứng dụng Mezon được đánh giá cao và sáng tạo nhất.",
+                "for_users": "Cho Người dùng & Devs",
+                "for_users_desc": "Tìm công cụ, giải pháp và nguồn cảm hứng trên toàn hệ sinh thái.",
+                "discover": "Khám phá nhanh hơn",
+                "discover_desc": "Điều hướng các danh mục ứng dụng được tuyển chọn một cách dễ dàng.",
+                "stay_updated": "Cập nhật liên tục",
+                "stay_updated_desc": "Theo dõi các ứng dụng thịnh hành và những đột phá mới trong công nghệ Mezon."
+            },
+            "ready_title": "Sẵn sàng để bắt đầu?",
+            "ready_desc": "Hãy thiết lập hồ sơ của bạn để cá nhân hóa trải nghiệm.",
+            "skip": "Bỏ qua",
+            "get_started": "Bắt đầu ngay"
+        },
+        "step2": {
+            "title": "Thông tin hồ sơ",
+            "description": "Thông tin của bạn đã được điền sẵn từ tài khoản Mezon",
+            "from_mezon": "Từ Mezon",
+            "upload_tooltip": "Tải ảnh mới",
+            "display_name": "Tên hiển thị",
+            "display_name_desc": "3-50 ký tự. Đây là cách người khác sẽ nhìn thấy tên bạn.",
+            "display_name_placeholder": "Nguyễn Văn A",
+            "email": "Email",
+            "bio": "Tiểu sử (Tùy chọn)",
+            "bio_placeholder": "Giới thiệu về bản thân bạn...",
+            "bio_desc_1": "Chia sẻ một lời giới thiệu ngắn.",
+            "bio_desc_2": "{{current}}/{{max}} ký tự",
+            "save_continue": "Lưu & Tiếp tục",
+            "update_success": "Cập nhật hồ sơ thành công!",
+            "update_fail": "Cập nhật hồ sơ thất bại."
+        }
+    }
+}

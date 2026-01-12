@@ -1,0 +1,27 @@
+{
+    "bot_detail": {
+        "explore_title": "Khám phá hàng triệu Mezon Bot",
+        "overview": "Tổng quan",
+        "more_like_this": "Tương tự",
+        "no_related_bot": "Không có bot liên quan",
+        "ratings_reviews": "Đánh giá",
+        "review_count": "đánh giá",
+        "review_guidelines": "Chỉ người dùng đã đăng ký mới có thể viết đánh giá. Tất cả các đánh giá đều được chúng tôi kiểm duyệt. Vui lòng đọc kỹ hướng dẫn trước khi đăng.",
+        "stars": "sao",
+        "load_more": "Tải thêm",
+        "error_loading_more": "Lỗi khi tải thêm",
+        "details": "Chi tiết",
+        "prefix": "Prefix: {{prefix}}",
+        "socials": "Liên kết",
+        "support_link": "{{name}}",
+        "categories": "Danh mục",
+        "creators": "Người tạo",
+        "owner_avatar_alt": "Ảnh đại diện người tạo",
+        "user_avatar_alt": "Ảnh đại diện người dùng",
+        "bad_request": "Yêu cầu không hợp lệ!",
+        "chat_now": "Chat ngay",
+        "success": "Thành công",
+        "comment_placeholder": "Viết nhận xét của bạn...",
+        "post_rating": "Gửi đánh giá"
+    }
+}

@@ -10,15 +10,18 @@ import useAuthRedirect from '@app/hook/useAuthRedirect'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { CardInfo } from './components'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
+import { useTranslation } from "react-i18next";
 
-const pageOptions = [
-    { value: 12, label: '12 images/page' },
-    { value: 24, label: '24 images/page' },
-    { value: 36, label: '36 images/page' },
-    { value: 48, label: '48 images/page' }
-]
+
 
 function GalleryPage() {
+    const { t } = useTranslation(['profile_page']);
+    const pageOptions = [
+        { value: 12, label: t('profile.gallery.images_per_page_option', { count: 12 }) },
+        { value: 24, label: t('profile.gallery.images_per_page_option', { count: 24 }) },
+        { value: 36, label: t('profile.gallery.images_per_page_option', { count: 36 }) },
+        { value: 48, label: t('profile.gallery.images_per_page_option', { count: 48 }) }
+    ]
     useAuthRedirect()
     const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
     const [getAllMedia, { isLoading }] = useLazyMediaControllerGetAllMediaQuery()
@@ -64,7 +67,7 @@ function GalleryPage() {
 
     return (
         <div className='pt-8 pb-12 w-[75%] m-auto'>
-            <MtbTypography variant='h1'>Your Media Gallery</MtbTypography>
+            <MtbTypography variant='h1'>{t('profile.gallery.title')}</MtbTypography>
             <Divider className='bg-border' />
             <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
                 <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
@@ -76,7 +79,7 @@ function GalleryPage() {
                             <Flex justify="space-between" wrap="wrap" align="center">
                                 <div className='flex-shrink-0'>
                                     <MtbTypography variant='h5' weight='normal'>
-                                        Showing page {page} of {totalPages}
+                                        {t('profile.gallery.showing_page', { current: page, total: totalPages })}
                                     </MtbTypography>
                                 </div>
                                 <Flex gap={10} align='center' wrap="wrap">
@@ -87,7 +90,7 @@ function GalleryPage() {
                                         placeholder='Select'
                                         size='large'
                                         className='w-[12rem] text-primary'
-                                        dropDownTitle='Images per page'
+                                        dropDownTitle={t('profile.gallery.images_per_page')}
                                         value={pageOptions.find(o => o.value === pageSize)}
                                     />
                                 </Flex>
@@ -100,7 +103,7 @@ function GalleryPage() {
                             <Spin size='large' />
                         </div>
                     ) : totalPages === 0 ? (
-                        <div className='pt-8 text-center text-secondary'>No media uploaded yet.</div>
+                        <div className='pt-8 text-center text-secondary'>{t('profile.gallery.no_media')}</div>
                     ) : (
                         <>
                             <div className='grid grid-cols-2 gap-6 min-lg:grid-cols-3 min-xl:grid-cols-4 pt-4'>
@@ -115,7 +118,7 @@ function GalleryPage() {
                                             />
                                         </div>
                                         <div className='px-1'>
-                                            <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate'>
+                                            <MtbTypography variant='p' size={14} weight='normal' customClassName='!pl-0 truncate block w-full'>
                                                 {item.fileName}
                                             </MtbTypography>
                                             <MtbTypography variant='p' size={12} weight='normal' customClassName='!pl-0 text-secondary'>

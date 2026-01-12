@@ -20,15 +20,16 @@ import { CardInfo } from './components'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
 import { useAuth } from '@app/hook/useAuth'
-
-const pageOptions = [
-  { value: 6, label: "6 bots/page" },
-  { value: 12, label: "12 bots/page" },
-  { value: 18, label: "18 bots/page" },
-  { value: 24, label: "24 bots/page" },
-];
+import { useTranslation } from "react-i18next";
 
 function ProfilePage() {
+  const { t } = useTranslation(['profile_page']);
+  const pageOptions = useMemo(() => [
+    { value: 6, label: t('profile.bots_per_page_option', { count: 6 }) },
+    { value: 12, label: t('profile.bots_per_page_option', { count: 12 }) },
+    { value: 18, label: t('profile.bots_per_page_option', { count: 18 }) },
+    { value: 24, label: t('profile.bots_per_page_option', { count: 24 }) },
+  ], [t]);
   const navigate = useNavigate()
   const { isLogin } = useAuth()
   const { userInfo: myInfo, publicProfile: publicUserInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
@@ -142,7 +143,7 @@ function ProfilePage() {
 
   return (
     <div className='pt-8 pb-12 w-[75%] m-auto'>
-      <MtbTypography variant='h1'>Your Profile</MtbTypography>
+      <MtbTypography variant='h1'>{t('profile.title')}</MtbTypography>
       <Divider className='bg-border'></Divider>
       <div className='flex justify-between gap-15 max-lg:flex-col max-2xl:flex-col'>
         <div className='w-1/3 max-lg:w-full max-2xl:w-full'>
@@ -151,10 +152,14 @@ function ProfilePage() {
 
         <div className='flex-2'>
           <div className='flex justify-between items-center pb-4'>
-            <MtbTypography variant='h2'>Welcome to {userId ? `${userInfo?.name}'s` : 'your'} profile</MtbTypography>
+            <MtbTypography variant='h2'>
+              {userId
+                ? t('profile.welcome_user', { name: userInfo?.name })
+                : t('profile.welcome_you')}
+            </MtbTypography>
             {!userId && (
               <Button color='primary' size='large' onClick={() => navigate('/new-bot')}>
-                Add new bot
+                {t('profile.add_new_bot')}
               </Button>
             )}
           </div>
@@ -170,7 +175,7 @@ function ProfilePage() {
               <Flex justify="space-between" wrap="wrap">
                 <div className='flex-shrink-0'>
                   <MtbTypography variant='h5' weight='normal'>
-                    Showing {page} of {totalPages} page
+                    {t('profile.showing_page', { current: page, total: totalPages })}
                   </MtbTypography>
                 </div>
                 <Flex gap={10} align='center' wrap="wrap">
@@ -181,7 +186,7 @@ function ProfilePage() {
                     placeholder='Select'
                     size='large'
                     className='w-[10rem] text-primary'
-                    dropDownTitle='Bots per page'
+                    dropDownTitle={t('profile.bots_per_page')}
                     value={pageOptions.find(o => o.value === pageSize)}
                   />
                 </Flex>
@@ -191,7 +196,7 @@ function ProfilePage() {
 
           {totalPages === 0 ? (
             <div className='pt-8'>
-              <div className='text-center py-12 text-secondary'>No Result</div>
+              <div className='text-center py-12 text-secondary'>{t('profile.no_result')}</div>
             </div>
           ) : (
             <>

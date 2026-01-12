@@ -3,31 +3,31 @@ import { AppPricing } from '@app/enums/appPricing'
 import * as yup from 'yup'
 import { LINK_TYPE_SCHEMA } from './linkType.validation'
 
-export const ADD_BOT_SCHEMA = yup.object({
+export const getAddBotSchema = yup.object({
   type: yup
     .mixed<MezonAppType>()
-    .oneOf(Object.values(MezonAppType), 'Invalid type')
-    .required('Type is required'),
+    .oneOf(Object.values(MezonAppType), 'validation.invalid_type')
+    .required('validation.required'),
   mezonAppId: yup
     .string()
     .trim()
-    .required('Bot or App ID is required')
-    .max(2042, 'Bot or App ID is too long')
-    .matches(/^\d+$/, 'Must contain digits only'),
+    .required('validation.bot_app_id_required')
+    .max(2042, 'validation.bot_app_id_too_long')
+    .matches(/^\d+$/, 'validation.digits_only'),
   name: yup
     .string()
     .trim()
-    .required("Name is required")
-    .min(1, "Minimum 1 characters")
-    .max(64, "Maximum 64 characters"),
-  isAutoPublished: yup.boolean().required("isAutoPublished is required"),
+    .required('validation.name_required')
+    .min(1)
+    .max(64),
+  isAutoPublished: yup.boolean().required('validation.is_auto_published_required'),
   headline: yup
     .string()
     .trim()
-    .required("Headline is required")
-    .min(50, "Minimum 50 characters")
-    .max(510, "Maximum 510 characters"),
-  description: yup.string().trim().required("Full Description is required"),
+    .required('validation.headline_required')
+    .min(50)
+    .max(510),
+  description: yup.string().trim().required('validation.full_desc_required'),
   prefix: yup
     .string()
     .trim()
@@ -35,9 +35,9 @@ export const ADD_BOT_SCHEMA = yup.object({
       is: (val: MezonAppType) => val === MezonAppType.BOT,
       then: (schema) =>
         schema
-          .required('Prefix is required')
-          .min(1, 'Minimum 1 characters')
-          .max(10, 'Maximum 10 characters'),
+          .required('validation.prefix_required')
+          .min(1)
+          .max(10),
       otherwise: (schema) => 
         schema.optional().transform((value) => (value === '' ? undefined : value))
     }),
@@ -45,15 +45,15 @@ export const ADD_BOT_SCHEMA = yup.object({
   supportUrl: yup
     .string()
     .trim()
-    .required("Support URL is required")
-    .url("Invalid URL")
-    .test("url-length", "URL is too long", (val) => val.length <= 2082),
+    .required('validation.support_url_required')
+    .url('validation.invalid_url')
+    .max(2082, 'validation.url_too_long'),
   remark: yup.string().trim().optional(),
-  tagIds: yup.array().of(yup.string().required()).min(1, "At least one tag is required").strict().defined(),
+  tagIds: yup.array().of(yup.string().required()).min(1, 'validation.at_least_one_tag').strict().defined(),
   pricingTag: yup
     .mixed<AppPricing>()
-    .oneOf(Object.values(AppPricing), 'Invalid pricing tag')
-    .required('Pricing tag is required'),
+    .oneOf(Object.values(AppPricing), 'validation.invalid_pricing_tag')
+    .required('validation.pricing_tag_required'),
   price: yup
     .number()
     .nullable() 
@@ -66,8 +66,8 @@ export const ADD_BOT_SCHEMA = yup.object({
       then: (schema) => 
         schema
           .nullable()
-          .min(0, 'Price must be 0 or more')
-          .required('Price is required for paid apps'),
+          .min(0, 'validation.price_min')
+          .required('validation.price_required_paid'),
       otherwise: (schema) => schema.nullable(),
     }),
   socialLinks: yup.array().of(
@@ -75,8 +75,13 @@ export const ADD_BOT_SCHEMA = yup.object({
       url: yup
         .string()
         .trim()
-        .test("url-length", "URL is too long", (val) => (val || "").length <= 2082),
-      linkTypeId: yup.string().required("Link Type is required"),
+        .max(2082, 'validation.url_too_long')
+        .when('type', {
+          is: (type: { prefixUrl?: string }) => !type?.prefixUrl,
+          then: (schema) => schema.url('validation.missing_http_prefix'),
+          otherwise: (schema) => schema
+        }),
+      linkTypeId: yup.string().required('validation.link_type_required'),
       type: LINK_TYPE_SCHEMA.shape({
         id: yup.string().required(),
         icon: yup.string().required(),

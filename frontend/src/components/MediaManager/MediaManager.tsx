@@ -15,6 +15,7 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
 import { cn } from '@app/utils/cn'
+import { useTranslation } from 'react-i18next'
 
 const MediaManagerModal = ({
   isVisible,
@@ -26,10 +27,12 @@ const MediaManagerModal = ({
   onClose: () => void
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState('1')
   const [page, setPage] = useState(1);
   const [isCropModalOpen, setIsCropModalOpen] = useState<boolean>(false)
+  const { t } = useTranslation(['components'])
 
   const [getAllMedia, { isLoading: loadingMedia }] = useLazyMediaControllerGetAllMediaQuery()
   const [uploadImage, { isLoading: isUploading }] = useMediaControllerCreateMediaMutation()
@@ -57,11 +60,11 @@ const MediaManagerModal = ({
     const { file, onSuccess, onError } = options
     const maxFileSize = 4 * 1024 * 1024
     if (file.size > maxFileSize) {
-      toast.error(`${file.name} file upload failed (exceeds 4MB)`)
+      toast.error(t('component.media_manager.upload_error_size', { fileName: file.name }))
       return
     }
     if (!imageMimeTypes.includes(file.type)) {
-      toast.error('Please upload a valid image file!')
+      toast.error(t('component.media_manager.upload_error_type'))
       onError(new Error('Invalid file type'))
       return
     }
@@ -77,10 +80,11 @@ const MediaManagerModal = ({
       const response = await uploadImage(formData).unwrap()
       const serverPath = response.data.filePath
       getMediasList()
+      setSelectedPath(serverPath)
       setSelectedImage(getUrlMedia(serverPath))
-      return getUrlMedia(serverPath)
+      return serverPath
     } catch (error) {
-      toast.error('Upload failed. Please try again.')
+      toast.error(t('component.media_manager.upload_failed'))
       return ''
     }
   }
@@ -93,16 +97,16 @@ const MediaManagerModal = ({
 
   const tabItems = [
     {
-      label: 'Upload from device',
+      label: t('component.media_manager.upload_tab'),
       key: '1',
       children: (
         <div className='flex flex-col items-center mt-4'>
           <Upload customRequest={handleUpload} showUploadList={false} accept='image/*'>
             <Button icon={<UploadOutlined />}>
-              Click to Upload
+              {t('component.media_manager.click_upload')}
             </Button>
           </Upload>
-          <i className='text-secondary'>Choose an image in your browser</i>
+          <i className='text-secondary'>{t('component.media_manager.browser_hint')}</i>
           {selectedFile && (
             <img
               src={selectedImage || ''}
@@ -114,7 +118,7 @@ const MediaManagerModal = ({
       )
     },
     {
-      label: 'Choose from gallery',
+      label: t('component.media_manager.gallery_tab'),
       key: '2',
       children: loadingMedia ? (
         <Spin />
@@ -129,7 +133,10 @@ const MediaManagerModal = ({
                   src={url}
                   alt=''
                   className={cn('w-[6.5rem] h-[6.5rem] object-cover cursor-pointer', selectedImage === url ? 'border-2 border-primary' : 'border border-border')}
-                  onClick={() => setSelectedImage(url)}
+                  onClick={() => {
+                    setSelectedImage(url);
+                    setSelectedPath(item.filePath);
+                  }}
                 />
               );
             })}
@@ -157,13 +164,13 @@ const MediaManagerModal = ({
       return; 
     }
 
-    if (selectedImage) {
-      onChoose(selectedImage);
+    if (selectedPath) {
+      onChoose(selectedPath);
       handleCancel();
       return;
     }
     
-    toast.error('Please select an image first');
+    toast.error(t('component.media_manager.select_first'));
   };
 
 
@@ -172,6 +179,7 @@ const MediaManagerModal = ({
     setPage(1)
     setSelectedFile(null)
     setSelectedImage(null)
+    setSelectedPath(null)
     onClose()
   }
 
@@ -194,7 +202,7 @@ const MediaManagerModal = ({
         zIndex={3}
         width={'59rem'}
         centered
-        title='Choose Icon'
+        title={t('component.media_manager.title')}
         open={isVisible}
         onCancel={handleCancel}
         onOk={handleChoose}
@@ -203,15 +211,15 @@ const MediaManagerModal = ({
           <div className="flex justify-between items-center">
             {activeTab === '2' && (
               <div className='text-sm text-secondary pl-2'>
-                Total {mediaList?.totalCount || 0} image(s)
+                {t('component.media_manager.total_images', { count: mediaList?.totalCount || 0 })}
               </div>
             )}
 
             <div className="ml-auto flex gap-2">
               <Button onClick={handleCancel} color='default'>
-                Cancel
+                {t('component.media_manager.cancel')}
               </Button>
-              <Button onClick={handleChoose}>OK</Button>
+              <Button onClick={handleChoose}>{t('component.media_manager.ok')}</Button>
             </div>
           </div>
         }

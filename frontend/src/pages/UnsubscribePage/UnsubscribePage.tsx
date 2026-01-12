@@ -7,11 +7,13 @@ import { Flex, Spin } from 'antd';
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const UnsubscribePage = () => {
   const navigate = useNavigate();
   const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user) 
   const { data, refetch } = useEmailSubscribeControllerUnsubscribeQuery();
+  const { t } = useTranslation(['components']);
 
   useEffect(() => {
     if (userInfo?.email) {
@@ -22,12 +24,12 @@ const UnsubscribePage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!userInfo?.email) {
-        toast.error("Unsubscribe failed\nEmail not found, please log in.");
+        toast.error(t('component.unsubscribe_page.failed_email'));
         navigate('/');
       }
 
       if (!data) {
-        toast.error("Unsubscribe failed\nUnsubscribed already.");
+        toast.error(t('component.unsubscribe_page.failed_already'));
         navigate('/');
       } else {
         toast.success(data.message);

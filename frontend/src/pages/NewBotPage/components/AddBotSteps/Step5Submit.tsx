@@ -4,6 +4,7 @@ import { Result } from 'antd'
 import { capitalize } from 'lodash'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const Step5Submit = ({
   isSuccess,
@@ -14,6 +15,7 @@ const Step5Submit = ({
   isEdit: boolean
   botId?: string
 }) => {
+  const { t } = useTranslation(['new_bot_page'])
   const navigate = useNavigate()
   const { control } = useFormContext<CreateMezonAppRequest>()
   
@@ -21,10 +23,12 @@ const Step5Submit = ({
   const formattedType = capitalize(type)
 
   if (isSuccess) {
-    const title = isEdit ? `${formattedType} updated successfully!` : `${formattedType} submitted successfully!`
+    const title = isEdit 
+      ? t('new_bot_page.step5.update_title', { type: formattedType })
+      : t('new_bot_page.step5.success_title', { type: formattedType })
     const subTitle = isEdit
-      ? `Your ${formattedType} has been updated. You can now return to view it or go back to home.`
-      : `Your ${formattedType} has been submitted for review. You can now view it or return to homepage.`
+      ? t('new_bot_page.step5.update_subtitle', { type: formattedType })
+      : t('new_bot_page.step5.success_subtitle', { type: formattedType })
 
     return (
       <>
@@ -34,10 +38,10 @@ const Step5Submit = ({
           subTitle={<div className="text-secondary">{subTitle}</div>}
           extra={[
             <Button color="default" variant='outlined' key="go-bot" onClick={() => navigate(`/bot/${botId}`)}>
-              {isEdit ? 'View Bot' : 'Go to Bot'}
+              {isEdit ? t('new_bot_page.buttons.view_bot') : t('new_bot_page.buttons.go_bot')}
             </Button>,
             <Button color="default" variant='outlined' key="go-home" onClick={() => navigate('/')}>
-              Go Home
+              {t('new_bot_page.buttons.go_home')}
             </Button>
           ]}
         />
@@ -49,11 +53,11 @@ const Step5Submit = ({
     <>
       <Result
         status="error"
-        title={<div className="text-primary">{isEdit ? 'Update Failed' : 'Submission Failed'}</div>}
-        subTitle={<div className="text-secondary">Something went wrong. Please go back and check your input before trying again.</div>}
+        title={<div className="text-primary">{isEdit ? t('new_bot_page.step5.update_fail_title') : t('new_bot_page.step5.fail_title')}</div>}
+        subTitle={<div className="text-secondary">{t('new_bot_page.step5.fail_subtitle')}</div>}
         extra={[
           <Button key="back" onClick={() => navigate(-1)}>
-            Go Back
+            {t('new_bot_page.buttons.go_back')}
           </Button>
         ]}
       />
