@@ -5,10 +5,11 @@ import { TempStorageModule } from "@features/temp-storage/temp-storage.module";
 import { BotGeneratorJob } from "@features/job/bot-generator.job";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TempFile } from "@domain/entities";
+import { MarketingCampaignJob } from "@features/job/marketing-campaign.job";
 
 @Module({
-  providers: [EmailJob, BotGeneratorJob],
+  providers: [EmailJob, BotGeneratorJob, MarketingCampaignJob],
   imports: [QueueModule, TempStorageModule, TypeOrmModule.forFeature([TempFile])],
-  exports: [EmailJob, BotGeneratorJob],
+  exports: [EmailJob, BotGeneratorJob, MarketingCampaignJob],
 })
 export class JobModule {}

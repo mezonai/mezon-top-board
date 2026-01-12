@@ -18,6 +18,8 @@ import { SearchMailTemplateResponse } from '@features/marketing-mail/dtos/respon
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
+import { MarketingCampaignJobData } from '@features/job/job-data.types';
+import { QueueService } from '@features/queue/queue.service';
 
 @Injectable()
 export class MailTemplateService {
@@ -26,24 +28,17 @@ export class MailTemplateService {
 
   constructor(
     private manager: EntityManager,
-    private readonly emailJob: EmailJob
+    private readonly emailJob: EmailJob,
+    private readonly queue: QueueService,
   ) {
     this.subscribeRepository = new GenericRepository(Subscriber, manager);
     this.mailRepository = new GenericRepository(MailTemplate, manager);
   }
 
-  async sendNewsletter(emails: string[], subject: string, content: string) {
-    await this.emailJob.addToQueue({
-      to: emails,
-      subject,
-      template: 'marketing-mail',
-      context: {
-        content,
-        showUnsubscribe: true,
-        unsubscribeUrl: `${config().APP_CLIENT_URL}/unsubscribe`,
-        year: new Date().getFullYear(),
-      },
-    });
+  async enqueueCampaign(mailTemplate: MailTemplate) {
+    await this.queue.send<MarketingCampaignJobData>(
+      'marketing-campaign',{ mailTemplate }
+    );
   }
 
   async sendConfirmMail(email: string) {
@@ -122,14 +117,9 @@ export class MailTemplateService {
 
     const mails = await this.mailRepository.find({});
 
-    const subscribers = await this.subscribeRepository.find({
-      where: { status: EmailSubscriptionStatus.ACTIVE },
-    })
-
     for (const mail of mails) {
       if (this.shouldSendNow(mail, now)) {
-        const emails = subscribers.map(sub => sub.email);
-        await this.sendNewsletter(emails, mail.subject, mail.content);
+        await this.enqueueCampaign(mail);
       }
     }
   }

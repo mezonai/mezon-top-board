@@ -28,6 +28,7 @@ export default () => ({
   SMTP_EMAIL: process.env.SMTP_EMAIL || "",
   SMTP_PORT: process.env.SMTP_PORT || 587,
   SMTP_HOST: process.env.SMTP_HOST || "",
+  CACHE_TTL: process.env.CACHE_TTL || 900,
   APP_CLIENT_URL: process.env.APP_CLIENT_URL || "",
   MEZON_TOKEN: process.env.MEZON_TOKEN || "",
   MEZON_BOT_ID: process.env.MEZON_BOT_ID || "",

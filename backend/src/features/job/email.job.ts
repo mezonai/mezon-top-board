@@ -1,9 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-
 import { MailerService } from '@nestjs-modules/mailer';
-
-import { MarketingMailJobData } from '@features/job/job-data.types';
-
+import { SendEmailJobData } from '@features/job/job-data.types';
 import { QueueService } from '../queue/queue.service';
 
 @Injectable()
@@ -13,35 +10,36 @@ export class EmailJob implements OnModuleInit {
   constructor(
     private readonly boss: QueueService,
     private readonly mailerService: MailerService
-  ) { }
+  ) {}
 
   async onModuleInit() {
     await this.boss.create(this.queueName);
-    await this.boss.work<MarketingMailJobData>(this.queueName, async (jobs) => {
-      const jobList = Array.isArray(jobs) ? jobs : [jobs];
-      for (const job of jobList) {
-        await this.handleJob(job);
-      }
+
+    await this.boss.work<SendEmailJobData>(
+      this.queueName,
+      async ([job]) => {
+        await this.handle(job.data);
+      },
+    );
+  }
+
+  async handle(data: SendEmailJobData) {
+    const { to, subject, template, context } = data;
+
+    await this.mailerService.sendMail({
+      to,
+      subject,
+      template,
+      context,
     });
+
+    console.log(`[EMAIL] Sent to ${to}`);
   }
 
-  async handleJob(job) {
-    const { to, subject, template, context } = job.data;
-    if (typeof to === 'string' || (Array.isArray(to) && to.length > 0)) {
-      await this.mailerService.sendMail({
-        to,
-        subject,
-        template,
-        context,
-      });
-      console.log(`sent to ${to}`);
-    } else {
-      console.log('no mail to send')
-    }
-
-  }
-
-  async addToQueue(data: MarketingMailJobData) {
-    return await this.boss.send<MarketingMailJobData>(this.queueName, data);
+  async addToQueue(data: SendEmailJobData) {
+    return await this.boss.send(this.queueName, data, {
+      retryLimit: 5,
+      retryDelay: 30000,
+    });
   }
 }
