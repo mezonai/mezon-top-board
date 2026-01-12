@@ -1,8 +1,12 @@
 import { HttpResponse, RequestWithId } from '@app/types/API.types';
 import { LinkType } from '@app/types/link.types'; 
 
-export type LinkTypeResponse = Pick<LinkType, 'id' | 'name' | 'icon' | 'prefixUrl'>;
-export type CreateLinkTypeRequest = Pick<LinkType, 'name' | 'icon' | 'prefixUrl'>;
+export type LinkTypeResponse = Pick<LinkType, 'id' | 'name' | 'icon'> & {
+  prefixUrl?: string;
+};
+export type CreateLinkTypeRequest = Pick<LinkType, 'name' | 'icon'> & {
+  prefixUrl?: string;
+};
 
 export type UpdateLinkTypeRequest = Partial<CreateLinkTypeRequest> & {
   id: string;

@@ -75,8 +75,12 @@ export const getAddBotSchema = yup.object({
       url: yup
         .string()
         .trim()
-        .url()
-        .max(2082, 'validation.url_too_long'),
+        .max(2082, 'validation.url_too_long')
+        .when('type', {
+          is: (type: { prefixUrl?: string }) => !type?.prefixUrl,
+          then: (schema) => schema.url('validation.missing_http_prefix'),
+          otherwise: (schema) => schema
+        }),
       linkTypeId: yup.string().required('validation.link_type_required'),
       type: LINK_TYPE_SCHEMA.shape({
         id: yup.string().required(),

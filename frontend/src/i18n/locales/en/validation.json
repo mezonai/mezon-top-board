@@ -16,6 +16,7 @@
         "support_url_required": "Support URL is required",
         "invalid_url": "Invalid URL",
         "url_too_long": "URL is too long",
+        "missing_http_prefix": "URL must start with http:// or https://",
         "at_least_one_tag": "At least one tag is required",
         "invalid_pricing_tag": "Invalid pricing tag",
         "pricing_tag_required": "Pricing tag is required",
