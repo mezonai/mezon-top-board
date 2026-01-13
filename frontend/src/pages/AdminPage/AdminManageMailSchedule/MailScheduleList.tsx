@@ -1,7 +1,7 @@
 import { RootState } from '@app/store'
 import { Checkbox, Form, Input, InputRef, Popconfirm, Select, Table} from 'antd'
-import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import MtbButton from '@app/mtb-ui/Button'
+import { SearchOutlined } from '@ant-design/icons'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import MailScheduleModal from '@app/pages/AdminPage/AdminManageMailSchedule/components/MailScheduleModal'
@@ -125,10 +125,8 @@ function MailScheduleList() {
       width: '120px',
       render: (_: any, record: MailTemplate) =>
         <div className='flex gap-2'>
-          <MtbButton 
-            color="blue"
-            variant="outlined"
-            icon={<EditOutlined />}
+          <TableActionButton
+            actionType="edit"
             onClick={() => handleOpenEditModal(record)}
           />
           <Popconfirm 
@@ -138,10 +136,8 @@ function MailScheduleList() {
             cancelText='No'
             overlayClassName='bg-container text-primary'
           >
-            <MtbButton 
-              color='danger' 
-              variant="outlined"
-              icon={<DeleteOutlined />} 
+            <TableActionButton 
+              actionType="delete" 
             />
           </Popconfirm>
         </div>
@@ -172,6 +168,7 @@ function MailScheduleList() {
             </Form.Item>
             <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
               <Select 
+              size='large'
                 className='w-full h-[40px]'
                 placeholder='Repeat Interval'
                 popupClassName='bg-container text-primary'
@@ -186,24 +183,22 @@ function MailScheduleList() {
               </Select>
             </Form.Item>
             <Form.Item className='w-full md:w-auto mb-0'>
-              <MtbButton
-                variant='solid'
+              <TableActionButton
+                actionType='search'
                 htmlType='submit'
-                icon={<SearchOutlined />}
-                customClassName='h-[40px] w-full md:w-auto'
+                className='w-full md:w-auto'
               >
                 Search
-              </MtbButton>
+              </TableActionButton>
             </Form.Item>
             <Form.Item className='w-full md:w-auto mb-0 md:ml-auto'>
-              <MtbButton 
-                variant='outlined' 
-                icon={<PlusOutlined />} 
+              <TableActionButton 
+                actionType='add' 
                 onClick={() => setIsOpenModal(true)}
-                customClassName="h-[40px] w-full md:w-auto flex items-center justify-center gap-2"
+                className="w-full md:w-auto"
               >
                 Add New Mail
-              </MtbButton>
+              </TableActionButton>
             </Form.Item>
           </div>
         </Form>

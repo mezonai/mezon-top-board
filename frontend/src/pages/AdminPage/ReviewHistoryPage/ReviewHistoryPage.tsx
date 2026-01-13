@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import {
   useLazyReviewHistoryControllerSearchAppReviewsQuery,
@@ -6,11 +6,10 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
-import { Input, Popconfirm, Table, Tag, Tooltip, Typography } from 'antd'
-import Button from '@app/mtb-ui/Button'
-import sampleBotImg from '@app/assets/images/avatar-bot-default.png'
-import { getUrlMedia } from '@app/utils/stringHelper'
+import { Input, Popconfirm, Table, Tag, Typography } from 'antd'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { formatDate } from '@app/utils/date'
+import TableImage from '@app/components/TableImage/TableImage'
 import { useEffect, useState } from 'react'
 import ReviewHistoryModal from './ReviewHistoryModal'
 import { toast } from 'react-toastify'
@@ -101,12 +100,9 @@ function ReviewHistoryPage() {
       title: 'Image',
       dataIndex: 'featuredImage',
       key: 'featuredImage',
+      width: 80,
       render: (_: any, record: ReviewHistoryResponse) => (
-        <img
-          src={record.app?.featuredImage ? getUrlMedia(record.app.featuredImage) : sampleBotImg}
-          alt={record.app?.name}
-          style={{ width: 100, display: 'block', margin: '0 auto' }}
-        />
+        <TableImage src={record.app?.featuredImage} alt={record.app?.name} />
       )
     },
     {
@@ -168,22 +164,14 @@ function ReviewHistoryPage() {
       key: 'action',
       render: (_: any, record: ReviewHistoryResponse) => (
         <div className='flex gap-3'>
-          <Tooltip title='View'>
-            <Button
-              color='cyan'
-              variant='outlined'
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record.app.id || '')}
-            />
-          </Tooltip>
-          <Tooltip title='Edit'>
-            <Button
-              color='blue'
-              variant='solid'
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record.id || '')}
-            />
-          </Tooltip>
+          <TableActionButton
+            actionType="view"
+            onClick={() => handleView(record.app.id || '')}
+          />
+          <TableActionButton
+            actionType="edit"
+            onClick={() => handleEdit(record.id || '')}
+          />
           <Popconfirm
             title='Delete the history'
             description='Are you sure to delete this history?'
@@ -191,9 +179,7 @@ function ReviewHistoryPage() {
             okText='Yes'
             cancelText='No'
           >
-            <Tooltip title='Delete'>
-              <Button color='danger' variant='solid' icon={<DeleteOutlined />} />
-            </Tooltip>
+            <TableActionButton actionType="delete" />
           </Popconfirm>
         </div>
       )
@@ -204,22 +190,20 @@ function ReviewHistoryPage() {
     <>
       <div className='flex gap-4 mb-3'>
         <Input
+          size="large"
           placeholder='Search by name or email'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           prefix={<SearchOutlined className='text-secondary' />}
           onPressEnter={handleSearchSubmit}
-          className='w-full'
-          style={{ borderRadius: '8px', height: '40px' }}
+          className='w-full rounded-lg'
         />
-        <Button className="w-50"
-          size="large"
-          type='primary'
+        <TableActionButton
+          actionType="search"
           onClick={handleSearchSubmit}
-          icon={<SearchOutlined />}
         >
           Search
-        </Button>
+        </TableActionButton>
       </div>
       <Table
         dataSource={dataHistoryTable}

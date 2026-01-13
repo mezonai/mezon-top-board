@@ -1,16 +1,15 @@
-import { CiOutlined, DeleteOutlined, EditOutlined, SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
+import { SearchOutlined } from "@ant-design/icons";
 import { useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerDeleteMezonAppMutation } from "@app/services/api/mezonApp/mezonApp";
 import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
 import { getMezonInstallLink, mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
-import { getUrlMedia } from "@app/utils/stringHelper";
-import { Input, Popconfirm, Spin, Table, Tag, Tooltip } from "antd";
-import Button from "@app/mtb-ui/Button";
+import { Input, Popconfirm, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import TableActionButton from "@app/components/TableActionButton/TableActionButton";
+import TableImage from "@app/components/TableImage/TableImage";
 
 const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => void }) => {
   const navigate = useNavigate()
@@ -59,15 +58,9 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Image",
       dataIndex: "featuredImage",
       key: "featuredImage",
+      width: 80,
       render: (featuredImage: string, data: GetMezonAppDetailsResponse) => (
-        <img
-          src={
-            featuredImage
-              ? getUrlMedia(featuredImage)
-              : sampleBotImg
-          }
-          alt={data.name}
-          style={{ width: 100 }} />
+        <TableImage src={featuredImage} alt={data.name} />
       ),
     },
     {
@@ -79,6 +72,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           {text}
         </div>
       ),
+      sorter: (a : GetMezonAppDetailsResponse, b : GetMezonAppDetailsResponse) => a.name.localeCompare(b.name),
     },
     {
       title: "Owner",
@@ -97,19 +91,13 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       render: (_: any, record: GetMezonAppDetailsResponse) => {
        const installLink = getMezonInstallLink(record.type, record.mezonAppId);
         return (
-          <Tooltip title="Try Install">
-            <Button
-              type="primary"
-              color="cyan"
-              variant="outlined"
-              href={installLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              disabled={!installLink}
-            >
-              <CiOutlined />
-            </Button>
-          </Tooltip>
+          <TableActionButton
+            actionType="install"
+            href={installLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            disabled={!installLink}
+          />
         );
       }
     },
@@ -133,27 +121,25 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Actions",
       key: "actions",
       render: (_: any, record: GetMezonAppDetailsResponse) => (
-        <div className="flex gap-2">
-          <Tooltip title='View'>
-            <Button
-              color='cyan'
-              variant='outlined'
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/bot/${record.id}`)}
-            />
-          </Tooltip>
-          <Tooltip title="Edit">
-            <Button type="primary" color="blue" icon={<EditOutlined />} onClick={() => onEdit(record)} />
-          </Tooltip>
+        <div className="flex gap-2 align-center">
+          <TableActionButton
+            actionType="view"
+            onClick={() => navigate(`/bot/${record.id}`)}
+          />
+          <TableActionButton
+            actionType="edit"
+            onClick={() => onEdit(record)}
+          />
           <Popconfirm
             title="Are you sure you want to delete this app?"
             onConfirm={() => handleDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <Tooltip title="Delete">
-              <Button type="primary" color="danger" icon={<DeleteOutlined />} danger loading={isDeleting} />
-            </Tooltip>
+            <TableActionButton
+              actionType="delete"
+              loading={isDeleting}
+            />
           </Popconfirm>
         </div>
       ),
@@ -164,20 +150,20 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
     <>
       <div className='flex gap-4 mb-3'>
         <Input
+          size="large"
           placeholder='Search by name or headline'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           prefix={<SearchOutlined className="text-secondary" />}
           onPressEnter={handleSearchSubmit}
-          className='w-full rounded-[8px] h-[40px]'
+          className='rounded-lg'
         />
-        <Button className="w-50" size="large"
-          type='primary' 
+        <TableActionButton
+          actionType="search"
           onClick={handleSearchSubmit}
-          icon={<SearchOutlined />}
         >
           Search
-        </Button>
+        </TableActionButton>
       </div>
       {
         isLoading ? (
