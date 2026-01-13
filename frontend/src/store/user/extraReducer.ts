@@ -11,12 +11,16 @@ export const manageUsersExtraReducers = (builder: ActionReducerMapBuilder<any>) 
       const updatedUser = action.meta.arg.originalArgs.updateUserRequest
       // Loop through all pages and update the user if found
 
-      const page = state.adminUserList;
-      const index = page.findIndex((user: UpdateUserRequest) => user.id === updatedUser.id)
+      if (!state.adminUserList?.data) return
+
+      const index = state.adminUserList.data.findIndex(
+        (user: GetUserDetailsResponse) => user.id === updatedUser.id
+      )
+
       if (index !== -1) {
         // Update only `name`, `bio`, and `role` fields, keeping other properties intact
-        state.adminUserList[index] = {
-          ...page[index], // Keep existing fields
+        state.adminUserList.data[index] = {
+          ...state.adminUserList.data[index], // Keep existing fields
           ...updatedUser // Overwrite updated fields
         }
       }
