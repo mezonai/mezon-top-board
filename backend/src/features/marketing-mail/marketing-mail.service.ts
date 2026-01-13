@@ -37,7 +37,7 @@ export class MailTemplateService {
 
   async enqueueCampaign(mailTemplate: MailTemplate) {
     await this.queue.send<MarketingCampaignJobData>(
-      'marketing-campaign',{ mailTemplate }
+      'marketing-campaign', { mailTemplate }
     );
   }
 
@@ -120,53 +120,77 @@ export class MailTemplateService {
     for (const mail of mails) {
       if (this.shouldSendNow(mail, now)) {
         await this.enqueueCampaign(mail);
+
+        await this.mailRepository.update(mail.id, {
+          lastSentAt: now,
+        });
       }
     }
   }
 
   private shouldSendNow(mail: MailTemplate, now: Date): boolean {
+    if (!mail.scheduledAt) return false;
+
+    if (now < mail.scheduledAt) return false;
+
+    if (mail.lastSentAt && differenceInMinutes(now, mail.lastSentAt) < 30) return false;
+
+    const windowMinutes = 30;
+
+    const expected = this.getExpectedSendTime(mail, now);
+    if (!expected) return false;
+
+    const diff = differenceInMinutes(now, expected);
+
+    return diff >= 0 && diff < windowMinutes;
+  }
+
+  private getExpectedSendTime(mail: MailTemplate, now: Date,) {
+    const base = mail.scheduledAt;
+
     if (!mail.isRepeatable) {
-      return (
-        mail.scheduledAt.getHours() === now.getHours() &&
-        mail.scheduledAt.getMinutes() === now.getMinutes() &&
-        mail.scheduledAt.getDate() === now.getDate() &&
-        mail.scheduledAt.getMonth() === now.getMonth() &&
-        mail.scheduledAt.getFullYear() === now.getFullYear()
-      );
+      return base;
     }
 
-    const sameHourMinute =
-      mail.scheduledAt.getHours() === now.getHours() &&
-      mail.scheduledAt.getMinutes() === now.getMinutes();
-
-    const minutesDiff = Math.abs(differenceInMinutes(now, mail.scheduledAt));
-    const withinGracePeriod = minutesDiff <= 30 && sameHourMinute;
-
     switch (mail.repeatInterval) {
-      case RepeatInterval.DAILY:
-        return sameHourMinute || withinGracePeriod;
+      case RepeatInterval.DAILY: {
+        const d = new Date(now);
+        d.setHours(base.getHours(), base.getMinutes(), 0, 0);
+        return d;
+      }
 
-      case RepeatInterval.WEEKLY:
-        return (
-          now.getDay() === mail.scheduledAt.getDay() &&
-          (sameHourMinute || withinGracePeriod)
-        );
+      case RepeatInterval.WEEKLY: {
+        if (now.getDay() !== base.getDay()) return null;
+        const d = new Date(now);
+        d.setHours(base.getHours(), base.getMinutes(), 0, 0);
+        return d;
+      }
 
-      case RepeatInterval.MONTHLY:
-        return (
-          now.getDate() === mail.scheduledAt.getDate() &&
-          (sameHourMinute || withinGracePeriod)
-        );
+      case RepeatInterval.MONTHLY: {
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const targetDay = Math.min(base.getDate(), lastDay);
 
-      case RepeatInterval.ANNUALLY:
-        return (
-          now.getMonth() === mail.scheduledAt.getMonth() &&
-          now.getDate() === mail.scheduledAt.getDate() &&
-          (sameHourMinute || withinGracePeriod)
-        );
+        if (now.getDate() !== targetDay) return null;
+
+        const d = new Date(now);
+        d.setHours(base.getHours(), base.getMinutes(), 0, 0);
+        return d;
+      }
+
+      case RepeatInterval.ANNUALLY: {
+        if (
+          now.getMonth() !== base.getMonth() ||
+          now.getDate() !== base.getDate()
+        ) {
+          return null;
+        }
+        const d = new Date(now);
+        d.setHours(base.getHours(), base.getMinutes(), 0, 0);
+        return d;
+      }
 
       default:
-        return false;
+        return null;
     }
   }
 
