@@ -167,6 +167,7 @@ function AppReviewPage() {
 
     return (
         <>
+            <h2 className='font-bold text-lg mb-3'>Manage App Review</h2>
             {(totalCount ?? 0) >=0 && (() => {
                 return (
                     <Alert

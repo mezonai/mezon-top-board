@@ -3,7 +3,7 @@ import { useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerD
 import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
-import { getMezonInstallLink, mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
+import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
 import { Input, Popconfirm, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -83,23 +83,6 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
           {owner.name}
         </div>
       ),
-    },
-    {
-      title: "Try",
-      dataIndex: "installLink",
-      key: "installLink",
-      render: (_: any, record: GetMezonAppDetailsResponse) => {
-       const installLink = getMezonInstallLink(record.type, record.mezonAppId);
-        return (
-          <TableActionButton
-            actionType="install"
-            href={installLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            disabled={!installLink}
-          />
-        );
-      }
     },
     {
       title: "Status",

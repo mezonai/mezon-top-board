@@ -188,6 +188,7 @@ function ReviewHistoryPage() {
 
   return (
     <>
+      <h2 className='font-bold text-lg mb-3'>Manage Review History</h2>
       <div className='flex gap-4 mb-3'>
         <Input
           size="large"

@@ -241,7 +241,15 @@ function TagsList() {
 
   return (
     <div>
-      <h2 className='font-bold text-lg mb-4'>Manage Tags</h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className='font-bold text-lg'>Manage Tags</h2>
+        <TableActionButton
+            actionType="add"
+            onClick={() => setIsOpenModal(true)}
+          >
+            Add
+        </TableActionButton>
+      </div>
       <div className='flex gap-4 mb-3'>
         <Form form={searchForm} onFinish={handleSearch} initialValues={{ search: '' }} className='flex-grow'>
           <Form.Item name='search' className='w-full !mb-0'>
@@ -260,12 +268,6 @@ function TagsList() {
           onClick={() => searchForm.submit()}
         >
           Search
-        </TableActionButton>
-        <TableActionButton
-          actionType="add"
-          onClick={() => setIsOpenModal(true)}
-        >
-          Add New Tag
         </TableActionButton>
       </div>
 

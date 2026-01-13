@@ -200,12 +200,13 @@ function LinkTypesList() {
 
   return (
     <div>
-      <div className='flex justify-end mb-2'>
+      <div className='flex justify-between items-center mb-3'>
+        <h2 className='font-bold text-lg'>Manage Link Types</h2>
         <TableActionButton
           actionType="add"
           onClick={handleOpen}
         >
-          Add Link Type
+          Add
         </TableActionButton>
       </div>
       {linkTypeList?.data?.length ? (

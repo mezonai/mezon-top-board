@@ -145,86 +145,75 @@ function MailScheduleList() {
   ]
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-container">
-      <h2 className='font-bold text-lg mb-4 text-primary'>Manage Mail Schedule Templates</h2>
-      
-      {/* Search & Filter Section */}
-      <div className='mb-4'>
-        <Form 
-          form={searchForm} 
-          onFinish={handleSearch}           
-          initialValues={initialValues}
-          className='w-full'
+    <div>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className='font-bold text-lg'>Manage Mail Schedule Templates</h2>
+        <TableActionButton 
+          actionType='add' 
+          onClick={() => setIsOpenModal(true)}
         >
-          <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
-            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
-              <Input
-                ref={searchRef}
-                placeholder='Search by subject'
-                prefix={<SearchOutlined className='text-secondary' />}
-                onPressEnter={() => searchForm.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-container text-primary  placeholder:text-secondary'
-              />
-            </Form.Item>
-            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
-              <Select 
-              size='large'
-                className='w-full h-[40px]'
-                placeholder='Repeat Interval'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
-                allowClear
-              >
-                {Object.values(RepeatInterval).map((status) => (
-                  <Select.Option key={status} value={status} className="text-primary hover:bg-secondary">
-                    {status}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item className='w-full md:w-auto mb-0'>
-              <TableActionButton
-                actionType='search'
-                htmlType='submit'
-                className='w-full md:w-auto'
-              >
-                Search
-              </TableActionButton>
-            </Form.Item>
-            <Form.Item className='w-full md:w-auto mb-0 md:ml-auto'>
-              <TableActionButton 
-                actionType='add' 
-                onClick={() => setIsOpenModal(true)}
-                className="w-full md:w-auto"
-              >
-                Add New Mail
-              </TableActionButton>
-            </Form.Item>
-          </div>
-        </Form>
+          Add
+        </TableActionButton>
       </div>
-
-      {searchMailsList?.data?.length ? (
-        <Table 
-          dataSource={searchMailsList.data} 
-          columns={columns} 
-          rowKey='id' 
-          pagination={{
-            current: page,
-            pageSize: botPerPage,
-            total: totals,
-            onChange: handlePageChange,
-            showSizeChanger: true,
-            pageSizeOptions: pageOptions.map(String)
-          }}
-          scroll={{ x: 'max-content' }}
-          className="admin-table"
-        />
-      ) : (
-        <div className='text-center p-8 text-secondary'>
-          <p>No result found</p>
+      {/* Search & Filter Section */}
+      <Form 
+        form={searchForm} 
+        onFinish={handleSearch}           
+        initialValues={initialValues}
+        className='w-full !mt-0 !mb-3'
+      >
+        <div className='flex flex-col md:flex-row md:items-end gap-3 w-full'>
+          <Form.Item name='search' className='w-full md:flex-1 !mb-0'>
+            <Input
+              size='large'
+              ref={searchRef}
+              placeholder='Search by subject'
+              prefix={<SearchOutlined className='text-secondary' />}
+              onPressEnter={() => searchForm.submit()}
+                className='rounded-lg'
+            />
+          </Form.Item>
+          <Form.Item name='sortField' className='w-full md:w-48 !mb-0'>
+            <Select 
+              size='large'
+              placeholder='Repeat Interval'
+              popupClassName='bg-container text-primary'
+              dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+              allowClear
+            >
+              {Object.values(RepeatInterval).map((status) => (
+                <Select.Option key={status} value={status} className="text-primary hover:bg-secondary">
+                  {status}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item className='w-full md:w-auto !mb-0'>
+            <TableActionButton
+              actionType='search'
+              htmlType='submit'
+            >
+              Search
+            </TableActionButton>
+          </Form.Item>
         </div>
-      )}
+      </Form>
+
+      <Table 
+        dataSource={searchMailsList?.data || []} 
+        columns={columns} 
+        rowKey='id' 
+        pagination={{
+          current: page,
+          pageSize: botPerPage,
+          total: totals,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          pageSizeOptions: pageOptions.map(String)
+        }}
+        scroll={{ x: 'max-content' }}
+        className="admin-table"
+      />
       
       <MailScheduleModal
         refetch={searchMailTemplateList}

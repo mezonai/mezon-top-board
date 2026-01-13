@@ -42,7 +42,7 @@ const TableActionButton = ({
       icon={icon || config.icon}
       iconPosition={isPageLevel ? (iconPosition || 'end') : iconPosition}
       size={isPageLevel ? "large" : size}
-      className={`!border-none !whitespace-normal !h-auto !min-h-[40px] !py-2 !px-4 ${className}`}
+      className={`!border-none !whitespace-normal !h-auto !min-h-[40px] !min-w-28 !px-4 ${className}`}
       {...props}
     >
       {children}

@@ -184,11 +184,11 @@ function EmailSubscriberList() {
   ]
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-container">
-      <h2 className='font-bold text-lg mb-4 text-primary'>Manage Email Subscribers</h2>
+    <div>
+      <h2 className='font-bold text-lg mb-3 text-primary'>Manage Email Subscribers</h2>
       
       {/* Search & Filter Form */}
-      <div className='mb-4'>
+      <div className='mb-3'>
         <Form 
           form={searchForm} 
           onFinish={handleSearch}           
@@ -196,19 +196,19 @@ function EmailSubscriberList() {
           className='w-full'
         >
           <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
-            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
+            <Form.Item name='search' className='w-full md:flex-1 !mb-0'>
               <Input
+                size='large'
                 ref={searchRef}
                 placeholder='Search by email'
                 prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => searchForm.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
+                className='rounded-lg'
               />
             </Form.Item>
-            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
+            <Form.Item name='sortField' className='w-full md:w-48 !mb-0'>
               <Select 
                 size='large'
-                className='w-full h-[40px]'
                 placeholder='Status'
                 popupClassName='bg-container text-primary'
                 dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
@@ -221,11 +221,10 @@ function EmailSubscriberList() {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item className='w-full md:w-auto mb-0'>
+            <Form.Item className='w-full md:w-auto !mb-0'>
               <TableActionButton
                 actionType="search"
                 htmlType="submit"
-                className="w-full md:w-auto"
               >
                 Search
               </TableActionButton>
@@ -233,29 +232,21 @@ function EmailSubscriberList() {
           </div>
         </Form>
       </div>
-
-      {searchEmailSubscriberList?.data?.length ? (
-        <Table 
-          dataSource={searchEmailSubscriberList.data} 
-          columns={columns} 
-          rowKey='id'
-          pagination={{
-            current: page,
-            pageSize: botPerPage,
-            total: totals,
-            onChange: handlePageChange,
-            showSizeChanger: true,
-            pageSizeOptions: pageOptions.map(String)
-          }} 
-          scroll={{ x: 'max-content' }}
-          className="admin-table"
-        />
-      ) : (
-        <div className='text-center p-8 text-secondary'>
-          <p>No result found</p>
-        </div>
-      )}
-
+      <Table 
+        dataSource={searchEmailSubscriberList?.data || []} 
+        columns={columns} 
+        rowKey='id'
+        pagination={{
+          current: page,
+          pageSize: botPerPage,
+          total: totals,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          pageSizeOptions: pageOptions.map(String)
+        }} 
+        scroll={{ x: 'max-content' }}
+        className="admin-table"
+      />
     </div>
   )
 }
