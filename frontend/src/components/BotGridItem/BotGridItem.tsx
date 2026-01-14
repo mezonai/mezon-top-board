@@ -1,4 +1,4 @@
-import { RiseOutlined, StarOutlined } from '@ant-design/icons'
+import { StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
@@ -9,7 +9,6 @@ import type { AppVersion } from '@app/types/appVersion.types'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import BadgeStatus from '@app/components/BotStatusBadge/BotStatusBadge'
 import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
-import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
@@ -74,9 +73,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   return (
     <GlassCard
       hoverEffect={true}
-      className={cn(
-        'relative select-none',
-      )}
+      className='relative select-none flex items-center gap-3 p-3'
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -84,6 +81,29 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
       {!isPublic && (
          <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
       )}
+
+      <div className='flex-shrink-0 w-16 h-16'>
+        <img 
+          src={imgUrl} 
+          alt={data?.name} 
+          className='w-full h-full object-cover rounded-2xl bg-secondary'
+        />
+      </div>
+
+      <div className='flex flex-col flex-1 min-w-0 gap-1'>
+        <div className='font-bold text-base truncate text-primary pr-8'>
+          {data?.name || t('component.bot_grid_item.default_name')}
+        </div>
+        
+        <div className='text-sm text-secondary truncate'>
+            {data?.headline || t('component.bot_grid_item.default_headline')}
+        </div>
+
+        <div className='flex items-center gap-1 text-sm'>
+            <StarOutlined className="text-warning" />
+            <span className='text-secondary mt-[1px]'>{data?.rateScore || 0}</span>
+        </div>
+      </div>
 
       <div className="owner-actions absolute top-2 right-2 z-10">
         <BotActions 
@@ -93,26 +113,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
             onRefresh={onRefresh}
         />
       </div>
-      <div className='p-4'>
-        <div className='relative'>
-          <div className='w-20 m-auto'>
-            <img src={imgUrl} alt='' className='aspect-square rounded-full object-cover w-full bg-secondary' width={'100%'} />
-          </div>
-        </div>
-        <div className='pt-3 pb-3 font-black truncate text-primary text-center'>
-          {data?.name || t('component.bot_grid_item.default_name')}
-        </div>
-        <div className='flex justify-between items-center text-secondary text-sm font-medium'>
-          <p className='flex items-center gap-1'>
-            <StarOutlined className="text-warning" />
-            <span className='text-primary'>{data?.rateScore || 0}</span>
-          </p>
-          <p className='flex items-center gap-1'>
-            <RiseOutlined className="text-success" />
-            <span className='text-primary'>841,999</span>
-          </p>
-        </div>
-      </div>
+
       <PreviewModal
         open={!!previewVersion}
         onClose={() => setPreviewVersion(undefined)}
