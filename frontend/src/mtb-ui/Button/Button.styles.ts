@@ -23,7 +23,7 @@ export const getButtonTheme = (baseColor: string = BRAND_COLOR): ThemeConfig => 
   }
 }
 
-export const buttonVariants = cva('!shadow-none transition-all duration-200', {
+export const buttonVariants = cva('!shadow-none transition-all duration-200 hover:opacity-75', {
   variants: {
     color: {
       [EButtonColor.DEFAULT]: '!border-border !text-primary',

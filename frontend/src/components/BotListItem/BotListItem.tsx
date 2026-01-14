@@ -8,12 +8,10 @@ import { randomColor } from '@app/utils/mezonApp'
 import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
 import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import ShareButton from './components/ShareButton'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import BotActions from '../BotActions/BotActions'
-import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
@@ -22,10 +20,9 @@ import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
-import { ViewMode } from '@app/enums/viewMode.enum'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
 
-function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
+function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefresh }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
@@ -90,19 +87,16 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
               </div>
             </div>
 
-            <div className='flex gap-3 flex-shrink-0 items-start mt-2 sm:mt-0'>
-              {userInfo?.id && data?.owner?.id === userInfo?.id && (
-                <BotActions 
-                  data={data} 
-                  mode={ViewMode.LIST}
-                  onNewVersionClick={handleOwnerNewVersionClick} 
-                />
-              )}
-              <MessageButton data={data!} />
+            <div className='flex gap-3 flex-shrink-0 items-start pt-2 sm:mt-0'>
               <Button color='primary' variant='solid' size='large' onClick={onInviteClick}>
                 {t('component.bot_list_item.invite')}
               </Button>
-              <ShareButton data={data!} />
+              
+              <BotActions 
+                data={data} 
+                onNewVersionClick={handleOwnerNewVersionClick} 
+                onRefresh={onRefresh}
+              />
             </div>
 
           </div>

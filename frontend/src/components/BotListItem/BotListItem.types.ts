@@ -4,6 +4,7 @@ export interface IBotListItemProps {
   readonly?: boolean
   data?: GetMezonAppDetailsResponse
   canNavigateOnClick?: boolean
+  onRefresh?: () => void
 }
 
 export interface IAddBotFormProps {

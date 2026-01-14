@@ -28,10 +28,15 @@
             "showing_page": "Showing page {{current}} of {{total}}",
             "no_media": "No media uploaded yet."
         },
+        "my_favorites": {
+            "title": "My Favorites",
+            "no_favorites": "No favorites yet."
+        },
         "card_info": {
             "generals": "Generals",
             "overview": "Overview",
             "gallery": "Gallery",
+            "favorites": "My Favorites",
             "invitations": "Invitations",
             "subscriptions": "Subscriptions",
             "settings": "Settings",

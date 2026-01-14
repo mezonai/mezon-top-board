@@ -60,6 +60,7 @@ export type GetMezonAppDetailsResponse = Pick<
   owner: OwnerInMezonAppDetailResponse;
   tags: TagInMezonAppDetailResponse[];
   socialLinks: SocialLinkInMezonAppDetailResponse[];
+  isFavorited: boolean;
   rateScore: number;
   versions: AppVersionDetailsDto[];
 };
@@ -95,7 +96,7 @@ export type MezonAppControllerListAdminMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerListAdminMezonAppApiResponse = unknown; // TODO: define type
 
 export type MezonAppControllerGetMyAppApiArg = SearchMezonAppRequest;
-export type MezonAppControllerGetMyAppApiResponse = unknown; // TODO: define type
+export type MezonAppControllerGetMyAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>;
 
 export type MezonAppControllerGetMezonAppDetailApiArg = { id: string };
 export type MezonAppControllerGetMezonAppDetailApiResponse = HttpResponse<GetMezonAppDetailsResponse>;
