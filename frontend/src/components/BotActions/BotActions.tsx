@@ -174,7 +174,7 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
         arrow
       >
         <Button
-          size={mode === ViewMode.GRID ? 'middle' : 'large'}
+          size={mode === ViewMode.GRID ? 'small' : 'large'}
           color="default"
           variant="outlined"
           icon={mode === ViewMode.GRID ? <MoreOutlined className="!text-secondary" /> : <MenuOutlined className="!text-secondary" />}
