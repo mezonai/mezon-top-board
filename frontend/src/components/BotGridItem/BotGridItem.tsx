@@ -1,4 +1,3 @@
-import { StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { IBotGridItemProps } from './BotGridItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
@@ -12,6 +11,7 @@ import { mapStatusToColor, mapStatusToText } from '@app/utils/mezonApp'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
+import MtbRate from '@app/mtb-ui/Rate/Rate'
 
 function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
@@ -70,48 +70,54 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
   }
+  
   return (
     <GlassCard
       hoverEffect={true}
-      className='relative select-none flex items-center gap-3 p-3'
+      className='relative select-none p-3 cursor-pointer group h-full'
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {!isPublic && (
-         <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
-      )}
-
-      <div className='flex-shrink-0 w-16 h-16'>
-        <img 
-          src={imgUrl} 
-          alt={data?.name} 
-          className='w-full h-full object-cover rounded-2xl bg-secondary'
-        />
-      </div>
-
-      <div className='flex flex-col flex-1 min-w-0 gap-1'>
-        <div className='font-bold text-base truncate text-primary pr-8'>
-          {data?.name || t('component.bot_grid_item.default_name')}
-        </div>
+      <div className="flex items-start gap-3 w-full h-full relative">
         
-        <div className='text-sm text-secondary truncate'>
-            {data?.headline || t('component.bot_grid_item.default_headline')}
+        {!isPublic && (
+           <div className="absolute -top-3 -left-3 z-20">
+              <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
+           </div>
+        )}
+
+        <div className='flex-shrink-0 w-16 h-16'>
+          <img 
+            src={imgUrl} 
+            alt={data?.name} 
+            className='w-full h-full object-cover rounded-2xl bg-secondary'
+          />
         </div>
 
-        <div className='flex items-center gap-1 text-sm'>
-            <StarOutlined className="text-warning" />
-            <span className='text-secondary mt-[1px]'>{data?.rateScore || 0}</span>
-        </div>
-      </div>
+        <div className='flex flex-col flex-1 min-w-0 gap-1 mr-6'>
+          <div className='font-bold text-base truncate text-primary leading-tight'>
+            {data?.name || t('component.bot_grid_item.default_name')}
+          </div>
+          
+          <div className='text-sm text-secondary truncate leading-tight'>
+             {data?.headline || t('component.bot_grid_item.default_headline')}
+          </div>
 
-      <div className="owner-actions absolute top-2 right-2 z-10">
-        <BotActions 
-            data={data} 
-            mode={ViewMode.GRID} 
-            onNewVersionClick={handleOwnerNewVersionClick} 
-            onRefresh={onRefresh}
-        />
+          <div className='flex items-center mt-1 scale-90 origin-left'>
+              <MtbRate value={data?.rateScore || 0} readonly />
+          </div>
+        </div>
+
+        <div className="owner-actions flex-shrink-0 -mt-1 -mr-2">
+          <BotActions 
+              data={data} 
+              mode={ViewMode.GRID} 
+              onNewVersionClick={handleOwnerNewVersionClick} 
+              onRefresh={onRefresh}
+          />
+        </div>
+
       </div>
 
       <PreviewModal
