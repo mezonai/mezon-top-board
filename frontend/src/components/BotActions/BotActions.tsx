@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Dropdown, MenuProps, Modal } from 'antd'
 import {
   DeleteOutlined, 
@@ -9,7 +10,9 @@ import {
   MoreOutlined,
   FacebookFilled, 
   TwitterCircleFilled, 
-  LinkedinFilled
+  LinkedinFilled,
+  HeartFilled,
+  HeartOutlined
 } from '@ant-design/icons'
 import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
@@ -20,13 +23,18 @@ import { useBotInteractions } from '@app/hook/useBotInteractions'
 import styles from './BotActions.module.scss'
 import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotActionsProps) {
+function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const { handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
+  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
+
+  const handleFavoriteClick = async () => {
+      await handleToggleFavorite()
+      if (onRefresh) onRefresh()
+  };
 
   const handleDeleteBot = (botId: string) => {
     confirm({
@@ -48,7 +56,8 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
     })
   }
 
-  const newVersionItems = data?.hasNewUpdate
+  const finalItems = useMemo(() => {
+    const newVersionItems = data?.hasNewUpdate
     ? [{
         label: t('component.owner_actions.new_version'),
         style: { whiteSpace: 'nowrap' },
@@ -60,75 +69,99 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick }: BotAction
       }]
     : []
 
-  const ownerItems: MenuProps['items'] = [
-    ...newVersionItems,
-    {
-      label: t('component.owner_actions.edit'),
-      key: 'edit',
-      icon: <EditOutlined />,
-      onClick: () => navigate(`/new-bot/${data?.id}`)
-    },
-    {
-      label: t('component.owner_actions.delete'),
-      key: 'delete',
-      danger: true,
-      icon: <DeleteOutlined />,
-      onClick: () => {
-        if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
-        handleDeleteBot(data?.id)
+    const ownerItems: MenuProps['items'] = [
+      ...newVersionItems,
+      {
+        label: t('component.owner_actions.edit'),
+        key: 'edit',
+        icon: <EditOutlined />,
+        onClick: () => navigate(`/new-bot/${data?.id}`)
+      },
+      {
+        label: t('component.owner_actions.delete'),
+        key: 'delete',
+        danger: true,
+        icon: <DeleteOutlined />,
+        onClick: () => {
+          if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
+          handleDeleteBot(data?.id)
+        }
       }
+    ];
+
+    const publicItems: MenuProps['items'] = [
+      {
+        key: "chat",
+        label: t("component.owner_actions.chat_now"),
+        icon: <MessageOutlined />,
+        onClick: handleChatNow,
+      },
+      {
+        key: "invite",
+        label: t('component.bot_list_item.invite'),
+        icon: <UserAddOutlined />,
+        onClick: handleInvite,
+      },
+      {
+        key: "favorite",
+        label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
+        icon: isFavorited ? <HeartFilled className="!text-red-500" /> : <HeartOutlined className="!text-red-500" />,
+        onClick: handleFavoriteClick,
+        disabled: isBusy,
+      },
+      {
+        key: "share",
+        label: t("component.share_button.share"),
+        icon: <ShareAltOutlined className="!text-blue-500" />,
+        popupClassName: styles.botActions,
+        children: [
+          {
+            key: "facebook",
+            label: t("component.share_button.facebook"),
+            icon: <FacebookFilled className="!text-blue-600" />,
+            onClick: () => handleShareSocial('facebook'),
+          },
+          {
+            key: "twitter",
+            label: t("component.share_button.twitter"),
+            icon: <TwitterCircleFilled className="!text-blue-400" />,
+            onClick: () => handleShareSocial('twitter'),
+          },
+          {
+            key: "linkedin",
+            label: t("component.share_button.linkedin"),
+            icon: <LinkedinFilled className="!text-blue-700" />,
+            onClick: () => handleShareSocial('linkedin'),
+          },
+        ],
+      }
+    ];
+
+    const items: MenuProps['items'] = [];
+    if (isOwner) {
+      items.push(...ownerItems);
     }
-  ];
 
-  const publicItems: MenuProps['items'] = [
-    {
-      key: "chat",
-      label: t("component.owner_actions.chat_now"),
-      icon: <MessageOutlined />,
-      onClick: handleChatNow,
-    },
-    {
-      key: "invite",
-      label: t('component.bot_list_item.invite'),
-      icon: <UserAddOutlined />,
-      onClick: handleInvite,
-    },
-    {
-      key: "share",
-      label: t("component.share_button.share"),
-      icon: <ShareAltOutlined className="!text-blue-500" />,
-      popupClassName: styles.botActions,
-      children: [
-        {
-          key: "facebook",
-          label: t("component.share_button.facebook"),
-          icon: <FacebookFilled className="!text-blue-600" />,
-          onClick: () => handleShareSocial('facebook'),
-        },
-        {
-          key: "twitter",
-          label: t("component.share_button.twitter"),
-          icon: <TwitterCircleFilled className="!text-blue-400" />,
-          onClick: () => handleShareSocial('twitter'),
-        },
-        {
-          key: "linkedin",
-          label: t("component.share_button.linkedin"),
-          icon: <LinkedinFilled className="!text-blue-700" />,
-          onClick: () => handleShareSocial('linkedin'),
-        },
-      ],
+    if (mode === ViewMode.GRID) {
+      items.unshift(...publicItems);
     }
-  ];
 
-  const finalItems: MenuProps['items'] = [];
-  if (isOwner) {
-    finalItems.push(...ownerItems);
-  }
-
-  if (mode === ViewMode.GRID) {
-    finalItems.unshift(...publicItems);
-  }
+    return items;
+  }, [
+    data,
+    t,
+    navigate,
+    mode,
+    isOwner,
+    isFavorited,
+    isBusy,
+    onNewVersionClick,
+    handleChatNow,
+    handleInvite,
+    handleShareSocial,
+    handleFavoriteClick,
+    handleDeleteBot
+  ]);
 
   if (finalItems.length === 0) return null;
 

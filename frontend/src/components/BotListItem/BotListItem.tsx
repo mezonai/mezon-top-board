@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
 
-function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
+function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefresh }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
@@ -102,7 +102,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
               <Button color='primary' variant='solid' size='large' onClick={onInviteClick}>
                 {t('component.bot_list_item.invite')}
               </Button>
-              <ShareButton data={data!} />
+              <ShareButton data={data!} onRefresh={onRefresh} />
             </div>
 
           </div>

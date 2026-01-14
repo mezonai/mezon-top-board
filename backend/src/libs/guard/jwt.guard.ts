@@ -19,4 +19,17 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
 
     return super.canActivate(context);
   }
+
+  handleRequest(err, user, info, context: ExecutionContext) {
+    const optionalAuth = this.reflector.getAllAndOverride<boolean>(MetaKey.OPTIONAL_AUTH, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (optionalAuth && (err || !user)) {
+      return null;
+    }
+
+    return super.handleRequest(err, user, info, context);
+  }
 }

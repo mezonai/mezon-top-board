@@ -28,6 +28,7 @@ import { LoggerModule } from "@libs/logger";
 import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
 import { TempStorageModule } from "@features/temp-storage/temp-storage.module";
 import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module";
+import { FavoriteAppModule } from "@features/favorite-app/favorite-app.module";
 import { CacheModule } from "@libs/cache";
 
 @Module({
@@ -81,6 +82,7 @@ import { CacheModule } from "@libs/cache";
     AppVersionModule,
     TempStorageModule,
     BotGeneratorModule,
+    FavoriteAppModule
   ],
   controllers: [],
   providers: [],

@@ -2,4 +2,5 @@ import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.
 
 export type ShareButtonProps = {
   data: GetMezonAppDetailsResponse;
+  onRefresh?: () => void;
 };

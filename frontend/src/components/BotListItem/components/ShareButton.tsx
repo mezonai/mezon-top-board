@@ -3,7 +3,9 @@ import {
     LinkedinFilled,
     TwitterCircleFilled,
     ShareAltOutlined,
-    MenuOutlined
+    MenuOutlined,
+    HeartFilled,
+    HeartOutlined
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Button, Dropdown, MenuProps } from "antd";
@@ -12,11 +14,24 @@ import { cn } from "@app/utils/cn";
 import { useBotInteractions } from "@app/hook/useBotInteractions"; 
 import { ShareButtonProps } from "./ShareButton.types";
 
-const ShareButton = ({ data }: ShareButtonProps) => {
+const ShareButton = ({ data, onRefresh }: ShareButtonProps) => {
   const { t } = useTranslation(["components"]);
-  const { handleShareSocial } = useBotInteractions(data);
+  
+  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial } = useBotInteractions(data);
+
+  const handleFavoriteClick = async () => {
+      await handleToggleFavorite();
+      if (onRefresh) onRefresh();
+  }
 
   const menuItems: MenuProps["items"] = [
+    {
+      key: "favorite",
+      label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
+      icon: isFavorited ? <HeartFilled className="!text-red-500 !text-sm" /> : <HeartOutlined className="!text-red-500 !text-sm" />,
+      onClick: handleFavoriteClick,
+      disabled: isBusy,
+    },
     {
       key: "share",
       label: t("component.share_button.share"),

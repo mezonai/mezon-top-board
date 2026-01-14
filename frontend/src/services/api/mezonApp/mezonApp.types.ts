@@ -60,6 +60,7 @@ export type GetMezonAppDetailsResponse = Pick<
   owner: OwnerInMezonAppDetailResponse;
   tags: TagInMezonAppDetailResponse[];
   socialLinks: SocialLinkInMezonAppDetailResponse[];
+  isFavorited: boolean;
   rateScore: number;
   versions: AppVersionDetailsDto[];
 };
