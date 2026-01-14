@@ -12,7 +12,8 @@ import {
   LinkedinFilled,
   HeartFilled,
   HeartOutlined,
-  MenuOutlined
+  MenuOutlined,
+  UserAddOutlined
 } from '@ant-design/icons'
 import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
@@ -21,8 +22,9 @@ import { useTranslation } from 'react-i18next'
 import { BotActionsProps } from './BotActions.types'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
 import styles from './BotActions.module.scss'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
+function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const { 
@@ -31,6 +33,7 @@ function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
     handleToggleFavorite, 
     handleShareSocial, 
     handleChatNow, 
+    handleInvite,
     isOwner 
   } = useBotInteractions(data);
 
@@ -70,7 +73,19 @@ function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
         label: t("component.owner_actions.chat_now"),
         icon: <MessageOutlined className='!text-heading !text-md'/>,
         onClick: handleChatNow,
-      },
+      }
+    ];
+
+    if (mode === ViewMode.GRID) {
+      publicItems.push({
+        key: "invite",
+        label: t("component.bot_list_item.invite"),
+        icon: <UserAddOutlined className="!text-heading !text-md" />,
+        onClick: handleInvite,
+      });
+    }
+
+    publicItems.push(
       {
         key: "favorite",
         label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
@@ -104,7 +119,7 @@ function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
           },
         ],
       }
-    ];
+    );
 
     if (isOwner) {
       if (data?.hasNewUpdate) {
@@ -142,6 +157,7 @@ function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
     return publicItems;
   }, [
     data,
+    mode,
     t,
     navigate,
     isOwner,
@@ -149,6 +165,7 @@ function BotActions({ data, onNewVersionClick, onRefresh }: BotActionsProps) {
     isBusy,
     onNewVersionClick,
     handleChatNow,
+    handleInvite,
     handleShareSocial,
     handleFavoriteClick,
     handleDeleteBot
