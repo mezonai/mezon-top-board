@@ -27,15 +27,7 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const { 
-    isFavorited, 
-    isBusy, 
-    handleToggleFavorite, 
-    handleShareSocial, 
-    handleChatNow, 
-    handleInvite,
-    isOwner 
-  } = useBotInteractions(data);
+  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleChatNow, handleInvite, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
@@ -127,7 +119,7 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
           label: t('component.owner_actions.new_version'),
           style: { whiteSpace: 'nowrap' },
           key: 'new_version',
-          icon: <ExclamationCircleOutlined className="!text-md" />,
+          icon: <ExclamationCircleOutlined className="!text-md !text-heading" />,
           onClick: () => {
             onNewVersionClick?.(data?.versions?.[0])
           }
