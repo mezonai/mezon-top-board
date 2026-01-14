@@ -3,18 +3,15 @@ import useAuthRedirect from '@app/hook/useAuthRedirect'
 import Button from '@app/mtb-ui/Button'
 import SearchBar from '@app/mtb-ui/SearchBar/SearchBar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import { useLazyMezonAppControllerSearchMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp'
-import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
+import { useMezonAppControllerSearchMezonAppQuery, useMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyUserControllerGetPublicProfileQuery } from '@app/services/api/user/user'
 import { GetPublicProfileResponse } from '@app/services/api/user/user.types'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
-import { IMezonAppStore } from '@app/store/mezonApp'
 import { IUserStore } from '@app/store/user'
 import { Divider, Pagination, Flex } from 'antd'
 import { useEffect, useState, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { CardInfo } from './components'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
@@ -34,74 +31,46 @@ function ProfilePage() {
   const { isLogin } = useAuth()
   const { userInfo: myInfo, publicProfile: publicUserInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
   const { userId } = useParams()
-  const [getTagList] = useLazyTagControllerGetTagsQuery()
-  const [getMyApp] = useLazyMezonAppControllerGetMyAppQuery()
-  const [getMezonApp] = useLazyMezonAppControllerSearchMezonAppQuery()
-  const [queryGetPublicProfile] = useLazyUserControllerGetPublicProfileQuery()
-  const { mezonApp: userMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
-  const { mezonAppOfUser: myMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const [userInfo, setUserInfo] = useState<GetPublicProfileResponse>()
   const [searchText, setSearchText] = useState<string>('')
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [selectedType, setSelectedType] = useState<MezonAppType | undefined>()
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(pageOptions[0].value);
-  const mezonApp = userId ? userMezonApp : myMezonApp;
-  const totals = useMemo(() => mezonApp?.totalCount || 0, [mezonApp]);
-  const totalPages = useMemo(() => mezonApp?.totalPages || 0, [mezonApp]);
-  const ownerId = userId ? userId : myInfo?.id;
+  const queryParams = {
+    pageNumber: page,
+    pageSize: pageSize,
+    sortField: 'createdAt',
+    sortOrder: 'DESC',
+    search: searchText,
+    tags: selectedTagIds,
+    type: selectedType,
+  };
 
-  const getData = async (
-    query: string = searchText,
-    tags: string[] = selectedTagIds,
-    type: MezonAppType | undefined = selectedType,
-    pageNumber: number = page
-  ) => {
-    if (userId) {
-      getMezonApp({
-        pageNumber: pageNumber,
-        pageSize: pageSize,
-        sortField: 'createdAt',
-        sortOrder: 'DESC',
-        ownerId: userId,
-        search: query,
-        tags: tags,
-        type: type,
-      });
-      return;
-    }
+  const { data: publicAppsData } = useMezonAppControllerSearchMezonAppQuery(
+    { ...queryParams, ownerId: userId },
+    { skip: !userId } 
+  );
 
-    if (isLogin) {
-      getMyApp({
-        pageNumber: pageNumber,
-        pageSize: pageSize,
-        sortField: 'createdAt',
-        sortOrder: 'DESC',
-        search: query,
-        tags: tags,
-      });
-    }
-  }
+  const { data: myAppsData } = useMezonAppControllerGetMyAppQuery(
+    queryParams,
+    { skip: !!userId || !isLogin } 
+  );
+
+  const mezonApp = userId ? publicAppsData : myAppsData;
+  
+  const totals = mezonApp?.totalCount || 0;
+  const totalPages = mezonApp?.totalPages || 0;
+
+  const [queryGetPublicProfile] = useLazyUserControllerGetPublicProfileQuery()
+
+  useAuthRedirect(!userId)
 
   useEffect(() => {
-    getTagList();
-
     if (userId) {
       queryGetPublicProfile({ userId }).unwrap();
     }
   }, [userId]);
-
-  useEffect(() => {
-    if (ownerId) {
-      setSearchText('');
-      setSelectedTagIds([]);
-      setSelectedType(undefined);
-      setPage(1);
-      getData('', [], undefined, 1);
-    }
-  }, [ownerId]);
-
-  useAuthRedirect(!userId)
 
   useEffect(() => {
     if (!userId) {
@@ -114,31 +83,31 @@ function ProfilePage() {
     }
   }, [userId, myInfo, publicUserInfo]);
 
+  useEffect(() => {
+    setSearchText('');
+    setSelectedTagIds([]);
+    setSelectedType(undefined);
+    setPage(1);
+  }, [userId]);
+
   const handleProfileSearch = (
     query: string | undefined,
     tags: string[] | undefined,
     type?: MezonAppType
   ) => {
-    const searchQuery = query || '';
-    const searchTags = tags || [];
-
-    setSearchText(searchQuery);
-    setSelectedTagIds(searchTags);
+    setSearchText(query || '');
+    setSelectedTagIds(tags || []);
     setSelectedType(type);
-
     setPage(1);
-    getData(searchQuery, searchTags, type, 1);
   }
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    getData(searchText, selectedTagIds, selectedType, newPage);
   };
 
   const handlePageSizeChange = (option: IOption) => {
     setPageSize(Number(option.value));
     setPage(1);
-    getData(searchText, selectedTagIds, selectedType, 1);
   };
 
   return (
