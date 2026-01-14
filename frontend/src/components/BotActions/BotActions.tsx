@@ -1,18 +1,19 @@
 import { useMemo } from 'react'
 import { Dropdown, MenuProps, Modal } from 'antd'
+import Button from '@app/mtb-ui/Button'
 import {
-  DeleteOutlined, 
-  EditOutlined, 
-  ExclamationCircleOutlined, 
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
   ShareAltOutlined,
-  UserAddOutlined, 
-  MessageOutlined, 
-  MoreOutlined,
-  FacebookFilled, 
-  TwitterCircleFilled, 
+  MessageOutlined,
+  FacebookFilled,
+  TwitterCircleFilled,
   LinkedinFilled,
   HeartFilled,
-  HeartOutlined
+  HeartOutlined,
+  MenuOutlined,
+  UserAddOutlined
 } from '@ant-design/icons'
 import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
@@ -26,19 +27,20 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }: BotActionsProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleInvite, handleChatNow, isOwner } = useBotInteractions(data);
+  const { isFavorited, isBusy, handleToggleFavorite, handleShareSocial, handleChatNow, handleInvite, isOwner } = useBotInteractions(data);
 
   const [deleteBot] = useMezonAppControllerDeleteMezonAppMutation()
   const { confirm } = Modal
 
   const handleFavoriteClick = async () => {
-      await handleToggleFavorite()
-      if (onRefresh) onRefresh()
+    await handleToggleFavorite()
+    if (onRefresh) onRefresh()
   };
 
   const handleDeleteBot = (botId: string) => {
     confirm({
       title: t('component.owner_actions.delete_confirm_title'),
+      centered: true,
       icon: <ExclamationCircleOutlined />,
       content: t('component.owner_actions.delete_confirm_content'),
       okText: t('component.owner_actions.delete_confirm_ok'),
@@ -56,102 +58,100 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
     })
   }
 
-  const finalItems = useMemo(() => {
-    const newVersionItems = data?.hasNewUpdate
-    ? [{
-        label: t('component.owner_actions.new_version'),
-        style: { whiteSpace: 'nowrap' },
-        key: 'new_version',
-        icon: <ExclamationCircleOutlined />,
-        onClick: () => {
-          onNewVersionClick?.(data?.versions?.[0])
-        }
-      }]
-    : []
-
-    const ownerItems: MenuProps['items'] = [
-      ...newVersionItems,
-      {
-        label: t('component.owner_actions.edit'),
-        key: 'edit',
-        icon: <EditOutlined />,
-        onClick: () => navigate(`/new-bot/${data?.id}`)
-      },
-      {
-        label: t('component.owner_actions.delete'),
-        key: 'delete',
-        danger: true,
-        icon: <DeleteOutlined />,
-        onClick: () => {
-          if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
-          handleDeleteBot(data?.id)
-        }
-      }
-    ];
-
+  const menuItems = useMemo(() => {
     const publicItems: MenuProps['items'] = [
       {
         key: "chat",
         label: t("component.owner_actions.chat_now"),
-        icon: <MessageOutlined />,
+        icon: <MessageOutlined className='!text-heading !text-md'/>,
         onClick: handleChatNow,
-      },
-      {
+      }
+    ];
+
+    if (mode === ViewMode.GRID) {
+      publicItems.push({
         key: "invite",
-        label: t('component.bot_list_item.invite'),
-        icon: <UserAddOutlined />,
+        label: t("component.bot_list_item.invite"),
+        icon: <UserAddOutlined className="!text-heading !text-md" />,
         onClick: handleInvite,
-      },
+      });
+    }
+
+    publicItems.push(
       {
         key: "favorite",
         label: isFavorited ? t("component.share_button.remove_favorite") : t("component.share_button.add_favorite"),
-        icon: isFavorited ? <HeartFilled className="!text-red-500" /> : <HeartOutlined className="!text-red-500" />,
+        icon: isFavorited ? <HeartFilled className="!text-red-500 !text-md" /> : <HeartOutlined className="!text-red-500 !text-md" />,
         onClick: handleFavoriteClick,
         disabled: isBusy,
       },
       {
         key: "share",
         label: t("component.share_button.share"),
-        icon: <ShareAltOutlined className="!text-blue-500" />,
+        icon: <ShareAltOutlined className="!text-blue-500 !text-md" />,
         popupClassName: styles.botActions,
         children: [
           {
             key: "facebook",
             label: t("component.share_button.facebook"),
-            icon: <FacebookFilled className="!text-blue-600" />,
+            icon: <FacebookFilled className="!text-blue-600 !text-md" />,
             onClick: () => handleShareSocial('facebook'),
           },
           {
             key: "twitter",
             label: t("component.share_button.twitter"),
-            icon: <TwitterCircleFilled className="!text-blue-400" />,
+            icon: <TwitterCircleFilled className="!text-blue-400 !text-md" />,
             onClick: () => handleShareSocial('twitter'),
           },
           {
             key: "linkedin",
             label: t("component.share_button.linkedin"),
-            icon: <LinkedinFilled className="!text-blue-700" />,
+            icon: <LinkedinFilled className="!text-blue-700 !text-md" />,
             onClick: () => handleShareSocial('linkedin'),
           },
         ],
       }
-    ];
+    );
 
-    const items: MenuProps['items'] = [];
     if (isOwner) {
-      items.push(...ownerItems);
+      if (data?.hasNewUpdate) {
+        publicItems.push({
+          label: t('component.owner_actions.new_version'),
+          style: { whiteSpace: 'nowrap' },
+          key: 'new_version',
+          icon: <ExclamationCircleOutlined className="!text-md !text-heading" />,
+          onClick: () => {
+            onNewVersionClick?.(data?.versions?.[0])
+          }
+        });
+      }
+
+      publicItems.push(
+        {
+          label: t('component.owner_actions.edit'),
+          key: 'edit',
+          icon: <EditOutlined className="!text-md !text-warning" />,
+          onClick: () => navigate(`/new-bot/${data?.id}`)
+        },
+        {
+          label: t('component.owner_actions.delete'),
+          key: 'delete',
+          danger: true,
+          icon: <DeleteOutlined className="!text-md" />,
+          onClick: () => {
+            if (!data?.id) return toast.error(t('component.owner_actions.invalid_id'))
+            handleDeleteBot(data?.id)
+          }
+        }
+      );
     }
 
-    if (mode === ViewMode.GRID) {
-      items.unshift(...publicItems);
-    }
-
-    return items;
+    return publicItems;
   }, [
     data,
+    mode,
     t,
     navigate,
-    mode,
     isOwner,
     isFavorited,
     isBusy,
@@ -163,27 +163,23 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
     handleDeleteBot
   ]);
 
-  if (finalItems.length === 0) return null;
-
   return (
     <div onClick={(e) => e.stopPropagation()}>
-      <Dropdown.Button
-        style={{ display: 'contents' }}
+      <Dropdown
+        menu={{ items: menuItems }}
         overlayClassName={styles.botActions}
-        size={mode === ViewMode.LIST ? 'large' : 'middle'} 
-        buttonsRender={([_, rightBtn]) => [
-          null,
-          <span className={mode === ViewMode.LIST ? '' : '!absolute !top-0 !right-0'}>
-            {mode === ViewMode.GRID ? (
-                <div className="ant-btn ant-btn-default ant-btn-icon-only cursor-pointer flex items-center justify-center bg-container border border-border rounded-lg w-8 h-8 hover:bg-container-secondary transition-all">
-                    <MoreOutlined />
-                </div>
-            ) : rightBtn}
-          </span>
-        ]}
         trigger={['click']}
-        menu={{ items: finalItems }}
-      />
+        placement="bottomRight"
+        arrow
+      >
+        <Button
+          size="large"
+          color="default"
+          variant="outlined"
+          icon={<MenuOutlined className="!text-secondary" />}
+          className='hover:!border-primary hover:!bg-container-secondary !bg-container'
+        />
+      </Dropdown>
     </div>
   )
 }
