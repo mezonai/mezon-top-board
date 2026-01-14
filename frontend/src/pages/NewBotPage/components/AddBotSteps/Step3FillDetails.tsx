@@ -64,7 +64,7 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
       label: <SocialLinkIcon src={link.icon} prefixUrl={link.name} />,
       name: link.name,
       value: link.id,
-      siteName: link.prefixUrl
+      siteName: link.prefixUrl || ''
     })) || []
   }, [linkTypeList])
 
@@ -333,29 +333,32 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
           <Button variant='outlined' onClick={addNewLink}>{t('new_bot_page.buttons.add')}</Button>
         </div>
 
-        {socialLinksData.map((link, index) => (
-          <Controller
-            key={link.id}
-            name={`socialLinks.${index}.url`}
-            control={control}
-            render={({ field }) => (
-              <div className='flex gap-2 mt-2'>
-                <Form.Item
-                  validateStatus={errors.socialLinks?.[index]?.url ? 'error' : ''}
-                  help={errors.socialLinks?.[index]?.url?.message}
-                  className='flex-1'
-                >
-                  <Input
-                    {...field}
-                    prefix={<SocialLinkIcon src={link.type?.icon} prefixUrl={link.type?.prefixUrl} />}
-                    onBlur={(e) => update(index, { ...link, url: e.target.value })}
-                  />
-                </Form.Item>
+        {socialLinksData.map((link, index) => {
+          const errorMessage = errors.socialLinks?.[index]?.url?.message;
+          return (
+            <Controller
+              key={link.id}
+              name={`socialLinks.${index}.url`}
+              control={control}
+              render={({ field }) => (
+                <div className='flex gap-2 mt-2'>
+                  <Form.Item
+                    validateStatus={errorMessage ? 'error' : ''}
+                    help={errorMessage ? t(errorMessage, { ns: 'validation' }) : ''}
+                    className='flex-1'
+                  >
+                    <Input
+                      {...field}
+                      prefix={<SocialLinkIcon src={link.type?.icon} prefixUrl={link.type?.prefixUrl} />}
+                      onBlur={(e) => update(index, { ...link, url: e.target.value })}
+                    />
+                  </Form.Item>
                 <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
-              </div>
-            )}
-          />
-        ))}
+                </div>
+              )}
+            />
+          );
+        })}
       </FormField>
     </>
   )
