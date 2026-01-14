@@ -174,9 +174,10 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
       >
         <Button
           size="large"
-          color="primary"
-          variant="filled"
+          color="default"
+          variant="outlined"
           icon={<MenuOutlined className="!text-secondary" />}
+          className='hover:!border-primary hover:!bg-container-secondary !bg-container'
         />
       </Dropdown>
     </div>
