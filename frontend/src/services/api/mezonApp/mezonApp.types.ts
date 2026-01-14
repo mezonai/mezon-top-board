@@ -65,7 +65,7 @@ export type GetMezonAppDetailsResponse = Pick<
   versions: AppVersionDetailsDto[];
 };
 
-export type GetRelatedMezonAppResponse = Pick<App, 'id' | 'name' | 'status' | 'featuredImage'> & {
+export type GetRelatedMezonAppResponse = Pick<App, 'id' | 'name' | 'status' | 'featuredImage' | 'headline'> & {
   rateScore: number;
 };
 

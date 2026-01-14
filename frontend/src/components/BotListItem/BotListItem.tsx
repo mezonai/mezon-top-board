@@ -21,6 +21,7 @@ import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefresh }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
@@ -94,6 +95,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefr
               
               <BotActions 
                 data={data} 
+                mode={ViewMode.LIST}
                 onNewVersionClick={handleOwnerNewVersionClick} 
                 onRefresh={onRefresh}
               />
