@@ -15,9 +15,11 @@ const MezonAppsContainer = () => {
 
   return (
     <>
-      <div className="mb-4">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className='font-bold text-lg'>Manage Apps</h2>
         <CreateAppModal />
       </div>
+
       <MezonApps onEdit={handleEdit} />
       <EditModal
         isVisible={isEditModalVisible}

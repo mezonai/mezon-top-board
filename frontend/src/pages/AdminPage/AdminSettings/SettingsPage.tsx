@@ -6,8 +6,8 @@ const SettingsPage = () => {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className='p-4'>
-      <h2 className='text-lg font-semibold mb-4 text-primary'>
+    <div>
+      <h2 className='text-lg font-semibold mb-3 text-primary'>
         Settings
       </h2>
 

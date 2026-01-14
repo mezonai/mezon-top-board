@@ -66,6 +66,8 @@ const tailwindPreset: Config = {
         tertiary: 'var(--text-tertiary)',
         breadcrumb: 'var(--text-breadcrumb)',
         sidebar: 'var(--text-sidebar)',
+        'sidebar-label': 'var(--text-sidebar-label)',
+        'sidebar-active': 'var(--text-sidebar-active)',
       },
       spacing: {
         '0': '0px',
@@ -85,6 +87,7 @@ const tailwindPreset: Config = {
       boxShadow: {
         ssm: '0px 2px 4px 0px rgba(11, 10, 55, 0.15)',
         lg: '0px 8px 20px 0 rgba(18, 16, 99, 0.06)',
+        header: '0px 2px 8px rgba(0, 0, 0, 0.1)',
         'dark-sm': 'var(--shadow-sm)',
         'dark-md': 'var(--shadow-md)',
         'dark-lg': 'var(--shadow-lg)',

@@ -10,7 +10,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 
 export interface LinkTypeFormValues {
   name: string
-  prefixUrl: string
+  prefixUrl?: string
   icon: string | File
 }
 
@@ -77,7 +77,7 @@ const LinkTypeModal = ({ open, onClose, onSubmit, editingData, isUpdate }: Creat
     onSubmit({
       ...(editingData?.id ? { id: editingData.id } : {}),
       name: data.name.trim(),
-      prefixUrl: data.prefixUrl.trim(),
+      prefixUrl: data.prefixUrl?.trim() || '',
       icon: data.icon
     })
     reset()

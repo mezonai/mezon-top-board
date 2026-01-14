@@ -29,6 +29,7 @@ import { MezonModule } from "@features/mezon-noti-bot/mezon.module";
 import { TempStorageModule } from "@features/temp-storage/temp-storage.module";
 import { BotGeneratorModule } from "@features/bot-generator/bot-generator.module";
 import { FavoriteAppModule } from "@features/favorite-app/favorite-app.module";
+import { CacheModule } from "@libs/cache";
 
 @Module({
   imports: [
@@ -49,7 +50,7 @@ import { FavoriteAppModule } from "@features/favorite-app/favorite-app.module";
         },
       },
       defaults: {
-        from: `Mezon-Top-Board`,
+        from: `"Mezon Top Board" <${config().SMTP_EMAIL}>`,
       },
       template: {
         dir: join(process.cwd(), "dist", "templates"),
@@ -64,6 +65,7 @@ import { FavoriteAppModule } from "@features/favorite-app/favorite-app.module";
     MezonModule.forRootAsync({
       imports: [ConfigModule],
     }),
+    CacheModule,
     LoggerModule,
     MediaModule,
     MezonAppModule,

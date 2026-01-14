@@ -16,6 +16,7 @@
         "support_url_required": "Support URL là bắt buộc",
         "invalid_url": "URL không hợp lệ",
         "url_too_long": "URL quá dài",
+        "missing_http_prefix": "URL phải bắt đầu với http:// hoặc https://",
         "at_least_one_tag": "Ít nhất một thẻ là bắt buộc",
         "invalid_pricing_tag": "Thẻ giá không hợp lệ",
         "pricing_tag_required": "Thẻ giá là bắt buộc",
