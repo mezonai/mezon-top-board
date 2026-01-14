@@ -91,7 +91,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
           <img 
             src={imgUrl} 
             alt={data?.name} 
-            className='w-full h-full object-cover rounded-2xl bg-secondary'
+            className='w-full h-full'
           />
         </div>
 
@@ -100,7 +100,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
           
-          <div className='text-sm text-secondary truncate leading-tight'>
+          <div className='text-xs text-secondary truncate leading-tight'>
              {data?.headline || t('component.bot_grid_item.default_headline')}
           </div>
 

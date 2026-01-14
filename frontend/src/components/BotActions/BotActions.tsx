@@ -13,7 +13,8 @@ import {
   HeartFilled,
   HeartOutlined,
   MenuOutlined,
-  UserAddOutlined
+  UserAddOutlined,
+  MoreOutlined
 } from '@ant-design/icons'
 import { useMezonAppControllerDeleteMezonAppMutation } from '@app/services/api/mezonApp/mezonApp'
 import { toast } from 'react-toastify'
@@ -173,10 +174,10 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
         arrow
       >
         <Button
-          size="large"
+          size={mode === ViewMode.GRID ? 'middle' : 'large'}
           color="default"
           variant="outlined"
-          icon={<MenuOutlined className="!text-secondary" />}
+          icon={mode === ViewMode.GRID ? <MoreOutlined className="!text-secondary" /> : <MenuOutlined className="!text-secondary" />}
           className='hover:!border-primary hover:!bg-container-secondary !bg-container'
         />
       </Dropdown>

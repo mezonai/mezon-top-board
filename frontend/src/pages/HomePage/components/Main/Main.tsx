@@ -23,7 +23,8 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { cn } from '@app/utils/cn'
 
-const pageOptions = [5, 10, 15]
+const listPageOptions = [5, 10, 15]
+const gridPageOptions = [6, 12, 18, 24]
 
 function Main({ isSearchPage = false }: IMainProps) {
   const { t } = useTranslation(['home_page'])
@@ -52,7 +53,7 @@ function Main({ isSearchPage = false }: IMainProps) {
   )
   const defaultType = searchParams?.get('type') as MezonAppType | undefined
 
-  const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
+  const [botPerPage, setBotPerPage] = useState<number>(listPageOptions[0])
   const [sortField, setSortField] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC")
   const [selectedSort, setSelectedSort] = useState<IOption>(() => ({
@@ -127,18 +128,18 @@ function Main({ isSearchPage = false }: IMainProps) {
     })
   }
 
-  const listOptions = useMemo(() => {
-    return pageOptions.map((value) => ({
+  const paginationOptions = useMemo(() => {
+    const options = viewMode === ViewMode.GRID ? gridPageOptions : listPageOptions;
+    return options.map((value) => ({
       value,
       label: t('homepage.bots_per_page', { count: value })
     }))
-  }, [t])
+  }, [t, viewMode])
 
   const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode)
     setPage(1)
-    // Default: grid 36 items
-    setBotPerPage(mode === ViewMode.GRID ? 36 : pageOptions[0])
+    setBotPerPage(mode === ViewMode.GRID ? gridPageOptions[0] : listPageOptions[0])
   }
 
   const handleSortChange = (option: IOption) => {
@@ -223,25 +224,21 @@ function Main({ isSearchPage = false }: IMainProps) {
               />
             </div>
 
-            {viewMode === ViewMode.LIST && (
-              <>
-                <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
-                <div className="flex items-center gap-2">
-                  <span className="text-secondary whitespace-nowrap">{t('homepage.pagination_title')}:</span>
-                  <SingleSelect
-                    getPopupContainer={(trigger) => trigger.parentElement}
-                    onChange={handlePageSizeChange}
-                    options={listOptions}
-                    value={{ value: botPerPage, label: `${botPerPage}` }}
-                    placeholder='5'
-                    size='large'
-                    className='w-[70px]'
-                    defaultValue={listOptions[0]}
-                    data-e2e="selectPageOptions"
-                  />
-                </div>
-              </>
-            )}
+            <div className="hidden sm:block h-6 w-[1px] bg-border"></div>
+            <div className="flex items-center gap-2">
+              <span className="text-secondary whitespace-nowrap">{t('homepage.pagination_title')}:</span>
+              <SingleSelect
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={handlePageSizeChange}
+                options={paginationOptions}
+                value={{ value: botPerPage, label: `${botPerPage}` }}
+                placeholder='5'
+                size='large'
+                className='w-[70px]'
+                defaultValue={paginationOptions[0]}
+                data-e2e="selectPageOptions"
+              />
+            </div>
 
             <div className="flex bg-container-secondary p-1 rounded-lg border border-border">
               <Button
@@ -278,7 +275,7 @@ function Main({ isSearchPage = false }: IMainProps) {
             <div className={cn(
               'pt-8',
               viewMode === ViewMode.GRID
-                ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6'
+                ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3 gap-6'
                 : 'flex flex-col gap-4'
             )}>
               {mezonApp?.data?.map((bot: GetMezonAppDetailsResponse) => (

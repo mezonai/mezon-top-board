@@ -142,13 +142,13 @@ function FavoritePage() {
                             <div className={cn(
                                 'pt-2',
                                 viewMode === 'grid'
-                                    ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'
+                                    ? 'grid grid-cols-2 max-lg:grid-cols-3 max-2xl:grid-cols-3 gap-6'
                                     : 'flex flex-col gap-4'
                             )}>
                                 {appList.map((item: any) => (
                                     viewMode === 'grid' ? (
                                         <div key={item.id} className="h-full">
-                                            <BotGridItem data={item} isPublic={false} onRefresh={handleRefresh} />
+                                            <BotGridItem data={item} isPublic={true} onRefresh={handleRefresh} />
                                         </div>
                                     ) : (
                                         <BotListItem

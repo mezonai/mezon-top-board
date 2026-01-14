@@ -169,7 +169,7 @@ function ProfilePage() {
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-1 gap-8 min-lg:grid-cols-2 min-xl:grid-cols-2 max-w-full pt-8'>
+              <div className='grid grid-cols-2 gap-6 max-lg:grid-cols-3 max-2xl:grid-cols-3 max-w-full pt-8'>
                 {mezonApp?.data?.map((item: GetMezonAppDetailsResponse) => (
                   <BotGridItem key={item.id} data={item} isPublic={Boolean(userId)} />
                 ))}
