@@ -1,22 +1,20 @@
-import { Checkbox, Form, Input, Modal, Select, Space } from 'antd'
+import { Checkbox, Form, Input, Modal, Select } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import RichTextEditor from '@app/components/RichText/RichText'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { RepeatInterval } from '@app/enums/subscribe'
-import TimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/TimePicker'
 import moment from 'moment'
 import { useMailTemplateControllerCreateMailMutation, useMailTemplateControllerUpdateMailMutation } from '@app/services/api/marketingMail/marketingMail'
 import { MailTemplate } from '@app/types'
-import DateTimePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/DateTimePicker'
+import DatePicker from '@app/pages/AdminPage/AdminManageMailSchedule/components/DatePicker'
 
 export interface MailFormValues {
   subject: string,
   content: string,
   isRepeatable: boolean
   repeatInterval?: RepeatInterval
-  scheduledDate: moment.Moment
-  scheduledTime: moment.Moment
+  scheduledAt: moment.Moment
 }
 
 interface MailModalProps {
@@ -30,129 +28,58 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
   const [createMailSchedule, { isLoading }] = useMailTemplateControllerCreateMailMutation()
   const [updateMailSchedule] = useMailTemplateControllerUpdateMailMutation()
   const [form] = Form.useForm<MailFormValues>()
-  const scheduledDate = Form.useWatch('scheduledDate', form);
   const [checked, setChecked] = useState(false);
   const [intervalMode, setIntervalMode] = useState<RepeatInterval>();
+  const now = moment();
 
-  const getInitialTimeFromNow = (step = 30) => {
-    const now = moment();
-    const minutes = now.minute();
-
-    const roundedMinutes = Math.ceil(minutes / step) * step;
-
-    return now
-      .clone()
-      .minute(roundedMinutes)
-      .second(0)
-      .millisecond(0);
-  };
-
-  const disabledHours = () => {
-    if (!scheduledDate) return [];
-
-    if (!scheduledDate.isSame(moment(), 'day')) return [];
-
-    const currentHour = moment().hour();
-    return Array.from({ length: currentHour }, (_, i) => i);
-  };
-
-  const disabledMinutes = (selectedHour: number) => {
-    if (!scheduledDate) return [];
-
-    if (!scheduledDate.isSame(moment(), 'day')) return [];
-
-    const now = moment();
-    const currentHour = now.hour();
-    const currentMinute = now.minute();
-
-    if (selectedHour === currentHour) {
-      return Array.from({ length: currentMinute }, (_, i) => i);
-    }
-
-    return [];
-  };
-
-  const handleDateChange = (date: moment.Moment | null) => {
-    if (!date) return;
-
-    const now = moment();
-    const isToday = date.isSame(now, 'day');
-
-    if (!date.isSame(moment(), 'day')) {
-      form.setFieldsValue({
-        scheduledTime: moment('08:00', 'HH:mm'),
-      });
-    }
-
-    if (isToday) {
-      form.setFieldsValue({
-        scheduledTime: getInitialTimeFromNow(30),
-      });
-    }
-  };
+  const roundedUpTo30 = moment(now)
+    .add(30 - (now.minute() % 30), 'minutes')
+    .startOf('minute')
+    .second(0)
+    .millisecond(0);
 
   const handleCreateMailSchedule = async () => {
-    try {
-      const mailValues = form.getFieldsValue();
+    const { scheduledAt, ...rest } = form.getFieldsValue()
 
-      const { scheduledDate, scheduledTime, ...rest } = mailValues;
+    const res = await createMailSchedule({
+      createMailTemplateRequest: {
+        ...rest,
+        isRepeatable: checked,
+        repeatInterval: intervalMode,
+        scheduledAt: scheduledAt.toDate(),
+      },
+    })
 
-      const scheduledAt = moment(scheduledDate)
-        .set({
-          hour: scheduledTime.hour(),
-          minute: scheduledTime.minute(),
-          second: 0,
-          millisecond: 0,
-        })
-        .toDate();
-      const sendMailResponse = await createMailSchedule({
-        createMailTemplateRequest: { ...rest, isRepeatable: checked, repeatInterval: intervalMode ? intervalMode : undefined, scheduledAt }
-      })
-      if (sendMailResponse.data?.statusCode !== 200) {
-        onClose()
-        toast.error('Mail schedule created failed')
-
-      } else {
-        onClose()
-        await refetch()
-        form.resetFields()
-        toast.success('Mail schedule created successfully')
-      }
-    } catch (e) {
-      console.error('Mail schedule creation failed', e)
+    if (res.data?.statusCode === 200) {
+      onClose()
+      await refetch()
+      form.resetFields()
+      toast.success('Mail schedule created successfully')
+    } else {
+      toast.error('Mail schedule created failed')
     }
   }
 
   const handleUpdateMailSchedule = async () => {
-    try {
-      const mailValues = form.getFieldsValue();
+    const { scheduledAt, ...rest } = form.getFieldsValue()
 
-      const { scheduledDate, scheduledTime, ...rest } = mailValues;
+    const res = await updateMailSchedule({
+      id: selectMail?.id || '',
+      updateMailRequest: {
+        ...rest,
+        isRepeatable: checked,
+        repeatInterval: intervalMode,
+        scheduledAt: scheduledAt.toDate(),
+      },
+    })
 
-      const scheduledAt = moment(scheduledDate)
-        .set({
-          hour: scheduledTime.hour(),
-          minute: scheduledTime.minute(),
-          second: 0,
-          millisecond: 0,
-        })
-        .toDate();
-
-      const sendMailResponse = await updateMailSchedule({
-        id: selectMail?.id || '',
-        updateMailRequest: { ...rest, isRepeatable: checked, repeatInterval: intervalMode, scheduledAt }
-      })
-      if (sendMailResponse.data?.statusCode !== 200) {
-        onClose()
-        toast.error('updated failed')
-      } else {
-        onClose()
-        await refetch()
-        form.resetFields()
-        toast.success('updated successfully')
-      }
-    } catch (e) {
-      console.error('updated failed', e)
+    if (res.data?.statusCode === 200) {
+      onClose()
+      await refetch()
+      form.resetFields()
+      toast.success('updated successfully')
+    } else {
+      toast.error('updated failed')
     }
   }
 
@@ -165,14 +92,10 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
 
   useEffect(() => {
     if (selectMail) {
-      const m = moment(selectMail.scheduledAt);
-
       form.setFieldsValue({
         ...selectMail,
-        scheduledDate: m,
-        scheduledTime: m,
-      });
-
+        scheduledAt: moment(selectMail.scheduledAt),
+      })
       setChecked(!!selectMail.isRepeatable);
       setIntervalMode(selectMail.repeatInterval);
     }
@@ -203,8 +126,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
           wrapperCol={{ span: 20 }}
           className="max-w-full"
           initialValues={{
-            scheduledDate: moment(),
-            scheduledTime: getInitialTimeFromNow(30),
+            scheduledAt: roundedUpTo30
           }}
         >
           <Form.Item name="subject" label="Subject" rules={[
@@ -218,36 +140,37 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
           ]}>
             <Input />
           </Form.Item>
-          <Form.Item name="scheduledAt" label="Schedule At" required>
-            <Space.Compact style={{ width: '100%' }}>
-              <Form.Item
-                name="scheduledTime"
-                noStyle
-                rules={[{ required: true, message: 'Please select time' }]}
-              >
-                <TimePicker
-                  format="HH:mm"
-                  minuteStep={30}
-                  style={{ width: '40%' }}
-                  disabledHours={disabledHours}
-                  disabledMinutes={disabledMinutes}
-                />
-              </Form.Item>
-              <Form.Item
-                name="scheduledDate"
-                noStyle
-                rules={[{ required: true, message: 'Please select date' }]}
-              >
-                <DateTimePicker
-                  format="YYYY-MM-DD"
-                  style={{ width: '60%' }}
-                  onChange={handleDateChange}
-                  disabledDate={(current) =>
-                    current && current < moment().startOf('day')
-                  }
-                />
-              </Form.Item>
-            </Space.Compact>
+          <Form.Item
+            name="scheduledAt"
+            label="Schedule At"
+            rules={[{ required: true, message: 'Please select date & time' }]}
+          >
+            <DatePicker
+              showTime={{
+                format: 'HH:mm',
+                minuteStep: 30,
+              }}
+              format="YYYY-MM-DD HH:mm"
+              style={{ width: '80%' }}
+              disabledDate={(current) =>
+                current && current < moment().startOf('day')
+              }
+              disabledTime={(current) => {
+                if (!current) return {}
+
+                const now = moment()
+                if (!current.isSame(now, 'day')) return {}
+
+                return {
+                  disabledHours: () =>
+                    Array.from({ length: now.hour() }, (_, i) => i),
+                  disabledMinutes: (hour) =>
+                    hour === now.hour()
+                      ? Array.from({ length: now.minute() }, (_, i) => i)
+                      : [],
+                }
+              }}
+            />
           </Form.Item>
           <Form.Item name="isRepeatable" label="Repeat">
             <Checkbox checked={checked} onChange={(e) => {
