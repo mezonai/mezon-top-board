@@ -6,7 +6,7 @@ export type TagResponse = Tag & {
   botCount: number; 
 };
 
-export type CreateTagRequest = Pick<Tag, 'name' | 'slug'>;
+export type CreateTagRequest = Pick<Tag, 'name' | 'slug'> & { color?: string };
 export type UpdateTagRequest = Partial<CreateTagRequest> & { id: string };
 
 export type TagControllerGetTagsApiResponse = HttpResponse<TagResponse[]>;

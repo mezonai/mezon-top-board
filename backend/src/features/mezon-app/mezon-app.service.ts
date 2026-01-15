@@ -125,7 +125,7 @@ export class MezonAppService {
       name: owner.name,
       profileImage: owner.profileImage,
     };
-    detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name }));
+    detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }));
     detail.socialLinks = mezonApp.socialLinks
       .filter((link) => !!link)
       .map((link) => ({
@@ -288,6 +288,7 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
         mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
@@ -533,6 +534,7 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
         mappedMezonApp.owner = entity.owner;
         mappedMezonApp.versions = entity.versions;
@@ -560,6 +562,7 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
         mappedMezonApp.versions = entity.versions;
         // TODO: fix with exposeUnsetFields later in class-transformer

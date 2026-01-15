@@ -11,6 +11,11 @@ export class CreateTagRequest {
     @ApiProperty()
     @IsString()
     slug: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    color?: string;
 }
 
 export class UpdateTagRequest extends RequestWithId {
@@ -21,6 +26,10 @@ export class UpdateTagRequest extends RequestWithId {
     @ApiPropertyOptional()
     @IsString()
     slug: string;
+
+    @ApiPropertyOptional()
+    @IsString()
+    color: string;
 }
 
 export class SearchTagRequest extends PaginationQuery {

@@ -3,8 +3,9 @@ import React from 'react'
 import { formatDate } from '@app/utils/date'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
-import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
-import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import AppTag from '@app/components/AppTag/AppTag'
+import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
@@ -105,9 +106,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
 
                         <div className='flex flex-wrap gap-2'>
                             {latestVersion?.tags?.map((tag) => (
-                                <Tag key={tag.id} color={randomColor('normal', uuidToNumber(tag.id))}>
-                                    {tag.name}
-                                </Tag>
+                                <AppTag key={tag.id} tag={tag} />
                             ))}
                         </div>
                     </div>

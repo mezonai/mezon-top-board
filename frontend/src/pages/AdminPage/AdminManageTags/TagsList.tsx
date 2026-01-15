@@ -9,7 +9,7 @@ import { TagResponse } from '@app/services/api/tag/tag.types'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { generateSlug } from '@app/utils/stringHelper'
-import { Form, Input, InputRef, Popconfirm, Table, Tag, Tooltip } from 'antd'
+import { ColorPicker, Form, Input, InputRef, Popconfirm, Select, Table, Tag, Tooltip } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SearchOutlined } from '@ant-design/icons'
@@ -19,6 +19,7 @@ import { SLUG_RULE } from '@app/constants/common.constant'
 
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import CreateTagModal, { TagFormValues } from './components/CreateTagModal'
+import { TAG_COLOR_MAP, TAG_COLORS, TAG_PRESET_COLORS } from '@app/constants/colors'
 
 interface SearchFormValues {
   search: string
@@ -43,7 +44,8 @@ function TagsList() {
     id: string | null
     name: string
     slug: string
-  }>({ id: null, name: '', slug: '' })
+    color: string
+  }>({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })
 
   const [page, setPage] = useState<number>(1)
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
@@ -74,7 +76,13 @@ function TagsList() {
     }
 
     try {
-      await createTag({ createTagRequest: values }).unwrap()
+      await createTag({ 
+        createTagRequest: {
+          name: values.name,
+          slug: values.slug,
+          ...(values.color && { color: values.color })
+        }
+      }).unwrap()
       handleCancel()
       await getTagList()
       toast.success('Tag created')
@@ -99,10 +107,11 @@ function TagsList() {
         updateTagRequest: {
           id,
           name: editingTag.name.trim(),
-          slug: editingTag.slug
+          slug: editingTag.slug,
+          color: editingTag.color
         }
       }).unwrap()
-      setEditingTag({ id: null, name: '', slug: '' })
+      setEditingTag({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })
       await getTagList()
       toast.success('Tag updated')
     } catch {
@@ -184,6 +193,31 @@ function TagsList() {
         )
     },
     {
+      title: 'Color',
+      dataIndex: 'color',
+      key: 'color',
+      render: (color: string, record: any) =>
+        editingTag.id === record.id ? (
+          <div className='flex gap-2'>
+            <Select 
+              options={[...TAG_PRESET_COLORS.map((color)=> ({value: color, label: color})), { value: 'custom', label: 'custom' }]}
+              value={editingTag.color.includes('#') ? 'custom' : editingTag.color}
+              onChange={(value) => setEditingTag((prev) => ({ ...prev, color: value }))}
+              popupMatchSelectWidth={false}
+            />
+            <ColorPicker
+              value={editingTag.color.includes('#') ? editingTag.color : TAG_COLOR_MAP[editingTag.color] || TAG_COLORS.DEFAULT} 
+              onChange={(e) => setEditingTag((prev) => ({ ...prev, color: e.toHexString() }))}
+            />
+          </div>
+        ) : (
+          <ColorPicker 
+            value={color.includes('#') ? color : TAG_COLOR_MAP[color] || TAG_COLORS.DEFAULT} 
+            disabled
+          />
+        )
+    },
+    {
       title: 'Bot Count',
       dataIndex: 'botCount',
       key: 'botCount',
@@ -205,7 +239,7 @@ function TagsList() {
             </TableActionButton>
             <TableActionButton
               actionType="delete"
-              onClick={() => setEditingTag({ id: null, name: '', slug: '' })}
+              onClick={() => setEditingTag({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })}
             >
               Cancel
             </TableActionButton>
@@ -214,7 +248,7 @@ function TagsList() {
           <div className='flex gap-2'>
             <TableActionButton
               actionType="edit"
-              onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug })}
+              onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug, color: record.color })}
             />
             <Popconfirm title='Delete this tag?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
               <TableActionButton actionType="delete" />

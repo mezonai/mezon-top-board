@@ -4,8 +4,8 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotListItemProps } from './BotListItem.types'
-import { randomColor } from '@app/utils/mezonApp'
-import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import AppTag from '@app/components/AppTag/AppTag'
 import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -81,9 +81,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefr
 
               <div className='flex flex-wrap'>
                 {data?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-                  <Tag key={tag?.id} color={randomColor('normal', uuidToNumber(tag?.id))} className="mb-[0.2rem]">
-                    {tag?.name}
-                  </Tag>
+                  <AppTag key={tag.id} tag={tag} />
                 ))}
               </div>
             </div>

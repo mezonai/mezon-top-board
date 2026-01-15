@@ -9,6 +9,9 @@ export class TagInMezonAppDetailResponse {
     @Expose()
     @ApiProperty()
     public name: string;
+    @Expose()
+    @ApiProperty()
+    public color: string;
 }
 
 export class TagResponse extends TagInMezonAppDetailResponse {

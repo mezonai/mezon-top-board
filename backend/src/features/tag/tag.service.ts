@@ -14,6 +14,7 @@ import { searchBuilder } from "@libs/utils/queryBuilder";
 
 import { CreateTagRequest, SearchTagRequest, UpdateTagRequest } from "./dtos/request";
 import { TagResponse } from "./dtos/response";
+import { TAG_COLORS } from "@libs/constant/colors";
 
 @Injectable()
 export class TagService {
@@ -70,7 +71,11 @@ export class TagService {
     if (tag)
       throw new BadRequestException(ErrorMessages.EXISTED_TAG)
     
-    const createdTag = await this.tagRepository.create({ name: body.name.trim(), slug: body.slug })
+    const createdTag = await this.tagRepository.create({ 
+      name: body.name.trim(), 
+      slug: body.slug,
+      color: body.color || TAG_COLORS.DEFAULT
+    })
     const fullTag = await this.tagRepository.findOne({
       where: { id: createdTag.id },
       relations: ['apps']
@@ -93,7 +98,7 @@ export class TagService {
     if (tag)
       throw new BadRequestException(ErrorMessages.EXISTED_TAG)
 
-    await this.tagRepository.update(body.id, { name: body.name.trim(), slug: body.slug })
+    await this.tagRepository.update(body.id, { name: body.name.trim(), slug: body.slug, color: body.color })
     const updatedTag = await this.tagRepository.findOne({ where: { id: body.id } })
     return new Result({ data: updatedTag })
   }
