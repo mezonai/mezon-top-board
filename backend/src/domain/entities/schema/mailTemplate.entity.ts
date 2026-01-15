@@ -25,4 +25,7 @@ export class MailTemplate extends BaseSoftDelete {
     default: RepeatInterval.DAILY,
   })
   public repeatInterval: RepeatInterval
+
+  @Column({ type: 'timestamptz', nullable: true })
+  public lastSentAt?: Date;
 }

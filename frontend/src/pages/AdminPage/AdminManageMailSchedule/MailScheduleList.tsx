@@ -114,10 +114,18 @@ function MailScheduleList() {
     },
     {
       title: 'Repeat Interval',
-      dataIndex: 'repeatInterval',
       key: 'repeatInterval',
-      render: (text: RepeatInterval) =>
-        <span className="text-secondary">{text || '-'}</span>
+      render: (_: any, record: MailTemplate) => {
+        if (!record.isRepeatable) {
+          return <span className="text-secondary">_</span>;
+        }
+
+        return (
+          <span className="text-secondary">
+            {record.repeatInterval ?? '_'}
+          </span>
+        );
+      },
     },
     {
       title: 'Actions',

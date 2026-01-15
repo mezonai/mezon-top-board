@@ -1,25 +1,20 @@
 import { BadGatewayException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-
-import { differenceInMinutes } from 'date-fns';
 import { Brackets, EntityManager, ObjectLiteral } from 'typeorm';
-
 import { Result } from '@domain/common/dtos/result.dto';
-import { EmailSubscriptionStatus, RepeatInterval } from '@domain/common/enum/subscribeTypes';
+import { RepeatInterval } from '@domain/common/enum/subscribeTypes';
 import { MailTemplate } from '@domain/entities/schema/mailTemplate.entity';
 import { Subscriber } from '@domain/entities/schema/subscriber.entity';
-
 import config from "@config/env.config";
-
 import { EmailJob } from '@features/job/email.job';
 import { CreateMailTemplateRequest, SearchMailTemplateRequest } from '@features/marketing-mail/dtos/request';
 import { SearchMailTemplateResponse } from '@features/marketing-mail/dtos/response';
-
 import { GenericRepository } from '@libs/repository/genericRepository';
 import { Mapper } from '@libs/utils/mapper';
 import { paginate } from '@libs/utils/paginate';
 import { MarketingCampaignJobData } from '@features/job/job-data.types';
 import { QueueService } from '@features/queue/queue.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class MailTemplateService {
@@ -37,7 +32,7 @@ export class MailTemplateService {
 
   async enqueueCampaign(mailTemplate: MailTemplate) {
     await this.queue.send<MarketingCampaignJobData>(
-      'marketing-campaign',{ mailTemplate }
+      'marketing-campaign', { mailTemplate }
     );
   }
 
@@ -113,60 +108,108 @@ export class MailTemplateService {
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async handleMailSchedule() {
-    const now = new Date()
+    const now = moment();
 
     const mails = await this.mailRepository.find({});
 
     for (const mail of mails) {
       if (this.shouldSendNow(mail, now)) {
         await this.enqueueCampaign(mail);
+
+        await this.mailRepository.update(mail.id, {
+          lastSentAt: now.toDate(),
+        });
       }
     }
   }
 
-  private shouldSendNow(mail: MailTemplate, now: Date): boolean {
-    if (!mail.isRepeatable) {
-      return (
-        mail.scheduledAt.getHours() === now.getHours() &&
-        mail.scheduledAt.getMinutes() === now.getMinutes() &&
-        mail.scheduledAt.getDate() === now.getDate() &&
-        mail.scheduledAt.getMonth() === now.getMonth() &&
-        mail.scheduledAt.getFullYear() === now.getFullYear()
-      );
+  private shouldSendNow(mail: MailTemplate, now: moment.Moment) {
+    if (!mail.scheduledAt) return false;
+
+    const scheduledAt = moment(mail.scheduledAt);
+
+    if (now.isBefore(scheduledAt)) return false;
+
+    if (
+      mail.lastSentAt &&
+      now.diff(moment(mail.lastSentAt), 'minutes') < 30
+    ) {
+      return false;
     }
 
-    const sameHourMinute =
-      mail.scheduledAt.getHours() === now.getHours() &&
-      mail.scheduledAt.getMinutes() === now.getMinutes();
+    const windowMinutes = 30;
 
-    const minutesDiff = Math.abs(differenceInMinutes(now, mail.scheduledAt));
-    const withinGracePeriod = minutesDiff <= 30 && sameHourMinute;
+    const expected = this.getExpectedSendTime(mail, now);
+    if (!expected) return false;
+
+    const diff = now.diff(expected, 'minutes');
+
+    return diff >= 0 && diff < windowMinutes;
+  }
+
+  private getExpectedSendTime(mail: MailTemplate, now: moment.Moment) {
+    const base = moment(mail.scheduledAt);
+
+    if (!mail.isRepeatable) {
+      return base;
+    }
 
     switch (mail.repeatInterval) {
-      case RepeatInterval.DAILY:
-        return sameHourMinute || withinGracePeriod;
+      case RepeatInterval.DAILY: {
+        return now
+          .clone()
+          .hour(base.hour())
+          .minute(base.minute())
+          .second(0)
+          .millisecond(0);
+      }
 
-      case RepeatInterval.WEEKLY:
-        return (
-          now.getDay() === mail.scheduledAt.getDay() &&
-          (sameHourMinute || withinGracePeriod)
+      case RepeatInterval.WEEKLY: {
+        if (now.day() !== base.day()) return null;
+
+        return now
+          .clone()
+          .hour(base.hour())
+          .minute(base.minute())
+          .second(0)
+          .millisecond(0);
+      }
+
+      case RepeatInterval.MONTHLY: {
+        const targetDay = Math.min(
+          base.date(),
+          now.clone().endOf('month').date(),
         );
 
-      case RepeatInterval.MONTHLY:
-        return (
-          now.getDate() === mail.scheduledAt.getDate() &&
-          (sameHourMinute || withinGracePeriod)
-        );
+        if (now.date() !== targetDay) return null;
 
-      case RepeatInterval.ANNUALLY:
-        return (
-          now.getMonth() === mail.scheduledAt.getMonth() &&
-          now.getDate() === mail.scheduledAt.getDate() &&
-          (sameHourMinute || withinGracePeriod)
-        );
+        return now
+          .clone()
+          .date(targetDay)
+          .hour(base.hour())
+          .minute(base.minute())
+          .second(0)
+          .millisecond(0);
+      }
+
+      case RepeatInterval.ANNUALLY: {
+        if (
+          now.month() !== base.month() ||
+          now.date() !== base.date()
+        ) {
+          return null;
+        }
+
+        return now
+          .clone()
+          .hour(base.hour())
+          .minute(base.minute())
+          .second(0)
+          .millisecond(0);
+      }
 
       default:
-        return false;
+        return null;
     }
   }
 
