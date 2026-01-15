@@ -14,7 +14,6 @@ import { searchBuilder } from "@libs/utils/queryBuilder";
 
 import { CreateTagRequest, SearchTagRequest, UpdateTagRequest } from "./dtos/request";
 import { TagResponse } from "./dtos/response";
-import { TAG_COLORS } from "@libs/constant/colors";
 
 @Injectable()
 export class TagService {
@@ -74,7 +73,7 @@ export class TagService {
     const createdTag = await this.tagRepository.create({ 
       name: body.name.trim(), 
       slug: body.slug,
-      color: body.color || TAG_COLORS.DEFAULT
+      color: body.color || 'magenta'
     })
     const fullTag = await this.tagRepository.findOne({
       where: { id: createdTag.id },
