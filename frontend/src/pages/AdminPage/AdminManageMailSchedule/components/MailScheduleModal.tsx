@@ -50,14 +50,15 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       },
     })
 
-    if (res.data?.statusCode === 200) {
-      onClose()
-      await refetch()
-      form.resetFields()
-      toast.success('Mail schedule created successfully')
-    } else {
-      toast.error('Mail schedule created failed')
+    if (!res.data) {
+      toast.error('Failed to create mail schedule')
+      return
     }
+
+    onClose()
+    await refetch()
+    form.resetFields()
+    toast.success('Mail schedule created successfully')
   }
 
   const handleUpdateMailSchedule = async () => {
@@ -73,14 +74,15 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       },
     })
 
-    if (res.data?.statusCode === 200) {
-      onClose()
-      await refetch()
-      form.resetFields()
-      toast.success('updated successfully')
-    } else {
-      toast.error('updated failed')
+    if (!res.data) {
+      toast.error('Failed to update mail schedule')
+      return
     }
+
+    onClose()
+    await refetch()
+    form.resetFields()
+    toast.success('Mail schedule updated successfully')
   }
 
   const handleCancel = () => {
@@ -99,11 +101,11 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
       setChecked(!!selectMail.isRepeatable);
       setIntervalMode(selectMail.repeatInterval);
     }
-  }, [selectMail]);
+  }, [selectMail])
 
   return (
     <Modal
-      title="Create Mail Schedule"
+      title={selectMail ? 'Update Schedule' : 'Create Schedule'}
       open={open}
       onCancel={handleCancel}
       footer={[
@@ -132,8 +134,8 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
           <Form.Item name="subject" label="Subject" rules={[
             () => ({
               validator(_, value) {
-                if (!value || value.length < 10) return Promise.reject("Subject must be at least 10 characters");
-                if (value.length > 100) return Promise.reject("Subject must not exceed 100 characters");
+                if (!value || value.length < 10) return Promise.reject(('Subject must be at least 10 characters long'));
+                if (value.length > 100) return Promise.reject('Subject must be at most 100 characters long');
                 return Promise.resolve();
               },
             }),
@@ -143,7 +145,7 @@ const MailScheduleModal = ({ open, onClose, selectMail, refetch }: MailModalProp
           <Form.Item
             name="scheduledAt"
             label="Schedule At"
-            rules={[{ required: true, message: 'Please select date & time' }]}
+            rules={[{ required: true, message: 'Please select date and time' }]}
           >
             <DatePicker
               showTime={{
