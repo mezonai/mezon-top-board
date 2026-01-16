@@ -2,6 +2,7 @@ import { Tooltip } from 'antd';
 import Button from '@app/mtb-ui/Button';
 import { ReactNode } from 'react';
 import { actionConfigs } from './action.config';
+import { cn } from '@app/utils/cn';
 
 export type TableActionType = 'view' | 'edit' | 'delete' | 'install' | 'search' | 'add' | 'activate' | 'review';
 
@@ -42,12 +43,17 @@ const TableActionButton = ({
       icon={icon || config.icon}
       iconPosition={isPageLevel ? (iconPosition || 'end') : iconPosition}
       size={isPageLevel ? "large" : size}
-      className={`!border-none !whitespace-normal !h-auto !min-h-[40px] !min-w-28 !px-4 ${className}`}
+      className={cn(
+        `!border-none !whitespace-normal !h-auto !min-h-[40px]`,
+        isPageLevel ? '!min-w-28 !px-4' : '',
+        className
+      )}
       {...props}
     >
       {children}
     </Button>
   );
+  
 
   if (!config.tooltip && !tooltipTitle) {
     return buttonElement;
