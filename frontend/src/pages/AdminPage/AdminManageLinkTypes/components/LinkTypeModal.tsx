@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import MediaManagerModal from '../../../../components/MediaManager/MediaManager'
 import { LINK_TYPE_SCHEMA } from '@app/validations/linkType.validation'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { CropImageShape } from '@app/enums/CropImage.enum'
 
 export interface LinkTypeFormValues {
   name: string
@@ -139,6 +140,8 @@ const LinkTypeModal = ({ open, onClose, onSubmit, editingData, isUpdate }: Creat
         isVisible={isMediaModalVisible}
         onChoose={handleChooseImage}
         onClose={() => setIsMediaModalVisible(false)}
+        initialCropShape={CropImageShape.RECTANGLE}
+        showShapeSwitcher={true}
       />
     </Modal>
   )

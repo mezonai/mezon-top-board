@@ -40,6 +40,7 @@ import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
+import { CropImageShape } from '@app/enums/CropImage.enum'
 
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
@@ -253,6 +254,8 @@ function NewBotPage() {
               isVisible={isModalVisible}
               onChoose={handleMediaSelect}
               onClose={handleModalCancel}
+              initialCropShape={CropImageShape.RECTANGLE}
+              showShapeSwitcher={true}
             />
           </div>
           <div>
