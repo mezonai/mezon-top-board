@@ -10,7 +10,7 @@ import BotGridItem from '@app/components/BotGridItem/BotGridItem';
 import BotListItem from '@app/components/BotListItem/BotListItem';
 import { IBotDirectoryProps } from './BotDirectory.types';
 import { ViewMode } from '@app/enums/viewMode.enum';
-import { GRID_PAGE_OPTIONS, LIST_PAGE_OPTIONS, GRID_CLASSES } from '@app/constants/BotDirectory.constant';
+import { PAGE_OPTIONS, GRID_CLASSES } from '@app/constants/BotDirectory.constant';
 import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum';
 
 function BotDirectory({
@@ -37,9 +37,8 @@ function BotDirectory({
     const { t } = useTranslation(['home_page', 'components']);
 
     const finalPageSizeOptions = useMemo(() => {
-        if (pageSizeOptions) return pageSizeOptions;
-        return viewMode === ViewMode.GRID ? GRID_PAGE_OPTIONS : LIST_PAGE_OPTIONS;
-    }, [pageSizeOptions, viewMode]);
+        return pageSizeOptions || PAGE_OPTIONS;
+    }, [pageSizeOptions]);
 
     const paginationSelectOptions = useMemo(() => {
         return finalPageSizeOptions.map((val) => ({
@@ -104,7 +103,7 @@ function BotDirectory({
                             getPopupContainer={(trigger) => trigger.parentElement}
                             onChange={onPageSizeChange}
                             options={paginationSelectOptions}
-                            value={paginationSelectOptions.find(o => o.value === pageSize) || { value: pageSize, label: `${pageSize}` }}
+                            value={paginationSelectOptions.find(o => o.value === pageSize) || paginationSelectOptions[0]}
                             size='large'
                             className='w-[70px]'
                             data-e2e="selectPageOptions"

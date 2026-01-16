@@ -50,22 +50,24 @@ function FavoritePage() {
                     <CardInfo userInfo={userInfo} />
                 </div>
 
-                <BotDirectory
-                    variant={BotDirectoryVariant.COMPACT}
-                    isPublic={true}
-                    showSort={false}
-                    showTitle={false}
-                    data={appList}
-                    isLoading={isLoading || isFetching}
-                    onRefresh={refetch}
-                    currentPage={page}
-                    pageSize={pageSize}
-                    totalCount={totalCount}
-                    viewMode={viewMode}
-                    onPageChange={handlePageChange}
-                    onPageSizeChange={handlePageSizeChange}
-                    onViewModeChange={handleViewModeChange}
-                />
+                <div className='min-w-0'>
+                    <BotDirectory
+                        variant={BotDirectoryVariant.COMPACT}
+                        isPublic={true}
+                        showSort={false}
+                        showTitle={false}
+                        data={appList}
+                        isLoading={isLoading || isFetching}
+                        onRefresh={refetch}
+                        currentPage={page}
+                        pageSize={pageSize}
+                        totalCount={totalCount}
+                        viewMode={viewMode}
+                        onPageChange={handlePageChange}
+                        onPageSizeChange={handlePageSizeChange}
+                        onViewModeChange={handleViewModeChange}
+                    />
+                </div>
             </div>
         </div>
     )

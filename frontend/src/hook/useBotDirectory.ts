@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ViewMode } from '@app/enums/viewMode.enum';
 import { IOption } from '@app/mtb-ui/SingleSelect';
-import { DEFAULT_GRID_SIZE, DEFAULT_LIST_SIZE, SORT_OPTIONS } from '@app/constants/BotDirectory.constant';
+import { SORT_OPTIONS, PAGE_OPTIONS } from '@app/constants/BotDirectory.constant';
 
 interface UseBotDirectoryProps {
     initialViewMode?: ViewMode;
@@ -20,7 +20,7 @@ export const useBotDirectory = ({ initialViewMode = ViewMode.GRID, initialPage =
 
     const [page, setPage] = useState<number>(initialPage);
     const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode);
-    const [pageSize, setPageSize] = useState<number>(initialViewMode === ViewMode.GRID ? DEFAULT_GRID_SIZE : DEFAULT_LIST_SIZE);
+    const [pageSize, setPageSize] = useState<number>(PAGE_OPTIONS[0]);
     const [sortField, setSortField] = useState<string>('createdAt');
     const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC");
 
@@ -31,12 +31,6 @@ export const useBotDirectory = ({ initialViewMode = ViewMode.GRID, initialPage =
 
     const handleViewModeChange = (mode: ViewMode) => {
         setViewMode(mode);
-        setPage(1);
-        if (mode === ViewMode.GRID) {
-            setPageSize(DEFAULT_GRID_SIZE);
-            return;
-        }
-        setPageSize(DEFAULT_LIST_SIZE);
     };
 
     const handlePageChange = (newPage: number) => {
