@@ -69,6 +69,11 @@
                 "link_exists": "This link already exists.",
                 "link_duplicate": "This link is duplicated.",
                 "no_image_selected": "No image selected"
+            },
+            "changelog": {
+                "label": "Changelog",
+                "desc": "Provide a summary of the changes made in this version of your bot/app. This helps users understand what’s new or improved.",
+                "placeholder": "e.g., - Added new feature X\n- Improved performance of Y\n- Fixed bug in Z"
             }
         },
         "step4": {

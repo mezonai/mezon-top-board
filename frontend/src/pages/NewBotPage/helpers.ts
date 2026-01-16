@@ -24,6 +24,7 @@ const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersionDetailsDto
 const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonAppRequest => {
   const dataSource = getDataSource(detail)
   const remark = 'remark' in dataSource ? dataSource.remark : ''
+  const changelog = 'changelog' in dataSource ? dataSource.changelog : ''
 
   return {
     name: dataSource.name || '',
@@ -36,6 +37,7 @@ const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonApp
     price: dataSource.price || 0,
     socialLinks: dataSource.socialLinks || [],
     remark: remark,
+    changelog: changelog || '',
     // TODO: isAutoPublished will be implemented later
     isAutoPublished: true,
     tagIds: dataSource.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],

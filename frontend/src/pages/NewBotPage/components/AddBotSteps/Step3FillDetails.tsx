@@ -28,7 +28,7 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({  }: { isEdit: boolean }) => {
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
   const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
@@ -360,6 +360,25 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
           );
         })}
       </FormField>
+
+      {isEdit && (
+        <FormField 
+          label={t('new_bot_page.step3.changelog.label')} 
+          description={t('new_bot_page.step3.changelog.desc')}
+        >
+          <Controller
+            control={control}
+            name='changelog'
+            render={({ field }) => (
+              <TextArea {...field} rows={4}
+                className='placeholder:!text-primary'
+                placeholder={t('new_bot_page.step3.changelog.placeholder')}
+                status={errorStatus(errors.changelog)}
+              />
+            )}
+          />
+        </FormField>
+      )}
     </>
   )
 }

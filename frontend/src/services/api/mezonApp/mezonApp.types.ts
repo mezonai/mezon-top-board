@@ -84,6 +84,7 @@ export type CreateMezonAppRequest = Pick<
   prefix?: string;
   featuredImage?: string;
   remark?: string;
+  changelog?: string;
   tagIds: string[];
   socialLinks?: SocialLink[];
 };

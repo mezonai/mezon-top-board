@@ -1,7 +1,7 @@
 
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
-import * as sanitizeHtml from "sanitize-html";
+import { cleanHtml } from "@libs/utils/htmlSanitizer";
 import { Brackets, EntityManager, In, Not, ObjectLiteral } from "typeorm";
 
 import { RequestWithId } from "@domain/common/dtos/request.dto";
@@ -386,7 +386,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, id, ...updateData } = req;
+    const { tagIds, socialLinks, description, id, changelog, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -444,49 +444,8 @@ export class MezonAppService {
       app.socialLinks = links;
     }
 
-    const cleanedDescription = sanitizeHtml(description, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "span", "img", "video", "source", "h1", "h2", "h3", "h4", "h5", "h6",
-        "li", "ol", "ul", "p", "pre", "a", "em", "strong", "u"
-      ]),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        img: ['src', 'alt', 'width', 'height', 'style'],
-        video: ['src', 'controls', 'width', 'height'],
-        source: ['src', 'type'],
-        embed: ['src', 'width', 'height', 'allowfullscreen'],
-        span: ['style', 'class'],
-        p: ['style', 'class'],
-        em: ['style', 'class'],
-        strong: ['style', 'class'],
-        u: ['style', 'class'],
-      },
-      allowedClasses: {
-        '*': ['ql-size-small', 'ql-size-large', 'ql-size-huge',
-          'ql-align-center', 'ql-align-right', 'ql-align-justify',
-          'ql-font-monospace', 'ql-font-serif', 'fancy', 'simple']
-      },
-      allowedStyles: {
-        '*': {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'text-align': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
-        },
-        img: {
-          'width': [/^\d+(px|%)?$/],
-          'height': [/^\d+(px|%)?$/],
-        },
-        em: {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
-        },
-      }
-    });
-
+    const cleanedDescription = cleanHtml(description);
+    const cleanedChangelog = changelog ? cleanHtml(changelog) : undefined;
 
     const versionData = {
       appId: id,
@@ -494,6 +453,7 @@ export class MezonAppService {
       description: cleanedDescription,
       tagIds,
       socialLinks: links,
+      changelog: cleanedChangelog,
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
@@ -505,6 +465,10 @@ export class MezonAppService {
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
       existingPendingVersion.description = cleanedDescription;
+
+      if (cleanedChangelog !== undefined) {
+          existingPendingVersion.changelog = cleanedChangelog;
+      }
 
       await this.appVersionRepository.getRepository().save(existingPendingVersion);
       return app

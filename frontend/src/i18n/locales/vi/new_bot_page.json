@@ -69,6 +69,11 @@
                 "link_exists": "Liên kết này đã tồn tại.",
                 "link_duplicate": "Liên kết này bị trùng lặp.",
                 "no_image_selected": "Chưa chọn ảnh"
+            },
+            "changelog": {
+                "label": "Nhật ký thay đổi",
+                "desc": "Cung cấp tóm tắt về những thay đổi được thực hiện trong phiên bản bot/app này. Điều này giúp người dùng hiểu những gì mới hoặc được cải thiện.",
+                "placeholder": "ví dụ: - Thêm tính năng X mới\n- Cải thiện hiệu suất của Y\n- Sửa lỗi trong Z"
             }
         },
         "step4": {

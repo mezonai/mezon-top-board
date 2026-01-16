@@ -67,6 +67,7 @@ function NewBotPage() {
       price: 0,
       supportUrl: '',
       remark: '',
+      changelog: '',
       //TODO: isAutoPublished will be implemented later
       isAutoPublished: true,
       socialLinks: []
@@ -154,6 +155,7 @@ function NewBotPage() {
     'featuredImage',
     'socialLinks',
     'remark',
+    'changelog',
     'isAutoPublished'
   ]
 
