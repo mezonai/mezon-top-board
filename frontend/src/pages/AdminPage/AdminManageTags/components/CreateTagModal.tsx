@@ -4,10 +4,13 @@ import { useEffect, useState } from 'react'
 import { generateSlug } from '@app/utils/stringHelper'
 import MtbButton from '@app/mtb-ui/Button'
 import { SLUG_RULE } from '@app/constants/common.constant'
+import { TAG_COLORS } from '@app/constants/colors'
+import { ColorSelector } from './ColorSelector'
 
 export interface TagFormValues {
   name: string
   slug: string
+  color?: string
 }
 
 interface CreateTagModalProps {
@@ -48,7 +51,8 @@ const CreateTagModal = ({ open, onClose, onCreate }: CreateTagModalProps) => {
           }
           onCreate({
             name: values.name.trim(),
-            slug: values.slug.trim()
+            slug: values.slug.trim(),
+            ...(values.color && { color: values.color })
           })
         }}
       >
@@ -68,6 +72,14 @@ const CreateTagModal = ({ open, onClose, onCreate }: CreateTagModalProps) => {
               form.setFieldsValue({ name, slug })
             }}
           />
+        </Form.Item>
+
+        <Form.Item
+          name="color"
+          label="Color"
+          initialValue={TAG_COLORS.DEFAULT}
+        >
+          <ColorSelector />
         </Form.Item>
 
         {!showSlugInput ? (

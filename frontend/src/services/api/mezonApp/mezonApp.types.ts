@@ -9,7 +9,7 @@ import { LinkTypeResponse } from '../linkType/linkType.types';
 import { SocialLink } from '@app/types/link.types';
 
 export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage'>;
-export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name'>;
+export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name' | 'color'>;
 export type SocialLinkInMezonAppDetailResponse = Pick<Link, 'id' | 'url' | 'linkTypeId'> & {
   type: LinkTypeResponse;
 };

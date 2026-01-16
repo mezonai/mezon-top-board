@@ -12,6 +12,9 @@ export class Tag extends BaseSoftDelete {
     @Column()
     public slug: string;
 
+    @Column({ default: 'magenta' })
+    public color: string;
+
     @ManyToMany(() => App, (app) => app.tags)
     public apps: App[];
 }
