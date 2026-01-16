@@ -15,11 +15,11 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { IMainProps } from './Main.types'
+import { IBotSearchResultProps } from './BotSearchResult.types'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum'
 
-function Main({ isSearchPage = false }: IMainProps) {
+function BotSearchResult({ isSearchPage = false }: IBotSearchResultProps) {
   const { t } = useTranslation(['home_page'])
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
@@ -164,4 +164,4 @@ function Main({ isSearchPage = false }: IMainProps) {
   )
 }
 
-export default Main
+export default BotSearchResult
