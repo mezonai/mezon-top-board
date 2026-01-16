@@ -3,7 +3,8 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import 'react-image-crop/dist/ReactCrop.css'
 import { Modal, Tooltip } from 'antd'
 import MtbButton from '@app/mtb-ui/Button'
-import { RotateLeftOutlined, RotateRightOutlined, BorderOutlined, RadiusSettingOutlined } from '@ant-design/icons'
+import { RotateLeftOutlined, RotateRightOutlined, BorderOutlined } from '@ant-design/icons'
+import { CircleDashed } from 'lucide-react';
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { getCroppedImg } from '@app/utils/cropImage'
 import MtbSlider from '@app/mtb-ui/Slider/Slider'
@@ -174,7 +175,7 @@ const CropImageModal: React.FC<Props> = ({
                </Tooltip>
                <Tooltip title="Circle Crop">
                 <MtbButton 
-                  icon={<RadiusSettingOutlined />} 
+                  icon={<CircleDashed className='w-5 h-5 -mb-1'/>} 
                   onClick={() => setCurrentShape(CropImageShape.ROUND)}
                   variant={currentShape === CropImageShape.ROUND ? 'solid' : 'text'}
                   color={currentShape === CropImageShape.ROUND ? 'primary' : 'default'}
