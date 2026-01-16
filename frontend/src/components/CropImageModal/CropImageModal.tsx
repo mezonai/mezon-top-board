@@ -1,14 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { Modal } from 'antd'
+import { Modal, Tooltip } from 'antd'
 import MtbButton from '@app/mtb-ui/Button'
-import { RotateLeftOutlined, RotateRightOutlined } from '@ant-design/icons'
+import { RotateLeftOutlined, RotateRightOutlined, BorderOutlined, RadiusSettingOutlined } from '@ant-design/icons'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { getCroppedImg } from '@app/utils/cropImage'
 import MtbSlider from '@app/mtb-ui/Slider/Slider'
 import { cn } from '@app/utils/cn'
 import { useTranslation } from 'react-i18next'
+import { CropImageShape } from '@app/enums/CropImage.enum'
 
 type Props = {
   open: boolean
@@ -18,6 +19,8 @@ type Props = {
   onCancel: () => void
   onConfirm: (file: File) => void
   parentLoading?: boolean
+  initialShape?: CropImageShape
+  showShapeSwitcher?: boolean
 }
 
 const CropImageModal: React.FC<Props> = ({
@@ -27,7 +30,9 @@ const CropImageModal: React.FC<Props> = ({
   aspect = 1,
   onCancel,
   onConfirm,
-  parentLoading = false
+  parentLoading = false,
+  initialShape = CropImageShape.ROUND,
+  showShapeSwitcher = false
 }) => {
   const { t } = useTranslation(['components'])
   const [crop, setCrop] = useState<Crop>()
@@ -36,6 +41,7 @@ const CropImageModal: React.FC<Props> = ({
   const [isProcessing, setIsProcessing] = useState(false)
   const [zoom, setZoom] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
+  const [currentShape, setCurrentShape] = useState<CropImageShape>(initialShape)
 
   useEffect(() => {
     if (open) {
@@ -43,8 +49,9 @@ const CropImageModal: React.FC<Props> = ({
       setRotation(0)
       setCrop(undefined)
       setCompletedCrop(undefined)
+      setCurrentShape(initialShape)
     }
-  }, [open, imgSrc])
+  }, [open, imgSrc, initialShape])
 
   function onImageLoad() {
     if (!imgRef.current) return;
@@ -100,7 +107,7 @@ const CropImageModal: React.FC<Props> = ({
         originalFileName || 'cropped-image.png',
         rotation,
         zoom,
-        false,
+        currentShape === CropImageShape.ROUND,
         'image/png',
         0.95
       )
@@ -154,6 +161,29 @@ const CropImageModal: React.FC<Props> = ({
         </div>
 
         <div className={cn("flex-1 flex items-center justify-end gap-2", "min-w-[200px]")}>
+          {showShapeSwitcher && (
+            <div className="flex items-center gap-2 mr-4 border-r border-border pr-4">
+               <Tooltip title="Square Crop">
+                <MtbButton 
+                  icon={<BorderOutlined />} 
+                  onClick={() => setCurrentShape(CropImageShape.RECTANGLE)}
+                  variant={currentShape === CropImageShape.RECTANGLE ? 'solid' : 'text'}
+                  color={currentShape === CropImageShape.RECTANGLE ? 'primary' : 'default'}
+                  className={currentShape === CropImageShape.RECTANGLE ? 'bg-primary text-white' : ''}
+                />
+               </Tooltip>
+               <Tooltip title="Circle Crop">
+                <MtbButton 
+                  icon={<RadiusSettingOutlined />} 
+                  onClick={() => setCurrentShape(CropImageShape.ROUND)}
+                  variant={currentShape === CropImageShape.ROUND ? 'solid' : 'text'}
+                  color={currentShape === CropImageShape.ROUND ? 'primary' : 'default'}
+                  className={currentShape === CropImageShape.ROUND ? 'bg-primary text-white' : ''}
+                />
+               </Tooltip>
+            </div>
+          )}
+
           <MtbTypography
             variant='p'
             customClassName='text-caption mr-2'
@@ -172,13 +202,13 @@ const CropImageModal: React.FC<Props> = ({
       </div>
 
       {imgSrc && (
-        <div className="flex-center">
+        <div className="flex justify-center items-center w-full">
           <ReactCrop
             crop={crop}
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => setCompletedCrop(c)}
             aspect={aspect}
-            circularCrop
+            circularCrop={currentShape === CropImageShape.ROUND}
           >
             <img
               ref={imgRef}
@@ -190,8 +220,10 @@ const CropImageModal: React.FC<Props> = ({
               }}
               style={{
                 display: 'block',
+                maxWidth: '100%', 
                 maxHeight: '60vh',
                 width: 'auto',
+                height: 'auto',
                 transform: `scale(${zoom}) rotate(${rotation}deg)`,
                 transformOrigin: 'center center'
               }}

@@ -24,6 +24,7 @@ import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { useTranslation } from "react-i18next";
+import { CropImageShape } from '@app/enums/CropImage.enum'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const { t } = useTranslation(['profile_page']);
@@ -160,6 +161,8 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
         isVisible={isModalVisible}
         onChoose={handleMediaSelect}
         onClose={handleCancel}
+        initialCropShape={CropImageShape.ROUND}
+        showShapeSwitcher={false}
       />
     </div>
   )
