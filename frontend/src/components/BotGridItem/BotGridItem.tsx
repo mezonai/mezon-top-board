@@ -96,7 +96,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         </div>
 
         <div className='flex flex-col flex-1 min-w-0 gap-1 mr-6'>
-          <div className='font-bold text-base truncate text-primary leading-tight'>
+          <div className='text-left font-bold text-base truncate text-primary leading-tight'>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
           
@@ -105,7 +105,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
           </div>
 
           <div className='flex items-center mt-1 scale-90 origin-left'>
-              <MtbRate value={data?.rateScore || 0} readonly />
+            <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
           </div>
         </div>
 
