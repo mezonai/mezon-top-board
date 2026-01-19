@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Space, Tooltip } from 'antd';
 import Button from '@app/mtb-ui/Button';
 import { ReactNode } from 'react';
 import { actionConfigs } from './action.config';
@@ -61,7 +61,7 @@ const TableActionButton = ({
 
   return (
     <Tooltip title={tooltipTitle || config.tooltip}>
-      {buttonElement}
+      <Space>{buttonElement}</Space>
     </Tooltip>
   );
 };

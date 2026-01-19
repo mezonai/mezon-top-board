@@ -9,17 +9,16 @@ import { TagResponse } from '@app/services/api/tag/tag.types'
 import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { generateSlug } from '@app/utils/stringHelper'
-import { ColorPicker, Form, Input, InputRef, Popconfirm, Select, Table, Tag, Tooltip } from 'antd'
+import { Form, Input, InputRef, Modal, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { useAppSelector } from '@app/store/hook'
 import { toast } from 'react-toastify'
-import { SLUG_RULE } from '@app/constants/common.constant'
 
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
-import CreateTagModal, { TagFormValues } from './components/CreateTagModal'
-import { TAG_COLOR_MAP, TAG_COLORS, TAG_PRESET_COLORS } from '@app/constants/colors'
+import CreateEditTagModal, { TagFormValues } from './components/CreateEditTagModal'
+import { ColorSelector } from '@app/mtb-ui/ColorSelector/ColorSelector'
 
 interface SearchFormValues {
   search: string
@@ -35,23 +34,15 @@ function TagsList() {
   const searchTagList = useAppSelector((state: RootState) => state.tag.searchTagList)
 
   const [searchForm] = Form.useForm<SearchFormValues>()
-  const [tagForm] = Form.useForm<TagFormValues>()
+  const { confirm } = Modal
 
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const searchRef = useRef<InputRef>(null)
 
-  const [editingTag, setEditingTag] = useState<{
-    id: string | null
-    name: string
-    slug: string
-    color: string
-  }>({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })
-
+  const [selectedTag, setSelectedTag] = useState<TagResponse | null>(null)
   const [page, setPage] = useState<number>(1)
   const [botPerPage, setBotPerPage] = useState<number>(pageOptions[0])
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
-
-  const editError = !editingTag.name.trim() || !SLUG_RULE.pattern.test(editingTag.slug)
 
   useEffect(() => {
     searchTagsList()
@@ -59,63 +50,55 @@ function TagsList() {
   useEffect(() => {
     getTagList()
   }, [])
-  
+
   const totals = useMemo(() => searchTagList?.totalCount || 0, [searchTagList])
 
-  const handleCreate = async (values: TagFormValues) => {
+  const handleModalSubmit = async (values: TagFormValues) => {
     if (typeof values.slug !== 'string' || !values.slug.trim()) {
       values.slug = generateSlug(values.name)
     }
     values.name = values.name.trim()
-    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
-      (tag.name.trim() === values.name || tag.slug === values.slug)
-    )
+
+    const isDuplicate = tagList?.data?.some((tag: TagResponse) => {
+      const isSameNameOrSlug = tag.name.trim() === values.name || tag.slug === values.slug;
+      if (selectedTag) {
+        return isSameNameOrSlug && tag.id !== selectedTag.id;
+      }
+      return isSameNameOrSlug;
+    });
+
     if (isDuplicate) {
       toast.error('Tag already exists')
       return
     }
 
     try {
-      await createTag({ 
-        createTagRequest: {
-          name: values.name,
-          slug: values.slug,
-          ...(values.color && { color: values.color })
-        }
-      }).unwrap()
+      if (selectedTag) {
+        await updateTag({
+          updateTagRequest: {
+            id: selectedTag.id,
+            name: values.name,
+            slug: values.slug,
+            color: values.color
+          }
+        }).unwrap()
+        toast.success('Tag updated')
+      } else {
+        await createTag({
+          createTagRequest: {
+            name: values.name,
+            slug: values.slug,
+            ...(values.color && { color: values.color })
+          }
+        }).unwrap()
+        toast.success('Tag created')
+      }
+
       handleCancel()
       await getTagList()
-      toast.success('Tag created')
+      searchTagsList()
     } catch (err) {
-      toast.error('Failed to create tag')
-    }
-  }
-
-  const handleUpdate = async (id: string) => {
-    const isDuplicate = tagList?.data?.some((tag: TagResponse) =>
-      (tag.name === editingTag.name.trim() || tag.slug === editingTag.slug) &&
-      tag.id !== id
-    )
-
-    if (isDuplicate) {
-      toast.error('Tag name or tag slug already exists')
-      return
-    }
-
-    try {
-      await updateTag({
-        updateTagRequest: {
-          id,
-          name: editingTag.name.trim(),
-          slug: editingTag.slug,
-          color: editingTag.color
-        }
-      }).unwrap()
-      setEditingTag({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })
-      await getTagList()
-      toast.success('Tag updated')
-    } catch {
-      toast.error('Failed to update tag')
+      toast.error(selectedTag ? 'Failed to update tag' : 'Failed to create tag')
     }
   }
 
@@ -127,10 +110,24 @@ function TagsList() {
     try {
       await deleteTag({ requestWithId: { id } }).unwrap()
       await getTagList()
+      searchTagsList()
       toast.success('Tag deleted')
     } catch {
       toast.error('Cannot delete tag. It might be in use.')
     }
+  }
+
+  const handleConfirmDelete = (id: string) => {
+    confirm({
+      title: 'Delete this tag?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Are you sure you want to delete this tag? This action cannot be undone.',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      centered: true,
+      onOk: () => handleDelete(id),
+    })
   }
 
   const handleSearch = () => {
@@ -138,7 +135,7 @@ function TagsList() {
     searchTagsList(1)
   }
 
-  const searchTagsList = (pageNumber? : number) => {
+  const searchTagsList = (pageNumber?: number) => {
     const formValues = searchForm.getFieldsValue()
     searchTag({
       search: formValues.search || '',
@@ -147,121 +144,86 @@ function TagsList() {
     })
   }
 
+  const handleOpenCreate = () => {
+    setSelectedTag(null);
+    setIsOpenModal(true);
+  }
+
+  const handleOpenEdit = (record: TagResponse) => {
+    setSelectedTag(record);
+    setIsOpenModal(true);
+  }
+
+  const handleCancel = () => {
+    setIsOpenModal(false)
+    setSelectedTag(null)
+  }
+
   const columns = [
     {
       title: 'Tag Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string, record: any) =>
-        editingTag.id === record.id ? (
-          <Tooltip
-            open={!editingTag.name.trim()}
-            title='This field is required'
-            placement='topLeft' color='rgba(255, 0, 0, 0.8)'
-          >
-            <Input
-              required
-              status={!editingTag.name.trim() ? 'error' : ''}
-              value={editingTag.name}
-              onChange={(e) => setEditingTag((prev) => ({ ...prev, name: e.target.value }))}
-            />
-          </Tooltip>
-        ) : (
+      width: '25%',
+      render: (text: string) => (
+        <div className="h-[32px] flex items-center">
           <Tag>{text}</Tag>
-        )
+        </div>
+      )
     },
     {
       title: 'Tag Slug',
       dataIndex: 'slug',
       key: 'slug',
-      render: (text: string, record: any) =>
-        editingTag.id === record.id ? (
-          <Tooltip
-            open={!SLUG_RULE.pattern.test(editingTag.slug)}
-            title='Slug must be lowercase, alphanumeric, and use hyphens (no spaces or special characters)'
-            placement='topLeft' color='rgba(255, 0, 0, 0.8)'
-          >
-            <Input
-              required
-              status={!SLUG_RULE.pattern.test(editingTag.slug) ? 'error' : ''}
-              value={editingTag.slug}
-              onChange={(e) => setEditingTag((prev) => ({ ...prev, slug: e.target.value }))}
-            />
-          </Tooltip>
-        ) : (
-          text
-        )
+      width: '25%',
+      render: (text: string) => (
+        <div className="h-[32px] flex items-center">
+          {text}
+        </div>
+      )
     },
     {
       title: 'Color',
       dataIndex: 'color',
       key: 'color',
-      render: (color: string, record: any) =>
-        editingTag.id === record.id ? (
-          <div className='flex gap-2'>
-            <Select 
-              options={[...TAG_PRESET_COLORS.map((color)=> ({value: color, label: color})), { value: 'custom', label: 'custom' }]}
-              value={editingTag.color.includes('#') ? 'custom' : editingTag.color}
-              onChange={(value) => setEditingTag((prev) => ({ ...prev, color: value }))}
-              popupMatchSelectWidth={false}
-            />
-            <ColorPicker
-              value={editingTag.color.includes('#') ? editingTag.color : TAG_COLOR_MAP[editingTag.color] || TAG_COLORS.DEFAULT} 
-              onChange={(e) => setEditingTag((prev) => ({ ...prev, color: e.toHexString() }))}
-            />
-          </div>
-        ) : (
-          <ColorPicker 
-            value={color.includes('#') ? color : TAG_COLOR_MAP[color] || TAG_COLORS.DEFAULT} 
-            disabled
+      width: '20%',
+      render: (color: string) => (
+        <div className="h-[32px] flex items-center">
+          <ColorSelector
+            value={color}
+            disabled={true}
           />
-        )
+        </div>
+      )
     },
     {
       title: 'Bot Count',
       dataIndex: 'botCount',
       key: 'botCount',
       width: '15%',
+      render: (count: number) => (
+        <div className="h-[32px] flex items-center">
+          {count}
+        </div>
+      )
     },
     {
       title: 'Actions',
       key: 'actions',
-      width: '20%',
-      render: (_: any, record: any) =>
-        editingTag.id === record.id ? (
-          <div className='flex gap-2'>
+      render: (_: any, record: any) => (
+        <div className='h-[32px]'>
             <TableActionButton
               actionType="edit"
-              disabled={editError}
-              onClick={() => handleUpdate(record.id)}
-            >
-              Save
-            </TableActionButton>
-            <TableActionButton
-              actionType="delete"
-              onClick={() => setEditingTag({ id: null, name: '', slug: '', color: TAG_COLORS.DEFAULT })}
-            >
-              Cancel
-            </TableActionButton>
-          </div>
-        ) : (
-          <div className='flex gap-2'>
-            <TableActionButton
-              actionType="edit"
-              onClick={() => setEditingTag({ id: record.id, name: record.name, slug: record.slug, color: record.color })}
+              onClick={() => handleOpenEdit(record)}
             />
-            <Popconfirm title='Delete this tag?' onConfirm={() => handleDelete(record.id)} okText='Yes' cancelText='No'>
-              <TableActionButton actionType="delete" />
-            </Popconfirm>
-          </div>
-        )
+            <TableActionButton 
+              actionType="delete" 
+              onClick={() => handleConfirmDelete(record.id)}
+            />
+        </div>
+      )
     }
   ]
-
-  const handleCancel = () => {
-    setIsOpenModal(false)
-    tagForm.resetFields();
-  }
 
   const handlePageChange = (newPage: number, newPageSize?: number) => {
     setPage(newPage);
@@ -278,10 +240,10 @@ function TagsList() {
       <div className="flex justify-between items-center mb-3">
         <h2 className='font-bold text-lg'>Manage Tags</h2>
         <TableActionButton
-            actionType="add"
-            onClick={() => setIsOpenModal(true)}
-          >
-            Add
+          actionType="add"
+          onClick={handleOpenCreate}
+        >
+          Add
         </TableActionButton>
       </div>
       <div className='flex gap-4 mb-3'>
@@ -320,10 +282,11 @@ function TagsList() {
         }}
       />
 
-      <CreateTagModal
+      <CreateEditTagModal
         open={isOpenModal}
         onClose={handleCancel}
-        onCreate={handleCreate}
+        onSubmit={handleModalSubmit}
+        editingData={selectedTag}
       />
     </div>
   )
