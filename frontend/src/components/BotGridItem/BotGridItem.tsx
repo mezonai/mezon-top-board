@@ -96,7 +96,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         </div>
 
         <div className='flex flex-col flex-1 min-w-0 gap-1 mr-6'>
-          <div className='font-bold text-base truncate text-primary leading-tight'>
+          <div className='text-left font-bold text-base truncate text-primary leading-tight'>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
           

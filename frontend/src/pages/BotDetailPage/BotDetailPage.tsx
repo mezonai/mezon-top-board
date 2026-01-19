@@ -130,7 +130,7 @@ function BotDetailPage() {
     {
       breakpoint: 1535,
       settings: {
-        slidesToShow: 4,
+        slidesToShow: 3,
         slidesToScroll: 1
       }
     },
@@ -156,7 +156,7 @@ function BotDetailPage() {
       }
     },
     {
-      breakpoint: 479,
+      breakpoint: 640,
       settings: {
         slidesToShow: 1,
         slidesToScroll: 1
@@ -198,7 +198,7 @@ function BotDetailPage() {
                 swipeToSlide={true}
                 touchThreshold={5}
                 variableWidth={false}
-                slidesToShow={4}
+                slidesToShow={3}
                 responsive={responsive} className='text-center'
               >
                 {relatedMezonApp.map((bot) => (
