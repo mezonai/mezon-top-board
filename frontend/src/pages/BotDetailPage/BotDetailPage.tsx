@@ -203,7 +203,7 @@ function BotDetailPage() {
               >
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
-                    <BotGridItem data={bot} isCarouselItem={true} />
+                    <BotGridItem data={bot} />
                   </div>
                 ))}
               </Carousel>

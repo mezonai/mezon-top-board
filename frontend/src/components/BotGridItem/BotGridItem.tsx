@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 
-function BotGridItem({ data, isPublic = true, onRefresh, isCarouselItem = false }: IBotGridItemProps) {
+function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
@@ -105,11 +105,7 @@ function BotGridItem({ data, isPublic = true, onRefresh, isCarouselItem = false 
           </div>
 
           <div className='flex items-center mt-1 scale-90 origin-left'>
-              {isCarouselItem ? (
-                  <MtbRate readonly={true} value={data?.rateScore || 0} size='small' isShowTooltip></MtbRate>
-              ) : (
-                  <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
-              )}
+            <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
           </div>
         </div>
 

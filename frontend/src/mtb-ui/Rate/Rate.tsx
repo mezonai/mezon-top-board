@@ -4,7 +4,7 @@ import { CSSProperties } from 'react'
 import { IMtbRateProps } from './Rate.types'
 import { cn } from '@app/utils/cn'
 
-function MtbRate({ readonly = false, color, size = 'middle', isShowTooltip = false, customClassName = '', ...props }: IMtbRateProps) {
+function MtbRate({ readonly = false, color, size = 'small', isShowTooltip = false, customClassName = '', ...props }: IMtbRateProps) {
   const isReadOnly = readonly ? (props?.value ?? undefined) : undefined
   const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful']
 
