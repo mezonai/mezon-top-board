@@ -3,5 +3,6 @@ import { GetRelatedMezonAppResponse } from "@app/services/api/mezonApp/mezonApp.
 export interface IBotGridItemProps {
   data?: GetRelatedMezonAppResponse
   isPublic?: boolean
+  isCarouselItem?: boolean
   onRefresh?: () => void
 }
