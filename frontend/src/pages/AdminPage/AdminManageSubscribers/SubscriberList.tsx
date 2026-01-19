@@ -128,8 +128,8 @@ function EmailSubscriberList() {
             value={editingSubscriber.status}
             onChange={(value) => setEditingSubscriber((prev) => ({ ...prev, status: value }))}
             className="w-32"
-            popupClassName="bg-container text-primary"
-            dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+            classNames={{ popup: { root: 'bg-container text-primary' } }}
+            styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
           >
             {Object.values(EmailSubscriptionStatus).map((status) => (
               <Select.Option key={status} value={status}>
@@ -172,7 +172,7 @@ function EmailSubscriberList() {
               onConfirm={() => handleDelete(record.id)} 
               okText='Yes' 
               cancelText='No'
-              overlayClassName='bg-container text-primary'
+              classNames={{ root: 'bg-container text-primary' }}
             >
               <TableActionButton
                 actionType="delete"
@@ -210,8 +210,8 @@ function EmailSubscriberList() {
               <Select 
                 size='large'
                 placeholder='Status'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+                classNames={{ popup: { root: 'bg-container text-primary' } }}
+                styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
                 allowClear
               >
                 {Object.values(EmailSubscriptionStatus).map((status) => (

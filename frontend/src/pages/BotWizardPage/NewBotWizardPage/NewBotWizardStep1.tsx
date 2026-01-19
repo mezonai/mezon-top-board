@@ -31,8 +31,8 @@ export default function NewBotWizardStep1() {
                         render={({ field }) => (
                             <Select {...field} 
                               className="bg-container text-primary custom-select"
-                              popupClassName="custom-select-dropdown"
-                              dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
+                              classNames={{ popup: { root: 'custom-select-dropdown' } }}
+                              styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' } } }}
                               options={data?.map(lang => ({ label: lang.charAt(0).toUpperCase() + lang.slice(1), value: lang }))} 
                               placeholder={t('new_bot_wizard.step1.language_placeholder')} 
                               loading={isLoading} 

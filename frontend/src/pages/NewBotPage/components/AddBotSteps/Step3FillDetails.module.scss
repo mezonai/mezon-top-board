@@ -90,18 +90,18 @@
 }
 
 .themedSelect {
-  :global(.ant-select-selector) {
+  :global(.ant-select) {
     background-color: var(--bg-container) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-color) !important;
   }
 
-  :global(.ant-select-selection-placeholder) {
+  :global(.ant-select-placeholder) {
     color: var(--text-secondary) !important;
     opacity: 0.7;
   }
 
-  :global(.ant-select-arrow) {
+  :global(.ant-select-suffix) {
     color: var(--text-secondary) !important;
   }
 }

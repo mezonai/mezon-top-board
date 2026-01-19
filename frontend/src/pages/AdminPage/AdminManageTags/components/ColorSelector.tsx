@@ -7,7 +7,7 @@ interface ColorSelectorProps {
 }
 
 export const ColorSelector = ({value, onChange}: ColorSelectorProps) => {
-    const isCustom = value?.includes('#')
+  const isCustom = value?.includes('#')
 
   return (
     <div className='flex gap-2'>

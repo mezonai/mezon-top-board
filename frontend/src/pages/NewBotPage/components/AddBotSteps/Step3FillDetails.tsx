@@ -218,13 +218,13 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
                 options={tagOptions}
                 tagRender={() => <></>}
                 open={dropdownOpen}
-                onDropdownVisibleChange={setDropdownOpen}
+                onOpenChange={setDropdownOpen}
                 onChange={(value) => {
                   field.onChange(value)
                   setDropdownOpen(false)
                 }}
                 className={styles.themedSelect}
-                popupClassName={styles.selectDropdown}
+                classNames={{ popup: { root: styles.selectDropdown } }}
               />
 
               <div className='mt-2 flex flex-wrap gap-2'>
@@ -265,7 +265,7 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
               }))}
               onChange={(value) => field.onChange(value)}
               className={styles.themedSelect}
-              popupClassName={styles.selectDropdown}
+              classNames={{ popup: { root: styles.selectDropdown } }}
             />
           )}
         />
@@ -312,7 +312,7 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
             onChange={setSelectedSocialLink}
             placeholder={t('new_bot_page.step3.placeholders.link_type')}
             className={`w-full sm:w-1/3 ${styles.themedSelect}`}
-            popupClassName={styles.selectDropdown}
+            classNames={{ popup: { root: styles.selectDropdown } }}
           />
           <Form.Item
             validateStatus={addLinkError ? 'error' : ''}

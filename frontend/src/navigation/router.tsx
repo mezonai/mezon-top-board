@@ -92,7 +92,7 @@ export const renderMenu = (isHasActive: boolean) => {
 
         return (
           <li key={`${route.path}-${index}`}>
-            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} overlayClassName="menu-dropdown-overlay">
+            <Dropdown menu={{ items: dropdownItems }} trigger={['hover']} classNames={{ root: 'menu-dropdown-overlay' }}>
               <a className={linkClasses}>
                 {route.label || t(route.strLabel)} 
               </a>

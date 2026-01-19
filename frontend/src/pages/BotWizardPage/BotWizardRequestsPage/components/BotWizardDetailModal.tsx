@@ -25,7 +25,7 @@ export default function BotWizardDetailModal({ open, onClose, item }: Props) {
             <div className='flex flex-col gap-4'>
                 {item.status === WizardStatus.EXPIRED && (
                     <Alert
-                        message={t('bot_wizard_detail.expired_title')}
+                        title={t('bot_wizard_detail.expired_title')}
                         description={t('bot_wizard_detail.expired_desc')}
                         type="error"
                         showIcon

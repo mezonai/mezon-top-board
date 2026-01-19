@@ -25,7 +25,7 @@
 }
 
 .container {
-  :global(.ant-select .ant-select-selector) {
+  :global(.ant-select) {
     border-radius: 0 100px 100px 0 !important;
     border-left: none !important;
     background-color: var(--bg-container) !important;
@@ -38,7 +38,7 @@
     line-height: 50px !important; 
   }
 
-  :global(.ant-select .ant-select-selection-placeholder) {
+  :global(.ant-select .ant-select-placeholder) {
     color: var(--text-secondary) !important;
     opacity: 0.8 !important;
   }
@@ -47,11 +47,11 @@
     color: var(--text-primary) !important;
   }
 
-  :global(.ant-select .ant-select-arrow) {
+  :global(.ant-select .ant-select-suffix) {
     color: var(--text-secondary) !important;
   }
 
-  :global(.ant-select-open .ant-select-selector) {
+  :global(.ant-select-open) {
     border-color: var(--border-color) !important;
     box-shadow: none !important;
   }

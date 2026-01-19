@@ -133,7 +133,7 @@ const CropImageModal: React.FC<Props> = ({
       maskClosable={false}
       centered
       width={600}
-      bodyStyle={{ maxHeight: '70vh' }}
+      styles={{ body: { maxHeight: '70vh' } }}
     >
       <div className={cn("flex-between flex-wrap gap-4 mb-4")}>
         <div className={cn("flex-1 flex items-center gap-2", "min-w-[200px]")}>

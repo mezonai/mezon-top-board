@@ -1,5 +1,5 @@
 .singleSelect {
-  :global(.ant-select-selector) {
+  :global(.ant-select) {
     background-color: var(--bg-container-secondary) !important; 
     
     border: none !important;
@@ -15,13 +15,13 @@
     }
   }
 
-  &:hover :global(.ant-select-selector) {
+  &:hover :global(.ant-select) {
     background-color: var(--bg-container-secondary) !important; 
     border: none !important;
   }
 
-  &:global(.ant-select-focused) :global(.ant-select-selector),
-  &:global(.ant-select-open) :global(.ant-select-selector) {
+  &:global(.ant-select-focused) :global(.ant-select),
+  &:global(.ant-select-open) :global(.ant-select) {
     background-color: var(--bg-container-secondary) !important;
     border: none !important;
     box-shadow: none !important;

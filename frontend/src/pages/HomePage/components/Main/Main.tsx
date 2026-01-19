@@ -218,7 +218,7 @@ function Main({ isSearchPage = false }: IMainProps) {
                 size='large'
                 placeholder={t('homepage.sort_placeholder')}
                 className='min-w-[160px]'
-                dropdownStyle={{ width: '13rem' }}
+                styles={{ popup: { root: { width: '13rem' } } }}
                 defaultValue={translatedSortOptions[0]}
                 data-e2e="selectSortOptions"
               />

@@ -142,7 +142,7 @@ function MailScheduleList() {
             onConfirm={() => handleDelete(record.id)} 
             okText='Yes' 
             cancelText='No'
-            overlayClassName='bg-container text-primary'
+            classNames={{ root: 'bg-container text-primary' }}
           >
             <TableActionButton 
               actionType="delete" 
@@ -185,8 +185,8 @@ function MailScheduleList() {
             <Select 
               size='large'
               placeholder='Repeat Interval'
-              popupClassName='bg-container text-primary'
-              dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
+              classNames={{ popup: { root: 'bg-container text-primary' } }}
+              styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
               allowClear
             >
               {Object.values(RepeatInterval).map((status) => (

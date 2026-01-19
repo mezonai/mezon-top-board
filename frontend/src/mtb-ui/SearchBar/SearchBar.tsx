@@ -137,7 +137,7 @@ const SearchBar = ({
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder={t('search_bar.all_types')}
-            popupClassName="custom-search-dropdown"
+            classNames={{ popup: { root: 'custom-search-dropdown' } }}
             className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
             data-e2e="selectType"
           />
@@ -149,7 +149,7 @@ const SearchBar = ({
           </Button>
         )}
       </div>
-      <div className={`pt-5 cursor-pointer`}>
+      <div className={`flex pt-5 cursor-pointer gap-2`}>
         {visibleTags.map((tag) => (
           <Tag.CheckableTag
             key={tag.id}
@@ -180,8 +180,8 @@ const SearchBar = ({
               }}
               onBlur={() => setIsSelectVisible(false)}
               style={{ width: '120px', marginTop: '8px' }}
-              dropdownStyle={{ width: '200px' }}
-              popupClassName="custom-search-dropdown"
+              styles={{ popup: { root: { width: '200px' } } }}
+              classNames={{ popup: { root: 'custom-search-dropdown' } }}
               maxTagCount={0}
               maxTagPlaceholder={() => t('search_bar.tags_placeholder', { count: remainingHiddenTagCount })}
               filterOption={(input, option) =>
