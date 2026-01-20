@@ -267,6 +267,10 @@
   color: var(--text-primary);
 }
 
+.ant-select-placeholder {
+  color: var(--text-primary) !important;
+}
+
 .ant-select-dropdown {
   .ant-select-item-option {
     &:not(.ant-select-item-option-selected) {
@@ -292,4 +296,8 @@
 
 .ant-space-item {
   width: 100%;
+}
+
+.ant-input::placeholder {
+  color: var(--text-secondary);
 }

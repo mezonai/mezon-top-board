@@ -127,7 +127,7 @@ const SearchBar = ({
                 </button>
               ) : null
             }
-            className='!rounded-l-full h-[50px] !text-primary !border-border '
+            className='!rounded-l-full h-[50px] !text-primary !border-border'
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
