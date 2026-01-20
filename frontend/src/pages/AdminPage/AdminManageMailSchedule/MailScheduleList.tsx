@@ -1,5 +1,5 @@
 import { RootState } from '@app/store'
-import { Checkbox, Form, Input, InputRef, Popconfirm, Select, Table} from 'antd'
+import { Checkbox, Form, Input, InputRef, Popconfirm, Select, Space, Table} from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -144,9 +144,11 @@ function MailScheduleList() {
             cancelText='No'
             classNames={{ root: 'bg-container text-primary' }}
           >
-            <TableActionButton 
-              actionType="delete" 
-            />
+            <Space>
+              <TableActionButton 
+                actionType="delete" 
+              />
+            </Space>
           </Popconfirm>
         </div>
     }
@@ -185,8 +187,6 @@ function MailScheduleList() {
             <Select 
               size='large'
               placeholder='Repeat Interval'
-              classNames={{ popup: { root: 'bg-container text-primary' } }}
-              styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
               allowClear
             >
               {Object.values(RepeatInterval).map((status) => (

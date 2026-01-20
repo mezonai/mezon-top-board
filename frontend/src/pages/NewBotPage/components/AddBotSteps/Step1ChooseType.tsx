@@ -18,9 +18,6 @@ const Step1ChooseType = () => {
           <Select
             {...field}
             placeholder={t('new_bot_page.step1.placeholder')}
-            className="w-full bg-container text-primary"
-            classNames={{ popup: { root: 'custom-select-dropdown' } }}
-            styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' } } }}
             options={[
               { label: t('new_bot_page.step1.bot'), value: MezonAppType.BOT },
               { label: t('new_bot_page.step1.app'), value: MezonAppType.APP },

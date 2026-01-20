@@ -1,5 +1,5 @@
 import { RootState } from '@app/store'
-import { Form, Input, InputRef, Popconfirm, Select, Table, Tag } from 'antd'
+import { Form, Input, InputRef, Popconfirm, Select, Space, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SearchOutlined } from '@ant-design/icons'
@@ -128,8 +128,6 @@ function EmailSubscriberList() {
             value={editingSubscriber.status}
             onChange={(value) => setEditingSubscriber((prev) => ({ ...prev, status: value }))}
             className="w-32"
-            classNames={{ popup: { root: 'bg-container text-primary' } }}
-            styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
           >
             {Object.values(EmailSubscriptionStatus).map((status) => (
               <Select.Option key={status} value={status}>
@@ -174,9 +172,11 @@ function EmailSubscriberList() {
               cancelText='No'
               classNames={{ root: 'bg-container text-primary' }}
             >
-              <TableActionButton
-                actionType="delete"
-              />
+              <Space>
+                <TableActionButton
+                  actionType="delete"
+                />
+              </Space>
             </Popconfirm>
           </div>
         )
@@ -210,8 +210,6 @@ function EmailSubscriberList() {
               <Select 
                 size='large'
                 placeholder='Status'
-                classNames={{ popup: { root: 'bg-container text-primary' } }}
-                styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
                 allowClear
               >
                 {Object.values(EmailSubscriptionStatus).map((status) => (

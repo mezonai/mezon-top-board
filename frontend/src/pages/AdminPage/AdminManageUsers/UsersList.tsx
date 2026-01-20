@@ -195,8 +195,6 @@ function UsersList() {
               <Select 
                 size='large'
                 placeholder='Sort Field'
-                classNames={{ popup: { root: 'bg-container text-primary' } }}
-                styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
               >
                 <Option value='createdAt'>Created At</Option>
                 <Option value='name'>Name</Option>
@@ -207,8 +205,6 @@ function UsersList() {
               <Select 
                 size="large"
                 placeholder='Sort Order'
-                classNames={{ popup: { root: 'bg-container text-primary' } }}
-                styles={{ popup: { root: { background: 'var(--bg-container)', color: 'var(--text-primary)' } } }}
               >
                 <Option value='ASC'>Ascending</Option>
                 <Option value='DESC'>Descending</Option>

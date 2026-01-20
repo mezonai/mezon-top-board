@@ -1,17 +1,12 @@
 .botActions {
   :global(.ant-dropdown-menu) {
-    background: var(--bg-container) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 12px;
     padding: 6px;
     min-width: 180px;
   }
   
   :global(.ant-dropdown-menu-item),
   :global(.ant-dropdown-menu-submenu-title) {
-    border-radius: 8px;
     padding: 8px 12px !important;
-    color: var(--text-primary) !important;
     transition: all 0.2s;
     white-space: nowrap;
     

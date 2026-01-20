@@ -121,10 +121,10 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             cancelText="No"
           >
             <Space>
-            <TableActionButton
-              actionType="delete"
-              loading={isDeleting}
-            />
+              <TableActionButton
+                actionType="delete"
+                loading={isDeleting}
+              />
             </Space>
           </Popconfirm>
           

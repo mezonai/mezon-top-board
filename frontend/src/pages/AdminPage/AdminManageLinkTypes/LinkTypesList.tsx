@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import LinkTypeModal, { LinkTypeFormValues } from './components/LinkTypeModal'
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
-import { Popconfirm, Table } from 'antd'
+import { Popconfirm, Space, Table } from 'antd'
 import { toast } from 'react-toastify'
 import {
   useLazyLinkTypeControllerGetAllLinksQuery,
@@ -76,7 +76,7 @@ function LinkTypesList() {
 
   const handleModalSubmit = async (values: LinkTypeFormValues & { id?: string }) => {
     const trimmedName = values.name.trim()
-    const trimmedPrefix = values.prefixUrl.trim()
+    const trimmedPrefix = values.prefixUrl?.trim()
 
     const isDuplicate = linkTypeList?.data?.some((linkType: UpdateLinkTypeRequest) => {
       const sameName = linkType.name === trimmedName
@@ -191,7 +191,9 @@ function LinkTypesList() {
             okText='Yes'
             cancelText='No'
           >
-            <TableActionButton actionType="delete" />
+            <Space>
+              <TableActionButton actionType="delete" />
+            </Space>
           </Popconfirm>
         </div>
       )
