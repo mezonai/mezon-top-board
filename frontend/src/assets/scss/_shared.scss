@@ -206,7 +206,7 @@
   .transition-slow { @apply transition-all duration-300 ease-in-out; }
 }
 
-//ANTD TAG OVERRIDES
+//ANTD OVERRIDES
 
 .ant-tag {
   --ant-tag-default-bg: var(--bg-container-secondary) !important;
@@ -224,7 +224,8 @@
 }
 
 .ant-tag.ant-tag-checkable.ant-tag-checkable-checked {
-  border-color: var(--accent-primary);
+  background-color: var(--accent-primary);
+  color: white;
 }
 
 .ant-tag.ant-tag-filled {
@@ -232,16 +233,59 @@
   border: 1px solid var(--border-color);
 }
 
-//ANTD SELECT OVERRIDES
-.ant-select-dropdown.ant-select-dropdown {
-  --ant-select-dropdown-bg: var(--bg-container) !important;
+.ant-carousel {
+  .slick-slider .slick-arrow.slick-prev {
+    color: var(--accent-primary);
+  }
+
+  .slick-slider .slick-arrow.slick-next {
+    color: var(--accent-primary);
+  }
+
+  .slick-dots.slick-dots-bottom {
+    margin-bottom: -25px;
+  }
+
+  .slick-dots li.slick-active::after {
+    background: transparent !important;  
+  }
+
+  .slick-dots li button {
+    background: var(--accent-secondary) !important;  
+  }
+
+  .slick-dots li.slick-active button {
+    opacity: 1 !important;            
+  }
 }
 
-.ant-select-multiple {
-  --ant-select-internal_fixed_item_margin: none !important;
-  
-  .ant-select-input {
-    line-height: normal !important;
-    font-size: smaller !important;
+.ant-select .ant-select-suffix {
+  color: var(--text-secondary);
+}
+
+.ant-select-open .ant-select-content-value {
+  color: var(--text-primary);
+}
+
+.ant-select-dropdown {
+  .ant-select-item-option {
+    &:not(.ant-select-item-option-selected) {
+      &.ant-select-item-option-active,
+      &:hover {
+        background-color: var(--bg-container-secondary) !important;
+      }
+    }
+    &.ant-select-item-option-selected {
+        cursor: default;
+    }
   }
+}
+
+.ant-checkbox-checked.ant-checkbox-disabled
+.ant-checkbox-inner::after {
+  border-color: var(--text-secondary); 
+}
+
+.anticon.anticon-close {
+  color: var(--text-secondary);
 }

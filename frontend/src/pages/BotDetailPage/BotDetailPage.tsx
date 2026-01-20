@@ -199,7 +199,10 @@ function BotDetailPage() {
                 touchThreshold={5}
                 variableWidth={false}
                 slidesToShow={3}
-                responsive={responsive} className='text-center'
+                responsive={responsive} 
+                dots={{
+                  className: 'text-red',
+                }}
               >
                 {relatedMezonApp.map((bot) => (
                   <div className="p-1" key={bot.id}>
