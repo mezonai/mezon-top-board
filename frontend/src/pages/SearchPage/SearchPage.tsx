@@ -1,7 +1,7 @@
-import Main from "../HomePage/components/Main/Main"
+import BotSearchResult from "@app/components/BotSearchResult/BotSearchResult";
 
 function SearchPage() {
-  return <Main isSearchPage={true}></Main>
+  return <BotSearchResult isSearchPage={true}></BotSearchResult>
 }
 
 export default SearchPage
