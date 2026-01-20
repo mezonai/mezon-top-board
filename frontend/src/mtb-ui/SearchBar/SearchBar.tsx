@@ -161,10 +161,7 @@ const SearchBar = ({
         ))}
         {!showAllTags && totalTags > 10 && (
           !isSelectVisible ? (
-            <Tag
-              className="!mb-2 cursor-pointer"
-              onClick={() => setIsSelectVisible(true)}
-            >
+            <Tag onClick={() => setIsSelectVisible(true)}>
               {t('search_bar.tags', { count: remainingHiddenTagCount })}
             </Tag>
           ) : (
@@ -179,9 +176,7 @@ const SearchBar = ({
                 handleSearch(newSelectedTagIds, selectedType);
               }}
               onBlur={() => setIsSelectVisible(false)}
-              style={{ width: '120px', marginTop: '8px' }}
-              styles={{ popup: { root: { width: '200px' } } }}
-              classNames={{ popup: { root: 'custom-search-dropdown' } }}
+              styles={{ popup: { root: { width: '200px'} } }}
               maxTagCount={0}
               maxTagPlaceholder={() => t('search_bar.tags_placeholder', { count: remainingHiddenTagCount })}
               filterOption={(input, option) =>

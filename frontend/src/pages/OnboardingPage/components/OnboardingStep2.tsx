@@ -18,6 +18,7 @@ import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/m
 import { getUrlMedia } from '@app/utils/stringHelper';
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar';
 import defaultAvatar from '@app/assets/images/default-user.webp';
+import { CropImageShape } from '@app/enums/CropImage.enum';
 
 interface Props {
   onSubmitSuccess: () => void;
@@ -151,6 +152,8 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
           isVisible={isMediaManagerOpen}
           onChoose={handleChooseMedia}
           onClose={() => setIsMediaManagerOpen(false)}
+          initialCropShape={CropImageShape.ROUND}
+          showShapeSwitcher={false}
         />
       </form>
     </FormProvider>

@@ -14,17 +14,22 @@ import { useAppSelector } from '@app/store/hook'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import CropImageModal from '@app/components/CropImageModal/CropImageModal'
+import { CropImageShape } from '@app/enums/CropImage.enum'
 import { cn } from '@app/utils/cn'
 import { useTranslation } from 'react-i18next'
 
 const MediaManagerModal = ({
   isVisible,
   onChoose,
-  onClose
+  onClose,
+  initialCropShape = CropImageShape.ROUND,
+  showShapeSwitcher = false
 }: {
   isVisible: boolean
   onChoose: (path: string) => void
   onClose: () => void
+  initialCropShape?: CropImageShape
+  showShapeSwitcher?: boolean
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
@@ -239,6 +244,8 @@ const MediaManagerModal = ({
         onCancel={handleCloseModal}
         onConfirm={handleCropConfirm}
         parentLoading={isUploading}
+        initialShape={initialCropShape}
+        showShapeSwitcher={showShapeSwitcher}
       />
     </>
   )

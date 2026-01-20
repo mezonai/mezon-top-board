@@ -5,7 +5,7 @@ export async function getCroppedImg(
   crop: PixelCrop,
   fileName: string,
   rotation = 0,
-  scale = 1,
+  zoom = 1,
   circular = false,
   mimeType = 'image/png',
   quality = 0.95
@@ -25,72 +25,61 @@ export async function getCroppedImg(
   const scaleX = image.naturalWidth / image.width
   const scaleY = image.naturalHeight / image.height
   const pixelRatio = window.devicePixelRatio || 1
-  const cropWidthNatural = crop.width * scaleX
-  const cropHeightNatural = crop.height * scaleY
-  const outputWidth = Math.max(1, Math.ceil(crop.width * scale));
-  const outputHeight = Math.max(1, Math.ceil(crop.height * scale));
 
+  const outputWidth = Math.floor(crop.width * scaleX * pixelRatio)
+  const outputHeight = Math.floor(crop.height * scaleY * pixelRatio)
 
-  canvas.width = Math.ceil(outputWidth * pixelRatio)
-  canvas.height = Math.ceil(outputHeight * pixelRatio)
+  canvas.width = outputWidth
+  canvas.height = outputHeight
 
   ctx.scale(pixelRatio, pixelRatio)
   ctx.imageSmoothingQuality = 'high'
-  const rotationRads = rotation * (Math.PI / 180)
-  const centerX = outputWidth / 2
-  const centerY = outputHeight / 2
 
+  const cropCenterX = crop.x + crop.width / 2
+  const cropCenterY = crop.y + crop.height / 2
+
+  const centerX = outputWidth / (2 * pixelRatio)
+  const centerY = outputHeight / (2 * pixelRatio)
+
+  ctx.save()
   ctx.translate(centerX, centerY)
-  if (rotation !== 0) {
-    ctx.rotate(rotationRads)
-  }
-  ctx.translate(-centerX, -centerY)
+  ctx.rotate((rotation * Math.PI) / 180)
+  ctx.scale(zoom, zoom)
+  ctx.translate(-cropCenterX * scaleX, -cropCenterY * scaleY)
 
-  try {
-    if (image.naturalWidth === 0 || image.naturalHeight === 0) {
-      console.error("Image natural dimensions are zero.");
-      return null;
-    }
+  ctx.drawImage(
+    image,
+    0,
+    0,
+    image.naturalWidth,
+    image.naturalHeight,
+    0,
+    0,
+    image.naturalWidth,
+    image.naturalHeight
+  )
 
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      cropWidthNatural,
-      cropHeightNatural,
-      0,
-      0,
-      outputWidth,
-      outputHeight
-    )
-  } catch (err) {
-    console.error('drawImage failed', err)
-    return null
-  }
+  ctx.restore()
 
   if (circular) {
-    ctx.translate(centerX, centerY)
-    ctx.rotate(-rotationRads)
-    ctx.translate(-centerX, -centerY)
-
     ctx.globalCompositeOperation = 'destination-in'
+    
     ctx.beginPath()
-    const radius = Math.min(outputWidth, outputHeight) / 2
+    const radius = Math.min(outputWidth, outputHeight) / (2 * pixelRatio)
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
     ctx.fill()
-
-    ctx.globalCompositeOperation = 'source-over'
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     canvas.toBlob(
       (blob) => {
         if (!blob) {
-          reject(new Error('Canvas to Blob conversion failed'))
+          console.error('Canvas is empty')
+          resolve(null)
           return
         }
-        const croppedFile = new File([blob], fileName, { type: mimeType })
-        resolve(croppedFile)
+        const file = new File([blob], fileName, { type: mimeType })
+        resolve(file)
       },
       mimeType,
       quality

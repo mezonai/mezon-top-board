@@ -161,12 +161,6 @@
     }
   }
   
-  :global(.ant-tag:not(.ant-tag-success):not(.ant-tag-error):not(.ant-tag-warning):not(.ant-tag-processing):not(.ant-tag-blue):not(.ant-tag-green):not(.ant-tag-red):not(.ant-tag-orange):not(.ant-tag-gold):not(.ant-tag-cyan):not([class*="ant-tag-"])) {
-    background: var(--bg-container-secondary) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-color) !important;
-  }
-  
   :global(.ant-radio-wrapper) {
     color: var(--text-primary) !important;
     

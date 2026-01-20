@@ -16,6 +16,7 @@ function App() {
       colorBgBase: 'var(--bg-body)',
       colorTextBase: 'var(--text-primary)',
       colorBgContainer: 'var(--bg-container)',
+      colorBgElevated: 'var(--bg-container)',
       colorText: 'var(--text-primary)',
       colorTextSecondary: 'var(--text-secondary)',
       colorBorder: 'var(--border-color)'

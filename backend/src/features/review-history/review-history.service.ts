@@ -101,6 +101,7 @@ export class ReviewHistoryService {
 
     await this.appReviewRepository.update(req.id, {
       remark: req.remark,
+      reviewedAt: new Date(),
     });
 
     return new Result({

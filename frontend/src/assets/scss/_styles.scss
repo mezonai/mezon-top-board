@@ -121,16 +121,6 @@
     );
     box-shadow: 0 0 15px rgba(91, 103, 234, 0.5);
   }
-  
-  .ant-popover {
-    .ant-popover-inner {
-      box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
-    }
-  }
-
-  .ant-empty-image svg {
-    filter: invert(1) brightness(0.6) !important;
-  }
 }
 
 body {
@@ -248,5 +238,4 @@ pre {
 .ql-font-serif {
   font-family: serif;
 }
-
 
