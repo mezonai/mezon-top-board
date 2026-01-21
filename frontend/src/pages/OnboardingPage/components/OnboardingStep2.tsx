@@ -97,9 +97,9 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <button
                 type='button'
                 onClick={() => setIsMediaManagerOpen(true)}
-                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors'
+                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-container shadow-sm flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors'
               >
-                <CameraOutlined />
+                <CameraOutlined className='!text-primary'/>
               </button>
             </Tooltip>
           </div>
