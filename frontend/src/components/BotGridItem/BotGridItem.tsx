@@ -14,7 +14,7 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import { cn } from '@app/utils/cn'
 
-function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBotGridItemProps) {
+function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
@@ -67,11 +67,11 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
     }
   }
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
-
+  
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
   }
-  
+
   return (
     <GlassCard
       hoverEffect={true}
@@ -80,25 +80,23 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <div 
-        className={cn(
-          'flex w-full h-full relative',
-          minimal ? 'flex-col items-center text-center justify-center gap-2' : 'items-start gap-3'
-        )}
-      >
+      <div className={cn(
+        "flex w-full h-full relative",
+        "flex-col items-center justify-center text-center gap-2",
+        "lg:flex-row lg:items-start lg:text-left lg:gap-3"
+      )}>
         
-        {!isPublic && !minimal && (
+        {!isPublic && (
            <div className="absolute -top-3 -left-3 z-20">
               <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
            </div>
         )}
 
-        <div 
-          className={cn(
-            'flex-shrink-0',
-            minimal ? 'w-full aspect-square max-w-[80px]' : 'w-16 h-16'
-          )}
-        >
+        <div className={cn(
+          "flex-shrink-0",
+          "w-full max-w-[80px] aspect-square",
+          "lg:w-16 lg:h-16 lg:max-w-none"
+        )}>
           <img 
             src={imgUrl} 
             alt={data?.name} 
@@ -106,44 +104,38 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
           />
         </div>
 
-        <div 
-          className={cn(
-            'flex flex-col flex-1 min-w-0',
-            minimal ? 'w-full gap-0' : 'gap-1 mr-6'
-          )}
-        >
-          <div 
-            className={cn(
-              'font-bold text-primary leading-tight truncate',
-              minimal ? 'text-sm text-center' : 'text-base text-left'
-            )}
-          >
+        <div className={cn(
+          "flex flex-col flex-1 min-w-0 w-full",
+          "gap-0",
+          "lg:mr-6 lg:gap-1"
+        )}>
+          <div className={cn(
+            "font-bold text-primary leading-tight truncate",
+            "text-sm text-center",
+            "lg:text-base lg:text-left"
+          )}>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
           
-          {!minimal && (
-            <>
-              <div className='text-xs text-secondary truncate leading-tight'>
-                 {data?.headline || t('component.bot_grid_item.default_headline')}
-              </div>
+          <div className="hidden lg:block">
+            <div className='text-xs text-secondary truncate leading-tight'>
+              {data?.headline || t('component.bot_grid_item.default_headline')}
+            </div>
 
-              <div className='flex items-center mt-1 scale-90 origin-left'>
-                <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
-              </div>
-            </>
-          )}
+            <div className='flex items-center mt-1 scale-90 origin-left'>
+              <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
+            </div>
+          </div>
         </div>
 
-        {!minimal && (
-          <div className="owner-actions flex-shrink-0 -mt-1 -mr-2">
-            <BotActions 
-                data={data} 
-                mode={ViewMode.GRID} 
-                onNewVersionClick={handleOwnerNewVersionClick} 
-                onRefresh={onRefresh}
-            />
-          </div>
-        )}
+        <div className="owner-actions flex-shrink-0 -mt-1 -mr-2 hidden lg:block">
+          <BotActions 
+              data={data} 
+              mode={ViewMode.GRID} 
+              onNewVersionClick={handleOwnerNewVersionClick} 
+              onRefresh={onRefresh}
+          />
+        </div>
 
       </div>
 
