@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import { App, FavoriteApp } from "@domain/entities";
 import { GenericRepository } from "@libs/repository/genericRepository";
@@ -8,6 +8,7 @@ import { Result } from "@domain/common/dtos/result.dto";
 import { GetFavoritesAppRequest } from "./dtos/request";
 import { FavoriteAppResponseDto } from "./dtos/response";
 import { Mapper } from '@libs/utils/mapper';
+import { AppStatus } from "@domain/common/enum/appStatus";
 
 @Injectable()
 export class FavoriteAppService {
@@ -27,6 +28,7 @@ export class FavoriteAppService {
             .createQueryBuilder("app")
             .innerJoin("app.favorites", "favorite")
             .where("favorite.userId = :userId", { userId })
+            .andWhere("app.status = :status", { status: AppStatus.PUBLISHED }) 
             .leftJoinAndSelect("app.owner", "owner")
             .leftJoinAndSelect("app.tags", "tags")
             .skip(skip)
@@ -66,6 +68,10 @@ export class FavoriteAppService {
     async addFavoriteApp(userId: string, appId: string) {
         const app = await this.appRepository.findById(appId);
         if (!app) throw new NotFoundException(ErrorMessages.NOT_FOUND_MSG);
+
+        if (app.status !== AppStatus.PUBLISHED) {
+             throw new BadRequestException("You can only add published apps to favorites");
+        }
 
         const existing = await this.favoriteAppRepository.findOne({
             where: { userId, appId }

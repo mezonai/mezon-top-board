@@ -12,6 +12,7 @@ import { getMezonInstallLink } from '@app/utils/mezonApp';
 import { safeConcatUrl, getUrlMedia } from '@app/utils/stringHelper';
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
 import { avatarBotDefault } from '@app/assets';
+import { ApiError } from '@app/types/API.types';
 
 export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
   const { t } = useTranslation(['components']);
@@ -48,7 +49,9 @@ export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
       }
     } catch (error) {
       setIsFavorited(!newState);
-      message.error(t("component.share_button.error"));
+      const apiError = error as ApiError;
+      const errorMessage = apiError?.data?.message || t("component.share_button.error");
+      message.error(errorMessage);
     }
   };
 
