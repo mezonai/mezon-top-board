@@ -83,9 +83,10 @@ function AppReviewPage() {
             dataIndex: "featuredImage",
             key: "featuredImage",
             width: 80,
-            render: (featuredImage: string, data: GetMezonAppDetailsResponse) => (
-                <TableImage src={featuredImage} alt={data.name} />
-            ),
+            render: (_: any, data: GetMezonAppDetailsResponse) => {
+                const version = data.versions?.[0]
+                return  <TableImage src={version?.featuredImage} alt={data.name} />
+            },
         },
         {
             title: 'Name',
