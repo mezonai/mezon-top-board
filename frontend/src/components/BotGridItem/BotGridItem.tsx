@@ -75,10 +75,7 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
   return (
     <GlassCard
       hoverEffect={true}
-      className={cn(
-        'relative select-none cursor-pointer group h-full', 
-        minimal ? 'p-2' : 'p-3'
-      )}
+      className='relative select-none p-3 cursor-pointer group h-full'
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
