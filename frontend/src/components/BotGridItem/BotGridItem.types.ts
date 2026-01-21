@@ -4,4 +4,5 @@ export interface IBotGridItemProps {
   data?: GetRelatedMezonAppResponse
   isPublic?: boolean
   onRefresh?: () => void
+  minimal?: boolean;
 }
