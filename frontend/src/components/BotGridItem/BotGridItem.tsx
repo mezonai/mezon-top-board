@@ -46,7 +46,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
     }
 
     if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
-      return; 
+      return;
     }
 
     const target = e.target as HTMLElement
@@ -67,7 +67,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
     }
   }
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
-  
+
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
   }
@@ -85,11 +85,11 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         "flex-col items-center justify-center text-center gap-2",
         "lg:flex-row lg:items-start lg:text-left lg:gap-3"
       )}>
-        
+
         {!isPublic && (
-           <div className="absolute -top-3 -left-3 z-20">
-              <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
-           </div>
+          <div className="absolute -top-3 -left-3 z-20">
+            <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
+          </div>
         )}
 
         <div className={cn(
@@ -97,9 +97,9 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
           "w-full max-w-[80px] aspect-square",
           "lg:w-16 lg:h-16 lg:max-w-none"
         )}>
-          <img 
-            src={imgUrl} 
-            alt={data?.name} 
+          <img
+            src={imgUrl}
+            alt={data?.name}
             className='w-full h-full object-cover rounded-xl'
           />
         </div>
@@ -116,7 +116,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
           )}>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
-          
+
           <div className="hidden lg:block">
             <div className='text-xs text-secondary truncate leading-tight'>
               {data?.headline || t('component.bot_grid_item.default_headline')}
@@ -129,11 +129,11 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         </div>
 
         <div className="owner-actions flex-shrink-0 -mt-1 -mr-2 hidden lg:block">
-          <BotActions 
-              data={data} 
-              mode={ViewMode.GRID} 
-              onNewVersionClick={handleOwnerNewVersionClick} 
-              onRefresh={onRefresh}
+          <BotActions
+            data={data}
+            mode={ViewMode.GRID}
+            onNewVersionClick={handleOwnerNewVersionClick}
+            onRefresh={onRefresh}
           />
         </div>
 
