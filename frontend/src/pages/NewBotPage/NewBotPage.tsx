@@ -269,7 +269,7 @@ function NewBotPage() {
         <FormProvider {...methods}>
           <div className='bg-container p-6 rounded-md shadow-md border border-transparent dark:border-border'>
             <Steps
-              labelPlacement={isSmallSteps ? 'vertical' : 'horizontal'}
+              titlePlacement={isSmallSteps ? 'vertical' : 'horizontal'}
               current={currentStep}
               items={steps.map((step, idx) => ({
                 title: (

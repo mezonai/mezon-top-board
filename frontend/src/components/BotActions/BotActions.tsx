@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Dropdown, MenuProps, Modal } from 'antd'
+import { Dropdown, MenuProps, Modal, Space } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import {
   DeleteOutlined,
@@ -64,7 +64,7 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
       {
         key: "chat",
         label: t("component.owner_actions.chat_now"),
-        icon: <MessageOutlined className='!text-heading !text-md'/>,
+        icon: <MessageOutlined className='!text-heading !text-md' />,
         onClick: handleChatNow,
       }
     ];
@@ -90,7 +90,6 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
         key: "share",
         label: t("component.share_button.share"),
         icon: <ShareAltOutlined className="!text-blue-500 !text-md" />,
-        popupClassName: styles.botActions,
         children: [
           {
             key: "facebook",
@@ -168,18 +167,24 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
     <div onClick={(e) => e.stopPropagation()}>
       <Dropdown
         menu={{ items: menuItems }}
-        overlayClassName={styles.botActions}
+        classNames={{
+          root: styles.botActions
+        }}
         trigger={['click']}
         placement="bottomRight"
         arrow
       >
-        <Button
-          size={mode === ViewMode.GRID ? 'small' : 'large'}
-          color="default"
-          variant="outlined"
-          icon={mode === ViewMode.GRID ? <MoreOutlined className="!text-secondary" /> : <MenuOutlined className="!text-secondary" />}
-          className='hover:!border-primary hover:!bg-container-secondary !bg-container'
-        />
+        <a onClick={(e) => e.preventDefault()}>
+          <Space>
+            <Button
+              size={mode === ViewMode.GRID ? 'small' : 'large'}
+              color="default"
+              variant="outlined"
+              icon={mode === ViewMode.GRID ? <MoreOutlined className="!text-secondary" /> : <MenuOutlined className="!text-secondary" />}
+              className='hover:!border-primary hover:!bg-container-secondary !bg-container'
+            />
+          </Space>
+        </a>
       </Dropdown>
     </div>
   )

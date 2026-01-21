@@ -5,7 +5,6 @@ import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotListItemProps } from './BotListItem.types'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import AppTag from '@app/components/AppTag/AppTag'
 import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -79,9 +78,9 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefr
                 <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
               </div>
 
-              <div className='flex flex-wrap'>
+              <div className='flex flex-wrap gap-1'>
                 {data?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-                  <AppTag key={tag.id} tag={tag} />
+                  <Tag key={tag.id} color={tag.color} variant='outlined'>{tag.name}</Tag>
                 ))}
               </div>
             </div>

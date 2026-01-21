@@ -171,7 +171,7 @@ function AppReviewPage() {
             {(totalCount ?? 0) >=0 && (() => {
                 return (
                     <Alert
-                        message={
+                        title={
                             <span className='text-amber-800 font-semibold'>
                                 {`${totalCount} app${totalCount > 1 ? 's' : ''} pending review`}
                             </span>

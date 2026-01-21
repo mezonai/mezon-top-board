@@ -84,8 +84,10 @@ const ReviewHistoryModal: React.FC<Props> = ({ open, isEdit, data, initialRemark
                 bordered
                 size='small'
                 column={1}
-                labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700, width: '120px', verticalAlign: 'top' }}
-                contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
+                styles={{ 
+                    label: { backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700, width: '120px', verticalAlign: 'top' },
+                    content: { backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }
+                }}
             >
                 <Descriptions.Item label='Version'>
                     {data.appVersion?.version ?? '0'}

@@ -71,12 +71,12 @@ function DetailCard() {
         <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-heading' />}>
           {t('bot_detail.categories')}
         </MtbTypography>
-        <div className='pt-1'>
+        <div className='pt-1 gap-2 flex flex-wrap'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
             <Tag 
               key={tag.id} 
               onClick={() => handleTagClick(tag.id)}
-              className='cursor-pointer !bg-container !text-secondary dark:!bg-container-secondary dark:!text-primary hover:opacity-80 transition-opacity'
+              className='cursor-pointer'
             >
               {tag?.name}
             </Tag>

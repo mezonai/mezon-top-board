@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Space, Tooltip } from 'antd';
 import Button from '@app/mtb-ui/Button';
 import { ReactNode } from 'react';
 import { actionConfigs } from './action.config';
@@ -18,7 +18,7 @@ interface TableActionButtonProps {
   target?: string;
   rel?: string;
   children?: ReactNode;
-  iconPosition?: 'start' | 'end';
+  iconPlacement?: 'start' | 'end';
   htmlType?: 'button' | 'submit' | 'reset';
   size?: 'small' | 'middle' | 'large';
 }
@@ -29,7 +29,7 @@ const TableActionButton = ({
   icon,
   className = '',
   children,
-  iconPosition = 'start',
+  iconPlacement = 'start',
   size,
   ...props
 }: TableActionButtonProps) => {
@@ -41,7 +41,7 @@ const TableActionButton = ({
       variant={config.variant}
       color={config.color}
       icon={icon || config.icon}
-      iconPosition={isPageLevel ? (iconPosition || 'end') : iconPosition}
+      iconPlacement={isPageLevel ? (iconPlacement || 'end') : iconPlacement}
       size={isPageLevel ? "large" : size}
       className={cn(
         `!border-none !whitespace-normal !h-auto !min-h-[40px]`,
@@ -53,7 +53,7 @@ const TableActionButton = ({
       {children}
     </Button>
   );
-  
+
 
   if (!config.tooltip && !tooltipTitle) {
     return buttonElement;
@@ -61,7 +61,7 @@ const TableActionButton = ({
 
   return (
     <Tooltip title={tooltipTitle || config.tooltip}>
-      {buttonElement}
+      <Space>{buttonElement}</Space>
     </Tooltip>
   );
 };

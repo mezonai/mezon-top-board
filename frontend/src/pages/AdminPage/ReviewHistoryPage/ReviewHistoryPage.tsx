@@ -6,7 +6,7 @@ import {
   useReviewHistoryControllerUpdateAppReviewMutation
 } from '@app/services/api/reviewHistory/reviewHistory'
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
-import { Input, Popconfirm, Table, Tag, Typography } from 'antd'
+import { Input, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { formatDate } from '@app/utils/date'
 import TableImage from '@app/components/TableImage/TableImage'
@@ -179,7 +179,9 @@ function ReviewHistoryPage() {
             okText='Yes'
             cancelText='No'
           >
-            <TableActionButton actionType="delete" />
+            <Space>
+              <TableActionButton actionType="delete" />
+            </Space>
           </Popconfirm>
         </div>
       )

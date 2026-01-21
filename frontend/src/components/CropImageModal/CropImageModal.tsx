@@ -136,12 +136,10 @@ const CropImageModal: React.FC<Props> = ({
       cancelText={t('component.crop_image_modal.cancel')}
       confirmLoading={isProcessing || parentLoading}
       cancelButtonProps={{ disabled: parentLoading }}
-      okButtonProps={{ className: cn('bg-primary', 'hover:opacity-90') }}
-      wrapClassName={cn('card-base', 'crop-image-modal')}
       maskClosable={false}
       centered
       width={600}
-      bodyStyle={{ maxHeight: '70vh' }}
+      styles={{ body: { maxHeight: '70vh' } }}
     >
       <div className={cn("flex-between flex-wrap gap-4 mb-4")}>
         <div className={cn("flex-1 flex items-center gap-2", "min-w-[200px]")}>

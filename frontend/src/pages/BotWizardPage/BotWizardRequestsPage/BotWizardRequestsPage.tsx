@@ -71,7 +71,7 @@ export default function BotWizardRequestsPage() {
                             size='large'
                             className='w-[13rem]'
                             dropDownTitle={t('bot_wizard_requests.filter_status_title')}
-                            dropdownStyle={{ fontWeight: 'normal' }}
+                            styles={{ popup: { root: { fontWeight: 'normal' } } }}
                         />
                         <SingleSelect
                             getPopupContainer={(trigger) => trigger.parentElement}
@@ -82,7 +82,7 @@ export default function BotWizardRequestsPage() {
                             size='large'
                             className='w-[13rem]'
                             dropDownTitle={t('bot_wizard_requests.page_size_title')}
-                            dropdownStyle={{ fontWeight: 'normal' }}
+                            styles={{ popup: { root: { fontWeight: 'normal' } } }}
                         />
                     </div>
                 </Flex>

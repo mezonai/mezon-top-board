@@ -195,8 +195,6 @@ function UsersList() {
               <Select 
                 size='large'
                 placeholder='Sort Field'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='createdAt'>Created At</Option>
                 <Option value='name'>Name</Option>
@@ -207,8 +205,6 @@ function UsersList() {
               <Select 
                 size="large"
                 placeholder='Sort Order'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='ASC'>Ascending</Option>
                 <Option value='DESC'>Descending</Option>
@@ -227,7 +223,7 @@ function UsersList() {
       </Form>
       {/* Server Error Alert */}
       {error && (
-        <Alert message='Error Loading Users' description={errorMessage} type='error' showIcon className='mb-4' />
+        <Alert title='Error Loading Users' description={errorMessage} type='error' showIcon className='mb-4' />
       )}
       {/* Render Table */}
       <Table

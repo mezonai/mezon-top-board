@@ -38,7 +38,7 @@ function AdminLayout() {
           <img src={logo} alt='MTB Logo' className="h-8 w-auto" />
           <span className="text-sidebar text-lg font-bold tracking-tight">MTB Admin</span>
         </div>
-        
+
         <div className="px-5 mb-4 text-sidebar-label text-sm font-medium uppercase tracking-wider">MENU</div>
 
         <Menu mode='vertical' defaultSelectedKeys={['/admin']} selectedKeys={[location.pathname]}>
@@ -58,16 +58,15 @@ function AdminLayout() {
           )}
         >
           <div className="flex-center">
-            <Breadcrumb>
-              {pathSnippets.map((snippet, index) => {
+            <Breadcrumb
+              items={pathSnippets.map((snippet, index) => {
                 const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
-                return (
-                  <Breadcrumb.Item key={url}>
-                    <Link to={url}>{snippet.charAt(0).toUpperCase() + snippet.slice(1)}</Link>
-                  </Breadcrumb.Item>
-                )
+                return {
+                  key: url,
+                  title: <Link to={url}>{snippet.charAt(0).toUpperCase() + snippet.slice(1)}</Link>
+                }
               })}
-            </Breadcrumb>
+            />
           </div>
         </Header>
         <div className="flex-1 overflow-y-auto min-h-0">

@@ -4,7 +4,7 @@ import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
 import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
-import { Input, Popconfirm, Spin, Table, Tag } from "antd";
+import { Input, Popconfirm, Space, Spin, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -113,17 +113,21 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
             actionType="edit"
             onClick={() => onEdit(record)}
           />
+          
           <Popconfirm
             title="Are you sure you want to delete this app?"
             onConfirm={() => handleDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <TableActionButton
-              actionType="delete"
-              loading={isDeleting}
-            />
+            <Space>
+              <TableActionButton
+                actionType="delete"
+                loading={isDeleting}
+              />
+            </Space>
           </Popconfirm>
+          
         </div>
       ),
     },

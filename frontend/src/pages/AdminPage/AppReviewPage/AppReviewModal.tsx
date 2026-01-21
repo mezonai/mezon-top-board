@@ -84,8 +84,10 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
         bordered
         size="small"
         column={1}
-        labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
-        contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
+        styles={{
+            label: { backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 },
+            content: { backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }
+        }}
       >
         <Descriptions.Item label="Version">
           {latestVersion?.version ?? '0'}

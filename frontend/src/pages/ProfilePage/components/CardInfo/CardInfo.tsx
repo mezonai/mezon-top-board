@@ -17,7 +17,7 @@ import {
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { Popconfirm } from 'antd'
+import { Popconfirm, Space } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
@@ -77,7 +77,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleMediaSelect = async (selection: string) => {
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
@@ -139,7 +139,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             ))}
         </ul>
       </div>
-      {!isPublic &&
+      {!isPublic && (
         <Popconfirm
           title={t('profile.card_info.confirm_sync_title')}
           description={t('profile.card_info.confirm_sync_desc')}
@@ -147,16 +147,18 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           okText={t('profile.card_info.yes')}
           cancelText={t('profile.card_info.no')}
         >
-          <Button
-            className='mt-2'
-            size='large'
-            variant='outlined'
-            icon={<SyncOutlined />}
-          >
-            {t('profile.card_info.sync_mezon')}
-          </Button>
+          <Space className='mt-2'>
+            <Button
+              size='large'
+              variant='outlined'
+              icon={<SyncOutlined />}
+              className='w-full'
+            >
+              {t('profile.card_info.sync_mezon')}
+            </Button>
+          </Space>
         </Popconfirm>
-      }
+      )}
       <MediaManagerModal
         isVisible={isModalVisible}
         onChoose={handleMediaSelect}

@@ -4,7 +4,6 @@ import { formatDate } from '@app/utils/date'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { getUrlMedia } from '@app/utils/stringHelper'
-import AppTag from '@app/components/AppTag/AppTag'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
@@ -106,7 +105,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
 
                         <div className='flex flex-wrap gap-2'>
                             {latestVersion?.tags?.map((tag) => (
-                                <AppTag key={tag.id} tag={tag} />
+                                <Tag key={tag.id} color={tag.color} variant='outlined'>{tag.name}</Tag>
                             ))}
                         </div>
                     </div>
@@ -115,8 +114,10 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         title={t('component.preview_modal.latest_version_title')}
                         bordered size="small"
                         column={1}
-                        labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
-                        contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
+                        styles={{
+                            label: { backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 },
+                            content: { backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }
+                        }}
                     >
                         {latestVersion ? (
                             <>
