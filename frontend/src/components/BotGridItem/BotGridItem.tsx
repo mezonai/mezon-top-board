@@ -17,7 +17,7 @@ import { cn } from '@app/utils/cn'
 function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
-  const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined)
+  const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -44,7 +44,7 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
       setMouseDownPos(null)
       return
     }
-    
+
     if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
       return; 
     }
@@ -71,7 +71,7 @@ function BotGridItem({ data, isPublic = true, onRefresh, minimal = false }: IBot
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
   }
-
+  
   return (
     <GlassCard
       hoverEffect={true}
