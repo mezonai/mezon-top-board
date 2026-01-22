@@ -11,7 +11,7 @@ import BotListItem from '@app/components/BotListItem/BotListItem';
 import { IBotDirectoryProps } from './BotDirectory.types';
 import { ViewMode } from '@app/enums/viewMode.enum';
 import { PAGE_OPTIONS, GRID_CLASSES } from '@app/constants/BotDirectory.constant';
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum';
+import { ItemVariant } from '@app/enums/ItemVariant.enum';
 
 function BotDirectory({
     data,
@@ -27,7 +27,8 @@ function BotDirectory({
     sortOptions,
     viewMode,
     onViewModeChange,
-    variant = BotDirectoryVariant.FULL,
+    variant = ItemVariant.FULL,
+    gridItemVariant = ItemVariant.FULL,
     className,
     isPublic = true,
     showSort = true,
@@ -141,7 +142,7 @@ function BotDirectory({
                 </div>
             </Flex>
 
-            {isLoading ? (
+            {isLoading ? (  
                 <div className='flex items-center justify-center h-64'>
                     <Spin size='large' />
                 </div>
@@ -149,7 +150,7 @@ function BotDirectory({
                 <div className={listContainerClass}>
                     {data.map((bot) => (
                         viewMode === ViewMode.GRID ? (
-                            <BotGridItem key={bot.id} data={bot} isPublic={isPublic} onRefresh={onRefresh} />
+                            <BotGridItem key={bot.id} data={bot} isPublic={isPublic} onRefresh={onRefresh} variant={gridItemVariant}/>
                         ) : (
                             <BotListItem key={bot.id} readonly={true} data={bot} onRefresh={onRefresh} />
                         )

@@ -1,10 +1,10 @@
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum';
+import { ItemVariant } from '@app/enums/ItemVariant.enum';
 
 export const PAGE_OPTIONS = [6, 12, 18, 24];
 
-export const GRID_CLASSES: Record<BotDirectoryVariant, string> = {
-    [BotDirectoryVariant.FULL]: 'grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3 gap-6 mt-4',
-    [BotDirectoryVariant.COMPACT]: 'grid-cols-2 max-lg:grid-cols-3 max-2xl:grid-cols-3 gap-6 mt-4',
+export const GRID_CLASSES: Record<ItemVariant, string> = {
+    [ItemVariant.FULL]: 'grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3 gap-6 mt-4',
+    [ItemVariant.COMPACT]: 'grid-cols-2 max-lg:grid-cols-3 max-2xl:grid-cols-3 gap-6 mt-4',
 };
 
 export const SORT_OPTIONS = [

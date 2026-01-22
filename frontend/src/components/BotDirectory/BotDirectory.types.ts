@@ -1,7 +1,7 @@
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
 import { IOption } from '@app/mtb-ui/SingleSelect';
 import { ViewMode } from '@app/enums/viewMode.enum';
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum';
+import { ItemVariant } from '@app/enums/ItemVariant.enum';
 
 export interface IBotDirectoryProps {
     data: GetMezonAppDetailsResponse[];
@@ -17,7 +17,8 @@ export interface IBotDirectoryProps {
     sortOptions?: IOption[];
     viewMode: ViewMode;
     onViewModeChange: (mode: ViewMode) => void;
-    variant?: BotDirectoryVariant;
+    variant?: ItemVariant;
+    gridItemVariant?: ItemVariant;
     className?: string;
     isPublic?: boolean;
     showSort?: boolean;
