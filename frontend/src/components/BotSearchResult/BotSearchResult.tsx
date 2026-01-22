@@ -17,7 +17,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { IBotSearchResultProps } from './BotSearchResult.types'
 import { ViewMode } from '@app/enums/viewMode.enum'
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum'
+import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
 function BotSearchResult({ isSearchPage = false }: IBotSearchResultProps) {
   const { t } = useTranslation(['home_page'])
@@ -144,7 +144,7 @@ function BotSearchResult({ isSearchPage = false }: IBotSearchResultProps) {
 
       <div className='pt-8'>
         <BotDirectory
-           variant={BotDirectoryVariant.FULL}
+           variant={ItemVariant.FULL}
            data={mezonApp?.data || []}
            isLoading={isFetching}
            currentPage={page}

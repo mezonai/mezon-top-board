@@ -19,7 +19,7 @@ import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { useAuth } from '@app/hook/useAuth'
 import { useTranslation } from "react-i18next";
 import { useTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum'
+import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
 function ProfilePage() {
   const { t } = useTranslation(['profile_page']);
@@ -138,7 +138,7 @@ function ProfilePage() {
 
           <div className='pt-2'>
              <BotDirectory
-                variant={BotDirectoryVariant.COMPACT}
+                variant={ItemVariant.COMPACT}
                 data={mezonApp?.data || []}
                 isLoading={isListLoading}
                 currentPage={page}

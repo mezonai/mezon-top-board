@@ -13,13 +13,15 @@ import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import { cn } from '@app/utils/cn'
+import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
-function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
+function BotGridItem({ data, isPublic = true, onRefresh, variant = ItemVariant.FULL }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
   const navigate = useNavigate()
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
   const [mouseDownPos, setMouseDownPos] = useState<{ x: number; y: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const isCompact = variant === ItemVariant.COMPACT;
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setMouseDownPos({ x: e.clientX, y: e.clientY })
@@ -83,7 +85,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
       <div className={cn(
         "flex w-full h-full relative",
         "flex-col items-center justify-center text-center gap-2",
-        "lg:flex-row lg:items-start lg:text-left lg:gap-3"
+        !isCompact && "lg:flex-row lg:items-start lg:text-left lg:gap-3"
       )}>
 
         {!isPublic && (
@@ -93,9 +95,8 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         )}
 
         <div className={cn(
-          "flex-shrink-0",
-          "w-full max-w-[80px] aspect-square",
-          "lg:w-16 lg:h-16 lg:max-w-none"
+          "flex-shrink-0 w-full aspect-square",
+          !isCompact ? "max-w-[80px] lg:w-16 lg:h-16 lg:max-w-none" : "max-w-[120px]" 
         )}>
           <img
             src={imgUrl}
@@ -105,38 +106,38 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
         </div>
 
         <div className={cn(
-          "flex flex-col flex-1 min-w-0 w-full",
-          "gap-0",
-          "lg:mr-6 lg:gap-1"
+          "flex flex-col flex-1 min-w-0 w-full gap-0",
+          !isCompact && "lg:mr-6 lg:gap-1"
         )}>
           <div className={cn(
-            "font-bold text-primary leading-tight truncate",
-            "text-sm text-center",
-            "lg:text-base lg:text-left"
+            "font-bold text-primary leading-tight truncate text-sm text-center",
+            !isCompact && "lg:text-base lg:text-left"
           )}>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
 
-          <div className="hidden lg:block">
-            <div className='text-xs text-secondary truncate leading-tight'>
-              {data?.headline || t('component.bot_grid_item.default_headline')}
+          {!isCompact && (
+            <div className="hidden lg:block">
+              <div className='text-xs text-secondary truncate leading-tight'>
+                {data?.headline || t('component.bot_grid_item.default_headline')}
+              </div>
+              <div className='flex items-center mt-1 scale-90 origin-left'>
+                <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
+              </div>
             </div>
-
-            <div className='flex items-center mt-1 scale-90 origin-left'>
-              <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
-            </div>
-          </div>
+          )}
         </div>
 
-        <div className="owner-actions flex-shrink-0 -mt-1 -mr-2 hidden lg:block">
-          <BotActions
-            data={data}
-            mode={ViewMode.GRID}
-            onNewVersionClick={handleOwnerNewVersionClick}
-            onRefresh={onRefresh}
-          />
-        </div>
-
+        {!isCompact && (
+            <div className="owner-actions flex-shrink-0 -mt-1 -mr-2 hidden lg:block">
+            <BotActions
+                data={data}
+                mode={ViewMode.GRID}
+                onNewVersionClick={handleOwnerNewVersionClick}
+                onRefresh={onRefresh}
+            />
+            </div>
+        )}
       </div>
 
       <PreviewModal

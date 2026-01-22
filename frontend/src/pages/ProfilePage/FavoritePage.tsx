@@ -10,7 +10,7 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 import { useFavoriteAppControllerGetFavoriteAppsQuery } from '@app/services/api/favoriteApp/favoriteApp'
 import BotDirectory from '@app/components/BotDirectory/BotDirectory'
 import { useBotDirectory } from '@app/hook/useBotDirectory'
-import { BotDirectoryVariant } from '@app/enums/BotDirectory.enum'
+import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
 function FavoritePage() {
     const { t } = useTranslation(['profile_page', 'home_page']);
@@ -52,7 +52,7 @@ function FavoritePage() {
 
                 <div className='min-w-0'>
                     <BotDirectory
-                        variant={BotDirectoryVariant.COMPACT}
+                        variant={ItemVariant.COMPACT}
                         isPublic={true}
                         showSort={false}
                         showTitle={false}
