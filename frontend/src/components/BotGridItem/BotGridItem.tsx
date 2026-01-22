@@ -12,6 +12,7 @@ import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { ViewMode } from '@app/enums/viewMode.enum'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
+import { cn } from '@app/utils/cn'
 
 function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const { t } = useTranslation(['components'])
@@ -45,7 +46,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
     }
 
     if (e.currentTarget && !e.currentTarget.contains(e.target as Node)) {
-      return; 
+      return;
     }
 
     const target = e.target as HTMLElement
@@ -70,7 +71,7 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
   const handleOwnerNewVersionClick = (version?: AppVersion) => {
     setPreviewVersion(version)
   }
-  
+
   return (
     <GlassCard
       hoverEffect={true}
@@ -79,42 +80,60 @@ function BotGridItem({ data, isPublic = true, onRefresh }: IBotGridItemProps) {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <div className="flex items-start gap-3 w-full h-full relative">
-        
+      <div className={cn(
+        "flex w-full h-full relative",
+        "flex-col items-center justify-center text-center gap-2",
+        "lg:flex-row lg:items-start lg:text-left lg:gap-3"
+      )}>
+
         {!isPublic && (
-           <div className="absolute -top-3 -left-3 z-20">
-              <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
-           </div>
+          <div className="absolute -top-3 -left-3 z-20">
+            <BadgeStatus status={t(mapStatusToText(data!.status))} color={mapStatusToColor(data!.status)} />
+          </div>
         )}
 
-        <div className='flex-shrink-0 w-16 h-16'>
-          <img 
-            src={imgUrl} 
-            alt={data?.name} 
-            className='w-full h-full'
+        <div className={cn(
+          "flex-shrink-0",
+          "w-full max-w-[80px] aspect-square",
+          "lg:w-16 lg:h-16 lg:max-w-none"
+        )}>
+          <img
+            src={imgUrl}
+            alt={data?.name}
+            className='w-full h-full object-cover rounded-xl'
           />
         </div>
 
-        <div className='flex flex-col flex-1 min-w-0 gap-1 mr-6'>
-          <div className='text-left font-bold text-base truncate text-primary leading-tight'>
+        <div className={cn(
+          "flex flex-col flex-1 min-w-0 w-full",
+          "gap-0",
+          "lg:mr-6 lg:gap-1"
+        )}>
+          <div className={cn(
+            "font-bold text-primary leading-tight truncate",
+            "text-sm text-center",
+            "lg:text-base lg:text-left"
+          )}>
             {data?.name || t('component.bot_grid_item.default_name')}
           </div>
-          
-          <div className='text-xs text-secondary truncate leading-tight'>
-             {data?.headline || t('component.bot_grid_item.default_headline')}
-          </div>
 
-          <div className='flex items-center mt-1 scale-90 origin-left'>
-            <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
+          <div className="hidden lg:block">
+            <div className='text-xs text-secondary truncate leading-tight'>
+              {data?.headline || t('component.bot_grid_item.default_headline')}
+            </div>
+
+            <div className='flex items-center mt-1 scale-90 origin-left'>
+              <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
+            </div>
           </div>
         </div>
 
-        <div className="owner-actions flex-shrink-0 -mt-1 -mr-2">
-          <BotActions 
-              data={data} 
-              mode={ViewMode.GRID} 
-              onNewVersionClick={handleOwnerNewVersionClick} 
-              onRefresh={onRefresh}
+        <div className="owner-actions flex-shrink-0 -mt-1 -mr-2 hidden lg:block">
+          <BotActions
+            data={data}
+            mode={ViewMode.GRID}
+            onNewVersionClick={handleOwnerNewVersionClick}
+            onRefresh={onRefresh}
           />
         </div>
 
