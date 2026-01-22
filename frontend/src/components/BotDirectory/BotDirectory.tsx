@@ -28,7 +28,7 @@ function BotDirectory({
     viewMode,
     onViewModeChange,
     variant = ItemVariant.FULL,
-    botGridVariant = ItemVariant.FULL,
+    gridItemVariant = ItemVariant.FULL,
     className,
     isPublic = true,
     showSort = true,
@@ -150,7 +150,7 @@ function BotDirectory({
                 <div className={listContainerClass}>
                     {data.map((bot) => (
                         viewMode === ViewMode.GRID ? (
-                            <BotGridItem key={bot.id} data={bot} isPublic={isPublic} onRefresh={onRefresh} variant={botGridVariant}/>
+                            <BotGridItem key={bot.id} data={bot} isPublic={isPublic} onRefresh={onRefresh} variant={gridItemVariant}/>
                         ) : (
                             <BotListItem key={bot.id} readonly={true} data={bot} onRefresh={onRefresh} />
                         )

@@ -18,7 +18,7 @@ export interface IBotDirectoryProps {
     viewMode: ViewMode;
     onViewModeChange: (mode: ViewMode) => void;
     variant?: ItemVariant;
-    botGridVariant?: ItemVariant;
+    gridItemVariant?: ItemVariant;
     className?: string;
     isPublic?: boolean;
     showSort?: boolean;
