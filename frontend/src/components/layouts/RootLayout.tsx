@@ -3,6 +3,7 @@ import useWebTitle from '@app/hook/useWebTitle';
 import Footer from '@app/mtb-ui/Footer/Footer'
 import Header from '@app/mtb-ui/Header/Header'
 import { Outlet } from 'react-router-dom'
+import LuckyButton from '../LuckyButton/LuckyButton';
 
 function RootLayout() {
   useWebTitle();
@@ -23,6 +24,7 @@ function RootLayout() {
         <Outlet />
       </div>
       <Footer />
+      <LuckyButton />
     </div>
   )
 }

@@ -576,4 +576,20 @@ export class MezonAppService {
       },
     );
   }
+
+  async getRandomApp() {
+    const randomApp = await this.appRepository.getRepository()
+      .createQueryBuilder("app")
+      .select(["app.id"])
+      .where("app.status = :status", { status: AppStatus.PUBLISHED })
+      .orderBy("RANDOM()")
+      .limit(1)
+      .getOne();
+
+    if (!randomApp) {
+      throw new NotFoundException(ErrorMessages.NOT_FOUND_MSG);
+    }
+
+    return new Result({ data: { id: randomApp.id } });
+  }
 }

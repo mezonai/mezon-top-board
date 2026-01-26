@@ -159,4 +159,15 @@ export class MezonAppController {
       throw error;
     }
   }
+
+  @Public()
+  @Get("random")
+  getRandomApp() {
+    try {
+      return this.mezonAppService.getRandomApp();
+    } catch (error) {
+      this.logger.error("An error occured", error);
+      throw error;
+    }
+  }
 }

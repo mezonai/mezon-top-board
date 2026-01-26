@@ -115,3 +115,6 @@ export type MezonAppControllerGetRelatedMezonAppApiResponse = HttpResponse<GetRe
 
 export type MezonAppControllerSearchMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerSearchMezonAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>;
+
+export type MezonAppControllerGetRandomAppApiResponse = HttpResponse<{ id: string }>;
+export type MezonAppControllerGetRandomAppApiArg = void;
