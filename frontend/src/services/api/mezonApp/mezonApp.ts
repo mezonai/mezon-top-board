@@ -15,7 +15,9 @@ import type {
   MezonAppControllerGetRelatedMezonAppApiResponse,
   MezonAppControllerGetRelatedMezonAppApiArg,
   MezonAppControllerSearchMezonAppApiResponse,
-  MezonAppControllerSearchMezonAppApiArg
+  MezonAppControllerSearchMezonAppApiArg,
+  MezonAppControllerGetRandomAppApiArg,
+  MezonAppControllerGetRandomAppApiResponse
 } from './mezonApp.types'
 
 const injectedRtkApi = api.injectEndpoints({
@@ -83,7 +85,15 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/mezon-app/search`,
         params: { ...queryArg }
       })
-    })
+    }),
+    mezonAppControllerGetRandomApp: build.query<
+      MezonAppControllerGetRandomAppApiResponse,
+      MezonAppControllerGetRandomAppApiArg
+    >({
+      query: () => ({
+        url: `/api/mezon-app/random`,
+      }),
+    }),
   }),
   overrideExisting: false
 })
@@ -102,5 +112,7 @@ export const {
   useMezonAppControllerGetRelatedMezonAppQuery,
   useLazyMezonAppControllerGetRelatedMezonAppQuery,
   useMezonAppControllerSearchMezonAppQuery,
-  useLazyMezonAppControllerSearchMezonAppQuery
+  useLazyMezonAppControllerSearchMezonAppQuery,
+  useMezonAppControllerGetRandomAppQuery,
+  useLazyMezonAppControllerGetRandomAppQuery
 } = injectedRtkApi
