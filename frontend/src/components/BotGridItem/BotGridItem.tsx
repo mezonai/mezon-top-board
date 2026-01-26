@@ -113,13 +113,13 @@ function BotGridItem({ data, isPublic = true, onRefresh, variant = ItemVariant.F
             "font-bold text-primary leading-tight truncate text-sm text-center",
             !isCompact && "lg:text-base lg:text-left"
           )}>
-            {data?.name || t('component.bot_grid_item.default_name')}
+            {data?.name || ""}
           </div>
 
           {!isCompact && (
             <div className="hidden lg:block">
               <div className='text-xs text-secondary truncate leading-tight'>
-                {data?.headline || t('component.bot_grid_item.default_headline')}
+                {data?.headline || ""}
               </div>
               <div className='flex items-center mt-1 scale-90 origin-left'>
                 <MtbRate readonly={true} value={data?.rateScore || 0} isShowTooltip></MtbRate>
