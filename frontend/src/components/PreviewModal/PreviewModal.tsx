@@ -3,8 +3,8 @@ import React from 'react'
 import { formatDate } from '@app/utils/date'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
-import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
-import { randomColor, getMezonInstallLink } from '@app/utils/mezonApp'
+import { getUrlMedia } from '@app/utils/stringHelper'
+import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
@@ -105,9 +105,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
 
                         <div className='flex flex-wrap gap-2'>
                             {latestVersion?.tags?.map((tag) => (
-                                <Tag key={tag.id} color={randomColor('normal', uuidToNumber(tag.id))}>
-                                    {tag.name}
-                                </Tag>
+                                <Tag key={tag.id} color={tag.color} variant='outlined'>{tag.name}</Tag>
                             ))}
                         </div>
                     </div>
@@ -116,8 +114,10 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         title={t('component.preview_modal.latest_version_title')}
                         bordered size="small"
                         column={1}
-                        labelStyle={{ backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 }}
-                        contentStyle={{ backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }}
+                        styles={{
+                            label: { backgroundColor: 'var(--bg-container-secondary)', color: 'var(--text-primary)', fontWeight: 700 },
+                            content: { backgroundColor: 'var(--bg-container)', color: 'var(--text-primary)' }
+                        }}
                     >
                         {latestVersion ? (
                             <>

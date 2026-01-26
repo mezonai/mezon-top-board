@@ -3,6 +3,7 @@ import { Form, Input, Modal, Switch } from "antd";
 import Button from "@app/mtb-ui/Button";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import TableActionButton from "@app/components/TableActionButton/TableActionButton";
 
 const CreateAppModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,7 +28,12 @@ const CreateAppModal = () => {
 
   return (
     <>
-      <Button type="primary" onClick={handleOpen}>Create App</Button>
+      <TableActionButton
+        actionType="add"
+        onClick={handleOpen}
+      >
+        Create
+      </TableActionButton>
 
       <Modal
         title="Create New App"
@@ -39,9 +45,8 @@ const CreateAppModal = () => {
         ]}
         width={700}
       >
-        <div className="max-h-[60vh] overflow-y-auto">
-          <Form form={form} layout="horizontal" labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }} className="max-w-full">
+        <div className="max-h-[60vh] overflow-y-auto pr-2">
+          <Form form={form} layout="vertical" className="max-w-full">
             <Form.Item name="name" label="App Name" rules={[{ required: true, message: "App Name is required" }]}>
               <Input />
             </Form.Item>
@@ -59,9 +64,8 @@ const CreateAppModal = () => {
             <Form.Item name="ownerId" label="Owner ID" rules={[{ required: true, message: "Owner ID is required" }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="isAutoPublished" label="Is Auto Published?" valuePropName="checked" >
-              <Switch className="ml-2"
-              />
+            <Form.Item name="isAutoPublished" label="Is Auto Published?" valuePropName="checked">
+              <Switch />
             </Form.Item>
             <Form.Item name="prefix" label="Prefix">
               <Input />

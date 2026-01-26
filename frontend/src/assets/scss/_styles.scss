@@ -5,17 +5,19 @@
   --bg-container-secondary: #e5e7eb;
   --bg-elevated: #ffffff;
   --bg-content: #f0f2f5;
-  --bg-sidebar: #001529;
-  --bg-sidebar-divider: #ffffff;
+  --bg-sidebar: #ffffff;
   --bg-table-header: #fafafa;
   --bg-hover: #e5e7eb;
+  --bg-sidebar-active: #f1f5f9;
 
   /* --- Text --- */
   --text-primary: #000000;
   --text-secondary: #4b5563;
   --text-tertiary: #9ca3af;
   --text-breadcrumb: #6b7280;
-  --text-sidebar: #ffffff;
+  --text-sidebar: #1c2434;
+  --text-sidebar-label: #64748b;
+  --text-sidebar-active: #1c2434;
 
   /* --- Borders --- */
   --border-color: #e5e7eb;
@@ -51,17 +53,19 @@
   --bg-container-secondary: #1a1d2e;
   --bg-elevated: #21243a;
   --bg-content: #0b0d15;
-  --bg-sidebar: #13151f;
-  --bg-sidebar-divider: #2d3548;
+  --bg-sidebar: #1c2434;
   --bg-table-header: #1a1d2e;
   --bg-hover: rgba(255, 255, 255, 0.2);
+  --bg-sidebar-active: #333a48;
   
   /* --- Text --- */
   --text-primary: #f0f4f9;
   --text-secondary: #9ca3b4;
   --text-tertiary: #6b7280;
   --text-breadcrumb: #8b92a8;
-  --text-sidebar: #ffffff;
+  --text-sidebar: #dee4ee;
+  --text-sidebar-label: #8a99af;
+  --text-sidebar-active: #ffffff;
   
   /* --- Borders --- */
   --border-color: #1e2235;
@@ -235,50 +239,3 @@ pre {
   font-family: serif;
 }
 
-.ant-carousel {
-  cursor: grab;
-}
-.ant-carousel .slick-dots li button {
-  background: #d1006b !important;
-  width: 5px !important;
-  height: 5px !important;
-}
-.ant-carousel .slick-dots li {
-  width: 10px !important;
-  height: 10px !important;
-}
-.ant-carousel .slick-dots li.slick-active::after {
-  background: #d1006b !important;
-  width: 10px !important;
-  height: 5px !important;
-}
-.ant-carousel .slick-dots {
-  bottom: -1rem !important;
-}
-.ant-carousel .slick-arrow {
-  color: #d1006b !important;
-}
-
-.ant-popover {
-  .ant-popover-inner {
-    background: var(--bg-container) !important;
-    border: none !important;
-    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  .ant-popover-inner-content {
-    color: var(--text-primary) !important;
-  }
-  
-  .ant-popover-arrow {
-    display: none !important;
-  }
-}
-
-[data-theme='dark'] {
-  .ant-popover {
-    .ant-popover-inner {
-      box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
-    }
-  }
-}

@@ -1,18 +1,59 @@
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { message } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { RootState } from '@app/store';
 import { IUserStore } from '@app/store/user';
+import {
+  useFavoriteAppControllerAddFavoriteAppMutation,
+  useFavoriteAppControllerRemoveFavoriteAppMutation,
+} from '@app/services/api/favoriteApp/favoriteApp';
 import { getMezonInstallLink } from '@app/utils/mezonApp';
 import { safeConcatUrl, getUrlMedia } from '@app/utils/stringHelper';
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
 import { avatarBotDefault } from '@app/assets';
+import { ApiError } from '@app/types/API.types';
 
 export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
+  const { t } = useTranslation(['components']);
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user);
 
   const isOwner = useMemo(() => {
     return !!(userInfo?.id && data?.owner?.id && userInfo.id === data.owner.id);
   }, [userInfo?.id, data?.owner?.id]);
+
+  const [isFavorited, setIsFavorited] = useState(data?.isFavorited);
+  const [addFavorite, { isLoading: isAdding }] = useFavoriteAppControllerAddFavoriteAppMutation();
+  const [removeFavorite, { isLoading: isRemoving }] = useFavoriteAppControllerRemoveFavoriteAppMutation();
+
+  useEffect(() => {
+    setIsFavorited(data?.isFavorited);
+  }, [data?.isFavorited]);
+
+  const handleToggleFavorite = async () => {
+    if (!userInfo?.id) {
+      message.warning(t("component.share_button.login_required"));
+      return;
+    }
+
+    const newState = !isFavorited;
+    setIsFavorited(newState);
+
+    try {
+      if (newState) {
+        await addFavorite({ id: data.id }).unwrap();
+        message.success(t("component.share_button.added_favorite"));
+      } else {
+        await removeFavorite({ id: data.id }).unwrap();
+        message.success(t("component.share_button.removed_favorite"));
+      }
+    } catch (error) {
+      setIsFavorited(!newState);
+      const apiError = error as ApiError;
+      const errorMessage = apiError?.data?.message || t("component.share_button.error");
+      message.error(errorMessage);
+    }
+  };
 
   const shareUrl = process.env.REACT_APP_SHARE_URL || 'https://top.mezon.ai/bot/';
   const fullShareUrl = safeConcatUrl(shareUrl, data?.id || '');
@@ -57,6 +98,9 @@ export const useBotInteractions = (data: GetMezonAppDetailsResponse) => {
   };
 
   return {
+    isFavorited,
+    isBusy: isAdding || isRemoving,
+    handleToggleFavorite,
     handleShareSocial,
     handleInvite,
     handleChatNow,

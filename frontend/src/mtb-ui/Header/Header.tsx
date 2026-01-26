@@ -24,13 +24,13 @@ import { useTranslation } from 'react-i18next'
 function Header() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false) 
+  const [isScrolled, setIsScrolled] = useState(false)
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { isLogin, postLogout } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
-  const {t} = useTranslation(['common'])
+  const { t } = useTranslation(['common'])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,11 +149,11 @@ function Header() {
     <div
       className={cn(
         'flex-between sticky top-0 w-full z-20',
-        'bg-transparent', 
-        'transition-all duration-300 ease-in-out', 
-        isScrolled 
-          ? 'py-3 px-5 lg:px-20 shadow-lg shadow-accent-primary/5' 
-          : 'py-5 px-5 lg:px-20' 
+        'bg-transparent',
+        'transition-all duration-300 ease-in-out',
+        isScrolled
+          ? 'py-3 px-5 lg:px-20 shadow-lg shadow-accent-primary/5'
+          : 'py-5 px-5 lg:px-20'
       )}
     >
       <HeaderBackground isScrolled={isScrolled} />
@@ -183,11 +183,10 @@ function Header() {
         placement='right'
         onClose={() => setOpen(false)}
         open={open}
-        width={400}
+        size={400}
         styles={{
           body: { background: 'var(--bg-container)', color: 'var(--text-primary)' },
-          header: { background: 'var(--bg-container)', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' },
-          content: { background: 'var(--bg-container)', color: 'var(--text-primary)' }
+          header: { background: 'var(--bg-container)', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)' }
         }}
       >
         {renderHeaderItems(false)}

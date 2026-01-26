@@ -1,7 +1,4 @@
 import {
-  DeleteOutlined,
-  EditOutlined,
-  UnlockOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
 import {
@@ -11,14 +8,14 @@ import {
 } from '@app/services/api/user/user'
 import { UpdateUserRequest, GetUserDetailsResponse } from '@app/services/api/user/user.types'
 import { mapDataSourceTable } from '@app/utils/table'
-import { Alert, Breakpoint, Form, Input, InputRef, Select, Spin, Table, Tag } from 'antd'
-import Button from '@app/mtb-ui/Button'
+import { Alert, Breakpoint, Form, Input, InputRef, Select, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { userRoleColors } from './components/UserTableColumns'
 import EditUserForm from './EditUserForm'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 
 const { Option } = Select
 const pageOptions = [5, 10, 15]
@@ -150,12 +147,21 @@ function UsersList() {
       fixed: 'right' as const,
       render: (_: any, record: GetUserDetailsResponse) => (
         <div className='flex gap-2'>
-          <Button type='primary' color='blue' icon={<EditOutlined />} onClick={() => setSelectedUser(record)}></Button>
+          <TableActionButton
+            actionType="edit"
+            onClick={() => setSelectedUser(record)}
+          />
           {
             !record.deletedAt ? (
-              <Button type='primary'color='danger' danger icon={<DeleteOutlined />} onClick={() => handleDeactivate(record.id)}></Button >
+              <TableActionButton
+                actionType="delete"
+                onClick={() => handleDeactivate(record.id)}
+              />
             ) : (
-              <Button color='green' icon={<UnlockOutlined />} onClick={() => handleActivate(record.id)}></Button >
+              <TableActionButton
+                actionType="activate"
+                onClick={() => handleActivate(record.id)}
+              />
             )
           }
         </div>
@@ -164,107 +170,82 @@ function UsersList() {
   ]
   
   return (
-    <div className='p-4 rounded-md shadow-md bg-container'>
-      <h2 className='text-lg font-semibold mb-4 text-primary'>Users List</h2>
-
+    <>    
+      <h2 className='font-bold text-lg mb-3'>Manage Users</h2>    
       {/* Search & Sorting Form */}
-      <div className='mb-4'>
-        <Form 
-          form={form}
-          onFinish={handleSubmit}
-          initialValues={initialValues}
-          className='w-full'
-        >
-          <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
-            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
+      <Form 
+        form={form}
+        onFinish={handleSubmit}
+        initialValues={initialValues}
+        className='w-full !mt-0 !mb-3'
+      >
+          <div className='flex flex-col md:flex-row md:items-end gap-3 w-full'>
+            <Form.Item name='search' className='w-full md:flex-1 !mb-0'>
               <Input
                 ref={searchRef}
+                size="large"
                 placeholder='Search by name or email'
                 prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => form.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
+                className='w-full rounded-lg'
               />
             </Form.Item>
 
-            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
+            <Form.Item name='sortField' className='w-full md:w-48 !mb-0'>
               <Select 
-                className='w-full h-[40px]'
+                size='large'
                 placeholder='Sort Field'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='createdAt'>Created At</Option>
                 <Option value='name'>Name</Option>
               </Select>
             </Form.Item>
 
-            <Form.Item name='sortOrder' className='w-full md:w-36 mb-0'>
+            <Form.Item name='sortOrder' className='w-full md:w-36 !mb-0'>
               <Select 
-                className='w-full h-[40px]'
+                size="large"
                 placeholder='Sort Order'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
               >
                 <Option value='ASC'>Ascending</Option>
                 <Option value='DESC'>Descending</Option>
               </Select>
             </Form.Item>
 
-            <Form.Item className='w-full md:w-auto mb-0'>
-              <Button 
-                type='primary' 
-                htmlType='submit'
-                icon={<SearchOutlined />}
-                className='w-full md:w-auto h-[40px]'
+            <Form.Item className='w-full md:w-auto !mb-0'>
+              <TableActionButton
+                actionType="search"
+                htmlType="submit"
               >
                 Search
-              </Button>
+              </TableActionButton>
             </Form.Item>
           </div>
-        </Form>
-      </div>
-      
-      {/* Loading Spinner */}
-      {isLoading && (
-        <div className='flex justify-center my-4'>
-          <Spin size='large' />
-        </div>
-      )}
-
+      </Form>
       {/* Server Error Alert */}
       {error && (
-        <Alert message='Error Loading Users' description={errorMessage} type='error' showIcon className='mb-4' />
+        <Alert title='Error Loading Users' description={errorMessage} type='error' showIcon className='mb-4' />
       )}
-
       {/* Render Table */}
-      {!isLoading && !error && users && users.totalCount !== 0 && (
-        <Table
-          columns={userTableColumns}
-          dataSource={mapDataSourceTable((users?.data || []) as GetUserDetailsResponse[])}
-          pagination={{
-            current: page,
-            pageSize: botPerPage,
-            total: totals || 0,
-            onChange: handlePageChange,
-            showSizeChanger: true,
-            pageSizeOptions: pageOptions.map(String)
-          }}
-          scroll={{ x: 'max-content' }}
-        />
-      )}
-
-      {!isLoading && !error && (!users || users.totalCount === 0) && (
-        <div className='text-center p-8 text-secondary'>
-          <p>Không tìm thấy người dùng</p>
-        </div>
-      )}
-      
+      <Table
+        columns={userTableColumns}
+        dataSource={mapDataSourceTable((users?.data || []) as GetUserDetailsResponse[])}
+        loading={isLoading}
+        pagination={{
+          current: page,
+          pageSize: botPerPage,
+          total: totals || 0,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          pageSizeOptions: pageOptions.map(String)
+        }}
+        scroll={{ x: 'max-content' }}
+      />
       {selectedUser && (
         <div className='bg-opacity-50'>
           <EditUserForm user={selectedUser} onClose={() => setSelectedUser(null)} />
         </div>
       )}
-    </div>
+    </>
   )
 }
 

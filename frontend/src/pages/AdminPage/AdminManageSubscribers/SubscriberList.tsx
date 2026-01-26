@@ -1,11 +1,11 @@
 import { RootState } from '@app/store'
-import { Form, Input, InputRef, Popconfirm, Select, Table, Tag } from 'antd'
+import { Form, Input, InputRef, Popconfirm, Select, Space, Table, Tag } from 'antd'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '@app/store/hook'
 import { toast } from 'react-toastify'
-import MtbButton from '@app/mtb-ui/Button'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import { EmailSubscriptionStatus } from '@app/enums/subscribe'
 import { IEmailSubscriberStore, setSearchSubscriberList } from '@app/store/emailSubscriber'
 import { useEmailSubscribeControllerDeleteMutation, useEmailSubscribeControllerUpdateSubscriberMutation, useLazyEmailSubscribeControllerGetAllSubscribersQuery, useLazyEmailSubscribeControllerSearchSubscriberQuery } from '@app/services/api/emailSubscribe/emailSubscribe'
@@ -128,8 +128,6 @@ function EmailSubscriberList() {
             value={editingSubscriber.status}
             onChange={(value) => setEditingSubscriber((prev) => ({ ...prev, status: value }))}
             className="w-32"
-            popupClassName="bg-container text-primary"
-            dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
           >
             {Object.values(EmailSubscriptionStatus).map((status) => (
               <Select.Option key={status} value={status}>
@@ -148,25 +146,23 @@ function EmailSubscriberList() {
       render: (_: any, record: any) =>
         editingSubscriber.id === record.id ? (
           <div className='flex gap-2'>
-            <MtbButton 
-              color="blue"
+            <TableActionButton
+              actionType="edit"
               onClick={() => handleUpdate(record.id)}
             >
               Save
-            </MtbButton>
-            <MtbButton 
-              color='danger'
+            </TableActionButton>
+            <TableActionButton
+              actionType="delete"
               onClick={() => setEditingSubscriber({ id: null, status: undefined })}
             >
               Cancel
-            </MtbButton>
+            </TableActionButton>
           </div>
         ) : (
           <div className='flex gap-2'>
-            <MtbButton 
-              variant="solid"
-              color="blue"
-              icon={<EditOutlined />}
+            <TableActionButton
+              actionType="edit"
               onClick={() => setEditingSubscriber({ id: record.id, status: record.status })}
             />
             <Popconfirm 
@@ -174,13 +170,13 @@ function EmailSubscriberList() {
               onConfirm={() => handleDelete(record.id)} 
               okText='Yes' 
               cancelText='No'
-              overlayClassName='bg-container text-primary'
+              classNames={{ root: 'bg-container text-primary' }}
             >
-              <MtbButton 
-                variant="solid"
-                color="danger"
-                icon={<DeleteOutlined />} 
-              />
+              <Space>
+                <TableActionButton
+                  actionType="delete"
+                />
+              </Space>
             </Popconfirm>
           </div>
         )
@@ -188,11 +184,11 @@ function EmailSubscriberList() {
   ]
 
   return (
-    <div className="p-4 rounded-md shadow-md bg-container">
-      <h2 className='font-bold text-lg mb-4 text-primary'>Manage Email Subscribers</h2>
+    <div>
+      <h2 className='font-bold text-lg mb-3 text-primary'>Manage Email Subscribers</h2>
       
       {/* Search & Filter Form */}
-      <div className='mb-4'>
+      <div className='mb-3'>
         <Form 
           form={searchForm} 
           onFinish={handleSearch}           
@@ -200,21 +196,20 @@ function EmailSubscriberList() {
           className='w-full'
         >
           <div className='flex flex-col md:flex-row items-center gap-3 w-full'>
-            <Form.Item name='search' className='w-full md:flex-1 mb-0'>
+            <Form.Item name='search' className='w-full md:flex-1 !mb-0'>
               <Input
+                size='large'
                 ref={searchRef}
                 placeholder='Search by email'
                 prefix={<SearchOutlined className='text-secondary' />}
                 onPressEnter={() => searchForm.submit()}
-                className='w-full rounded-[8px] h-[40px] bg-container text-primary border-border placeholder:text-secondary'
+                className='rounded-lg'
               />
             </Form.Item>
-            <Form.Item name='sortField' className='w-full md:w-48 mb-0'>
+            <Form.Item name='sortField' className='w-full md:w-48 !mb-0'>
               <Select 
-                className='w-full h-[40px]'
+                size='large'
                 placeholder='Status'
-                popupClassName='bg-container text-primary'
-                dropdownStyle={{ background: 'var(--bg-container)', color: 'var(--text-primary)' }}
                 allowClear
               >
                 {Object.values(EmailSubscriptionStatus).map((status) => (
@@ -224,41 +219,32 @@ function EmailSubscriberList() {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item className='w-full md:w-auto mb-0'>
-              <MtbButton 
-                htmlType='submit'
-                icon={<SearchOutlined />}
-                className='w-full md:w-auto h-[40px]'
+            <Form.Item className='w-full md:w-auto !mb-0'>
+              <TableActionButton
+                actionType="search"
+                htmlType="submit"
               >
                 Search
-              </MtbButton>
+              </TableActionButton>
             </Form.Item>
           </div>
         </Form>
       </div>
-
-      {searchEmailSubscriberList?.data?.length ? (
-        <Table 
-          dataSource={searchEmailSubscriberList.data} 
-          columns={columns} 
-          rowKey='id'
-          pagination={{
-            current: page,
-            pageSize: botPerPage,
-            total: totals,
-            onChange: handlePageChange,
-            showSizeChanger: true,
-            pageSizeOptions: pageOptions.map(String)
-          }} 
-          scroll={{ x: 'max-content' }}
-          className="admin-table"
-        />
-      ) : (
-        <div className='text-center p-8 text-secondary'>
-          <p>No result found</p>
-        </div>
-      )}
-
+      <Table 
+        dataSource={searchEmailSubscriberList?.data || []} 
+        columns={columns} 
+        rowKey='id'
+        pagination={{
+          current: page,
+          pageSize: botPerPage,
+          total: totals,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          pageSizeOptions: pageOptions.map(String)
+        }} 
+        scroll={{ x: 'max-content' }}
+        className="admin-table"
+      />
     </div>
   )
 }

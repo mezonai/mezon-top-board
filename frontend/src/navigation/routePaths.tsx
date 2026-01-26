@@ -16,6 +16,7 @@ import UnsubscribePage from '@app/pages/UnsubscribePage/UnsubscribePage'
 import { RoutePath } from '@app/types/RoutePath.types'
 import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
+import FavoritePage from '@app/pages/ProfilePage/FavoritePage'
 
 export const routePaths: RoutePath[] = [
   {
@@ -71,6 +72,14 @@ export const routePaths: RoutePath[] = [
     path: '/profile/setting',
     element: <SettingPage></SettingPage>,
     strLabel: 'nav.personal_settings',
+    isShowMenu: false,
+    requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/profile/my-favorites',
+    element: <FavoritePage />,
+    strLabel: 'nav.my_favorites',
     isShowMenu: false,
     requireAuth: true,
   },

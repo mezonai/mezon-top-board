@@ -4,16 +4,13 @@ import Button from '@app/mtb-ui/Button'
 import MtbRate from '@app/mtb-ui/Rate/Rate'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import { IBotListItemProps } from './BotListItem.types'
-import { randomColor } from '@app/utils/mezonApp'
-import { getUrlMedia, uuidToNumber } from '@app/utils/stringHelper'
+import { getUrlMedia } from '@app/utils/stringHelper'
 import { Tag } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import ShareButton from './components/ShareButton'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import BotActions from '../BotActions/BotActions'
-import MessageButton from '@app/pages/BotDetailPage/components/MessageButton/MessageButton'
 import PreviewModal from '../PreviewModal/PreviewModal'
 import { useState } from 'react'
 import type { AppVersion } from '@app/types/appVersion.types'
@@ -22,10 +19,10 @@ import { TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
-import { ViewMode } from '@app/enums/viewMode.enum'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
+import { ViewMode } from '@app/enums/viewMode.enum'
 
-function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBotListItemProps) {
+function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefresh }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
@@ -81,28 +78,24 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true }: IBot
                 <MtbRate readonly={readonly} value={data?.rateScore}></MtbRate>
               </div>
 
-              <div className='flex flex-wrap'>
+              <div className='flex flex-wrap gap-1'>
                 {data?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-                  <Tag key={tag?.id} color={randomColor('normal', uuidToNumber(tag?.id))} className="mb-[0.2rem]">
-                    {tag?.name}
-                  </Tag>
+                  <Tag key={tag.id} color={tag.color} variant='outlined'>{tag.name}</Tag>
                 ))}
               </div>
             </div>
 
-            <div className='flex gap-3 flex-shrink-0 items-start mt-2 sm:mt-0'>
-              {userInfo?.id && data?.owner?.id === userInfo?.id && (
-                <BotActions 
-                  data={data} 
-                  mode={ViewMode.LIST}
-                  onNewVersionClick={handleOwnerNewVersionClick} 
-                />
-              )}
-              <MessageButton data={data!} />
+            <div className='flex gap-3 flex-shrink-0 items-start pt-2 sm:mt-0'>
               <Button color='primary' variant='solid' size='large' onClick={onInviteClick}>
                 {t('component.bot_list_item.invite')}
               </Button>
-              <ShareButton data={data!} />
+              
+              <BotActions 
+                data={data} 
+                mode={ViewMode.LIST}
+                onNewVersionClick={handleOwnerNewVersionClick} 
+                onRefresh={onRefresh}
+              />
             </div>
 
           </div>

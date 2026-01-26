@@ -1,6 +1,6 @@
 import { Controller, useFormContext, useWatch, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Input, Checkbox, Select, Form, Tag, InputNumber } from 'antd'
+import { Input, Checkbox, Select, Form, InputNumber } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -20,7 +20,6 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import styles from './Step3FillDetails.module.scss'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -216,34 +215,14 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
                 placeholder={t('new_bot_page.step3.placeholders.tags')}
                 status={errors?.tagIds?.message ? 'error' : ''}
                 options={tagOptions}
-                tagRender={() => <></>}
                 open={dropdownOpen}
-                onDropdownVisibleChange={setDropdownOpen}
+                onOpenChange={setDropdownOpen}
                 onChange={(value) => {
                   field.onChange(value)
                   setDropdownOpen(false)
                 }}
-                className={styles.themedSelect}
-                popupClassName={styles.selectDropdown}
+                className='h-8 flex items-center justify-between'
               />
-
-              <div className='mt-2 flex flex-wrap gap-2'>
-                {(field.value ?? []).map((tagId: string) => {
-                  const tag = tagOptions.find(t => t.value === tagId)
-                  return (
-                    <Tag
-                      key={tagId}
-                      closable
-                      onClose={() =>
-                        field.onChange(field.value.filter((id: string) => id !== tagId))
-                      }
-                      className={styles.customTag}
-                    >
-                      {tag?.label}
-                    </Tag>
-                  )
-                })}
-              </div>
             </>
           )}
         />
@@ -264,8 +243,6 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
                 value,
               }))}
               onChange={(value) => field.onChange(value)}
-              className={styles.themedSelect}
-              popupClassName={styles.selectDropdown}
             />
           )}
         />
@@ -311,8 +288,7 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
             value={selectedSocialLink}
             onChange={setSelectedSocialLink}
             placeholder={t('new_bot_page.step3.placeholders.link_type')}
-            className={`w-full sm:w-1/3 ${styles.themedSelect}`}
-            popupClassName={styles.selectDropdown}
+            className='w-full sm:w-1/3 h-8'
           />
           <Form.Item
             validateStatus={addLinkError ? 'error' : ''}

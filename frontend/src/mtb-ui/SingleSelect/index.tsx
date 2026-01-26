@@ -41,12 +41,12 @@ const SingleSelect = (props: ISelectProps & SelectProps<IOption>) => {
       value={selectedValue}
       labelInValue={true}
       open={open}
-      onDropdownVisibleChange={(visible) => setOpen(visible)}
+      onOpenChange={(open) => setOpen(open)}
       title=''
       className={_className}
-      popupClassName={styles.popupReset}  
+      classNames={{ popup: { root: styles.popupReset } }}
       suffixIcon={<DownOutlined className={styles.arrowIcon} />}
-      dropdownRender={() => (
+      popupRender={() => (
         <div className={styles.dropdown}>
           {dropDownTitle && <div className={styles.dropdownTitle}>{dropDownTitle}</div>}
           {options.map((option) => {

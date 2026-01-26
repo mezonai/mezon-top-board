@@ -4,7 +4,8 @@ import {
   InfoCircleOutlined,
   SettingOutlined,
   SyncOutlined,
-  UserAddOutlined
+  UserAddOutlined,
+  HeartOutlined
 } from '@ant-design/icons'
 import avatar from '@app/assets/images/default-user.webp'
 import { AppEvent } from '@app/enums/AppEvent.enum'
@@ -16,13 +17,14 @@ import {
   useUserControllerSyncMezonMutation,
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { Popconfirm } from 'antd'
+import { Popconfirm, Space } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { useTranslation } from "react-i18next";
+import { CropImageShape } from '@app/enums/CropImage.enum'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const { t } = useTranslation(['profile_page']);
@@ -42,6 +44,12 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       icon: <FileImageOutlined />,
       name: t('profile.card_info.gallery'),
       path: '/profile/gallery',
+      isPublic: false
+    },
+    {
+      icon: <HeartOutlined />,
+      name: t('profile.card_info.favorites'),
+      path: '/profile/my-favorites',
       isPublic: false
     },
     {
@@ -69,7 +77,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleMediaSelect = async (selection: string) => {
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
@@ -131,7 +139,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             ))}
         </ul>
       </div>
-      {!isPublic &&
+      {!isPublic && (
         <Popconfirm
           title={t('profile.card_info.confirm_sync_title')}
           description={t('profile.card_info.confirm_sync_desc')}
@@ -139,20 +147,24 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           okText={t('profile.card_info.yes')}
           cancelText={t('profile.card_info.no')}
         >
-          <Button
-            className='mt-2'
-            size='large'
-            variant='outlined'
-            icon={<SyncOutlined />}
-          >
-            {t('profile.card_info.sync_mezon')}
-          </Button>
+          <Space className='mt-2'>
+            <Button
+              size='large'
+              variant='outlined'
+              icon={<SyncOutlined />}
+              className='w-full'
+            >
+              {t('profile.card_info.sync_mezon')}
+            </Button>
+          </Space>
         </Popconfirm>
-      }
+      )}
       <MediaManagerModal
         isVisible={isModalVisible}
         onChoose={handleMediaSelect}
         onClose={handleCancel}
+        initialCropShape={CropImageShape.ROUND}
+        showShapeSwitcher={false}
       />
     </div>
   )

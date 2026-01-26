@@ -1,0 +1,12 @@
+@keyframes float-slow {
+	0%, 100% { transform: translateY(0px); }
+	50% { transform: translateY(-10px); }
+}
+
+.animateFloat {
+	animation: float-slow 3s ease-in-out infinite;
+}
+
+.animateFloat:hover {
+	animation-play-state: paused;
+}

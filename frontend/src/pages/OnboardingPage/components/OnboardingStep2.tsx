@@ -18,6 +18,7 @@ import { useMediaControllerCreateMediaMutation } from '@app/services/api/media/m
 import { getUrlMedia } from '@app/utils/stringHelper';
 import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar';
 import defaultAvatar from '@app/assets/images/default-user.webp';
+import { CropImageShape } from '@app/enums/CropImage.enum';
 
 interface Props {
   onSubmitSuccess: () => void;
@@ -96,9 +97,9 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
               <button
                 type='button'
                 onClick={() => setIsMediaManagerOpen(true)}
-                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors'
+                className='absolute bottom-1 right-2 w-8 h-8 rounded-full bg-container shadow-sm flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors'
               >
-                <CameraOutlined />
+                <CameraOutlined className='!text-primary'/>
               </button>
             </Tooltip>
           </div>
@@ -151,6 +152,8 @@ function OnboardingStep2({ onSubmitSuccess }: Props) {
           isVisible={isMediaManagerOpen}
           onChoose={handleChooseMedia}
           onClose={() => setIsMediaManagerOpen(false)}
+          initialCropShape={CropImageShape.ROUND}
+          showShapeSwitcher={false}
         />
       </form>
     </FormProvider>

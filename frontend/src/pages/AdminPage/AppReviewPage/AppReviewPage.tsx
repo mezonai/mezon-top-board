@@ -1,6 +1,6 @@
-import { EyeOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons'
-import { Input, Table, Tooltip, Tag, Alert, Spin, Typography } from 'antd'
-import Button from '@app/mtb-ui/Button'
+import { SearchOutlined } from '@ant-design/icons'
+import { Input, Table, Tag, Alert, Spin, Typography } from 'antd'
+import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useLazyMezonAppControllerListAdminMezonAppQuery } from '@app/services/api/mezonApp/mezonApp'
@@ -9,10 +9,9 @@ import { formatDate } from '@app/utils/date'
 import PreviewModal from '@app/components/PreviewModal/PreviewModal'
 import AppReviewModal from './AppReviewModal'
 import { AppStatus } from '@app/enums/AppStatus.enum'
-import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
-import { getUrlMedia } from '@app/utils/stringHelper'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
+import TableImage from '@app/components/TableImage/TableImage'
 
 function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -23,7 +22,7 @@ function AppReviewPage() {
     const [detailAppData, setDetailAppData] = useState<GetMezonAppDetailsResponse | undefined>(undefined)
     const [listAdminMezonApp, { isLoading }] = useLazyMezonAppControllerListAdminMezonAppQuery()
     const dataAPI = useAppSelector((state: RootState) => state.mezonApp.mezonAppOfAdmin)
-    const { totalCount, data: tableData } = dataAPI || { totalCount: 0, data: [] }
+    const { totalCount = 0, data: tableData = [] } = dataAPI || {}
 
     const fetchData = (page: number = pageNumber, size: number = pageSize, search: string = searchQuery) => {
         listAdminMezonApp({
@@ -83,16 +82,11 @@ function AppReviewPage() {
             title: "Image",
             dataIndex: "featuredImage",
             key: "featuredImage",
-            render: (featuredImage: string, data: GetMezonAppDetailsResponse) => (
-                <img
-                    src={
-                        featuredImage
-                            ? getUrlMedia(featuredImage)
-                            : sampleBotImg
-                    }
-                    alt={data.name}
-                    style={{ width: 100, display: 'block', margin: '0 auto' }} />
-            ),
+            width: 80,
+            render: (_: any, data: GetMezonAppDetailsResponse) => {
+                const version = data.versions?.[0]
+                return  <TableImage src={version?.featuredImage} alt={data.name} />
+            },
         },
         {
             title: 'Name',
@@ -159,12 +153,14 @@ function AppReviewPage() {
             key: 'action',
             render: (_: any, record: GetMezonAppDetailsResponse) => (
                 <div className='flex gap-3'>
-                    <Tooltip title='View'>
-                        <Button color='blue' variant='outlined' icon={<EyeOutlined />} onClick={() => handleView(record)} />
-                    </Tooltip>
-                    <Tooltip title='Review'>
-                        <Button color='cyan' variant='solid' icon={<LockOutlined />} onClick={() => handleOpenReview(record)} />
-                    </Tooltip>
+                    <TableActionButton
+                        actionType="view"
+                        onClick={() => handleView(record)}
+                    />
+                    <TableActionButton
+                        actionType="review"
+                        onClick={() => handleOpenReview(record)}
+                    />
                 </div>
             )
         }
@@ -172,33 +168,37 @@ function AppReviewPage() {
 
     return (
         <>
-            {totalCount && (() => {
-                if (totalCount > 0) {
-                    return (
-                        <Alert
-                            message={
-                                <span className='text-amber-800 font-semibold'>
-                                    {`${totalCount} app${totalCount > 1 ? 's' : ''} pending review`}
-                                </span>
-                            }
-                            type='warning'
-                            showIcon
-                            style={{ marginBottom: 16, padding: 10 }}
-                        />
-                    )
-                }
-                return null
+            <h2 className='font-bold text-lg mb-3'>Manage App Review</h2>
+            {(totalCount ?? 0) >=0 && (() => {
+                return (
+                    <Alert
+                        title={
+                            <span className='text-amber-800 font-semibold'>
+                                {`${totalCount} app${totalCount > 1 ? 's' : ''} pending review`}
+                            </span>
+                        }
+                        type='warning'
+                        showIcon
+                        style={{ marginBottom: 16, padding: 10 }}
+                    />
+                )
             })()}
             <div className='flex gap-4 mb-3'>
                 <Input
+                    size="large"
                     placeholder='Search apps'
                     value={searchQuery}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     prefix={<SearchOutlined style={{ color: 'var(--text-secondary)' }} />}
                     onPressEnter={handleSearch}
-                    className='w-full rounded-[8px] h-[40px]'
+                    className='w-full rounded-lg'
                 />
-                <Button className="w-50" size="large" variant='solid' type='primary' onClick={handleSearch} icon={<SearchOutlined />}>Search</Button>
+                <TableActionButton
+                    actionType="search"
+                    onClick={handleSearch}
+                >
+                    Search
+                </TableActionButton>
             </div>
 
             {isLoading ? (

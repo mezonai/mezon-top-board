@@ -70,7 +70,33 @@ export class MezonAppService {
     return Math.round(averageScore * 2) / 2;
   }
 
-  async getMezonAppDetail(query: RequestWithId) {
+  private async getFavoritesMap(appIds: string[], userId?: string): Promise<Map<string, boolean>> {
+    if (!userId || appIds.length === 0) return new Map();
+
+    const rawResults = await this.appRepository.getRepository()
+        .createQueryBuilder('app')
+        .leftJoin(
+          'favorite_app',
+          'ufa',
+          'ufa."appId" = app.id AND ufa."userId" = :userId',
+          { userId },
+        )
+        .whereInIds(appIds)
+        .select([
+            'app.id AS "appId"',
+            `CASE WHEN ufa."userId" IS NOT NULL THEN true ELSE false END AS "isFavorited"`
+        ])
+        .getRawMany();
+
+    const map = new Map<string, boolean>();
+    
+    rawResults.forEach(row => {
+        map.set(row.appId, row.isFavorited);
+    });
+    return map;
+  }
+
+  async getMezonAppDetail(query: RequestWithId, userId?: string) {
     const mezonApp = await this.appRepository.findById(query.id, [
       "tags",
       "socialLinks",
@@ -86,18 +112,20 @@ export class MezonAppService {
       throw new NotFoundException("App not found");
     }
 
-
+    const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
+    const isFavorited = favoritesMap.get(mezonApp.id) || false;
     const owner = await this.userRepository.findById(mezonApp.ownerId);
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
-
+    detail.isFavorited = isFavorited;
+    
     detail.rateScore = this.getAverageRating(mezonApp);
     detail.owner = {
       id: owner.id,
       name: owner.name,
       profileImage: owner.profileImage,
     };
-    detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name }));
+    detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }));
     detail.socialLinks = mezonApp.socialLinks
       .filter((link) => !!link)
       .map((link) => ({
@@ -240,12 +268,16 @@ export class MezonAppService {
     } else apps.orderBy(`app.${sortField}`, sortOrder);
     apps.addOrderBy("version.version", "DESC");
 
-    return { apps, total };
+    return { apps, total, ids };
   }
 
-  async searchMezonApp(query: SearchMezonAppRequest) {
-    const { apps, total } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
-    const data = await apps.getMany();
+  async searchMezonApp(query: SearchMezonAppRequest, userId?: string) {
+    const { apps, total, ids } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
+    const [data, favoritesMap] = await Promise.all([
+        apps.getMany(),
+        this.getFavoritesMap(ids, userId)
+    ]);
+
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
@@ -256,7 +288,9 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
+        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
       },
     );
@@ -500,6 +534,7 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
         mappedMezonApp.owner = entity.owner;
         mappedMezonApp.versions = entity.versions;
@@ -509,10 +544,14 @@ export class MezonAppService {
   }
 
   async getMyApp(userId: string, query: SearchMezonAppRequest) {
-    const { apps, total } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
+    const { apps, total, ids } = await this.buildSearchQuery(query, "app.ownerId = :ownerId", {
       ownerId: userId,
     });
-    const data = await apps.getMany();
+    const [data, favoritesMap] = await Promise.all([
+        apps.getMany(),
+        this.getFavoritesMap(ids, userId)
+    ]);
+
     return paginate<App, SearchMezonAppResponse>(
       [data, total],
       query.pageSize,
@@ -523,6 +562,7 @@ export class MezonAppService {
         mappedMezonApp.tags = entity.tags.map((tag) => ({
           id: tag.id,
           name: tag.name,
+          color: tag.color,
         }));
         mappedMezonApp.versions = entity.versions;
         // TODO: fix with exposeUnsetFields later in class-transformer
@@ -531,8 +571,25 @@ export class MezonAppService {
           name: entity.owner.name,
           profileImage: entity.owner.profileImage,
         }
+        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
       },
     );
+  }
+
+  async getRandomApp() {
+    const randomApp = await this.appRepository.getRepository()
+      .createQueryBuilder("app")
+      .select(["app.id"])
+      .where("app.status = :status", { status: AppStatus.PUBLISHED })
+      .orderBy("RANDOM()")
+      .limit(1)
+      .getOne();
+
+    if (!randomApp) {
+      throw new NotFoundException(ErrorMessages.NOT_FOUND_MSG);
+    }
+
+    return new Result({ data: { id: randomApp.id } });
   }
 }

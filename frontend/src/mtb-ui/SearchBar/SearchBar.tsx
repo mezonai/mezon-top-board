@@ -3,13 +3,11 @@ import { RootState } from '@app/store'
 import { ITagStore } from '@app/store/tag'
 import { ISearchBarProps } from './Search.types'
 import { Input, Select, Tag } from 'antd'
-import { cn } from '@app/utils/cn'
 import { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../Button'
-import styles from './SearchBar.module.scss'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 
 const MAX_VISIBLE_TAGS = 10
@@ -116,7 +114,7 @@ const SearchBar = ({
   return (
     <>
       <div className='flex md:flex-row flex-col gap-4 md:gap-15 items-center'>
-        <div className={cn('flex flex-1 w-full items-center !rounded-full', styles.container)}>
+        <div className='flex flex-1 w-full items-center !rounded-full'>
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -129,7 +127,7 @@ const SearchBar = ({
                 </button>
               ) : null
             }
-            className='!rounded-l-full h-[50px] !bg-container !text-primary !border-border hover:!border-border focus:!border-border'
+            className='!rounded-l-full h-[50px] !text-primary !border-border'
             onPressEnter={() => handleSearch(selectedTagIds, selectedType)}
           />
           <Select
@@ -137,8 +135,7 @@ const SearchBar = ({
             onChange={handleTypeChange}
             options={typeFilterOptions}
             placeholder={t('search_bar.all_types')}
-            popupClassName="custom-search-dropdown"
-            className="!h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3"
+            className="h-[50px] sm:min-w-1/4 lg:min-w-1/5 min-w-1/3 !rounded-r-full !border-l-0"
             data-e2e="selectType"
           />
         </div>
@@ -149,7 +146,7 @@ const SearchBar = ({
           </Button>
         )}
       </div>
-      <div className={`pt-5 cursor-pointer`}>
+      <div className={`flex pt-5 cursor-pointer gap-2`}>
         {visibleTags.map((tag) => (
           <Tag.CheckableTag
             key={tag.id}
@@ -161,10 +158,7 @@ const SearchBar = ({
         ))}
         {!showAllTags && totalTags > 10 && (
           !isSelectVisible ? (
-            <Tag
-              className="!mb-2 cursor-pointer"
-              onClick={() => setIsSelectVisible(true)}
-            >
+            <Tag onClick={() => setIsSelectVisible(true)}>
               {t('search_bar.tags', { count: remainingHiddenTagCount })}
             </Tag>
           ) : (
@@ -179,9 +173,7 @@ const SearchBar = ({
                 handleSearch(newSelectedTagIds, selectedType);
               }}
               onBlur={() => setIsSelectVisible(false)}
-              style={{ width: '120px', marginTop: '8px' }}
-              dropdownStyle={{ width: '200px' }}
-              popupClassName="custom-search-dropdown"
+              styles={{ popup: { root: { width: '200px'} } }}
               maxTagCount={0}
               maxTagPlaceholder={() => t('search_bar.tags_placeholder', { count: remainingHiddenTagCount })}
               filterOption={(input, option) =>
@@ -196,7 +188,7 @@ const SearchBar = ({
         )}
         {selectedTagIds.length > 0 && (
           <Tag 
-            className="clear-tags-btn !cursor-pointer !items-center !gap-1" 
+            className="!text-danger !border-danger hover:!bg-danger/10" 
             onClick={handleClearTags}
           >
             <CloseCircleOutlined /> {t('search_bar.clear_tags')}

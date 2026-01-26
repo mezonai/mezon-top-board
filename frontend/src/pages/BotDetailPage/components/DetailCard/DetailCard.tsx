@@ -10,11 +10,17 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { t } = useTranslation(['bot_detail_page'])
+  const navigate = useNavigate()
+
+  const handleTagClick = (tagId: string) => {
+    navigate(`/search?tags=${encodeURIComponent(tagId)}`)
+  }
 
   return (
     <div className='shadow-sm rounded-2xl bg-container p-4 border border-transparent dark:border-border'>
@@ -65,11 +71,12 @@ function DetailCard() {
         <MtbTypography variant='h3' label={<TagOutlined className='text-xl !text-heading' />}>
           {t('bot_detail.categories')}
         </MtbTypography>
-        <div className='pt-1'>
+        <div className='pt-1 gap-2 flex flex-wrap'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
             <Tag 
               key={tag.id} 
-              className='cursor-pointer !bg-container !text-secondary dark:!bg-container-secondary dark:!text-primary'
+              onClick={() => handleTagClick(tag.id)}
+              className='cursor-pointer'
             >
               {tag?.name}
             </Tag>

@@ -9,7 +9,7 @@ import { LinkTypeResponse } from '../linkType/linkType.types';
 import { SocialLink } from '@app/types/link.types';
 
 export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage'>;
-export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name'>;
+export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name' | 'color'>;
 export type SocialLinkInMezonAppDetailResponse = Pick<Link, 'id' | 'url' | 'linkTypeId'> & {
   type: LinkTypeResponse;
 };
@@ -60,11 +60,12 @@ export type GetMezonAppDetailsResponse = Pick<
   owner: OwnerInMezonAppDetailResponse;
   tags: TagInMezonAppDetailResponse[];
   socialLinks: SocialLinkInMezonAppDetailResponse[];
+  isFavorited: boolean;
   rateScore: number;
   versions: AppVersionDetailsDto[];
 };
 
-export type GetRelatedMezonAppResponse = Pick<App, 'id' | 'name' | 'status' | 'featuredImage'> & {
+export type GetRelatedMezonAppResponse = Pick<App, 'id' | 'name' | 'status' | 'featuredImage' | 'headline'> & {
   rateScore: number;
 };
 
@@ -95,7 +96,7 @@ export type MezonAppControllerListAdminMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerListAdminMezonAppApiResponse = unknown; // TODO: define type
 
 export type MezonAppControllerGetMyAppApiArg = SearchMezonAppRequest;
-export type MezonAppControllerGetMyAppApiResponse = unknown; // TODO: define type
+export type MezonAppControllerGetMyAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>;
 
 export type MezonAppControllerGetMezonAppDetailApiArg = { id: string };
 export type MezonAppControllerGetMezonAppDetailApiResponse = HttpResponse<GetMezonAppDetailsResponse>;
@@ -114,3 +115,6 @@ export type MezonAppControllerGetRelatedMezonAppApiResponse = HttpResponse<GetRe
 
 export type MezonAppControllerSearchMezonAppApiArg = SearchMezonAppRequest;
 export type MezonAppControllerSearchMezonAppApiResponse = HttpResponse<GetMezonAppDetailsResponse[]>;
+
+export type MezonAppControllerGetRandomAppApiResponse = HttpResponse<{ id: string }>;
+export type MezonAppControllerGetRandomAppApiArg = void;

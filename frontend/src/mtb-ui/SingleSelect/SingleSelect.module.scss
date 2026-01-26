@@ -1,40 +1,6 @@
-.singleSelect {
-  :global(.ant-select-selector) {
-    background-color: var(--bg-container-secondary) !important; 
-    
-    border: none !important;
-    border-radius: 10px !important;
-    height: 3rem !important;
-    color: var(--text-primary) !important;
-    padding: 0 12px !important;
-    box-shadow: none !important; 
-
-    :global(.ant-select-selection-item) {
-      color: var(--text-primary) !important;
-      line-height: 3rem !important;
-    }
-  }
-
-  &:hover :global(.ant-select-selector) {
-    background-color: var(--bg-container-secondary) !important; 
-    border: none !important;
-  }
-
-  &:global(.ant-select-focused) :global(.ant-select-selector),
-  &:global(.ant-select-open) :global(.ant-select-selector) {
-    background-color: var(--bg-container-secondary) !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-}
-
 .dropdown {
   background: var(--bg-container) !important;
-  color: var(--text-primary) !important;
   padding: 8px !important;
-  border: none !important;
-  border-radius: 8px !important;
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
 }
 
 .dropdownTitle {
