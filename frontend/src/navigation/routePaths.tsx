@@ -17,6 +17,7 @@ import { RoutePath } from '@app/types/RoutePath.types'
 import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 import FavoritePage from '@app/pages/ProfilePage/FavoritePage'
+import VersionHistoryPage from '@app/pages/VersionHistoryPage/VersionHistoryPage'
 
 export const routePaths: RoutePath[] = [
   {
@@ -151,6 +152,14 @@ export const routePaths: RoutePath[] = [
     strLabel: 'nav.bot_wizard',
     isShowMenu: false,
     requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/bot/:botId/versions',
+    element: <VersionHistoryPage></VersionHistoryPage>,
+    strLabel: 'nav.version_history',
+    isShowMenu: false,
+    requireAuth: false,
   },
   {
     index: false,

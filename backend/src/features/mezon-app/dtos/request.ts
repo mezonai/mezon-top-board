@@ -21,6 +21,7 @@ import {
   ValidateIf,
   IsEnum,
   IsNumber,
+  IsNotEmpty,
 } from "class-validator";
 
 import {
@@ -80,4 +81,9 @@ export class CreateMezonAppRequest extends CreateAppInfoRequest {
 export class UpdateMezonAppRequest extends IntersectionType(
   RequestWithId,
   PartialType(OmitType(CreateMezonAppRequest, [] as const)),
-) {}
+) {
+  @ApiProperty({ description: "Changelog is required for new version updates" })
+  @IsNotEmpty({ message: "Changelog is required" })
+  @IsString()
+  changelog: string;
+}

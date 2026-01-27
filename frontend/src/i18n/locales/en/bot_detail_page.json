@@ -22,6 +22,8 @@
         "chat_now": "Chat now",
         "success": "Successfully",
         "comment_placeholder": "Write your comment...",
-        "post_rating": "Post Rating"
+        "post_rating": "Post Rating",
+        "latest_version": "Latest version",
+        "changelog": "Changelog"
     }
 }

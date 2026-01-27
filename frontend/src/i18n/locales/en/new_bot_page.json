@@ -50,8 +50,6 @@
             "price_desc": "Set a price for your bot",
             "support_url": "Support URL",
             "support_url_desc": "People might have many questions about your bot, make sure you can answer them!",
-            "note": "Note",
-            "note_desc": "If you have any important information for the reviewer, you can share it here",
             "social_links": "Social Links",
             "social_links_desc": "Link your social channels",
             "placeholders": {
@@ -59,7 +57,7 @@
                 "headline": "A powerful and multi-functional role bot",
                 "tags": "Search for tags",
                 "tag_price": "Select tag price",
-                "note": "Please share any important information or details about your bot that our reviewers should know",
+                "changelog": "E.g., Added new features, fixed bugs, improved performance",
                 "link_type": "Link Type",
                 "price": "Enter price",
                 "prefix": "!",
@@ -69,7 +67,9 @@
                 "link_exists": "This link already exists.",
                 "link_duplicate": "This link is duplicated.",
                 "no_image_selected": "No image selected"
-            }
+            },
+            "changelog": "Changelog",
+            "changelog_desc": "Provide a summary of the changes made in this update."
         },
         "step4": {
             "review_update": "Review Your Update Information",
@@ -86,7 +86,6 @@
             "price": "Price:",
             "support_url": "Support URL:",
             "social_links": "Social Links:",
-            "note": "Note:",
             "changelog": "Changelog:",
             "description": "Description:",
             "yes": "Yes",

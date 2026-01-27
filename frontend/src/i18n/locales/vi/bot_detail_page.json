@@ -22,6 +22,8 @@
         "chat_now": "Chat ngay",
         "success": "Thành công",
         "comment_placeholder": "Viết nhận xét của bạn...",
-        "post_rating": "Gửi đánh giá"
+        "post_rating": "Gửi đánh giá",
+        "latest_version": "Phiên bản mới nhất",
+        "changelog": "Nhật ký thay đổi"
     }
 }

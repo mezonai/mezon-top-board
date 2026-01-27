@@ -386,7 +386,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, id, ...updateData } = req;
+    const { tagIds, socialLinks, description, id, changelog, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -494,6 +494,7 @@ export class MezonAppService {
       description: cleanedDescription,
       tagIds,
       socialLinks: links,
+      changelog: changelog
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
@@ -505,6 +506,7 @@ export class MezonAppService {
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
       existingPendingVersion.description = cleanedDescription;
+      existingPendingVersion.changelog = changelog;
 
       await this.appVersionRepository.getRepository().save(existingPendingVersion);
       return app

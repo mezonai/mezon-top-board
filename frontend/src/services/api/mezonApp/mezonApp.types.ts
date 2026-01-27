@@ -27,7 +27,7 @@ export type AppVersionDetailsDto = Pick<
   | 'prefix'
   | 'featuredImage'
   | 'supportUrl'
-  | 'remark'
+  | 'changelog'
   | 'pricingTag'
   | 'price'
   | 'createdAt'
@@ -83,7 +83,7 @@ export type CreateMezonAppRequest = Pick<
 > & {
   prefix?: string;
   featuredImage?: string;
-  remark?: string;
+  changelog?: string;
   tagIds: string[];
   socialLinks?: SocialLink[];
 };

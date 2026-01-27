@@ -27,7 +27,7 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({  }: { isEdit: boolean }) => {
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
   const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
@@ -267,19 +267,28 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label={t('new_bot_page.step3.note')} description={t('new_bot_page.step3.note_desc')}>
-        <Controller
-          control={control}
-          name='remark'
-          render={({ field }) => (
-            <TextArea {...field} rows={3}
-              className='placeholder:!text-primary'
-              placeholder={t('new_bot_page.step3.placeholders.note')}
-              status={errorStatus(errors.remark)}
-            />
-          )}
-        />
-      </FormField>
+      {isEdit && (
+        <FormField 
+          label={t('new_bot_page.step3.changelog')}
+          required
+          description={t('new_bot_page.step3.changelog_desc')} 
+          errorText={errors.changelog?.message}
+        >
+          <Controller
+            control={control}
+            name='changelog'
+            render={({ field }) => (
+              <TextArea 
+                {...field} 
+                rows={4}
+                className='placeholder:!text-primary'
+                placeholder={t('new_bot_page.step3.placeholders.changelog')}
+                status={errorStatus(errors.changelog)}
+              />
+            )}
+          />
+        </FormField>
+      )}
 
       <FormField label={t('new_bot_page.step3.social_links')} description={t('new_bot_page.step3.social_links_desc')}>
         <div className='flex flex-col sm:flex-row gap-4'>

@@ -64,11 +64,11 @@ export class CreateAppInfoRequest {
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   supportUrl?: string;
 
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  remark?: string;
+  // @ApiPropertyOptional()
+  // @IsString()
+  // @IsOptional()
+  // @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  // remark?: string;
 
   @ApiPropertyOptional()
   @IsArray()

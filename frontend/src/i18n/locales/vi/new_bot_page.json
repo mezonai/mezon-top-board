@@ -50,8 +50,6 @@
             "price_desc": "Đặt giá cho bot của bạn",
             "support_url": "URL hỗ trợ",
             "support_url_desc": "Mọi người có thể có nhiều câu hỏi về bot của bạn, hãy chắc chắn rằng bạn có thể trả lời họ!",
-            "note": "Ghi chú",
-            "note_desc": "Nếu bạn có bất kỳ thông tin quan trọng nào cho người đánh giá, bạn có thể chia sẻ tại đây",
             "social_links": "Liên kết xã hội",
             "social_links_desc": "Liên kết các kênh xã hội của bạn",
             "placeholders": {
@@ -59,7 +57,7 @@
                 "headline": "Một bot vai trò mạnh mẽ và đa chức năng",
                 "tags": "Tìm kiếm thẻ",
                 "tag_price": "Chọn giá thẻ",
-                "note": "Vui lòng chia sẻ bất kỳ thông tin hoặc chi tiết quan trọng nào về bot của bạn mà người đánh giá của chúng tôi nên biết",
+                "changelog": "Ví dụ: Thêm tính năng mới, sửa lỗi, cải thiện hiệu suất",
                 "link_type": "Loại liên kết",
                 "price": "Nhập giá",
                 "prefix": "!",
@@ -69,7 +67,9 @@
                 "link_exists": "Liên kết này đã tồn tại.",
                 "link_duplicate": "Liên kết này bị trùng lặp.",
                 "no_image_selected": "Chưa chọn ảnh"
-            }
+            },
+            "changelog": "Nhật ký thay đổi",
+            "changelog_desc": "Cung cấp tóm tắt về những thay đổi đã được thực hiện trong bản cập nhật này."
         },
         "step4": {
             "review_update": "Xem lại thông tin cập nhật của bạn",
@@ -86,7 +86,6 @@
             "price": "Giá:",
             "support_url": "URL hỗ trợ:",
             "social_links": "Liên kết xã hội:",
-            "note": "Ghi chú:",
             "changelog": "Nhật ký thay đổi:",
             "description": "Mô tả:",
             "yes": "Có",
