@@ -42,6 +42,8 @@ export type GetMezonAppDetailsResponse = Pick<
   App,
   | 'id'
   | 'currentVersion'
+  | 'currentVersionChangelog'
+  | 'currentVersionUpdatedAt'
   | 'name'
   | 'description'
   | 'prefix'

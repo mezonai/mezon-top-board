@@ -131,6 +131,16 @@ export class MezonAppService {
     detail.isFavorited = isFavorited;
     
     detail.rateScore = this.getAverageRating(mezonApp);
+
+    if (mezonApp.versions && mezonApp.versions.length > 0) {
+      const currentVerObj = mezonApp.versions.find(v => v.version === mezonApp.currentVersion);
+      
+      if (currentVerObj) {
+        detail.currentVersionChangelog = currentVerObj.changelog;
+        detail.currentVersionUpdatedAt = currentVerObj.updatedAt;
+      } 
+    }
+    
     if (owner) {
       detail.owner = {
         id: owner.id,

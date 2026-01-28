@@ -23,6 +23,8 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import { cn } from '@app/utils/cn'
+import { GlassCard } from '@app/components/GlassCard/GlassCard'
 
 const getStatusBadge = (status: AppStatus, t: (key: string, opts?: any) => string) => {
   switch (status) {
@@ -70,9 +72,6 @@ function VersionHistoryPage() {
   
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
-
-  const versions = Array.isArray(mezonAppDetail?.versions) ? mezonAppDetail.versions : []
-  const latestVersion = versions[0]
 
   useEffect(() => {
     if (botId && botId !== 'undefined') {
@@ -136,40 +135,54 @@ function VersionHistoryPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-secondary">{t('meta.latest')}</span>
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-                  v{latestVersion?.version || '0'}
+                  v{mezonAppDetail.currentVersion || '0'}
                 </span>
               </div>
-              <div className="h-4 w-px bg-border" />
+              <div className="h-4 w-px bg-border/50" />
               <div className="flex items-center gap-2">
-                <span className="text-sm text-secondary">{t('meta.totalReleases')}</span>
+                <span className="text-sm text-secondary">{t('meta.totalVersions')}</span>
                 <span className="text-sm font-medium text-heading">{mezonAppDetail.versions.length}</span>
               </div>
-              <div className="h-4 w-px bg-border" />
+              <div className="h-4 w-px bg-border/50" />
               <div className="flex items-center gap-2">
                 <span className="text-sm text-secondary">{t('meta.lastUpdated')}</span>
                 <span className="text-sm font-medium text-heading">
-                  {latestVersion ? formatAgo(latestVersion.updatedAt, t) : '-'}
+                  {formatAgo(mezonAppDetail.currentVersionUpdatedAt, t)}
                 </span>
               </div>
             </div>
             
             <div className="relative">
-              <div className="absolute left-6 top-0 h-full w-0.5 bg-border" />
+              <div className="absolute left-6 top-0 h-full w-0.5 bg-border/50" />
               
               <div className="flex flex-col gap-6">
-                {versions.map((entry) => {
-                  const isLatest = entry.version === latestVersion?.version;
+                {mezonAppDetail.versions.map((entry) => {
+                  const isLatest = entry.version === mezonAppDetail.currentVersion;
                   const changes = entry.changelog 
                     ? entry.changelog.split('\n').filter(line => line.trim() !== '') 
                     : [];
 
                   return (
                     <div key={entry.id} className="relative flex gap-4">
-                      <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-border bg-container shadow-sm">
-                        <GitCommit className={`h-5 w-5 ${isLatest ? "text-primary" : "text-secondary"}`} />
+                      <div className={cn(
+                        "relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-container shadow-sm",
+                        isLatest ? "border-primary ring-2 ring-primary/50" : "border-border ring-1 ring-border/50"
+                      )}>
+                        <GitCommit className={cn(
+                          "h-5 w-5",
+                          isLatest ? "text-primary" : "text-secondary"
+                        )} />
                       </div>
                       
-                      <div className={`flex-1 rounded-xl border bg-container shadow-sm transition-shadow hover:shadow-md ${isLatest ? "border-primary/30 ring-1 ring-primary/20" : "border-border"}`}>
+                      <GlassCard
+                        hoverEffect={false}
+                        className={cn(
+                          "flex-1",
+                          isLatest 
+                            ? "border-primary/40 bg-primary/5 ring-1 ring-primary/10" 
+                            : "border-border/40"
+                        )}
+                      >
                         <div className="p-5">
                           <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                             <div className="flex items-center gap-3">
@@ -207,7 +220,7 @@ function VersionHistoryPage() {
                             )}
                           </div>
                         </div>
-                      </div>
+                      </GlassCard>
                     </div>
                   )
                 })}

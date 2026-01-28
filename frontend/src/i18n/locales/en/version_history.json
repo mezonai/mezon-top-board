@@ -8,7 +8,7 @@
 	},
 	"meta": {
 		"latest": "Latest:",
-		"totalReleases": "Total Releases:",
+		"totalVersions": "Total Versions:",
 		"lastUpdated": "Last Updated:"
 	},
 	"status": {
