@@ -27,7 +27,7 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
+const Step3FillDetails = ({  }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
   const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })

@@ -30,7 +30,6 @@
         "invalid_format": "Invalid format",
         "min_value": "Value must be at least {{min}}",
         "max_value": "Value must be at most {{max}}",
-        "at_least_one_item": "At least {{count}} item(s) required",
-        "changelog_required": "Changelog is required"
+        "at_least_one_item": "At least {{count}} item(s) required"
     }
 }

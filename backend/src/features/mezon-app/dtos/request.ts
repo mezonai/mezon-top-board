@@ -81,9 +81,4 @@ export class CreateMezonAppRequest extends CreateAppInfoRequest {
 export class UpdateMezonAppRequest extends IntersectionType(
   RequestWithId,
   PartialType(OmitType(CreateMezonAppRequest, [] as const)),
-) {
-  @ApiPropertyOptional({ description: "Changelog is optional for version updates" })
-  @IsOptional()
-  @IsString()
-  changelog?: string;
-}
+) {}

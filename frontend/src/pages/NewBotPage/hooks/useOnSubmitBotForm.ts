@@ -64,7 +64,6 @@ export const useOnSubmitBotForm = (
           updateMezonAppRequest: {
             ...payload,
             id: botId,
-            changelog: payload.changelog || '' 
           }
         }).unwrap()
         toast.success(t('hooks.submit_success_updated', { type: formData.type }))

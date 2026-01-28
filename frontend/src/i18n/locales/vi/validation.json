@@ -30,7 +30,6 @@
         "invalid_format": "Định dạng không hợp lệ",
         "min_value": "Giá trị phải lớn hơn hoặc bằng {{min}}",
         "max_value": "Giá trị phải nhỏ hơn hoặc bằng {{max}}",
-        "at_least_one_item": "Yêu cầu ít nhất {{count}} mục",
-        "changelog_required": "Nhật ký thay đổi là bắt buộc"
+        "at_least_one_item": "Yêu cầu ít nhất {{count}} mục"
     }
 }
