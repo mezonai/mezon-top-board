@@ -69,7 +69,8 @@
                 "no_image_selected": "No image selected"
             },
             "changelog": "Changelog",
-            "changelog_desc": "Provide a summary of the changes made in this update."
+            "changelog_desc": "Provide a summary of the changes made in this update.",
+            "copy_from_history": "Copy from changelog history"
         },
         "step4": {
             "review_update": "Review Your Update Information",

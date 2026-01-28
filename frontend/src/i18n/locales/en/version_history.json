@@ -1,10 +1,15 @@
 {
 	"actions": {
-		"backToBot": "Back to Bot"
+		"backToBot": "Back to Bot",
+		"select_all": "Select All",
+		"deselect_all": "Deselect All",
+		"cancel": "Cancel",
+		"apply": "Apply"
 	},
 	"header": {
 		"title": "Version History",
-		"subtitle": "Track all updates and changes to {{name}}"
+		"subtitle": "Track all updates and changes to {{name}}",
+		"selected_count": "{{count}} selected"
 	},
 	"meta": {
 		"latest": "Latest:",

@@ -69,7 +69,8 @@
                 "no_image_selected": "Chưa chọn ảnh"
             },
             "changelog": "Nhật ký thay đổi",
-            "changelog_desc": "Cung cấp tóm tắt về những thay đổi đã được thực hiện trong bản cập nhật này."
+            "changelog_desc": "Cung cấp tóm tắt về những thay đổi đã được thực hiện trong bản cập nhật này.",
+            "copy_from_history": "Sao chép từ Lịch sử"
         },
         "step4": {
             "review_update": "Xem lại thông tin cập nhật của bạn",

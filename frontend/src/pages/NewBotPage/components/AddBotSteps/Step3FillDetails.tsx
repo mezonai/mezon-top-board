@@ -20,6 +20,8 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { History } from 'lucide-react'
+import ChangelogHistoryModal from '@app/components/ChangelogHistoryModal/ChangelogHistoryModal'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -27,14 +29,15 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({  }: { isEdit: boolean }) => {
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
-  const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
+  const { control, formState: { errors }, setError, clearErrors, setValue, getValues } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { linkTypeList } = useSelector<RootState, ILinkTypeStore>((s) => s.link)
+  const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false)
 
   const {
     fields: socialLinksData,
@@ -125,6 +128,13 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
       }
     })
   }, [socialLinksData, setError, clearErrors])
+
+  const handleSelectChangelog = (text: string) => {
+    const currentText = getValues('changelog') || '';
+    const newText = currentText.trim() ? `${currentText}\n\n${text}` : text;
+    setValue('changelog', newText, { shouldValidate: true, shouldDirty: true });
+    setIsChangelogModalOpen(false);
+  }
 
   return (
     <>
@@ -267,11 +277,26 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
         />
       </FormField>
 
+      {/* CHANGELOG */}
       <FormField
         label={t('new_bot_page.step3.changelog')}
         description={t('new_bot_page.step3.changelog_desc')}
         errorText={errors.changelog?.message}
       >
+        {isEdit && (
+          <div className="flex justify-end mb-1">
+            <Button
+              size="small"
+              variant="text"
+              className="!text-secondary hover:!text-primary text-xs flex items-center gap-1 p-0 h-auto"
+              onClick={() => setIsChangelogModalOpen(true)}
+            >
+              <History size={14} />
+              {t('new_bot_page.step3.copy_from_history')}
+            </Button>
+          </div>
+        )}
+
         <Controller
           control={control}
           name='changelog'
@@ -342,6 +367,12 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
           );
         })}
       </FormField>
+
+      <ChangelogHistoryModal
+        isVisible={isChangelogModalOpen}
+        onClose={() => setIsChangelogModalOpen(false)}
+        onSelect={handleSelectChangelog}
+      />
     </>
   )
 }

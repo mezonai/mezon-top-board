@@ -16,8 +16,8 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page'])
   const { getValues } = useFormContext()
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
-  const { control} = useFormContext<CreateMezonAppRequest>()
-  
+  const { control } = useFormContext<CreateMezonAppRequest>()
+
   const type = useWatch({ control, name: 'type' })
   const values = getValues()
   const tagIds = values.tagIds ?? []
@@ -75,15 +75,22 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
             )}
           </div>
         </li>
-        {isEdit && (
-          <li className='break-words'><strong>{t('new_bot_page.step4.changelog')} </strong>{values.changelog ? values.changelog : t('new_bot_page.step4.none')}</li>
-        )}
+        <li>
+          <strong>{t('new_bot_page.step4.changelog')} </strong>
+          {values.changelog ? (
+            <div className='mt-2 border border-border p-3 rounded-md text-sm bg-container whitespace-pre-wrap break-words'>
+              {values.changelog}
+            </div>
+          ) : (
+            <span className="text-secondary italic ml-2">{t('new_bot_page.step4.none')}</span>
+          )}
+        </li>
         <li><strong>{t('new_bot_page.step4.description')}</strong></li>
-        <div className='border border-border p-3 rounded-md text-sm description break-words bg-container' 
+        <div className='border border-border p-3 rounded-md text-sm description break-words bg-container'
           dangerouslySetInnerHTML={{ __html: transformMediaSrc(values.description || '') }} />
       </ul>
     </div>
   )
 }
- 
+
 export default Step4Review

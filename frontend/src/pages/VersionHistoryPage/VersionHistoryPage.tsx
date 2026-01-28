@@ -158,8 +158,8 @@ function VersionHistoryPage() {
               <div className="flex flex-col gap-6">
                 {mezonAppDetail.versions.map((entry) => {
                   const isLatest = entry.version === mezonAppDetail.currentVersion;
-                  const changes = entry.changelog 
-                    ? entry.changelog.split('\n').filter(line => line.trim() !== '') 
+                  const paragraphs = entry.changelog
+                    ? entry.changelog.trim().split(/\n{2,}/)
                     : [];
 
                   return (
@@ -205,12 +205,12 @@ function VersionHistoryPage() {
                             <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-secondary">
                               {t('changelog.title')}
                             </h4>
-                            {changes.length > 0 ? (
+                            {paragraphs.length > 0 ? (
                               <ul className="flex flex-col gap-2.5">
-                                {changes.map((changeText, idx) => (
+                                {paragraphs.map((changeText, idx) => (
                                   <li key={idx} className="flex items-start gap-3">
                                     <div className="flex-1">
-                                      <span className="text-sm text-heading">{changeText}</span>
+                                      <p className="text-sm text-heading whitespace-pre-wrap leading-relaxed">{changeText}</p>
                                     </div>
                                   </li>
                                 ))}

@@ -1,10 +1,15 @@
 {
 	"actions": {
-		"backToBot": "Quay lại Bot"
+		"backToBot": "Quay lại Bot",
+		"select_all": "Chọn tất cả",
+		"deselect_all": "Bỏ chọn tất cả",
+		"cancel": "Hủy bỏ",
+		"apply": "Áp dụng"
 	},
 	"header": {
 		"title": "Lịch sử phiên bản",
-		"subtitle": "Theo dõi mọi cập nhật và thay đổi của {{name}}"
+		"subtitle": "Theo dõi mọi cập nhật và thay đổi của {{name}}",
+		"selected_count": "Đã chọn {{count}}"
 	},
 	"meta": {
 		"latest": "Mới nhất:",
