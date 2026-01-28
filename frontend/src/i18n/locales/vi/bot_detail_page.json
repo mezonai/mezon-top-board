@@ -24,6 +24,9 @@
         "comment_placeholder": "Viết nhận xét của bạn...",
         "post_rating": "Gửi đánh giá",
         "latest_version": "Phiên bản mới nhất",
-        "changelog": "Nhật ký thay đổi"
+        "changelog": "Nhật ký thay đổi",
+        "more_versions": "Xem thêm",
+        "updated": "Cập nhật vào",
+        "no_changelog": "Không có chi tiết nhật ký thay đổi."
     }
 }

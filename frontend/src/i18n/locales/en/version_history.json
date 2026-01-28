@@ -1,0 +1,28 @@
+{
+	"actions": {
+		"backToBot": "Back to Bot"
+	},
+	"header": {
+		"title": "Version History",
+		"subtitle": "Track all updates and changes to {{name}}"
+	},
+	"meta": {
+		"latest": "Latest:",
+		"totalReleases": "Total Releases:",
+		"lastUpdated": "Last Updated:"
+	},
+	"status": {
+		"published": "Published",
+		"approved": "Approved",
+		"pending": "Pending",
+		"rejected": "Rejected"
+	},
+	"items": {
+		"currentVersion": "Current Version",
+		"releasedOn": "Released on {{date}}"
+	},
+	"changelog": {
+		"title": "Changelog",
+		"noDetails": "No details provided for this version."
+	}
+}

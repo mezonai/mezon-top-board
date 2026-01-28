@@ -97,16 +97,27 @@ export class MezonAppService {
   }
 
   async getMezonAppDetail(query: RequestWithId, userId?: string) {
-    const mezonApp = await this.appRepository.findById(query.id, [
-      "tags",
-      "socialLinks",
-      "socialLinks.type",
-      "ratings",
-      "versions",
-      "versions.tags",
-      "versions.socialLinks",
-      "versions.socialLinks.type",
-    ]);
+    let versionCondition = "versions.status = :approvedStatus";
+    const versionParams: ObjectLiteral = { approvedStatus: AppStatus.APPROVED };
+
+    if (userId) {
+      versionCondition = "(versions.status = :approvedStatus OR app.ownerId = :userId)";
+      versionParams.userId = userId;
+    }
+
+    const mezonApp = await this.appRepository.getRepository()
+      .createQueryBuilder("app")
+      .leftJoinAndSelect("app.tags", "tags")
+      .leftJoinAndSelect("app.socialLinks", "socialLinks")
+      .leftJoinAndSelect("socialLinks.type", "socialLinkType")
+      .leftJoinAndSelect("app.ratings", "ratings")
+      .leftJoinAndSelect("app.owner", "owner")
+      .leftJoinAndSelect("app.versions", "versions", versionCondition, versionParams)
+      .leftJoinAndSelect("versions.tags", "versionTags")
+      .leftJoinAndSelect("versions.socialLinks", "versionSocialLinks")
+      .leftJoinAndSelect("versionSocialLinks.type", "versionLinkType")
+      .where("app.id = :id", { id: query.id })
+      .getOne();
 
     if (!mezonApp) {
       throw new NotFoundException("App not found");
@@ -114,17 +125,20 @@ export class MezonAppService {
 
     const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
     const isFavorited = favoritesMap.get(mezonApp.id) || false;
-    const owner = await this.userRepository.findById(mezonApp.ownerId);
+    const owner = mezonApp.owner;
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
     detail.isFavorited = isFavorited;
     
     detail.rateScore = this.getAverageRating(mezonApp);
-    detail.owner = {
-      id: owner.id,
-      name: owner.name,
-      profileImage: owner.profileImage,
-    };
+    if (owner) {
+      detail.owner = {
+        id: owner.id,
+        name: owner.name,
+        profileImage: owner.profileImage,
+      };
+    }
+    
     detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }));
     detail.socialLinks = mezonApp.socialLinks
       .filter((link) => !!link)

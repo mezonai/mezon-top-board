@@ -24,6 +24,9 @@
         "comment_placeholder": "Write your comment...",
         "post_rating": "Post Rating",
         "latest_version": "Latest version",
-        "changelog": "Changelog"
+        "changelog": "Changelog",
+        "more_versions": "More versions",
+        "updated": "Updated",
+        "no_changelog": "No changelog details provided."
     }
 }

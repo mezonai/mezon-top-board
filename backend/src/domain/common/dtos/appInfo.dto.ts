@@ -64,12 +64,6 @@ export class CreateAppInfoRequest {
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   supportUrl?: string;
 
-  // @ApiPropertyOptional()
-  // @IsString()
-  // @IsOptional()
-  // @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  // remark?: string;
-
   @ApiPropertyOptional()
   @IsArray()
   @ArrayMinSize(1, { message: "At least one tag is required" })

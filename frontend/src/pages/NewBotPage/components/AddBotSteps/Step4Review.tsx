@@ -75,7 +75,6 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
             )}
           </div>
         </li>
-        <li><strong>{t('new_bot_page.step4.note')} </strong>{values.remark ==='' ? t('new_bot_page.step4.none') : values.remark}</li>
         {isEdit && (
           <li className='break-words'><strong>{t('new_bot_page.step4.changelog')} </strong>{values.changelog ? values.changelog : t('new_bot_page.step4.none')}</li>
         )}

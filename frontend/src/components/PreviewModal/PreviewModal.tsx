@@ -169,11 +169,6 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                         {latestVersion.changelog || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
-                                <Descriptions.Item label={t('component.preview_modal.changelog_label')}>
-                                    <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
-                                        {latestVersion.changelog || '-'}
-                                    </Paragraph>
-                                </Descriptions.Item>
                             </>
                         ) : (
                             <Descriptions.Item label={t('component.preview_modal.status_label')}>

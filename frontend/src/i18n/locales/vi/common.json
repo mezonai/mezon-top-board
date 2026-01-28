@@ -60,7 +60,8 @@
         "login": "Đăng nhập",
         "confirm_subscription": "Xác nhận đăng ký",
         "unsubscription": "Hủy đăng ký",
-        "not_found": "Không tìm thấy"
+        "not_found": "Không tìm thấy",
+        "version_history": "Lịch sử phiên bản"
     },
     "header": {
         "login": "Đăng nhập",

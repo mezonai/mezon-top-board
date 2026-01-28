@@ -66,9 +66,7 @@ function BotDetailPage() {
   const { isLogin } = useAuth()
   const [isMobile, setIsMobile] = useState(false);
 
-  // [Fix Error] Lấy ra version mới nhất một cách an toàn
   const latestVersion = mezonAppDetail?.versions?.[0];
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 767);
@@ -196,14 +194,14 @@ function BotDetailPage() {
           {latestVersion && (
             <div className='pt-8'>
               <div className="mb-4 flex items-center justify-between">
-                <MtbTypography variant='h3'>{t('bot_detail.latest_version')}</MtbTypography>
+                <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>{t('bot_detail.latest_version')}</MtbTypography>
                 <div className="inline-flex items-center rounded-full bg-heading/10 px-3 py-1 text-sm font-semibold text-heading">
                   <Tag className="mr-1.5 h-3.5 w-3.5" /> v{latestVersion.version}
                 </div>
               </div>
               <div className="mb-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Clock className="h-4 w-4" />
-                <span>Updated {formatAgo(new Date(latestVersion.updatedAt))}</span>
+                <span>{t('bot_detail.updated')} {formatAgo(latestVersion.updatedAt, t)}</span>
               </div>
               <div>
                 <MtbTypography variant='h4' weight='semibold'>{t('bot_detail.changelog')}</MtbTypography>
@@ -215,12 +213,14 @@ function BotDetailPage() {
                       </MtbTypography>
                     </div>
                   ) : (
-                    <p className="text-sm italic text-gray-400">No changelog details provided.</p>
+                    <p className="text-sm italic text-gray-400">{t('bot_detail.no_changelog')}</p>
                   )}
                 </div>
               </div>
               <Button 
-                variant='outline' 
+                className='w-full'
+                size='middle'
+                variant='outlined' 
                 onClick={() => navigate(`/bot/${mezonAppDetail.id}/versions`)}
               >
                 {t('bot_detail.more_versions')}
