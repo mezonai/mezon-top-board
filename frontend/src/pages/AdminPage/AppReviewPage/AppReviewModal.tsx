@@ -98,7 +98,7 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
         </Descriptions.Item>
         <Descriptions.Item label="Change Log">
           <Typography.Paragraph 
-            style={{ whiteSpace: 'pre-wrap' }}
+            style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}
           >
             {latestVersion?.changelog || '-'}
           </Typography.Paragraph>

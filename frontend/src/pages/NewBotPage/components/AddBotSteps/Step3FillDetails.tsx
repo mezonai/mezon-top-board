@@ -141,7 +141,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       <FormField
         label={t('new_bot_page.step3.headline')}
         required
-        description={t('new_bot_page.step3.headline_desc')} 
+        description={t('new_bot_page.step3.headline_desc')}
         errorText={errors.headline?.message}
       >
         <Controller
@@ -156,10 +156,10 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
 
       <FormField
-          label={t('new_bot_page.step3.description')}
-          required
-          description={t('new_bot_page.step3.description_desc')}
-          errorText={errors.description?.message}>
+        label={t('new_bot_page.step3.description')}
+        required
+        description={t('new_bot_page.step3.description_desc')}
+        errorText={errors.description?.message}>
         <Controller
           control={control}
           name='description'
@@ -184,25 +184,25 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
       </FormField>
       {
         type === MezonAppType.BOT &&
-          <FormField
-              label={t('new_bot_page.step3.prefix')}
-              required
-              description={t('new_bot_page.step3.prefix_desc')}
-              errorText={errors.prefix?.message}>
-            <Controller
-              control={control}
-              name='prefix'
-              render={({ field }) => (
-                <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.prefix')} status={errorStatus(errors.prefix)} />
-              )}
-            />
-          </FormField>
+        <FormField
+          label={t('new_bot_page.step3.prefix')}
+          required
+          description={t('new_bot_page.step3.prefix_desc')}
+          errorText={errors.prefix?.message}>
+          <Controller
+            control={control}
+            name='prefix'
+            render={({ field }) => (
+              <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.prefix')} status={errorStatus(errors.prefix)} />
+            )}
+          />
+        </FormField>
       }
       <FormField
-          label={t('new_bot_page.step3.tags')}
-          required
-          description={t('new_bot_page.step3.tags_desc')}
-          errorText={errors.tagIds?.message}>
+        label={t('new_bot_page.step3.tags')}
+        required
+        description={t('new_bot_page.step3.tags_desc')}
+        errorText={errors.tagIds?.message}>
         <Controller
           control={control}
           name='tagIds'
@@ -267,28 +267,25 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      {isEdit && (
-        <FormField 
-          label={t('new_bot_page.step3.changelog')}
-          required
-          description={t('new_bot_page.step3.changelog_desc')} 
-          errorText={errors.changelog?.message}
-        >
-          <Controller
-            control={control}
-            name='changelog'
-            render={({ field }) => (
-              <TextArea 
-                {...field} 
-                rows={4}
-                className='placeholder:!text-primary'
-                placeholder={t('new_bot_page.step3.placeholders.changelog')}
-                status={errorStatus(errors.changelog)}
-              />
-            )}
-          />
-        </FormField>
-      )}
+      <FormField
+        label={t('new_bot_page.step3.changelog')}
+        description={t('new_bot_page.step3.changelog_desc')}
+        errorText={errors.changelog?.message}
+      >
+        <Controller
+          control={control}
+          name='changelog'
+          render={({ field }) => (
+            <TextArea
+              {...field}
+              rows={4}
+              className='placeholder:!text-primary'
+              placeholder={t('new_bot_page.step3.placeholders.changelog')}
+              status={errorStatus(errors.changelog)}
+            />
+          )}
+        />
+      </FormField>
 
       <FormField label={t('new_bot_page.step3.social_links')} description={t('new_bot_page.step3.social_links_desc')}>
         <div className='flex flex-col sm:flex-row gap-4'>
@@ -338,7 +335,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                       onBlur={(e) => update(index, { ...link, url: e.target.value })}
                     />
                   </Form.Item>
-                <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
+                  <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
                 </div>
               )}
             />

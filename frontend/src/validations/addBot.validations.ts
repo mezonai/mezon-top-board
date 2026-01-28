@@ -87,9 +87,5 @@ export const getAddBotSchema = yup.object({
       }).optional()
     })
   ).optional(),
-  changelog: yup.string().when('$isEdit', {
-    is: true,
-    then: (schema) => schema.trim().required('validation.changelog_required'),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+  changelog: yup.string().trim().optional(),
 })

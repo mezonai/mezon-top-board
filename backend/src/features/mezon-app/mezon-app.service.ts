@@ -140,7 +140,7 @@ export class MezonAppService {
         detail.currentVersionUpdatedAt = currentVerObj.updatedAt;
       } 
     }
-    
+
     if (owner) {
       detail.owner = {
         id: owner.id,
@@ -336,7 +336,7 @@ export class MezonAppService {
   }
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
-    const { tagIds, socialLinks, ...appData } = req;
+    const { tagIds, socialLinks, changelog, ...appData } = req;
 
     // Fetch existing tags
     const existingTags = tagIds?.length
@@ -391,6 +391,7 @@ export class MezonAppService {
       appId: newApp.id,
       tagIds,
       socialLinks: links,
+      changelog: changelog,
       ...appData,
     })
     return newApp

@@ -56,8 +56,6 @@ export const useOnSubmitBotForm = (
       }
 
       if (!isEdit) {
-        if ('changelog' in payload) delete payload.changelog;
-
         const result = await addBot({ createMezonAppRequest: payload }).unwrap()
         toast.success(t('hooks.submit_success_created', { type: formData.type }))
         result.id && onSuccess(result.id)

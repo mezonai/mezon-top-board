@@ -125,7 +125,7 @@ function AppReviewPage() {
                 return (
                     <Typography.Paragraph
                         ellipsis={{ rows: 2, expandable: false }}
-                        style={{ whiteSpace: 'pre-wrap' }}
+                        style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}
                     >
                         {version?.changelog || '-'}
                     </Typography.Paragraph>

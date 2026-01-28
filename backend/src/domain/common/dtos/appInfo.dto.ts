@@ -65,6 +65,11 @@ export class CreateAppInfoRequest {
   supportUrl?: string;
 
   @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  changelog?: string;
+
+  @ApiPropertyOptional()
   @IsArray()
   @ArrayMinSize(1, { message: "At least one tag is required" })
   @IsString({ each: true })

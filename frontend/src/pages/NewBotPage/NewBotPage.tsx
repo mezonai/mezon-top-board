@@ -1,7 +1,7 @@
 import { Steps } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Button from '@app/mtb-ui/Button'
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useForm, FormProvider, FieldPath } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useParams } from 'react-router-dom'
@@ -52,13 +52,7 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
   const [isModalVisible, setIsModalVisible] = useState(false)
-  
   const isEditMode = Boolean(botId)
-  const isEditModeRef = useRef(isEditMode)
-
-  useEffect(() => {
-    isEditModeRef.current = isEditMode
-  }, [isEditMode])
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
@@ -78,13 +72,7 @@ function NewBotPage() {
       isAutoPublished: true,
       socialLinks: []
     },
-    resolver: (data, context, options) => {
-      return yupResolver(getAddBotSchema)(
-        data, 
-        { ...context, isEdit: isEditModeRef.current },
-        options
-      )
-    },
+    resolver: yupResolver(getAddBotSchema),
     mode: 'onChange'
   })
 
@@ -153,24 +141,20 @@ function NewBotPage() {
     }
   }
 
-  const step3FillDetailsFields = useMemo(() => {
-    const fields: FieldPath<CreateMezonAppRequest>[] = [
-      'name',
-      'headline',
-      'description',
-      'prefix',
-      'tagIds',
-      'pricingTag',
-      'price',
-      'supportUrl',
-      'featuredImage',
-      'socialLinks',
-      'isAutoPublished'
-    ]
-
-    if (isEditMode) fields.push('changelog')
-    return fields
-  }, [isEditMode])
+  const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
+    'name',
+    'headline',
+    'description',
+    'prefix',
+    'tagIds',
+    'pricingTag',
+    'price',
+    'supportUrl',
+    'featuredImage',
+    'socialLinks',
+    'changelog',
+    'isAutoPublished'
+  ]
 
   const stepFieldMap = useMemo((): StepFieldMap => {
     if (isEditMode) {
