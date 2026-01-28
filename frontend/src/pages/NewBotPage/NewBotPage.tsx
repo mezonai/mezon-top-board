@@ -73,7 +73,8 @@ function NewBotPage() {
       pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
-      changelog: '', 
+      changelog: '',
+      //TODO: isAutoPublished will be implemented later
       isAutoPublished: true,
       socialLinks: []
     },
@@ -91,7 +92,7 @@ function NewBotPage() {
   const nameValue = watch('name')
   const headlineValue = watch('headline')
   const featuredImageValue = watch('featuredImage')
-  
+
   const imgUrl = useMemo(() => {
     return botId && featuredImageValue
       ? getUrlMedia(featuredImageValue)
