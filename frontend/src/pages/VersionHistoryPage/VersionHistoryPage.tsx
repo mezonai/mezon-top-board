@@ -1,5 +1,4 @@
 import DetailCard from '@app/pages/BotDetailPage/components/DetailCard/DetailCard'
-import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import { useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
@@ -12,11 +11,8 @@ import { Spin } from 'antd'
 import { 
   ArrowLeft, 
   Calendar, 
-  CheckCircle, 
   GitCommit, 
-  History, 
-  AlertCircle,
-  XCircle
+  History
 } from 'lucide-react'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -25,42 +21,7 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '@app/components/GlassCard/GlassCard'
-
-const getStatusBadge = (status: AppStatus, t: (key: string, opts?: any) => string) => {
-  switch (status) {
-    case AppStatus.PUBLISHED:
-      return (
-        <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-400">
-          <CheckCircle className="mr-1 h-3 w-3" />
-          {t('status.published')}
-        </span>
-      )
-    case AppStatus.APPROVED:
-      return (
-        <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
-          <CheckCircle className="mr-1 h-3 w-3" />
-          {t('status.approved')}
-        </span>
-      )
-    case AppStatus.PENDING:
-      return (
-        <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400">
-          <AlertCircle className="mr-1 h-3 w-3" />
-          {t('status.pending')}
-        </span>
-      )
-    case AppStatus.REJECTED:
-      return (
-        <span className="inline-flex items-center rounded-full border border-red-200 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400">
-          <XCircle className="mr-1 h-3 w-3" />
-          {t('status.rejected')}
-        </span>
-      )
-
-    default:
-      return null
-  }
-}
+import StatusBadge from '@app/components/StatusBadge/StatusBadge'
 
 function VersionHistoryPage() {
   const navigate = useNavigate()
@@ -193,7 +154,7 @@ function VersionHistoryPage() {
                                 </span>
                               )}
                             </div>
-                            {getStatusBadge(entry.status, t)}
+                            <StatusBadge status={entry.status} />
                           </div>
                           
                           <div className="mb-4 flex items-center gap-2 text-sm text-secondary">
