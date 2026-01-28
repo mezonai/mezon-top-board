@@ -33,7 +33,7 @@ import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
 import { useTranslation } from 'react-i18next'
 import { Clock, Tag } from 'lucide-react';
-import { formatAgo } from '@app/utils/date'
+import { formatDate } from '@app/utils/date'
 
 function BotDetailPage() {
   const { t } = useTranslation(['bot_detail_page'])
@@ -201,7 +201,7 @@ function BotDetailPage() {
               </div>
               <div className="mb-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Clock className="h-4 w-4" />
-                <span>{t('bot_detail.updated')} {formatAgo(latestVersion.updatedAt, t)}</span>
+                <span>{t('bot_detail.updated')}: {formatDate(latestVersion.updatedAt)}</span>
               </div>
               <div>
                 <MtbTypography variant='h4' weight='semibold'>{t('bot_detail.changelog')}</MtbTypography>

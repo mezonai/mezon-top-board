@@ -6,6 +6,7 @@ import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/
 import { formatDate } from '@app/utils/date'
 import { AppStatus } from '@app/enums/AppStatus.enum'
 import { useReviewHistoryControllerCreateAppReviewMutation } from '@app/services/api/reviewHistory/reviewHistory'
+import { Typography } from 'antd'
 
 const { TextArea } = Input
 
@@ -96,9 +97,11 @@ const AppReviewModal: React.FC<Props> = ({ open, onClose, onUpdated, appData, la
           {formatDate(appData?.versions?.[0]?.updatedAt)}
         </Descriptions.Item>
         <Descriptions.Item label="Change Log">
-          <div style={{ backgroundColor: 'var(--bg-container)', borderRadius: 6 }}>
+          <Typography.Paragraph 
+            style={{ whiteSpace: 'pre-wrap' }}
+          >
             {latestVersion?.changelog || '-'}
-          </div>
+          </Typography.Paragraph>
         </Descriptions.Item>
       </Descriptions>
 

@@ -1,5 +1,5 @@
 import DetailCard from '@app/pages/BotDetailPage/components/DetailCard/DetailCard'
-import { AppStatus } from '@app/enums/AppStatus.enum' // Đảm bảo Enum này đúng thứ tự 0,1,2,3
+import { AppStatus } from '@app/enums/AppStatus.enum'
 import Button from '@app/mtb-ui/Button'
 import { useLazyMezonAppControllerGetMezonAppDetailQuery } from '@app/services/api/mezonApp/mezonApp'
 import { useLazyTagControllerGetTagsQuery } from '@app/services/api/tag/tag'

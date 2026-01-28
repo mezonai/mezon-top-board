@@ -124,7 +124,9 @@ function AppReviewPage() {
                 const version = record.versions?.[0]
                 return (
                     <Typography.Paragraph
-                        ellipsis={{ rows: 2, expandable: false }}>
+                        ellipsis={{ rows: 2, expandable: false }}
+                        style={{ whiteSpace: 'pre-wrap' }}
+                    >
                         {version?.changelog || '-'}
                     </Typography.Paragraph>
                 )
