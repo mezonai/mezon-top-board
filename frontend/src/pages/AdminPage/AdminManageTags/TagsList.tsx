@@ -167,7 +167,7 @@ function TagsList() {
       width: '25%',
       render: (_: any, record: TagResponse) => (
         <div className="h-[32px] flex items-center">
-          <Tag color={record.color} variant='outlined'>{record.name}</Tag>
+          <Tag color={record.color}>{record.name}</Tag>
         </div>
       )
     },
@@ -176,9 +176,9 @@ function TagsList() {
       dataIndex: 'slug',
       key: 'slug',
       width: '25%',
-      render: (_: any, record: TagResponse) => (
+      render: (text: string) => (
         <div className="h-[32px] flex items-center">
-          {record.slug}
+          {text}
         </div>
       )
     },
@@ -187,10 +187,10 @@ function TagsList() {
       dataIndex: 'color',
       key: 'color',
       width: '20%',
-      render: (_: any, record: TagResponse) => (
+      render: (color: string) => (
         <div className="h-[32px] flex items-center">
           <ColorSelector
-            value={record.color}
+            value={color}
             disabled={true}
           />
         </div>
@@ -201,16 +201,16 @@ function TagsList() {
       dataIndex: 'botCount',
       key: 'botCount',
       width: '15%',
-      render: (_: any, record: TagResponse) => (
+      render: (count: number) => (
         <div className="h-[32px] flex items-center">
-          {record.botCount}
+          {count}
         </div>
       )
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (_: any, record: TagResponse) => (
+      render: (_: any, record: any) => (
         <div className='h-[32px]'>
             <TableActionButton
               actionType="edit"
