@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons'
-import { Input, Table, Tag, Alert, Spin, Typography } from 'antd'
+import { Input, Table, Alert, Spin, Typography } from 'antd'
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
 import type { ColumnsType } from 'antd/es/table'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
@@ -8,10 +8,10 @@ import { GetMezonAppDetailsResponse, OwnerInMezonAppDetailResponse, AppVersionDe
 import { formatDate } from '@app/utils/date'
 import PreviewModal from '@app/components/PreviewModal/PreviewModal'
 import AppReviewModal from './AppReviewModal'
-import { AppStatus } from '@app/enums/AppStatus.enum'
 import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
 import TableImage from '@app/components/TableImage/TableImage'
+import BotStatusBadge from '@app/components/BotStatusBadge/BotStatusBadge'
 
 function AppReviewPage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -70,13 +70,6 @@ function AppReviewPage() {
         handleCloseModals();
     }
 
-    const getStatusTag = (status: AppStatus) => {
-        if (status === AppStatus.REJECTED) return <Tag color='red'>Rejected</Tag>
-        if (status === AppStatus.PUBLISHED || status === AppStatus.APPROVED) return <Tag color='green'>Approved</Tag>
-        if (status === AppStatus.PENDING) return <Tag color='gold'>Pending</Tag>
-        return <Tag>Published</Tag>
-    }
-
     const columns: ColumnsType<GetMezonAppDetailsResponse> = [
         {
             title: "Image",
@@ -124,7 +117,9 @@ function AppReviewPage() {
                 const version = record.versions?.[0]
                 return (
                     <Typography.Paragraph
-                        ellipsis={{ rows: 2, expandable: false }}>
+                        ellipsis={{ rows: 2, expandable: false }}
+                        style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}
+                    >
                         {version?.changelog || '-'}
                     </Typography.Paragraph>
                 )
@@ -145,7 +140,7 @@ function AppReviewPage() {
             key: 'status',
             render: (_: any, record: GetMezonAppDetailsResponse) => {
                 const status = record?.status
-                return <div className='text-center'>{getStatusTag(status)}</div>
+                return <div className='text-center'><BotStatusBadge status={status} /></div>
             }
         },
         {

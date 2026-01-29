@@ -17,7 +17,6 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { getAddBotSchema } from '@app/validations/addBot.validations'
 
-
 import {
   useLazyMezonAppControllerGetMezonAppDetailQuery,
 } from '@app/services/api/mezonApp/mezonApp'
@@ -53,6 +52,7 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const isEditMode = Boolean(botId)
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
@@ -67,7 +67,7 @@ function NewBotPage() {
       pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
-      remark: '',
+      changelog: '',
       //TODO: isAutoPublished will be implemented later
       isAutoPublished: true,
       socialLinks: []
@@ -92,8 +92,6 @@ function NewBotPage() {
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submittedBotId, setSubmittedBotId] = useState<string>('')
-
-  const isEditMode = Boolean(botId)
 
   useAuthRedirect()
 
@@ -154,7 +152,7 @@ function NewBotPage() {
     'supportUrl',
     'featuredImage',
     'socialLinks',
-    'remark',
+    'changelog',
     'isAutoPublished'
   ]
 

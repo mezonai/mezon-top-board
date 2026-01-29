@@ -20,6 +20,8 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { getUrlMedia } from '@app/utils/stringHelper'
+import { History } from 'lucide-react'
+import ChangelogHistoryModal from '@app/components/ChangelogHistoryModal/ChangelogHistoryModal'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -27,14 +29,15 @@ const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }
   </div>
 )
 
-const Step3FillDetails = ({  }: { isEdit: boolean }) => {
+const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page', 'validation', 'common'])
-  const { control, formState: { errors }, setError, clearErrors } = useFormContext<CreateMezonAppRequest>()
+  const { control, formState: { errors }, setError, clearErrors, setValue, getValues } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
 
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { linkTypeList } = useSelector<RootState, ILinkTypeStore>((s) => s.link)
+  const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false)
 
   const {
     fields: socialLinksData,
@@ -126,6 +129,13 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
     })
   }, [socialLinksData, setError, clearErrors])
 
+  const handleSelectChangelog = (text: string) => {
+    const currentText = getValues('changelog') || '';
+    const newText = currentText.trim() ? `${currentText}\n\n${text}` : text;
+    setValue('changelog', newText, { shouldValidate: true, shouldDirty: true });
+    setIsChangelogModalOpen(false);
+  }
+
   return (
     <>
       <FormField label={t('new_bot_page.step3.name')} required description={t('new_bot_page.step3.name_desc')} errorText={errors.name?.message}>
@@ -141,7 +151,7 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
       <FormField
         label={t('new_bot_page.step3.headline')}
         required
-        description={t('new_bot_page.step3.headline_desc')} 
+        description={t('new_bot_page.step3.headline_desc')}
         errorText={errors.headline?.message}
       >
         <Controller
@@ -156,10 +166,10 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
       </FormField>
 
       <FormField
-          label={t('new_bot_page.step3.description')}
-          required
-          description={t('new_bot_page.step3.description_desc')}
-          errorText={errors.description?.message}>
+        label={t('new_bot_page.step3.description')}
+        required
+        description={t('new_bot_page.step3.description_desc')}
+        errorText={errors.description?.message}>
         <Controller
           control={control}
           name='description'
@@ -184,25 +194,25 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
       </FormField>
       {
         type === MezonAppType.BOT &&
-          <FormField
-              label={t('new_bot_page.step3.prefix')}
-              required
-              description={t('new_bot_page.step3.prefix_desc')}
-              errorText={errors.prefix?.message}>
-            <Controller
-              control={control}
-              name='prefix'
-              render={({ field }) => (
-                <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.prefix')} status={errorStatus(errors.prefix)} />
-              )}
-            />
-          </FormField>
+        <FormField
+          label={t('new_bot_page.step3.prefix')}
+          required
+          description={t('new_bot_page.step3.prefix_desc')}
+          errorText={errors.prefix?.message}>
+          <Controller
+            control={control}
+            name='prefix'
+            render={({ field }) => (
+              <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.prefix')} status={errorStatus(errors.prefix)} />
+            )}
+          />
+        </FormField>
       }
       <FormField
-          label={t('new_bot_page.step3.tags')}
-          required
-          description={t('new_bot_page.step3.tags_desc')}
-          errorText={errors.tagIds?.message}>
+        label={t('new_bot_page.step3.tags')}
+        required
+        description={t('new_bot_page.step3.tags_desc')}
+        errorText={errors.tagIds?.message}>
         <Controller
           control={control}
           name='tagIds'
@@ -267,15 +277,36 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
         />
       </FormField>
 
-      <FormField label={t('new_bot_page.step3.note')} description={t('new_bot_page.step3.note_desc')}>
+      {/* CHANGELOG */}
+      <FormField
+        label={t('new_bot_page.step3.changelog')}
+        description={t('new_bot_page.step3.changelog_desc')}
+        errorText={errors.changelog?.message}
+      >
+        {isEdit && (
+          <div className="flex justify-end mb-1">
+            <Button
+              size="small"
+              variant="text"
+              className="!text-secondary hover:!text-primary text-xs flex items-center gap-1 p-0 h-auto"
+              onClick={() => setIsChangelogModalOpen(true)}
+            >
+              <History size={14} />
+              {t('new_bot_page.step3.copy_from_history')}
+            </Button>
+          </div>
+        )}
+
         <Controller
           control={control}
-          name='remark'
+          name='changelog'
           render={({ field }) => (
-            <TextArea {...field} rows={3}
+            <TextArea
+              {...field}
+              rows={4}
               className='placeholder:!text-primary'
-              placeholder={t('new_bot_page.step3.placeholders.note')}
-              status={errorStatus(errors.remark)}
+              placeholder={t('new_bot_page.step3.placeholders.changelog')}
+              status={errorStatus(errors.changelog)}
             />
           )}
         />
@@ -329,13 +360,19 @@ const Step3FillDetails = ({  }: { isEdit: boolean }) => {
                       onBlur={(e) => update(index, { ...link, url: e.target.value })}
                     />
                   </Form.Item>
-                <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
+                  <Button color='danger' onClick={() => remove(index)}>{t('new_bot_page.buttons.delete')}</Button>
                 </div>
               )}
             />
           );
         })}
       </FormField>
+
+      <ChangelogHistoryModal
+        isVisible={isChangelogModalOpen}
+        onClose={() => setIsChangelogModalOpen(false)}
+        onSelect={handleSelectChangelog}
+      />
     </>
   )
 }

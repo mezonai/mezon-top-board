@@ -5,6 +5,8 @@ import { BaseApp } from "./baseApp.types"
 export type App = BaseApp & {
     ownerId: string
     currentVersion: number
+    currentVersionChangelog?: string
+    currentVersionUpdatedAt?: Date
     hasNewUpdate: boolean
     mezonAppId: string
     type: MezonAppType

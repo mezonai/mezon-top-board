@@ -27,7 +27,6 @@ export type AppVersionDetailsDto = Pick<
   | 'prefix'
   | 'featuredImage'
   | 'supportUrl'
-  | 'remark'
   | 'pricingTag'
   | 'price'
   | 'createdAt'
@@ -42,6 +41,8 @@ export type GetMezonAppDetailsResponse = Pick<
   App,
   | 'id'
   | 'currentVersion'
+  | 'currentVersionChangelog'
+  | 'currentVersionUpdatedAt'
   | 'name'
   | 'description'
   | 'prefix'
@@ -56,6 +57,7 @@ export type GetMezonAppDetailsResponse = Pick<
   | 'hasNewUpdate'
   | 'createdAt'
   | 'updatedAt'
+  | 'changelog'
 > & {
   owner: OwnerInMezonAppDetailResponse;
   tags: TagInMezonAppDetailResponse[];
@@ -83,7 +85,7 @@ export type CreateMezonAppRequest = Pick<
 > & {
   prefix?: string;
   featuredImage?: string;
-  remark?: string;
+  changelog?: string;
   tagIds: string[];
   socialLinks?: SocialLink[];
 };

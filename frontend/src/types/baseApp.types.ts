@@ -11,7 +11,7 @@ export type BaseApp = {
     prefix: string
     featuredImage: string
     supportUrl: string
-    remark: string
+    changelog?: string
     pricingTag: AppPricing
     price: number | null
     createdAt: Date

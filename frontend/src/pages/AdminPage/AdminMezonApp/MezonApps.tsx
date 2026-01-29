@@ -3,13 +3,13 @@ import { useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerD
 import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
-import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
-import { Input, Popconfirm, Space, Spin, Table, Tag } from "antd";
+import { Input, Popconfirm, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import TableActionButton from "@app/components/TableActionButton/TableActionButton";
 import TableImage from "@app/components/TableImage/TableImage";
+import BotStatusBadge from "@app/components/BotStatusBadge/BotStatusBadge";
 
 const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => void }) => {
   const navigate = useNavigate()
@@ -88,7 +88,11 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: number) => (<Tag color={mapStatusToColor(status)}>{mapStatusToText(status)}</Tag>)
+      render: (status: number) => (
+        <div className="flex flex-col gap-1 items-start">
+          <BotStatusBadge status={status} variant="tag" />
+        </div>
+      )
     },
     {
       title: "Headline",

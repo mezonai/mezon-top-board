@@ -32,6 +32,8 @@ import { transformMediaSrc } from '@app/utils/stringHelper'
 import { useAuth } from '@app/hook/useAuth'
 import { IUserStore } from '@app/store/user'
 import { useTranslation } from 'react-i18next'
+import { Clock, Tag } from 'lucide-react';
+import { formatDate } from '@app/utils/date'
 
 function BotDetailPage() {
   const { t } = useTranslation(['bot_detail_page'])
@@ -187,6 +189,44 @@ function BotDetailPage() {
           </MtbTypography>
           <Divider className='bg-border'></Divider>
           <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
+
+          <div className='pt-8'>
+            <div className="mb-4 flex items-center justify-between">
+              <MtbTypography variant='h3' textStyle={[TypographyStyle.UNDERLINE]}>{t('bot_detail.latest_version')}</MtbTypography>
+              <div className="inline-flex items-center rounded-full bg-heading/10 px-3 py-1 text-sm font-semibold text-heading">
+                <Tag className="mr-1.5 h-3.5 w-3.5" /> v{mezonAppDetail.currentVersion}
+              </div>
+            </div>
+            <div className="mb-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Clock className="h-4 w-4" />
+              <span>{t('bot_detail.updated')}: {formatDate(mezonAppDetail.currentVersionUpdatedAt)}</span>
+            </div>
+            <div>
+              <MtbTypography variant='h4' weight='semibold'>{t('bot_detail.changelog')}</MtbTypography>
+              <div className="space-y-3 mb-6">
+                {mezonAppDetail.currentVersionChangelog ? (
+                  <div className="rounded-lg border border-border p-4 bg-container/90">
+                    <MtbTypography variant='p' weight='normal' customClassName='whitespace-pre-wrap'>
+                      {mezonAppDetail.currentVersionChangelog}
+                    </MtbTypography>
+                  </div>
+                ) : (
+                  <p className="text-sm italic text-gray-400">{t('bot_detail.no_changelog')}</p>
+                )}
+              </div>
+            </div>
+            <Button
+              className='w-full'
+              size='middle'
+              variant='outlined'
+              onClick={() => navigate(`/bot/${mezonAppDetail.id}/versions`)}
+            >
+              {t('bot_detail.more_versions')}
+            </Button>
+          </div>
+
+          <Divider className='bg-border'></Divider>
+
           <div className='pt-5'>
             <MtbTypography variant='h3'>{t('bot_detail.more_like_this')}</MtbTypography>
             <Divider className='bg-border'></Divider>
@@ -199,7 +239,7 @@ function BotDetailPage() {
                 touchThreshold={5}
                 variableWidth={false}
                 slidesToShow={3}
-                responsive={responsive} 
+                responsive={responsive}
                 dots={{
                   className: 'text-red',
                 }}
@@ -254,16 +294,16 @@ function BotDetailPage() {
               </div>
             </div>
             <Divider className='bg-border'></Divider>
-              {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
-                <RatingForm
-                  onSubmitted={() => {
-                    if (botId) {
-                      getRatingsByApp({ appId: botId });
-                      getMezonAppDetail({ id: botId });
-                    }
-                  }}
-                />
-              )}
+            {isLogin && mezonAppDetail.status === AppStatus.PUBLISHED && (
+              <RatingForm
+                onSubmitted={() => {
+                  if (botId) {
+                    getRatingsByApp({ appId: botId });
+                    getMezonAppDetail({ id: botId });
+                  }
+                }}
+              />
+            )}
             <Divider className='bg-border'></Divider>
             <div className='flex flex-col gap-5'>
               {isLoadingReview && Object.keys(ratings).length == 0 ? (

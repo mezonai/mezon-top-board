@@ -33,9 +33,6 @@ export class BaseApp extends BaseSoftDelete {
   @Column({ nullable: true })
   public supportUrl: string;
 
-  @Column({ nullable: true })
-  public remark: string;
-
   @Column({
     type: "enum",
     enum: AppPricing,

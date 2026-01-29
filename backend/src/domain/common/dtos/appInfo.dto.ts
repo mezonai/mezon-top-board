@@ -68,7 +68,7 @@ export class CreateAppInfoRequest {
   @IsString()
   @IsOptional()
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  remark?: string;
+  changelog?: string;
 
   @ApiPropertyOptional()
   @IsArray()

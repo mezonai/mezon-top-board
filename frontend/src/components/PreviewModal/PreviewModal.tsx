@@ -5,10 +5,9 @@ import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
-import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
-import { mapStatusToText } from '@app/utils/mezonApp';
+import BotStatusBadge from '../BotStatusBadge/BotStatusBadge';
 
 interface Props {
     open: boolean
@@ -22,29 +21,6 @@ const { Title, Text, Paragraph } = Typography
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
 
-    const renderStatusTag = (status?: AppStatus) => {
-        if (status === null || status === undefined) return '-'
-        let color: string | undefined = undefined
-        const label = t(mapStatusToText(status))
-
-        switch (status) {
-            case AppStatus.PUBLISHED:
-                color = 'green'
-                break
-            case AppStatus.APPROVED:
-                color = 'blue'
-                break
-            case AppStatus.PENDING:
-                color = 'orange'
-                break
-            case AppStatus.REJECTED:
-                color = 'red'
-                break
-            default:
-                color = undefined
-        }
-        return <Tag color={color}>{label}</Tag>
-    }
     return (
         <Modal
             open={open}
@@ -125,7 +101,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.status_label')}>
-                                    {renderStatusTag(latestVersion.status)}
+                                    <BotStatusBadge status={latestVersion.status} />
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.auto_publish_label')}>
                                     {latestVersion.isAutoPublished ? t('component.preview_modal.yes') : t('component.preview_modal.no')}
@@ -167,11 +143,6 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                 <Descriptions.Item label={t('component.preview_modal.changelog_label')}>
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
                                         {latestVersion.changelog || '-'}
-                                    </Paragraph>
-                                </Descriptions.Item>
-                                <Descriptions.Item label={t('component.preview_modal.note_label')}>
-                                    <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
-                                        {latestVersion.remark || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
                             </>

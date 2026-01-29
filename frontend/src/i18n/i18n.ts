@@ -15,6 +15,7 @@ import newBotPageEN from "./locales/en/new_bot_page.json";
 import botWizardPageEN from "./locales/en/bot_wizard_page.json";
 import componentsEN from "./locales/en/components.json";
 import validationEN from "./locales/en/validation.json";
+import versionHistoryEn from "./locales/en/version_history.json";
 
 import commonVI from "./locales/vi/common.json";
 import homePageVI from "./locales/vi/home_page.json";
@@ -28,6 +29,7 @@ import newBotPageVI from "./locales/vi/new_bot_page.json";
 import botWizardPageVI from "./locales/vi/bot_wizard_page.json";
 import componentsVI from "./locales/vi/components.json";
 import validationVI from "./locales/vi/validation.json";
+import versionHistoryVI from "./locales/vi/version_history.json";
 
 const resources = {
     en: {
@@ -42,7 +44,8 @@ const resources = {
         new_bot_page: newBotPageEN,
         bot_wizard_page: botWizardPageEN,
         components: componentsEN,
-        validation: validationEN
+        validation: validationEN,
+        version_history: versionHistoryEn
     },
     vi: {
         common: commonVI,
@@ -56,7 +59,8 @@ const resources = {
         new_bot_page: newBotPageVI,
         bot_wizard_page: botWizardPageVI,
         components: componentsVI,
-        validation: validationVI
+        validation: validationVI,
+        version_history: versionHistoryVI
     }
 }
 
@@ -77,7 +81,8 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
         'new_bot_page', 
         'bot_wizard_page', 
         'components', 
-        'validation'
+        'validation',
+        'version_history'
     ],
     defaultNS: 'common',
 

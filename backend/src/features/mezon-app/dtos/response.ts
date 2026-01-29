@@ -21,6 +21,14 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public currentVersion: number;
+  
+  @Expose()
+  @ApiProperty({ nullable: true })
+  public currentVersionChangelog?: string;
+
+  @Expose()
+  @ApiProperty({ nullable: true })
+  public currentVersionUpdatedAt?: Date;
 
   @Expose()
   @ApiProperty()

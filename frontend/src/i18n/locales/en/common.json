@@ -60,7 +60,8 @@
         "login": "Login",
         "confirm_subscription": "Confirm Subscription",
         "unsubscription": "Unsubscription",
-        "not_found": "Not Found"
+        "not_found": "Not Found",
+        "version_history": "Version History"
     },
     "header": {
         "login": "Login",

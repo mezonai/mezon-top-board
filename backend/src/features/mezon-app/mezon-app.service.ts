@@ -97,16 +97,28 @@ export class MezonAppService {
   }
 
   async getMezonAppDetail(query: RequestWithId, userId?: string) {
-    const mezonApp = await this.appRepository.findById(query.id, [
-      "tags",
-      "socialLinks",
-      "socialLinks.type",
-      "ratings",
-      "versions",
-      "versions.tags",
-      "versions.socialLinks",
-      "versions.socialLinks.type",
-    ]);
+    const mezonApp = await this.appRepository.getRepository()
+      .createQueryBuilder("app")
+      .leftJoinAndSelect("app.tags", "tags")
+      .leftJoinAndSelect("app.socialLinks", "socialLinks")
+      .leftJoinAndSelect("socialLinks.type", "socialLinkType")
+      .leftJoinAndSelect("app.ratings", "ratings")
+      .leftJoinAndSelect("app.owner", "owner")
+      .leftJoinAndSelect("app.versions", "versions")
+      .leftJoinAndSelect("versions.tags", "versionTags")
+      .leftJoinAndSelect("versions.socialLinks", "versionSocialLinks")
+      .leftJoinAndSelect("versionSocialLinks.type", "versionLinkType")
+      .where("app.id = :id", { id: query.id })
+      .andWhere(new Brackets((qb) => {
+        qb.where("versions.status = :approvedStatus", {
+          approvedStatus: AppStatus.APPROVED,
+        });
+
+        if (userId) {
+          qb.orWhere("app.ownerId = :userId", { userId });
+        }
+      }))
+      .getOne();
 
     if (!mezonApp) {
       throw new NotFoundException("App not found");
@@ -114,17 +126,30 @@ export class MezonAppService {
 
     const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
     const isFavorited = favoritesMap.get(mezonApp.id) || false;
-    const owner = await this.userRepository.findById(mezonApp.ownerId);
+    const owner = mezonApp.owner;
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
     detail.isFavorited = isFavorited;
     
     detail.rateScore = this.getAverageRating(mezonApp);
-    detail.owner = {
-      id: owner.id,
-      name: owner.name,
-      profileImage: owner.profileImage,
-    };
+
+    if (mezonApp.versions && mezonApp.versions.length > 0) {
+      const currentVerObj = mezonApp.versions.find(v => v.version === mezonApp.currentVersion);
+      
+      if (currentVerObj) {
+        detail.currentVersionChangelog = currentVerObj.changelog;
+        detail.currentVersionUpdatedAt = currentVerObj.updatedAt;
+      } 
+    }
+
+    if (owner) {
+      detail.owner = {
+        id: owner.id,
+        name: owner.name,
+        profileImage: owner.profileImage,
+      };
+    }
+    
     detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }));
     detail.socialLinks = mezonApp.socialLinks
       .filter((link) => !!link)
@@ -312,7 +337,7 @@ export class MezonAppService {
   }
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
-    const { tagIds, socialLinks, ...appData } = req;
+    const { tagIds, socialLinks, changelog, ...appData } = req;
 
     // Fetch existing tags
     const existingTags = tagIds?.length
@@ -367,6 +392,7 @@ export class MezonAppService {
       appId: newApp.id,
       tagIds,
       socialLinks: links,
+      changelog: changelog,
       ...appData,
     })
     return newApp
@@ -386,7 +412,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, id, ...updateData } = req;
+    const { tagIds, socialLinks, description, id, changelog, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -494,6 +520,7 @@ export class MezonAppService {
       description: cleanedDescription,
       tagIds,
       socialLinks: links,
+      changelog: changelog
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
@@ -505,6 +532,7 @@ export class MezonAppService {
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
       existingPendingVersion.description = cleanedDescription;
+      existingPendingVersion.changelog = changelog;
 
       await this.appVersionRepository.getRepository().save(existingPendingVersion);
       return app
