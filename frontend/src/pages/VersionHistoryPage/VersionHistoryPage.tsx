@@ -22,6 +22,8 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '@app/components/GlassCard/GlassCard'
 import BotStatusBadge from '@app/components/BotStatusBadge/BotStatusBadge'
+import Typography from '@app/mtb-ui/Typography/Typography'
+import { TypographyStyle } from '@app/enums/typography.enum'
 
 function VersionHistoryPage() {
   const navigate = useNavigate()
@@ -163,21 +165,33 @@ function VersionHistoryPage() {
                           </div>
                           
                           <div className="rounded-lg border border-border bg-background-secondary p-4">
-                            <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-secondary">
+                            <Typography variant="h4" textStyle={[TypographyStyle.UPPERCASE]} customClassName="mb-3 !text-xs !tracking-wider !font-semibold !text-secondary">
                               {t('changelog.title')}
-                            </h4>
+                            </Typography>
                             {paragraphs.length > 0 ? (
                               <ul className="flex flex-col gap-2.5">
                                 {paragraphs.map((changeText, idx) => (
                                   <li key={idx} className="flex items-start gap-3">
                                     <div className="flex-1">
-                                      <p className="text-sm text-heading whitespace-pre-wrap leading-relaxed">{changeText}</p>
+                                      <Typography 
+                                        variant='p'
+                                        weight='normal'
+                                        customClassName="!text-heading whitespace-pre-wrap leading-relaxed"
+                                      >
+                                        {changeText}
+                                      </Typography>
                                     </div>
                                   </li>
                                 ))}
                               </ul>
                             ) : (
-                              <p className="text-sm italic text-secondary">{t('changelog.noDetails')}</p>
+                              <Typography 
+                                variant='p'
+                                weight='normal'
+                                customClassName="italic !text-secondary"
+                              >
+                                {t('changelog.noDetails')}
+                              </Typography>
                             )}
                           </div>
                         </div>

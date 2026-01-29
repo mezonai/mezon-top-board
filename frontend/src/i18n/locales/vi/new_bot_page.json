@@ -68,7 +68,7 @@
                 "link_duplicate": "Liên kết này bị trùng lặp.",
                 "no_image_selected": "Chưa chọn ảnh"
             },
-            "changelog": "Nhật ký thay đổi",
+            "changelog": "Ghi chú phát hành",
             "changelog_desc": "Cung cấp tóm tắt về những thay đổi đã được thực hiện trong bản cập nhật này.",
             "copy_from_history": "Sao chép từ Lịch sử"
         },
@@ -87,7 +87,7 @@
             "price": "Giá:",
             "support_url": "URL hỗ trợ:",
             "social_links": "Liên kết xã hội:",
-            "changelog": "Nhật ký thay đổi:",
+            "changelog": "Ghi chú phát hành:",
             "description": "Mô tả:",
             "yes": "Có",
             "no": "Không",
