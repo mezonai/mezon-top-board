@@ -27,7 +27,6 @@ export type AppVersionDetailsDto = Pick<
   | 'prefix'
   | 'featuredImage'
   | 'supportUrl'
-  | 'changelog'
   | 'pricingTag'
   | 'price'
   | 'createdAt'
@@ -58,6 +57,7 @@ export type GetMezonAppDetailsResponse = Pick<
   | 'hasNewUpdate'
   | 'createdAt'
   | 'updatedAt'
+  | 'changelog'
 > & {
   owner: OwnerInMezonAppDetailResponse;
   tags: TagInMezonAppDetailResponse[];
