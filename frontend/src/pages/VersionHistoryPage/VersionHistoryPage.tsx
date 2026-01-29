@@ -21,7 +21,7 @@ import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@app/utils/cn'
 import { GlassCard } from '@app/components/GlassCard/GlassCard'
-import StatusBadge from '@app/components/StatusBadge/StatusBadge'
+import BotStatusBadge from '@app/components/BotStatusBadge/BotStatusBadge'
 
 function VersionHistoryPage() {
   const navigate = useNavigate()
@@ -154,7 +154,7 @@ function VersionHistoryPage() {
                                 </span>
                               )}
                             </div>
-                            <StatusBadge status={entry.status} />
+                            <BotStatusBadge status={entry.status} />
                           </div>
                           
                           <div className="mb-4 flex items-center gap-2 text-sm text-secondary">

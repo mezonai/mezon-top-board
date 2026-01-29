@@ -7,7 +7,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
-import StatusBadge from '@app/components/StatusBadge/StatusBadge'
+import BotStatusBadge from '../BotStatusBadge/BotStatusBadge';
 
 interface Props {
     open: boolean
@@ -101,7 +101,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.status_label')}>
-                                    <StatusBadge status={latestVersion.status} />
+                                    <BotStatusBadge status={latestVersion.status} />
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.auto_publish_label')}>
                                     {latestVersion.isAutoPublished ? t('component.preview_modal.yes') : t('component.preview_modal.no')}

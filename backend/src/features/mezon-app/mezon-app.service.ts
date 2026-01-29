@@ -97,14 +97,6 @@ export class MezonAppService {
   }
 
   async getMezonAppDetail(query: RequestWithId, userId?: string) {
-    let versionCondition = "versions.status = :approvedStatus";
-    const versionParams: ObjectLiteral = { approvedStatus: AppStatus.APPROVED };
-
-    if (userId) {
-      versionCondition = "(versions.status = :approvedStatus OR app.ownerId = :userId)";
-      versionParams.userId = userId;
-    }
-
     const mezonApp = await this.appRepository.getRepository()
       .createQueryBuilder("app")
       .leftJoinAndSelect("app.tags", "tags")
@@ -112,11 +104,20 @@ export class MezonAppService {
       .leftJoinAndSelect("socialLinks.type", "socialLinkType")
       .leftJoinAndSelect("app.ratings", "ratings")
       .leftJoinAndSelect("app.owner", "owner")
-      .leftJoinAndSelect("app.versions", "versions", versionCondition, versionParams)
+      .leftJoinAndSelect("app.versions", "versions")
       .leftJoinAndSelect("versions.tags", "versionTags")
       .leftJoinAndSelect("versions.socialLinks", "versionSocialLinks")
       .leftJoinAndSelect("versionSocialLinks.type", "versionLinkType")
       .where("app.id = :id", { id: query.id })
+      .andWhere(new Brackets((qb) => {
+        qb.where("versions.status = :approvedStatus", {
+          approvedStatus: AppStatus.APPROVED,
+        });
+
+        if (userId) {
+          qb.orWhere("app.ownerId = :userId", { userId });
+        }
+      }))
       .getOne();
 
     if (!mezonApp) {

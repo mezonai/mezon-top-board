@@ -1,39 +1,47 @@
 import React from 'react'
-import { cn } from '@app/utils/cn'
+import { Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { cn } from '@app/utils/cn'
+import { getStatusConfig } from '@app/utils/mezonApp'
+import { AppStatus } from '@app/enums/AppStatus.enum'
 
-interface BadgeStatusProps {
-  status: string
-  color?: string
+interface BotStatusBadgeProps {
+  status: AppStatus
+  variant?: 'tag' | 'ribbon'
   className?: string
 }
 
-const colorMap: Record<string, string> = {
-  red: 'bg-danger',
-  orange: 'bg-warning',
-  blue: 'bg-info',
-  green: 'bg-success',
-  gray: 'bg-muted',
-}
+const BotStatusBadge: React.FC<BotStatusBadgeProps> = ({ 
+  status, 
+  variant = 'tag', 
+  className 
+}) => {
+  const { t } = useTranslation('common')
+  const { color, labelKey, tailwindBg } = getStatusConfig(status)
+  const label = t(labelKey)
 
-const BadgeStatus: React.FC<BadgeStatusProps> = ({ status, color, className }) => {
-  const bgClass = color ? colorMap[color] || colorMap.gray : colorMap.gray
-  const { t } = useTranslation(['common'])
+  if (variant === 'ribbon') {
+    return (
+      <div className={cn('absolute top-0 left-0 w-24 h-24 overflow-hidden pointer-events-none z-10', className)}>
+        <span
+          className={cn(
+            'absolute block w-48 py-1 top-4 -right-6',
+            'text-[8px] font-bold uppercase tracking-wider text-center text-white',
+            '-rotate-45 shadow-sm',
+            tailwindBg
+          )}
+        >
+          {label}
+        </span>
+      </div>
+    )
+  }
 
   return (
-    <div className={cn('absolute top-0 left-0 w-24 h-24 overflow-hidden pointer-events-none z-10', className)}>
-      <span
-        className={cn(
-          'absolute block w-48 py-1 top-4 -right-6',
-          'text-[8px] font-bold uppercase tracking-wider text-center text-white',
-          '-rotate-45 shadow-sm',
-          bgClass
-        )}
-      >
-        {t(`status.${status}`)}
-      </span>
-    </div>
+    <Tag color={color} className={cn('m-0', className)}>
+      {label}
+    </Tag>
   )
 }
 
-export default BadgeStatus
+export default BotStatusBadge
