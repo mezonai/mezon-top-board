@@ -4,6 +4,7 @@ import { Expose } from "class-transformer";
 import { IsString, IsBoolean, IsOptional, IsArray, MinLength, MaxLength, ArrayMinSize, IsUrl, ValidateIf, IsEnum, IsNumber, IsUUID, ValidateNested } from "class-validator";
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { AppStatus } from "@domain/common/enum/appStatus";
+import { AppLanguage } from "@domain/common/enum/appLanguage";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
 import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
 import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
@@ -18,18 +19,17 @@ class SocialLinkDto {
   linkTypeId: string;
 }
 
-export class CreateAppInfoRequest {
+export class TranslationRequest {
+  @ApiProperty({ enum: AppLanguage })
+  @IsEnum(AppLanguage)
+  language: AppLanguage;
+
   @ApiProperty()
   @IsString()
   @MinLength(1, { message: "Name must be at least 1 characters" })
   @MaxLength(64, { message: "Name must not exceed 64 characters" })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   name: string;
-
-  @ApiPropertyOptional()
-  @IsBoolean()
-  @IsOptional()
-  isAutoPublished?: boolean;
 
   @ApiPropertyOptional()
   @IsString()
@@ -42,6 +42,24 @@ export class CreateAppInfoRequest {
   @IsString()
   @IsOptional()
   description?: string;
+}
+
+export class CreateAppInfoRequest {
+  @ApiProperty({ type: [TranslationRequest] })
+  @IsArray()
+  @ArrayMinSize(1, { message: "At least one translation is required" })
+  @ValidateNested({ each: true })
+  @Type(() => TranslationRequest)
+  translations: TranslationRequest[];
+
+  @ApiProperty({ enum: AppLanguage })
+  @IsEnum(AppLanguage)
+  defaultLanguage: AppLanguage;
+
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  isAutoPublished?: boolean;
 
   @ApiPropertyOptional()
   @ValidateIf(o => o.type === MezonAppType.BOT)
@@ -96,14 +114,33 @@ export class CreateAppInfoRequest {
   socialLinks?: SocialLinkDto[];
 }
 
+export class TranslationResponse {
+  @Expose()
+  @ApiProperty({ enum: AppLanguage })
+  language: AppLanguage;
+
+  @Expose()
+  @ApiProperty()
+  name: string;
+
+  @Expose()
+  @ApiProperty()
+  headline: string;
+
+  @Expose()
+  @ApiProperty()
+  description: string;
+}
+
 export class GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public id: string;
 
   @Expose()
-  @ApiProperty()
-  public name: string;
+  @ApiProperty({ type: TranslationResponse })
+  @Type(() => TranslationResponse)
+  public translation: TranslationResponse;
 
   @Expose()
   @ApiProperty()
@@ -112,14 +149,6 @@ export class GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public supportUrl: string;
-
-  @Expose()
-  @ApiProperty()
-  public description: string;
-
-  @Expose()
-  @ApiProperty()
-  public headline: string;
 
   @Expose()
   @ApiProperty()
@@ -144,4 +173,8 @@ export class GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty({ type: () => [SocialLinkInMezonAppDetailResponse] })
   public socialLinks: SocialLinkInMezonAppDetailResponse[];
+
+  @Expose()
+  @ApiProperty()
+  public defaultLanguage: AppLanguage;
 }
