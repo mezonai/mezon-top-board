@@ -4,7 +4,7 @@ import { BaseApp } from '@domain/entities/base/baseApp.entity';
 import { AppReviewHistory } from '@domain/entities/schema/appReviewHistory.entity';
 import { Link } from '@domain/entities/schema/link.entity';
 import { Tag } from '@domain/entities/schema/tag.entity';
-
+import { AppTranslation } from './appTranslation.entity';
 import { App } from './app.entity';
 
 @Entity()
@@ -40,4 +40,7 @@ export class AppVersion extends BaseApp {
 
   @OneToMany(() => AppReviewHistory, (review) => review.appVersion)
   public reviewHistories: AppReviewHistory[];
+
+  @OneToMany(() => AppTranslation, (appTranslation) => appTranslation.appVersion)
+  public appTranslations: AppTranslation[];
 }

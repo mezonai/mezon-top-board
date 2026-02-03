@@ -4,6 +4,7 @@ import { AppStatus } from '@domain/common/enum/appStatus';
 import { App, AppVersion, Tag } from '@domain/entities';
 import { CreateAppVersionRequest } from '@features/app-version/dtos/request';
 import { GenericRepository } from '@libs/repository/genericRepository';
+import { AppTranslationService } from '@features/app-translation/app-translation.service';
 
 @Injectable()
 export class AppVersionService {
@@ -11,7 +12,8 @@ export class AppVersionService {
   private readonly appVersionRepository: GenericRepository<AppVersion>;
   private readonly tagRepository: GenericRepository<Tag>;
   constructor(
-    private manager: EntityManager
+    private manager: EntityManager,
+    private appTranslationService: AppTranslationService,
   ) {
     this.appRepository = new GenericRepository(App, manager);
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
@@ -29,14 +31,25 @@ export class AppVersionService {
     const nextVersion = latestVersion ? latestVersion.version + 1 : 1;
 
     const mergedData = Object.assign(app, versionData);
-    const { id, createdAt, updatedAt, hasNewUpdate, tagIds, ...rest } = mergedData
-    const tags = await this.tagRepository.getRepository().findBy({ id: In(tagIds) })
-    return await this.appVersionRepository.create({
+    const { id, createdAt, updatedAt, hasNewUpdate, tagIds, appTranslations, ...rest } = mergedData;
+    const tags = await this.tagRepository.getRepository().findBy({ id: In(tagIds) });
+
+    const newVersion = await this.appVersionRepository.create({
       ...rest,
       tags,
       version: nextVersion,
       status: AppStatus.PENDING,
     });
+
+    if (appTranslations && appTranslations.length > 0) {
+      await this.appTranslationService.createOrUpdateAppTranslations(
+        appTranslations,
+        null,
+        newVersion.id
+      );
+    }
+
+    return newVersion;
   }
 
   async getVersionsByApp(appId: string) {
@@ -49,15 +62,15 @@ export class AppVersionService {
   async approveVersion(versionId: string) {
     const appVersion = await this.appVersionRepository.findOne({
       where: { id: versionId },
-      relations: ['tags', 'socialLinks', 'app'],
+      relations: ['tags', 'socialLinks', 'app', 'appTranslations'],
     });
     if (!appVersion) throw new NotFoundException('AppVersion not found');
 
-    const { id, createdAt, updatedAt, app, changelog, tags, socialLinks, appId, version, ...rest } = appVersion;
+    const { id, createdAt, updatedAt, app, changelog, tags, socialLinks, appId, version, appTranslations, ...rest } = appVersion;
 
     const mezonApp = await this.appRepository.findOne({
       where: { id: appId },
-      relations: ['tags', 'socialLinks'],
+      relations: ['tags', 'socialLinks', 'appTranslations'],
     });
     if (!mezonApp) throw new NotFoundException('App not found');
 
@@ -68,6 +81,16 @@ export class AppVersionService {
     mezonApp.status = AppStatus.PUBLISHED;
     mezonApp.hasNewUpdate = false;
     mezonApp.currentVersion = version;
+
+    if (appTranslations) {
+      const transDtos = appTranslations.map(t => ({
+        language: t.language,
+        name: t.name,
+        headline: t.headline,
+        description: t.description
+      }));
+      await this.appTranslationService.createOrUpdateAppTranslations(transDtos, mezonApp.id, null);
+    }
 
     await this.appVersionRepository.update(versionId, { status: AppStatus.APPROVED });
 
