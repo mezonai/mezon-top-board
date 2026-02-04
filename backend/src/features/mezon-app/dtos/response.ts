@@ -53,11 +53,8 @@ export class GetMezonAppDetailsResponse extends GetAppInfoDetailsResponse {
 
 export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse, [
   "id",
-  "name",
   "type",
   "mezonAppId",
-  "description",
-  "headline",
   "status",
   "featuredImage",
   "tags",
@@ -68,19 +65,19 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "versions",
   "hasNewUpdate",
   "isFavorited",
+  "appTranslations",
+  "defaultLanguage",
 ]) { }
 
-export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["description", "tags", "headline"]) {
+export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["tags"]) {
 }
 
 export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResponse, [
   "id",
-  "name",
-  "description",
   "type",
   "mezonAppId",
-  "headline",
   "featuredImage",
   "rateScore",
+  "appTranslations",
 ]) {
 }

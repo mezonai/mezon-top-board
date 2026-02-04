@@ -47,7 +47,11 @@ export class ReviewHistoryService {
   }
 
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
-    const mezonApp = await this.appRepository.findById(body.appId);
+    const mezonApp = await this.appRepository.findOne({
+      where: { id: body.appId },
+      relations: ["appTranslations"],
+    });
+
     if (!mezonApp || mezonApp.hasNewUpdate === false) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
@@ -76,14 +80,23 @@ export class ReviewHistoryService {
       const user = await this.userRepository.findById(mezonApp.ownerId);
       const statusText = body.isApproved ? "APPROVED" : "REJECTED";
       
-      const text =`Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+      const defaultTranslation = mezonApp.appTranslations?.find(
+        (t) => t.language === mezonApp.defaultLanguage
+      );
+
+      const validTranslation = defaultTranslation || mezonApp.appTranslations?.[0];
+      const appName = validTranslation?.name || "";
+
+      const text = `Your ${mezonApp.type} ${appName} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
 
       await this.mezonClientService.sendMessageToUser({
         userId: user.mezonUserId,
         textContent: text,
         messOptions: {
-          mk: [{ s: text.indexOf(mezonApp.name), e: text.indexOf(mezonApp.name) + mezonApp.name.length, type: EMarkdownType.BOLD },
-               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
+          mk: [
+            { s: text.indexOf(appName), e: text.indexOf(appName) + appName.length, type: EMarkdownType.BOLD },
+            { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }
+          ],
           mention_everyone: false,
           anonymous_message: false,
         },
@@ -165,13 +178,14 @@ export class ReviewHistoryService {
       .getRepository()
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.app', 'app')
+      .leftJoinAndSelect('app.appTranslations', 'trans')
       .leftJoinAndSelect('review.reviewer', 'reviewer')
       .leftJoinAndSelect('review.appVersion', 'appVersion');
   
     if (query.search) {
       qb.andWhere(
         new Brackets((qb) => {
-          qb.where('app.name ILIKE :keyword', { keyword: `%${query.search}%` })
+          qb.where('trans.name ILIKE :keyword', { keyword: `%${query.search}%` })
             .orWhere('reviewer.name ILIKE :keyword', { keyword: `%${query.search}%` })
             .orWhere('review.remark ILIKE :keyword', { keyword: `%${query.search}%` });
         }),
@@ -189,7 +203,7 @@ export class ReviewHistoryService {
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
     const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
 
-    qb.orderBy(`review.${sortField}`, sortOrder);
+        qb.orderBy(`review.${sortField}`, sortOrder);
     
 
     return paginate<AppReviewHistory, AppReviewResponse>(
@@ -203,5 +217,4 @@ export class ReviewHistoryService {
       (entity) => Mapper(AppReviewResponse, entity),
     );
   }
-  
 }
