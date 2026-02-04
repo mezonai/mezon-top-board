@@ -25,12 +25,11 @@ const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersionDetailsDto
 const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonAppRequest => {
   const dataSource = getDataSource(detail)
   const changelog = dataSource.status === AppStatus.PENDING ? dataSource.changelog : '';
-  const existingTranslations = detail.appTranslations || [];
+  const existingTranslations = detail.versions[0].appTranslations || [];
   
   const formTranslations = [AppLanguage.EN, AppLanguage.VI].map(lang => {
     const found = existingTranslations.find(t => t.language === lang);
     return {
-      id: found?.id,
       language: lang,
       name: found?.name || '',
       headline: found?.headline || '',

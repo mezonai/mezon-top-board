@@ -36,7 +36,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         <span>
           English{' '}
           {values.defaultLanguage === AppLanguage.EN && (
-            <span className="text-[10px] ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
+            <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
           )}
         </span>
       )
@@ -47,7 +47,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         <span>
           Tiếng Việt{' '}
           {values.defaultLanguage === AppLanguage.VI && (
-            <span className="text-[10px] ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
+            <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
           )}
         </span>
       )
@@ -75,40 +75,86 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           className="w-[11rem] text-primary"
         />
       </div>
-      <ul className='space-y-2 text-primary'>
-        <li>
+      <ul className='space-y-3 text-primary'>
+        <li className='space-y-3'>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.name')}
+            <span className='font-normal'>
+              {currentTrans?.name || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+            </span>
+          </MtbTypography>
 
-          <ul className="space-y-3">
-            <li>
-              <strong>{t('new_bot_page.step4.name')} ({reviewLang === AppLanguage.EN ? 'English' : 'Tiếng Việt'}):</strong>
-              <div className="mt-1">{currentTrans?.name || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}</div>
-            </li>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1 break-words">
+            {t('new_bot_page.step4.headline')}
+            <span className='font-normal'>
+              {currentTrans?.headline || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+            </span>
+          </MtbTypography>
 
-            <li className='break-words'>
-              <strong>{t('new_bot_page.step4.headline')} ({reviewLang === AppLanguage.EN ? 'English' : 'Tiếng Việt'}):</strong>
-              <div className="mt-1">{currentTrans?.headline || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}</div>
-            </li>
-
-            <li>
-              <strong>{t('new_bot_page.step4.description')} ({reviewLang === AppLanguage.EN ? 'English' : 'Tiếng Việt'}):</strong>
-              {currentTrans?.description ? (
-                <div className='mt-2 border border-border p-3 rounded-md text-sm description break-words bg-container'
-                  dangerouslySetInnerHTML={{ __html: transformMediaSrc(currentTrans.description) }}
-                />
-              ) : (
-                <div className="mt-1 text-secondary italic">{t('new_bot_page.step4.none')}</div>
-              )}
-            </li>
-          </ul>
+          <div>
+            <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+              {t('new_bot_page.step4.description')}
+            </MtbTypography>
+            {currentTrans?.description ? (
+              <div
+                className='mt-2 border border-border p-3 rounded-md text-sm description break-words bg-container'
+                dangerouslySetInnerHTML={{ __html: transformMediaSrc(currentTrans.description) }}
+              />
+            ) : (
+              <div className="mt-1 text-secondary italic">{t('new_bot_page.step4.none')}</div>
+            )}
+          </div>
         </li>
-        <div className="border-t border-border my-4"></div>
-        <li><strong>{t('new_bot_page.step4.type')}</strong> {values.type}</li>
-        <li><strong>{t('new_bot_page.step4.id')}</strong> {values.mezonAppId}</li>
-        {type === MezonAppType.BOT && <li><strong>{t('new_bot_page.step4.prefix')}</strong> {values.prefix}</li>}
-        <li><strong>{t('new_bot_page.step4.auto_publish')}</strong> {values.isAutoPublished ? t('new_bot_page.step4.yes') : t('new_bot_page.step4.no')}</li>
-        <li className='break-words'><strong>{t('new_bot_page.step4.install_link')}</strong> <span className="text-secondary">{getMezonInstallLink(values.type, values.mezonAppId)}</span></li>
+
+        <li className="border-t border-border my-4" />
+
         <li>
-          <strong>{t('new_bot_page.step4.tags')}</strong>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.type')}
+            <span className='font-normal'>{values.type || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}</span>
+          </MtbTypography>
+        </li>
+
+        <li>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.id')}
+            <span className='font-normal'>{values.mezonAppId || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}</span>
+          </MtbTypography>
+        </li>
+
+        {type === MezonAppType.BOT && (
+          <li>
+            <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+              {t('new_bot_page.step4.prefix')}
+              <span className='font-normal'>
+                {values.prefix || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+              </span>
+            </MtbTypography>
+          </li>
+        )}
+
+        <li>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.auto_publish')}
+            <span className='font-normal'>
+              {values.isAutoPublished ? t('new_bot_page.step4.yes') : t('new_bot_page.step4.no')}
+            </span>
+          </MtbTypography>
+        </li>
+
+        <li className='break-words'>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.install_link')}
+            <span className="font-normal text-secondary">
+              {getMezonInstallLink(values.type, values.mezonAppId)}
+            </span>
+          </MtbTypography>
+        </li>
+
+        <li>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.tags')}
+          </MtbTypography>
           <div className='gap-2 flex flex-wrap mt-1'>
             {selectedTags.length > 0 ? (
               selectedTags.map((tag: TagResponse) => (
@@ -117,19 +163,42 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
                 </Tag>
               ))
             ) : (
-              <span className="text-secondary italic ml-2">{t('new_bot_page.step4.no_tags')}</span>
+              <span className="text-secondary italic">{t('new_bot_page.step4.no_tags')}</span>
             )}
           </div>
         </li>
+
         <li>
-          <strong>{t('new_bot_page.step4.tag_price')}</strong> {values.pricingTag}
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.tag_price')}
+            <span className='font-normal'>
+              {values.pricingTag || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+            </span>
+          </MtbTypography>
         </li>
+
         <li>
-          <strong>{t('new_bot_page.step4.price')}</strong> {values.price}
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.price')}
+            <span className='font-normal'>
+              {values.price ?? <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+            </span>
+          </MtbTypography>
         </li>
-        <li className='break-words'><strong>{t('new_bot_page.step4.support_url')} </strong>{values.supportUrl}</li>
+
+        <li className='break-words'>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.support_url')}
+            <span className='font-normal'>
+              {values.supportUrl || <span className="text-secondary italic">{t('new_bot_page.step4.none')}</span>}
+            </span>
+          </MtbTypography>
+        </li>
+
         <li>
-          <strong>{t('new_bot_page.step4.social_links')}</strong>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.social_links')}
+          </MtbTypography>
           <div className="mt-2 flex flex-col gap-2">
             {(values.socialLinks ?? []).length > 0 ? (
               values.socialLinks?.map((link: SocialLink, idx: number) => (
@@ -138,24 +207,32 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
                     <img src={getUrlMedia(link.type.icon)} alt={link.type?.name || ''} className="w-4 h-4" />
                   )}
                   <span className="font-medium">{link.type?.name || 'Link'}:</span>
-                  <a href={(link.type?.prefixUrl ?? '') + (link.url ?? '')} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                  <a
+                    href={(link.type?.prefixUrl ?? '') + (link.url ?? '')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline break-words"
+                  >
                     {link.url ?? ''}
                   </a>
                 </div>
               ))
             ) : (
-              <span className="text-secondary italic ml-2">{t('new_bot_page.step4.no_links')}</span>
+              <span className="text-secondary italic">{t('new_bot_page.step4.no_links')}</span>
             )}
           </div>
         </li>
+
         <li>
-          <strong>{t('new_bot_page.step4.changelog')} </strong>
+          <MtbTypography variant='h5' customClassName="mb-1 gap-1">
+            {t('new_bot_page.step4.changelog')}
+          </MtbTypography>
           {values.changelog ? (
             <div className='mt-2 border border-border p-3 rounded-md text-sm bg-container whitespace-pre-wrap break-words'>
               {values.changelog}
             </div>
           ) : (
-            <span className="text-secondary italic ml-2">{t('new_bot_page.step4.none')}</span>
+            <div className="mt-1 text-secondary italic">{t('new_bot_page.step4.none')}</div>
           )}
         </li>
       </ul>

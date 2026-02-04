@@ -163,13 +163,10 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   ) => {
     if (fieldItem.language !== activeLang) return null;
 
-    const isDefault = fieldItem.language === defaultLanguage;
-    const langLabel = fieldItem.language === AppLanguage.EN ? 'English' : 'Tiếng Việt';
-
     return (
       <div key={fieldItem.uid} className="flex flex-col gap-0">
         <FormField
-          label={`${t('new_bot_page.step3.name')} (${langLabel})`}
+          label={`${t('new_bot_page.step3.name')}`}
           required={true}
           description={t('new_bot_page.step3.name_desc')}
           errorText={errors.appTranslations?.[index]?.name?.message}
@@ -189,8 +186,8 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         </FormField>
 
         <FormField
-          label={`${t('new_bot_page.step3.headline')} (${langLabel})`}
-          required={isDefault}
+          label={`${t('new_bot_page.step3.headline')}`}
+          required={true}
           description={t('new_bot_page.step3.headline_desc')}
           errorText={errors.appTranslations?.[index]?.headline?.message}
         >
@@ -209,8 +206,8 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
         </FormField>
 
         <FormField
-          label={`${t('new_bot_page.step3.description')} (${langLabel})`}
-          required={isDefault}
+          label={`${t('new_bot_page.step3.description')}`}
+          required={true}
           description={t('new_bot_page.step3.description_desc')}
           errorText={errors.appTranslations?.[index]?.description?.message}
         >
@@ -250,7 +247,6 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                 ]}
                 onChange={(val) => {
                   field.onChange(val);
-                  setActiveLang(val);
                 }}
               />
             )}
@@ -268,7 +264,6 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                 { lang: AppLanguage.VI, label: 'Tiếng Việt' }
               ].map((item) => {
                 const isActive = activeLang === item.lang;
-                const isDefault = defaultLanguage === item.lang;
                 return (
                   <Button
                     key={item.lang}
@@ -277,9 +272,6 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
                     className={`${isActive ? '' : 'text-secondary border-border hover:!border-primary hover:!text-primary'} min-w-[120px] transition-all`}
                   >
                     {item.label}{' '}
-                    {isDefault && (
-                      <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
-                    )}
                   </Button>
                 );
               })}

@@ -21,7 +21,7 @@ const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
-    const { name, description, headline } = useAppTranslation(appData);
+    const { name, description, headline } = useAppTranslation(latestVersion);
 
     return (
         <Modal
