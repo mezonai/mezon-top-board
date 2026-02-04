@@ -7,7 +7,7 @@ import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { SortField } from "@domain/common/enum/sortField";
 import { SortOrder } from "@domain/common/enum/sortOder";
-import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
+import { App, AppReviewHistory, AppTranslation, AppVersion, Rating, User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
 
@@ -59,6 +59,7 @@ export class ReviewHistoryService {
     const mezonAppVersion = await this.appVersionRepository.findOne({
       where: { appId: body.appId, status: AppStatus.PENDING },
       order: { version: 'DESC' },
+      relations: ["appTranslations"],
     });
     if (!mezonAppVersion) {
       throw new BadRequestException("No pending app version found");
@@ -66,6 +67,21 @@ export class ReviewHistoryService {
 
     if (body.isApproved) {
       await this.appVersionService.approveVersion(mezonAppVersion.id);
+      if (mezonAppVersion.appTranslations?.length) {
+        const appTranslationRepo = this.manager.getRepository(AppTranslation);
+        await appTranslationRepo.delete({ appId: body.appId });
+
+        const newAppTranslations = mezonAppVersion.appTranslations.map(t => {
+          return appTranslationRepo.create({
+            appId: body.appId,
+            language: t.language,
+            name: t.name,
+            headline: t.headline,
+            description: t.description,
+          });
+        });
+        await appTranslationRepo.save(newAppTranslations);
+      }
     } else {
       await this.appVersionService.rejectVersion(mezonAppVersion.id);
     }
