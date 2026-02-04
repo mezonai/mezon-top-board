@@ -1,6 +1,6 @@
-import { Controller, useFormContext, useWatch, useFieldArray } from 'react-hook-form'
+import { Controller, useFormContext, useWatch, useFieldArray, FieldArrayWithId } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Input, Checkbox, Select, Form, InputNumber } from 'antd'
+import { Input, Checkbox, Select, Form, InputNumber, Alert } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -20,8 +20,9 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { AppPricing } from '@app/enums/appPricing'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { History } from 'lucide-react'
+import { History, Copy } from 'lucide-react'
 import ChangelogHistoryModal from '@app/components/ChangelogHistoryModal/ChangelogHistoryModal'
+import { AppLanguage } from '@app/enums/appLanguage.enum'
 
 const SocialLinkIcon = ({ src, prefixUrl }: { src?: string; prefixUrl?: string }) => (
   <div className='flex items-center gap-2'>
@@ -34,10 +35,18 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
   const { control, formState: { errors }, setError, clearErrors, setValue, getValues } = useFormContext<CreateMezonAppRequest>()
   const type = useWatch({ control, name: 'type' })
   const mezonAppId = useWatch({ control, name: 'mezonAppId' })
+  const defaultLanguage = useWatch({ control, name: 'defaultLanguage' })
 
   const { tagList } = useSelector<RootState, ITagStore>((s) => s.tag)
   const { linkTypeList } = useSelector<RootState, ILinkTypeStore>((s) => s.link)
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false)
+  const [activeLang, setActiveLang] = useState<AppLanguage>(AppLanguage.EN);
+
+  const { fields: translationFields } = useFieldArray({
+    control,
+    name: "appTranslations",
+    keyName: "uid"
+  });
 
   const {
     fields: socialLinksData,
@@ -136,48 +145,173 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
     setIsChangelogModalOpen(false);
   }
 
+  const handleCopyFromDefault = () => {
+    const currentTranslations = getValues('appTranslations');
+    const defaultTrans = currentTranslations.find(t => t.language === defaultLanguage);
+    const targetIndex = currentTranslations.findIndex(t => t.language === activeLang);
+
+    if (defaultTrans && targetIndex !== -1) {
+      setValue(`appTranslations.${targetIndex}.name`, defaultTrans.name, { shouldDirty: true, shouldValidate: true });
+      setValue(`appTranslations.${targetIndex}.headline`, defaultTrans.headline, { shouldDirty: true, shouldValidate: true });
+      setValue(`appTranslations.${targetIndex}.description`, defaultTrans.description, { shouldDirty: true, shouldValidate: true });
+    }
+  };
+
+  const renderTranslationInputs = (
+    fieldItem: FieldArrayWithId<CreateMezonAppRequest, "appTranslations", "uid">,
+    index: number
+  ) => {
+    if (fieldItem.language !== activeLang) return null;
+
+    const isDefault = fieldItem.language === defaultLanguage;
+    const langLabel = fieldItem.language === AppLanguage.EN ? 'English' : 'Tiếng Việt';
+
+    return (
+      <div key={fieldItem.uid} className="flex flex-col gap-0">
+        <FormField
+          label={`${t('new_bot_page.step3.name')} (${langLabel})`}
+          required={true}
+          description={t('new_bot_page.step3.name_desc')}
+          errorText={errors.appTranslations?.[index]?.name?.message}
+        >
+          <Controller
+            control={control}
+            name={`appTranslations.${index}.name`}
+            render={({ field }) => (
+              <Input
+                {...field}
+                className='placeholder:!text-primary'
+                placeholder={t('new_bot_page.step3.placeholders.name')}
+                status={errorStatus(errors.appTranslations?.[index]?.name)}
+              />
+            )}
+          />
+        </FormField>
+
+        <FormField
+          label={`${t('new_bot_page.step3.headline')} (${langLabel})`}
+          required={isDefault}
+          description={t('new_bot_page.step3.headline_desc')}
+          errorText={errors.appTranslations?.[index]?.headline?.message}
+        >
+          <Controller
+            control={control}
+            name={`appTranslations.${index}.headline`}
+            render={({ field }) => (
+              <TextArea
+                {...field}
+                placeholder={t('new_bot_page.step3.placeholders.headline')}
+                className='placeholder:!text-primary'
+                status={errorStatus(errors.appTranslations?.[index]?.headline)}
+              />
+            )}
+          />
+        </FormField>
+
+        <FormField
+          label={`${t('new_bot_page.step3.description')} (${langLabel})`}
+          required={isDefault}
+          description={t('new_bot_page.step3.description_desc')}
+          errorText={errors.appTranslations?.[index]?.description?.message}
+        >
+          <Controller
+            control={control}
+            name={`appTranslations.${index}.description`}
+            render={({ field }) => (
+              <RichTextEditor
+                value={field.value || ''}
+                onChange={field.onChange}
+                placeholder={t('new_bot_page.step3.description_desc')}
+              />
+            )}
+          />
+        </FormField>
+      </div>
+    );
+  };
+
   return (
     <>
-      <FormField label={t('new_bot_page.step3.name')} required description={t('new_bot_page.step3.name_desc')} errorText={errors.name?.message}>
-        <Controller
-          control={control}
-          name='name'
-          render={({ field }) => (
-            <Input {...field} className='placeholder:!text-primary' placeholder={t('new_bot_page.step3.placeholders.name')} status={errorStatus(errors.name)} />
-          )}
-        />
-      </FormField>
+      <div className="flex flex-col gap-6">
+        <FormField
+          label={t('new_bot_page.step3.default_language')}
+          required
+          description={t('new_bot_page.step3.default_language_desc')}
+        >
+          <Controller
+            control={control}
+            name="defaultLanguage"
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={[
+                  { label: 'English', value: AppLanguage.EN },
+                  { label: 'Tiếng Việt', value: AppLanguage.VI }
+                ]}
+                onChange={(val) => {
+                  field.onChange(val);
+                  setActiveLang(val);
+                }}
+              />
+            )}
+          />
+        </FormField>
 
-      <FormField
-        label={t('new_bot_page.step3.headline')}
-        required
-        description={t('new_bot_page.step3.headline_desc')}
-        errorText={errors.headline?.message}
-      >
-        <Controller
-          control={control}
-          name='headline'
-          render={({ field }) => (
-            <TextArea {...field} placeholder={t('new_bot_page.step3.placeholders.headline')}
-              className='placeholder:!text-primary'
-              status={errorStatus(errors.headline)} />
-          )}
-        />
-      </FormField>
+        <FormField
+          label={t('new_bot_page.step3.multilingual_content')}
+          description={t('new_bot_page.step3.multilingual_content_desc')}
+        >
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex gap-3 flex-wrap">
+              {[
+                { lang: AppLanguage.EN, label: 'English' },
+                { lang: AppLanguage.VI, label: 'Tiếng Việt' }
+              ].map((item) => {
+                const isActive = activeLang === item.lang;
+                const isDefault = defaultLanguage === item.lang;
+                return (
+                  <Button
+                    key={item.lang}
+                    variant={isActive ? undefined : 'outlined'}
+                    onClick={() => setActiveLang(item.lang)}
+                    className={`${isActive ? '' : 'text-secondary border-border hover:!border-primary hover:!text-primary'} min-w-[120px] transition-all`}
+                  >
+                    {item.label}{' '}
+                    {isDefault && (
+                      <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
+                    )}
+                  </Button>
+                );
+              })}
+            </div>
 
-      <FormField
-        label={t('new_bot_page.step3.description')}
-        required
-        description={t('new_bot_page.step3.description_desc')}
-        errorText={errors.description?.message}>
-        <Controller
-          control={control}
-          name='description'
-          render={({ field }) => (
-            <RichTextEditor value={field.value || ''} onChange={field.onChange} placeholder={t('new_bot_page.step3.description_desc')} />
+            {activeLang !== defaultLanguage && (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={handleCopyFromDefault}
+                className="flex items-center gap-1 text-xs"
+              >
+                <Copy size={14} />
+                {t('new_bot_page.step3.copy_from_default')}
+              </Button>
+            )}
+          </div>
+
+          {activeLang !== defaultLanguage && (
+            <Alert
+              message={t('new_bot_page.step3.optional_fields_notice')}
+              type="info"
+              showIcon
+              className="text-xs !mt-3"
+            />
           )}
-        />
-      </FormField>
+        </FormField>
+
+        {translationFields.map((item, index) => renderTranslationInputs(item, index))}
+      </div>
+
+      <div className="my-8 border-b border-border" />
 
       <FormField label={t('new_bot_page.step3.auto_publish')} customClass='!items-center'>
         <Controller
