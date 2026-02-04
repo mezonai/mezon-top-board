@@ -8,6 +8,7 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
 import BotStatusBadge from '../BotStatusBadge/BotStatusBadge';
+import { useAppTranslation } from '@app/hook/useAppTranslation';
 
 interface Props {
     open: boolean
@@ -20,6 +21,7 @@ const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
+    const { name, description, headline } = useAppTranslation(appData);
 
     return (
         <Modal
@@ -47,16 +49,16 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         <div className='flex items-start gap-4'>
                             <img
                                 src={latestVersion?.featuredImage ? getUrlMedia(latestVersion.featuredImage) : sampleBotImg}
-                                alt={latestVersion?.name}
+                                alt={name}
                                 className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md mx-auto md:mx-0'
                             />
 
                             <div className='flex-1'>
                                 <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-2'>
                                     <div>
-                                        <Title level={5} style={{ margin: 0 }}>{latestVersion?.name}</Title>
+                                        <Title level={5} style={{ margin: 0 }}>{name}</Title>
                                         <div className='mt-1'>
-                                            <Text type='secondary' className='block md:inline'>{latestVersion?.headline}</Text>
+                                            <Text type='secondary' className='block md:inline'>{headline}</Text>
                                             <div className='mt-1'>
                                                 <Text type='secondary' style={{ fontSize: 12 }}>
                                                     {t('component.preview_modal.owner_label', { name: appData.owner?.name || '—' })}
@@ -74,8 +76,8 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                             </div>
                         </div>
 
-                        {latestVersion?.description
-                            ? <div dangerouslySetInnerHTML={{ __html: latestVersion.description }} />
+                        {description
+                            ? <div dangerouslySetInnerHTML={{ __html: description }} />
                             : <Paragraph>{t('component.preview_modal.no_description')}</Paragraph>
                         }
 

@@ -40,6 +40,7 @@ import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
 import { CropImageShape } from '@app/enums/CropImage.enum'
+import { AppLanguage } from '@app/enums/appLanguage.enum'
 
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
@@ -58,9 +59,6 @@ function NewBotPage() {
     defaultValues: {
       type: MezonAppType.BOT,
       mezonAppId: '',
-      name: '',
-      headline: '',
-      description: '',
       prefix: '',
       featuredImage: '',
       tagIds: [],
@@ -70,16 +68,28 @@ function NewBotPage() {
       changelog: '',
       //TODO: isAutoPublished will be implemented later
       isAutoPublished: true,
-      socialLinks: []
+      socialLinks: [],
+      defaultLanguage: AppLanguage.EN,
+      appTranslations: [
+        { language: AppLanguage.EN, name: '', headline: '', description: '' },
+        { language: AppLanguage.VI, name: '', headline: '', description: '' }
+      ],
     },
     resolver: yupResolver(getAddBotSchema),
     mode: 'onChange'
   })
 
   const { setValue, reset, watch, trigger, handleSubmit } = methods
-  const nameValue = watch('name')
-  const headlineValue = watch('headline')
-  const featuredImageValue = watch('featuredImage')
+  const appTranslations = watch('appTranslations');
+  const featuredImageValue = watch('featuredImage');
+  const nameValue = useMemo(() => {
+    const enTrans = appTranslations?.find(t => t.language === AppLanguage.EN);
+    return enTrans?.name || appTranslations?.[0]?.name || '';
+  }, [appTranslations]);
+  const headlineValue = useMemo(() => {
+    const enTrans = appTranslations?.find(t => t.language === AppLanguage.EN);
+    return enTrans?.headline || appTranslations?.[0]?.headline || '';
+  }, [appTranslations]);
 
   const imgUrl = useMemo(() => {
     return botId && featuredImageValue
@@ -142,9 +152,6 @@ function NewBotPage() {
   }
 
   const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
-    'name',
-    'headline',
-    'description',
     'prefix',
     'tagIds',
     'pricingTag',
@@ -153,7 +160,9 @@ function NewBotPage() {
     'featuredImage',
     'socialLinks',
     'changelog',
-    'isAutoPublished'
+    'isAutoPublished',
+    'defaultLanguage',
+    'appTranslations'
   ]
 
   const stepFieldMap = useMemo((): StepFieldMap => {

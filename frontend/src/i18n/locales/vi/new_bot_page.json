@@ -70,7 +70,14 @@
             },
             "changelog": "Ghi chú phát hành",
             "changelog_desc": "Cung cấp tóm tắt về những thay đổi đã được thực hiện trong bản cập nhật này.",
-            "copy_from_history": "Sao chép từ Lịch sử"
+            "copy_from_history": "Sao chép từ Lịch sử",
+            "default_language": "Ngôn ngữ mặc định",
+            "default_language_desc": "Chọn ngôn ngữ mặc định cho danh sách bot của bạn.",
+            "default": "Mặc định",
+            "multilingual_content": "Nội dung đa ngôn ngữ",
+            "multilingual_content_desc": "Cung cấp tên, tiêu đề và mô tả bot của bạn bằng nhiều ngôn ngữ để tiếp cận đối tượng rộng hơn.",
+            "optional_fields_notice": "Các trường trong tab này là tùy chọn. Nếu để trống, nội dung ngôn ngữ mặc định sẽ được hiển thị.",
+            "copy_from_default": "Sao chép từ Mặc định"
         },
         "step4": {
             "review_update": "Xem lại thông tin cập nhật của bạn",
