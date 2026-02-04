@@ -6,9 +6,6 @@ import { AppVersion } from "./appVersion.entity";
 
 @Entity({ name: "app_translation" })
 export class AppTranslation extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  public id: string;
-
   @Column({ nullable: true })
   public appId: string;
 

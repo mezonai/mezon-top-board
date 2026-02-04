@@ -204,13 +204,15 @@ export class MezonAppService {
         status: AppStatus.PUBLISHED,
       },
       withDeleted: false,
-      relations: ["tags", "ratings"],
+      relations: ["tags", "ratings", "appTranslations"],
       take: 5,
     });
 
     const res = relatedMezonApps.map((mezonApp) => {
       const mappedMezonApp = Mapper(GetRelatedMezonAppResponse, mezonApp);
       mappedMezonApp.rateScore = this.getAverageRating(mezonApp);
+      mappedMezonApp.appTranslations = this.mapAppTranslations(mezonApp.appTranslations);
+      mappedMezonApp.defaultLanguage = mezonApp.defaultLanguage;
       return mappedMezonApp;
     });
 
@@ -228,7 +230,7 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .leftJoin("app.appTranslations", "trans")
+      .innerJoin("app.appTranslations", "trans")
       .select("app.id")
       .skip(skip)
       .take(take);
@@ -627,6 +629,8 @@ export class MezonAppService {
           color: tag.color,
         }));
         mappedMezonApp.versions = entity.versions;
+        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         // TODO: fix with exposeUnsetFields later in class-transformer
         mappedMezonApp.owner = {
           id: entity.owner.id,

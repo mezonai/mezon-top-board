@@ -46,7 +46,8 @@ export class AddAppTranslation1770094915765 implements MigrationInterface {
                 "headline" = t."headline",
                 "description" = t."description"
             FROM "app_translation" t
-            WHERE "app"."id" = t."appId" AND t."language" = 'en'
+            WHERE "app"."id" = t."appId" 
+            AND t."language"::text = "app"."defaultLanguage"::text
         `);
         await queryRunner.query(`
             UPDATE "app_version"
@@ -55,7 +56,8 @@ export class AddAppTranslation1770094915765 implements MigrationInterface {
                 "headline" = t."headline",
                 "description" = t."description"
             FROM "app_translation" t
-            WHERE "app_version"."id" = t."appVersionId" AND t."language" = 'en'
+            WHERE "app_version"."id" = t."appVersionId" 
+            AND t."language"::text = "app_version"."defaultLanguage"::text
         `);
         await queryRunner.query(`ALTER TABLE "app_translation" DROP CONSTRAINT "FK_app_translation_appVersionId"`);
         await queryRunner.query(`ALTER TABLE "app_translation" DROP CONSTRAINT "FK_app_translation_appId"`);

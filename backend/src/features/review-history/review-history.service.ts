@@ -80,15 +80,23 @@ export class ReviewHistoryService {
       const user = await this.userRepository.findById(mezonApp.ownerId);
       const statusText = body.isApproved ? "APPROVED" : "REJECTED";
       
-      const appNames = mezonApp.appTranslations?.map(t => t.name).join(", ") || "";
-      const text =`Your ${mezonApp.type} ${appNames} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+      const defaultTranslation = mezonApp.appTranslations?.find(
+        (t) => t.language === mezonApp.defaultLanguage
+      );
+
+      const validTranslation = defaultTranslation || mezonApp.appTranslations?.[0];
+      const appName = validTranslation?.name || "";
+
+      const text = `Your ${mezonApp.type} ${appName} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
 
       await this.mezonClientService.sendMessageToUser({
         userId: user.mezonUserId,
         textContent: text,
         messOptions: {
-          mk: [{ s: text.indexOf(appNames), e: text.indexOf(appNames) + appNames.length, type: EMarkdownType.BOLD },
-               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
+          mk: [
+            { s: text.indexOf(appName), e: text.indexOf(appName) + appName.length, type: EMarkdownType.BOLD },
+            { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }
+          ],
           mention_everyone: false,
           anonymous_message: false,
         },

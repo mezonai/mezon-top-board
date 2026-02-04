@@ -69,7 +69,7 @@ export class SearchMezonAppResponse extends PickType(GetMezonAppDetailsResponse,
   "defaultLanguage",
 ]) { }
 
-export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["tags", "appTranslations"]) {
+export class GetRelatedMezonAppResponse extends OmitType(SearchMezonAppResponse, ["tags"]) {
 }
 
 export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResponse, [
