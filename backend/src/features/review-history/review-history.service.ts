@@ -46,6 +46,15 @@ export class ReviewHistoryService {
     this.ratingRepository = new GenericRepository(Rating, manager);
   }
 
+  private mapAppTranslations(translations: AppTranslation[]) {
+    return translations?.map(t => ({
+      language: t.language,
+      name: t.name,
+      headline: t.headline,
+      description: t.description
+    })) || [];
+  }
+
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
     const mezonApp = await this.appRepository.findOne({
       where: { id: body.appId },
@@ -196,7 +205,8 @@ export class ReviewHistoryService {
       .leftJoinAndSelect('review.app', 'app')
       .leftJoinAndSelect('app.appTranslations', 'trans')
       .leftJoinAndSelect('review.reviewer', 'reviewer')
-      .leftJoinAndSelect('review.appVersion', 'appVersion');
+      .leftJoinAndSelect('review.appVersion', 'appVersion')
+      .leftJoinAndSelect('appVersion.appTranslations', 'versionTrans');
   
     if (query.search) {
       qb.andWhere(
@@ -219,7 +229,7 @@ export class ReviewHistoryService {
     const sortField = invalidSortField ? query.sortField : SortField.NAME;
     const sortOrder = invalidSortOrder ? query.sortOrder : SortOrder.DESC;
 
-        qb.orderBy(`review.${sortField}`, sortOrder);
+    qb.orderBy(`review.${sortField}`, sortOrder);
     
 
     return paginate<AppReviewHistory, AppReviewResponse>(
@@ -230,7 +240,21 @@ export class ReviewHistoryService {
           .getManyAndCount(),
       query.pageSize,
       query.pageNumber,
-      (entity) => Mapper(AppReviewResponse, entity),
+      (entity) => {
+        const mapped = Mapper(AppReviewResponse, entity);
+        
+        if (mapped.app && entity.app) {
+            mapped.app.appTranslations = this.mapAppTranslations(entity.app.appTranslations);
+            mapped.app.defaultLanguage = entity.app.defaultLanguage;
+        }
+
+        if (mapped.appVersion && entity.appVersion) {
+            mapped.appVersion.appTranslations = this.mapAppTranslations(entity.appVersion.appTranslations);
+            mapped.appVersion.defaultLanguage = entity.appVersion.defaultLanguage;
+        }
+
+        return mapped;
+      },
     );
   }
 }
