@@ -1,4 +1,3 @@
-
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as sanitizeHtml from "sanitize-html";
@@ -572,6 +571,16 @@ export class MezonAppService {
 
       if (appTranslations) {
         await this.appTranslationService.createOrUpdateAppTranslations(appTranslations, null, existingPendingVersion.id);
+      }
+
+      if (app.status === AppStatus.PENDING) {
+        Object.assign(app, updateData);
+        app.tags = tags;
+        app.socialLinks = links;
+        await this.appRepository.getRepository().save(app);
+        if (appTranslations) {
+          await this.appTranslationService.createOrUpdateAppTranslations(appTranslations, app.id, null);
+        }
       }
       return app
     }
