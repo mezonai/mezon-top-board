@@ -303,6 +303,7 @@ export class MezonAppService {
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
       .leftJoinAndSelect("version.tags", "versionTag")
+      .leftJoinAndSelect("version.appTranslations", "versionTranslations")
       .leftJoinAndSelect("version.socialLinks", "versionSocialLink")
       .leftJoinAndSelect("versionSocialLink.type", "versionLinkType")
       .where("app.id IN (:...ids)", { ids: ids.length ? ids : ["00000000-0000-0000-0000-000000000000"] });
@@ -601,7 +602,12 @@ export class MezonAppService {
           color: tag.color,
         }));
         mappedMezonApp.owner = entity.owner;
-        mappedMezonApp.versions = entity.versions;
+        mappedMezonApp.versions = entity.versions?.map(v => ({
+          ...v,
+          appTranslations: this.mapAppTranslations(v.appTranslations)
+        }));
+        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         return mappedMezonApp;
       },
     );

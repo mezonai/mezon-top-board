@@ -79,5 +79,7 @@ export class MezonAppInAppReviewResponse extends PickType(GetMezonAppDetailsResp
   "featuredImage",
   "rateScore",
   "appTranslations",
+  "defaultLanguage",
+  "versions",
 ]) {
 }
