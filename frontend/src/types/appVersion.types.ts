@@ -1,5 +1,6 @@
 import { App, Tag, Link, AppReviewHistory } from '@app/types'
 import { BaseApp } from './baseApp.types'
+import { AppTranslation } from './appTranslation.types'
 
 export type AppVersion = BaseApp & {
     appId: string
@@ -9,4 +10,5 @@ export type AppVersion = BaseApp & {
     tags: Tag[]
     socialLinks: Link[]
     reviewHistories: AppReviewHistory[]
+    appTranslations: AppTranslation[]
 }
