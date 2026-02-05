@@ -35,7 +35,7 @@ export class AddAppTranslation1770094915765 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "app" ADD "description" text`);
         await queryRunner.query(`ALTER TABLE "app" ADD "headline" character varying`);
-        await queryRunner.query(`ALTER TABLE "app" ADD "name" character varying NOT NULL DEFAULT ''`); // Cần default tạm để tránh lỗi not-null
+        await queryRunner.query(`ALTER TABLE "app" ADD "name" character varying NOT NULL DEFAULT ''`);
         await queryRunner.query(`ALTER TABLE "app_version" ADD "description" text`);
         await queryRunner.query(`ALTER TABLE "app_version" ADD "headline" character varying`);
         await queryRunner.query(`ALTER TABLE "app_version" ADD "name" character varying NOT NULL DEFAULT ''`);
