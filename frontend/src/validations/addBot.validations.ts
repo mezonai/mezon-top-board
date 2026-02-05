@@ -91,9 +91,7 @@ export const getAddBotSchema = yup.object({
       'validation.full_desc_required',
       requireDefaultTranslationField('description', 'validation.full_desc_required')
     ),
-
   isAutoPublished: yup.boolean().required('validation.is_auto_published_required'),
-  
   prefix: yup
     .string()
     .trim()
@@ -107,23 +105,18 @@ export const getAddBotSchema = yup.object({
       otherwise: (schema) => 
         schema.optional().transform((value) => (value === '' ? undefined : value))
     }),
-
   featuredImage: yup.string().optional(),
-  
   supportUrl: yup
     .string()
     .trim()
     .required('validation.support_url_required')
     .url('validation.invalid_url')
     .max(2082, 'validation.url_too_long'),
-  
   tagIds: yup.array().of(yup.string().required()).min(1, 'validation.at_least_one_tag').strict().defined(),
-  
   pricingTag: yup
     .mixed<AppPricing>()
     .oneOf(Object.values(AppPricing), 'validation.invalid_pricing_tag')
     .required('validation.pricing_tag_required'),
-  
   price: yup
     .number()
     .nullable() 
@@ -140,7 +133,6 @@ export const getAddBotSchema = yup.object({
           .required('validation.price_required_paid'),
       otherwise: (schema) => schema.nullable(),
     }),
-
   socialLinks: yup.array().of(
     yup.object().shape({
       url: yup
@@ -159,6 +151,5 @@ export const getAddBotSchema = yup.object({
       }).optional()
     })
   ).optional(),
-
   changelog: yup.string().trim().optional(),
 })
