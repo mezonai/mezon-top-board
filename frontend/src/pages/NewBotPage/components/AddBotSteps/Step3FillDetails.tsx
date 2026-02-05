@@ -162,12 +162,13 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
     index: number
   ) => {
     if (fieldItem.language !== activeLang) return null;
+    const isDefaultLang = fieldItem.language === defaultLanguage
 
     return (
       <div key={fieldItem.uid} className="flex flex-col gap-0">
         <FormField
           label={`${t('new_bot_page.step3.name')}`}
-          required={true}
+          required={isDefaultLang}
           description={t('new_bot_page.step3.name_desc')}
           errorText={errors.appTranslations?.[index]?.name?.message}
         >
@@ -187,7 +188,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
         <FormField
           label={`${t('new_bot_page.step3.headline')}`}
-          required={true}
+          required={isDefaultLang}
           description={t('new_bot_page.step3.headline_desc')}
           errorText={errors.appTranslations?.[index]?.headline?.message}
         >
@@ -207,7 +208,7 @@ const Step3FillDetails = ({ isEdit }: { isEdit: boolean }) => {
 
         <FormField
           label={`${t('new_bot_page.step3.description')}`}
-          required={true}
+          required={isDefaultLang}
           description={t('new_bot_page.step3.description_desc')}
           errorText={errors.appTranslations?.[index]?.description?.message}
         >

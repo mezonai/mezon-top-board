@@ -23,7 +23,7 @@ const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
-    const [previewLang, setPreviewLang] = useState<AppLanguage>(AppLanguage.EN);
+    const [previewLang, setPreviewLang] = useState<AppLanguage>(latestVersion?.defaultLanguage || AppLanguage.EN);
     const translationSource = useMemo(() => ({
         defaultLanguage: latestVersion?.defaultLanguage || appData?.defaultLanguage,
         appTranslations: latestVersion?.appTranslations
@@ -92,7 +92,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                         </div>
 
                         {description
-                            ? <div dangerouslySetInnerHTML={{ __html: description }} />
+                            ? <div className='description' dangerouslySetInnerHTML={{ __html: description }} />
                             : <Paragraph>{t('component.preview_modal.no_description')}</Paragraph>
                         }
 

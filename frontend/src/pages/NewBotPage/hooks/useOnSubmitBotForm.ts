@@ -51,6 +51,10 @@ export const useOnSubmitBotForm = (
         })
       );
 
+      const filteredTranslations = processedTranslations.filter(
+        (trans) => trans.name && trans.name.trim().length > 0
+      );
+
       const formattedLinks: SocialLink[] = (formData.socialLinks || []).map((link) => ({
         url: link?.url,
         linkTypeId: link.linkTypeId
@@ -59,7 +63,7 @@ export const useOnSubmitBotForm = (
       const payload: CreateMezonAppRequest = {
         ...formData,
         price: Number(formData.price),
-        appTranslations: processedTranslations,
+        appTranslations: filteredTranslations,
         socialLinks: formattedLinks,
         mezonAppId: formData.mezonAppId,
         type: formData.type

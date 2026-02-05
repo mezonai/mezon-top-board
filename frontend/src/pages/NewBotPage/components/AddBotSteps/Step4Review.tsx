@@ -11,7 +11,7 @@ import { TagResponse } from '@app/services/api/tag/tag.types'
 import { SocialLink } from '@app/types'
 import { MezonAppType } from '@app/enums/mezonAppType.enum'
 import { getUrlMedia } from '@app/utils/stringHelper'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppLanguage } from '@app/enums/appLanguage.enum'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import LanguageSelector from '@app/components/LanguageSelector/LanguageSelector'
@@ -26,8 +26,14 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const values = getValues() as CreateMezonAppRequest
   const tagIds = values.tagIds ?? []
   const selectedTags = tagList.data?.filter((tag: TagResponse) => tagIds.includes(tag.id)) ?? []
-  const [reviewLang, setReviewLang] = useState<AppLanguage>(AppLanguage.EN);
+  const [reviewLang, setReviewLang] = useState<AppLanguage>(values.defaultLanguage || AppLanguage.EN);
   const currentTrans = values.appTranslations?.find(t => t.language === reviewLang);
+
+  useEffect(() => {
+    if (values.defaultLanguage) {
+      setReviewLang(values.defaultLanguage);
+    }
+  }, [values.defaultLanguage]);
 
   return (
     <div className="text-primary">
