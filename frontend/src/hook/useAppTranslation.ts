@@ -12,22 +12,25 @@ export interface TranslatableData {
   }[];
 }
 
-export const useAppTranslation = (data?: TranslatableData | null) => {
+export const getAppTranslation = (data?: TranslatableData | null, language?: string) => {
+  const list = data?.appTranslations;
+  const lang = language?.split('-')[0] as AppLanguage; 
+
+  const t = list?.find(x => x.language === lang) 
+         || list?.find(x => x.language === data?.defaultLanguage) 
+         || list?.[0];
+
+  return {
+    name: t?.name ?? '',
+    headline: t?.headline ?? '',
+    description: t?.description ?? '',
+    currentLang: t?.language
+  };
+};
+
+export const useAppTranslation = (data?: TranslatableData | null, targetLanguage?: AppLanguage) => {
   const { i18n } = useTranslation();
+  const langToUse = targetLanguage || i18n.language;
 
-  return useMemo(() => {
-    const list = data?.appTranslations;
-    const lang = i18n.language?.split('-')[0] as AppLanguage; 
-
-    const t = list?.find(x => x.language === lang) 
-           || list?.find(x => x.language === data?.defaultLanguage) 
-           || list?.[0];
-
-    return {
-      name: t?.name ?? '',
-      headline: t?.headline ?? '',
-      description: t?.description ?? '',
-      currentLang: t?.language
-    };
-  }, [data, i18n.language]);
+  return useMemo(() => getAppTranslation(data, langToUse), [data, langToUse]);
 };

@@ -102,5 +102,8 @@
         "submit_success_created": "Tạo {{type}} thành công!",
         "submit_success_updated": "Cập nhật {{type}} thành công!",
         "generic_error": "Đã có lỗi xảy ra"
+    },
+    "multilingual": {
+        "default": "Mặc định"
     }
 }

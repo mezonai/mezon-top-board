@@ -14,7 +14,7 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 import { useState } from 'react'
 import { AppLanguage } from '@app/enums/appLanguage.enum'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
-import SingleSelect, { IOption } from '@app/mtb-ui/SingleSelect'
+import LanguageSelector from '@app/components/LanguageSelector/LanguageSelector'
 
 const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const { t } = useTranslation(['new_bot_page'])
@@ -29,35 +29,6 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
   const [reviewLang, setReviewLang] = useState<AppLanguage>(AppLanguage.EN);
   const currentTrans = values.appTranslations?.find(t => t.language === reviewLang);
 
-  const langOptions: IOption[] = [
-    {
-      value: AppLanguage.EN,
-      label: (
-        <span>
-          English{' '}
-          {values.defaultLanguage === AppLanguage.EN && (
-            <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
-          )}
-        </span>
-      )
-    },
-    {
-      value: AppLanguage.VI,
-      label: (
-        <span>
-          Tiếng Việt{' '}
-          {values.defaultLanguage === AppLanguage.VI && (
-            <span className="text-xs ml-1 opacity-80">({t('new_bot_page.step3.default')})</span>
-          )}
-        </span>
-      )
-    }
-  ]
-
-  const handleLangChange = (option: IOption) => {
-    setReviewLang(option.value as AppLanguage)
-  }
-
   return (
     <div className="text-primary">
       <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
@@ -65,14 +36,10 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
           {isEdit ? t('new_bot_page.step4.review_update') : t('new_bot_page.step4.review_info')}
         </MtbTypography>
 
-        <SingleSelect
-          getPopupContainer={(trigger) => trigger.parentElement}
-          options={langOptions}
-          value={langOptions.find((o) => o.value === reviewLang)}
-          onChange={handleLangChange}
-          placeholder="Language"
-          size="middle"
-          className="w-[11rem] text-primary"
+        <LanguageSelector 
+            value={reviewLang} 
+            onChange={setReviewLang} 
+            defaultLanguage={values.defaultLanguage}
         />
       </div>
       <ul className='space-y-3 text-primary'>
@@ -107,7 +74,7 @@ const Step4Review = ({ isEdit }: { isEdit: boolean }) => {
         </li>
 
         <li className="border-t border-border my-4" />
-
+        
         <li>
           <MtbTypography variant='h5' customClassName="mb-1 gap-1">
             {t('new_bot_page.step4.type')}

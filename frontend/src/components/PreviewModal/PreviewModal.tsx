@@ -1,5 +1,5 @@
 import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { formatDate } from '@app/utils/date'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
@@ -8,6 +8,8 @@ import { getMezonInstallLink } from '@app/utils/mezonApp'
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
 import BotStatusBadge from '../BotStatusBadge/BotStatusBadge';
+import { AppLanguage } from '@app/enums/appLanguage.enum';
+import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import { useAppTranslation } from '@app/hook/useAppTranslation';
 
 interface Props {
@@ -21,7 +23,12 @@ const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
-    const { name, description, headline } = useAppTranslation(latestVersion);
+    const [previewLang, setPreviewLang] = useState<AppLanguage>(AppLanguage.EN);
+    const translationSource = useMemo(() => ({
+        defaultLanguage: latestVersion?.defaultLanguage || appData?.defaultLanguage,
+        appTranslations: latestVersion?.appTranslations
+    }), [latestVersion, appData]);
+    const { name, headline, description } = useAppTranslation(translationSource, previewLang);
 
     return (
         <Modal
@@ -45,6 +52,14 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                 </div>
             ) : (
                 <div>
+                    <div className="flex justify-end mb-4">
+                        <LanguageSelector 
+                            value={previewLang} 
+                            onChange={setPreviewLang} 
+                            defaultLanguage={translationSource.defaultLanguage}
+                        />
+                    </div>
+
                     <div className='flex flex-col gap-4'>
                         <div className='flex items-start gap-4'>
                             <img
