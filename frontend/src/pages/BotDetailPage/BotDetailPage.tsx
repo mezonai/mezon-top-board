@@ -34,6 +34,7 @@ import { IUserStore } from '@app/store/user'
 import { useTranslation } from 'react-i18next'
 import { Clock, Tag } from 'lucide-react';
 import { formatDate } from '@app/utils/date'
+import { useAppTranslation } from '@app/hook/useAppTranslation'
 
 function BotDetailPage() {
   const { t } = useTranslation(['bot_detail_page'])
@@ -46,6 +47,7 @@ function BotDetailPage() {
 
   const { botId } = useParams()
   const { mezonAppDetail, relatedMezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
+  const { description } = useAppTranslation(mezonAppDetail);
   const { ratings, allRatings } = useSelector<RootState, IRatingStore>((s) => s.rating)
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const { checkOwnership } = useOwnershipCheck();
@@ -188,7 +190,7 @@ function BotDetailPage() {
             {t('bot_detail.overview')}
           </MtbTypography>
           <Divider className='bg-border'></Divider>
-          <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(mezonAppDetail.description || '') }} className='break-words description'></div>
+          <div dangerouslySetInnerHTML={{ __html: transformMediaSrc(description || '') }} className='break-words description'></div>
 
           <div className='pt-8'>
             <div className="mb-4 flex items-center justify-between">

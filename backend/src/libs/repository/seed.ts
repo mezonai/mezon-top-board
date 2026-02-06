@@ -72,7 +72,7 @@ const seed = async () => {
             appId: app.id,
             userId: possibleUsers[getRandomInt(0, possibleUsers.length - 1)].id, // Random user
             score: getRandomInt(1, 5),
-            comment: Math.random() < 0.5 ? `Review for ${app.name}` : undefined, // 50% chance of comment
+            comment: Math.random() < 0.5 ? `Review for ${app.appTranslations.map(t => t.name).join(", ")}` : undefined, // 50% chance of comment
         }));
     });
 

@@ -5,8 +5,35 @@ import { IsString, IsBoolean, IsOptional, IsArray, MinLength, MaxLength, ArrayMi
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
+import { AppLanguage } from "@domain/common/enum/appLanguage";
 import { SocialLinkInMezonAppDetailResponse } from "@features/linkType/dtos/response";
 import { TagInMezonAppDetailResponse } from "@features/tag/dtos/response";
+
+export class AppTranslationDto {
+  @ApiProperty({ enum: AppLanguage })
+  @IsEnum(AppLanguage)
+  language: AppLanguage;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(64)
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  name: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  @MinLength(10)
+  @MaxLength(510)
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  headline?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
 
 class SocialLinkDto {
   @ApiProperty()
@@ -19,29 +46,21 @@ class SocialLinkDto {
 }
 
 export class CreateAppInfoRequest {
-  @ApiProperty()
-  @IsString()
-  @MinLength(1, { message: "Name must be at least 1 characters" })
-  @MaxLength(64, { message: "Name must not exceed 64 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  name: string;
+  @ApiProperty({ enum: AppLanguage, default: AppLanguage.EN })
+  @IsEnum(AppLanguage)
+  defaultLanguage: AppLanguage;
+
+  @ApiProperty({ type: [AppTranslationDto] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => AppTranslationDto)
+  appTranslations: AppTranslationDto[];
 
   @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()
   isAutoPublished?: boolean;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @MinLength(50, { message: "Headline must be at least 50 characters" })
-  @MaxLength(510, { message: "Headline must not exceed 510 characters" })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  headline?: string;
-
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  description?: string;
 
   @ApiPropertyOptional()
   @ValidateIf(o => o.type === MezonAppType.BOT)
@@ -103,7 +122,11 @@ export class GetAppInfoDetailsResponse {
 
   @Expose()
   @ApiProperty()
-  public name: string;
+  public defaultLanguage: AppLanguage;
+
+  @Expose()
+  @ApiProperty({ type: () => [AppTranslationDto] })
+  public appTranslations: AppTranslationDto[];
 
   @Expose()
   @ApiProperty()
@@ -112,14 +135,6 @@ export class GetAppInfoDetailsResponse {
   @Expose()
   @ApiProperty()
   public supportUrl: string;
-
-  @Expose()
-  @ApiProperty()
-  public description: string;
-
-  @Expose()
-  @ApiProperty()
-  public headline: string;
 
   @Expose()
   @ApiProperty()

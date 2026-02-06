@@ -102,5 +102,8 @@
         "submit_success_created": "{{type}} created successfully!",
         "submit_success_updated": "{{type}} updated successfully!",
         "generic_error": "Something went wrong"
+    },
+    "multilingual": {
+        "default": "Default"
     }
 }

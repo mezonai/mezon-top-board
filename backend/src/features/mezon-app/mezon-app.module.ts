@@ -4,12 +4,12 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { App, AppVersion, Link, LinkType, Rating, Tag, User, FavoriteApp } from "@domain/entities";
 
 import { AppVersionModule } from "@features/app-version/app-version.module";
-
+import { AppTranslationModule } from "@features/app-translation/app-translation.module";
 import { MezonAppController } from "./mezon-app.controller";
 import { MezonAppService } from "./mezon-app.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([App, Tag, User, Rating, Link, LinkType, AppVersion, FavoriteApp]), AppVersionModule],
+  imports: [TypeOrmModule.forFeature([App, Tag, User, Rating, Link, LinkType, AppVersion, FavoriteApp]), AppVersionModule, AppTranslationModule],
   providers: [MezonAppService],
   controllers: [MezonAppController],
   exports: [MezonAppService],

@@ -7,7 +7,7 @@ import { Result } from "@domain/common/dtos/result.dto";
 import { AppStatus } from "@domain/common/enum/appStatus";
 import { SortField } from "@domain/common/enum/sortField";
 import { SortOrder } from "@domain/common/enum/sortOder";
-import { App, AppReviewHistory, AppVersion, Rating, User } from "@domain/entities";
+import { App, AppReviewHistory, AppTranslation, AppVersion, Rating, User } from "@domain/entities";
 
 import { AppVersionService } from "@features/app-version/app-version.service";
 
@@ -46,8 +46,21 @@ export class ReviewHistoryService {
     this.ratingRepository = new GenericRepository(Rating, manager);
   }
 
+  private mapAppTranslations(translations: AppTranslation[]) {
+    return translations?.map(t => ({
+      language: t.language,
+      name: t.name,
+      headline: t.headline,
+      description: t.description
+    })) || [];
+  }
+
   async createAppReview(reviewer: User, body: CreateAppReviewRequest) {
-    const mezonApp = await this.appRepository.findById(body.appId);
+    const mezonApp = await this.appRepository.findOne({
+      where: { id: body.appId },
+      relations: ["appTranslations"],
+    });
+
     if (!mezonApp || mezonApp.hasNewUpdate === false) {
       throw new BadRequestException(ErrorMessages.INVALID_APP);
     }
@@ -55,6 +68,7 @@ export class ReviewHistoryService {
     const mezonAppVersion = await this.appVersionRepository.findOne({
       where: { appId: body.appId, status: AppStatus.PENDING },
       order: { version: 'DESC' },
+      relations: ["appTranslations"],
     });
     if (!mezonAppVersion) {
       throw new BadRequestException("No pending app version found");
@@ -62,6 +76,21 @@ export class ReviewHistoryService {
 
     if (body.isApproved) {
       await this.appVersionService.approveVersion(mezonAppVersion.id);
+      if (mezonAppVersion.appTranslations?.length) {
+        const appTranslationRepo = this.manager.getRepository(AppTranslation);
+        await appTranslationRepo.delete({ appId: body.appId });
+
+        const newAppTranslations = mezonAppVersion.appTranslations.map(t => {
+          return appTranslationRepo.create({
+            appId: body.appId,
+            language: t.language,
+            name: t.name,
+            headline: t.headline,
+            description: t.description,
+          });
+        });
+        await appTranslationRepo.save(newAppTranslations);
+      }
     } else {
       await this.appVersionService.rejectVersion(mezonAppVersion.id);
     }
@@ -76,14 +105,23 @@ export class ReviewHistoryService {
       const user = await this.userRepository.findById(mezonApp.ownerId);
       const statusText = body.isApproved ? "APPROVED" : "REJECTED";
       
-      const text =`Your ${mezonApp.type} ${mezonApp.name} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
+      const defaultTranslation = mezonApp.appTranslations?.find(
+        (t) => t.language === mezonApp.defaultLanguage
+      );
+
+      const validTranslation = defaultTranslation || mezonApp.appTranslations?.[0];
+      const appName = validTranslation?.name || "";
+
+      const text = `Your ${mezonApp.type} ${appName} version ${mezonAppVersion.version} has been ${statusText} by ${reviewer.name}`
 
       await this.mezonClientService.sendMessageToUser({
         userId: user.mezonUserId,
         textContent: text,
         messOptions: {
-          mk: [{ s: text.indexOf(mezonApp.name), e: text.indexOf(mezonApp.name) + mezonApp.name.length, type: EMarkdownType.BOLD },
-               { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }],
+          mk: [
+            { s: text.indexOf(appName), e: text.indexOf(appName) + appName.length, type: EMarkdownType.BOLD },
+            { s: text.indexOf(statusText), e: text.indexOf(statusText) + statusText.length, type: EMarkdownType.BOLD }
+          ],
           mention_everyone: false,
           anonymous_message: false,
         },
@@ -165,13 +203,15 @@ export class ReviewHistoryService {
       .getRepository()
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.app', 'app')
+      .leftJoinAndSelect('app.appTranslations', 'trans')
       .leftJoinAndSelect('review.reviewer', 'reviewer')
-      .leftJoinAndSelect('review.appVersion', 'appVersion');
+      .leftJoinAndSelect('review.appVersion', 'appVersion')
+      .leftJoinAndSelect('appVersion.appTranslations', 'versionTrans');
   
     if (query.search) {
       qb.andWhere(
         new Brackets((qb) => {
-          qb.where('app.name ILIKE :keyword', { keyword: `%${query.search}%` })
+          qb.where('trans.name ILIKE :keyword', { keyword: `%${query.search}%` })
             .orWhere('reviewer.name ILIKE :keyword', { keyword: `%${query.search}%` })
             .orWhere('review.remark ILIKE :keyword', { keyword: `%${query.search}%` });
         }),
@@ -200,8 +240,21 @@ export class ReviewHistoryService {
           .getManyAndCount(),
       query.pageSize,
       query.pageNumber,
-      (entity) => Mapper(AppReviewResponse, entity),
+      (entity) => {
+        const mapped = Mapper(AppReviewResponse, entity);
+        
+        if (mapped.app && entity.app) {
+            mapped.app.appTranslations = this.mapAppTranslations(entity.app.appTranslations);
+            mapped.app.defaultLanguage = entity.app.defaultLanguage;
+        }
+
+        if (mapped.appVersion && entity.appVersion) {
+            mapped.appVersion.appTranslations = this.mapAppTranslations(entity.appVersion.appTranslations);
+            mapped.appVersion.defaultLanguage = entity.appVersion.defaultLanguage;
+        }
+
+        return mapped;
+      },
     );
   }
-  
 }

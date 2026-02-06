@@ -13,8 +13,11 @@ import TableImage from '@app/components/TableImage/TableImage'
 import { useEffect, useState } from 'react'
 import ReviewHistoryModal from './ReviewHistoryModal'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
+import { getAppTranslation } from '@app/hook/useAppTranslation'
 
 function ReviewHistoryPage() {
+  const { i18n } = useTranslation();
   const [getReviewHistory, { data }] = useLazyReviewHistoryControllerSearchAppReviewsQuery()
   const [getReviewHistoryDetail, { data: reviewHistoryDetail }] = useLazyReviewHistoryControllerSearchAppReviewsQuery()
   const [updateReviewHistory] = useReviewHistoryControllerUpdateAppReviewMutation()
@@ -101,18 +104,18 @@ function ReviewHistoryPage() {
       dataIndex: 'featuredImage',
       key: 'featuredImage',
       width: 80,
-      render: (_: any, record: ReviewHistoryResponse) => (
-        <TableImage src={record.app?.featuredImage} alt={record.app?.name} />
-      )
+      render: (_: any, record: ReviewHistoryResponse) => {
+        const { name } = getAppTranslation(record.app, i18n.language);
+        return <TableImage src={record.app?.featuredImage} alt={name} />
+      }
     },
     {
       title: 'App',
       key: 'app',
-      render: (_: any, record: ReviewHistoryResponse) => (
-        <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>
-          {record?.app?.name || ''}
-        </div>
-      )
+      render: (_: any, record: ReviewHistoryResponse) => {
+        const { name } = getAppTranslation(record.app, i18n.language);
+        return <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>{name}</div>
+      }
     },
     {
       title: 'Version',

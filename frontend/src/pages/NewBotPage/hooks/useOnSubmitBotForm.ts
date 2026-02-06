@@ -22,25 +22,39 @@ export const useOnSubmitBotForm = (
 
   const onSubmit = async (formData: CreateMezonAppRequest) => {
     try {
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(formData.description || '', 'text/html')
-      const imgs = doc.querySelectorAll('img')
+      const processedTranslations = await Promise.all(
+        formData.appTranslations.map(async (trans) => {
+          if (!trans.description) return trans;
 
-      await Promise.all(
-        Array.from(imgs).map(async (img, index) => {
-          const src = img.getAttribute('src')
-          if (src?.startsWith('data:image')) {
-            const file = dataURLtoFile(src, `image-${index}.png`)
-            const formDataImg = new FormData()
-            formDataImg.append('file', file)
-            const response = await uploadMedia(formDataImg).unwrap()
-            const newUrl = response?.data?.filePath
-            if (newUrl) img.setAttribute('src', newUrl)
-          }
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(trans.description, 'text/html')
+          const imgs = doc.querySelectorAll('img')
+
+          await Promise.all(
+            Array.from(imgs).map(async (img, index) => {
+              const src = img.getAttribute('src')
+              if (src?.startsWith('data:image')) {
+                const file = dataURLtoFile(src, `image-${trans.language}-${index}.png`)
+                const formDataImg = new FormData()
+                formDataImg.append('file', file)
+                const response = await uploadMedia(formDataImg).unwrap()
+                const newUrl = response?.data?.filePath
+                if (newUrl) img.setAttribute('src', newUrl)
+              }
+            })
+          )
+
+          return {
+            ...trans,
+            description: doc.body.innerHTML
+          };
         })
-      )
+      );
 
-      const updatedDescription = doc.body.innerHTML
+      const filteredTranslations = processedTranslations.filter(
+        (trans) => trans.name && trans.name.trim().length > 0
+      );
+
       const formattedLinks: SocialLink[] = (formData.socialLinks || []).map((link) => ({
         url: link?.url,
         linkTypeId: link.linkTypeId
@@ -49,7 +63,7 @@ export const useOnSubmitBotForm = (
       const payload: CreateMezonAppRequest = {
         ...formData,
         price: Number(formData.price),
-        description: updatedDescription,
+        appTranslations: filteredTranslations,
         socialLinks: formattedLinks,
         mezonAppId: formData.mezonAppId,
         type: formData.type

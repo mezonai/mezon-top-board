@@ -70,7 +70,14 @@
             },
             "changelog": "Changelog",
             "changelog_desc": "Provide a summary of the changes made in this update.",
-            "copy_from_history": "Copy from changelog history"
+            "copy_from_history": "Copy from changelog history",
+            "default_language": "Default Language",
+            "default_language_desc": "Select the default language for your bot listing.",
+            "default": "Default",
+            "multilingual_content": "Multilingual Content",
+            "multilingual_content_desc": "Provide your bot's name, headline, and description in multiple languages to reach a wider audience.",
+            "optional_fields_notice": "Fields in this tab are optional. If left empty, the default language content will be displayed.",
+            "copy_from_default": "Copy from Default"
         },
         "step4": {
             "review_update": "Review Your Update Information",

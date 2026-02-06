@@ -12,8 +12,11 @@ import { RootState } from '@app/store'
 import { useAppSelector } from '@app/store/hook'
 import TableImage from '@app/components/TableImage/TableImage'
 import BotStatusBadge from '@app/components/BotStatusBadge/BotStatusBadge'
+import { useTranslation } from 'react-i18next'
+import { getAppTranslation } from '@app/hook/useAppTranslation'
 
 function AppReviewPage() {
+    const { i18n } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
     const [pageSize, setPageSize] = useState(5)
@@ -78,18 +81,17 @@ function AppReviewPage() {
             width: 80,
             render: (_: any, data: GetMezonAppDetailsResponse) => {
                 const version = data.versions?.[0]
-                return  <TableImage src={version?.featuredImage} alt={data.name} />
+                const { name } = getAppTranslation(data, i18n.language);
+                return  <TableImage src={version?.featuredImage} alt={name} />
             },
         },
         {
             title: 'Name',
-            dataIndex: 'name',
             key: 'name',
-            render: (text: string) => (
-                <div className='break-words max-w-[80px] 2xl:max-w-[120px]'>
-                    {text}
-                </div>
-            )
+            render: (_: any, record: GetMezonAppDetailsResponse) => {
+                const { name } = getAppTranslation(record, i18n.language);
+                return <div className='break-words max-w-[80px] 2xl:max-w-[120px] font-medium'>{name}</div>
+            }
         },
         {
             title: 'Owner',
