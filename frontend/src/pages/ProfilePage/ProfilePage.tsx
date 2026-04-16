@@ -58,12 +58,19 @@ function ProfilePage() {
   const { data: publicAppsData, isFetching: isPublicFetching } = useMezonAppControllerSearchMezonAppQuery(
     { ...queryParams, ownerId: userId },
     { skip: !userId } 
-  );
+  );  
 
-  const { data: myAppsData, isFetching: isMyFetching } = useMezonAppControllerGetMyAppQuery(
-    queryParams,
-    { skip: !!userId || !isLogin } 
-  );
+const {
+  data: myAppsData,
+  isFetching: isMyFetching,
+  refetch,
+} = useMezonAppControllerGetMyAppQuery(
+  queryParams,
+  {
+    skip: !!userId || !isLogin,
+    refetchOnMountOrArgChange: 30,
+  }
+);
 
   const mezonApp = userId ? publicAppsData : myAppsData;
   const isListLoading = userId ? isPublicFetching : isMyFetching;
@@ -151,6 +158,7 @@ function ProfilePage() {
                 isPublic={Boolean(userId)}
                 showSort={false}   
                 showTitle={false} 
+                onRefresh={refetch}
              />
           </div>
         </div>
