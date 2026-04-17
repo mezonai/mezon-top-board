@@ -53,9 +53,10 @@ function BotActions({ data, mode = ViewMode.LIST, onNewVersionClick, onRefresh }
           toast.success(t('component.owner_actions.delete_success'))
           if (onRefresh) {
             onRefresh();
-          } else {
-            navigate('/');
+            return;
           }
+          
+          navigate('/');
         } catch (error) {
           toast.error(t('component.owner_actions.delete_error'))
         }
