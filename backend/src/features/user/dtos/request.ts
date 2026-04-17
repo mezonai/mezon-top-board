@@ -1,6 +1,6 @@
 import { ApiPropertyOptional, OmitType } from "@nestjs/swagger";
 
-import { IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator";
+import { IsOptional, IsString, IsUUID, IsBoolean, MaxLength, MinLength } from "class-validator";
 
 import { PaginationQuery, RequestWithId } from "@domain/common/dtos/request.dto";
 import { Role } from "@domain/common/enum/role";
@@ -39,6 +39,10 @@ export class UpdateUserRequest extends RequestWithId {
   @ApiPropertyOptional()
   @IsOptional()
   profileImage: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isVerified?: boolean;
 }
 
 export class SelfUpdateUserRequest extends OmitType(UpdateUserRequest, ["id", "role"]) { }

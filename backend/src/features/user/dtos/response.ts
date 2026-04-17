@@ -12,6 +12,9 @@ export class OwnerInMezonAppDetailResponse {
     @Expose()
     @ApiProperty()
     public profileImage: string;
+    @Expose()
+    @ApiProperty()
+    public isVerified: boolean;
 }
 
 export class SearchUserResponse {
@@ -39,6 +42,9 @@ export class SearchUserResponse {
     @Expose()
     @ApiProperty()
     public deletedAt: Date | null;
+    @Expose()
+    @ApiProperty()
+    public isVerified: boolean;
 }
 
 export class ReviewerResponse {
@@ -64,4 +70,5 @@ export class OwnerInAppRatingResponse extends PickType(SearchUserResponse, [
     "id",
     "name",
     "profileImage",
+    "isVerified"
 ]) { }
