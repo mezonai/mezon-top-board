@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { RootState } from '@app/store'
 import TableActionButton from '@app/components/TableActionButton/TableActionButton'
+import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
 
 const { Option } = Select
 const pageOptions = [5, 10, 15]
@@ -117,7 +118,12 @@ function UsersList() {
       ellipsis: true,
       width: 100,
       responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[],
-      render: (text: string) => text || <span style={{ color: 'var(--text-secondary)' }}>No name</span>
+      render: (text: string, record: GetUserDetailsResponse) => (
+        <div className="flex items-center gap-1">
+          <span>{text || <span style={{ color: 'var(--text-secondary)' }}>No name</span>}</span>
+          {record.isVerified && <VerifiedBadge className="text-sm" />}
+        </div>
+    )
     },
     {
       title: 'Email',
