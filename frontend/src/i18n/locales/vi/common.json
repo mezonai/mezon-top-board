@@ -105,5 +105,19 @@
     },
     "multilingual": {
         "default": "Mặc định"
+    },
+    "verified": "Tài khoản đã xác minh",
+    "admin": {
+        "users": {
+            "verified": "Đã xác minh",
+            "edit_title": "Chỉnh sửa người dùng",
+            "name": "Tên",
+            "name_placeholder": "Nhập tên",
+            "bio": "Tiểu sử",
+            "bio_placeholder": "Nhập tiểu sử",
+            "role": "Vai trò",
+            "update_success": "Cập nhật người dùng thành công",
+            "update_failed": "Cập nhật thất bại"
+        }
     }
 }

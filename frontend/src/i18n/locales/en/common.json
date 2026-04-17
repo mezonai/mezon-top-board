@@ -105,5 +105,19 @@
     },
     "multilingual": {
         "default": "Default"
+    },
+    "verified": "Verified Account",
+    "admin": {
+        "users": {
+            "verified": "Verified",
+            "edit_title": "Edit User",
+            "name": "Name",
+            "name_placeholder": "Enter name",
+            "bio": "Bio",
+            "bio_placeholder": "Enter bio",
+            "role": "Role",
+            "update_success": "User updated successfully",
+            "update_failed": "Failed to update user"
+        }
     }
 }

@@ -2,11 +2,13 @@ import { Role } from '@app/enums/role.enum'
 import { UpdateUserRequest } from '@app/services/api/user/user.types'
 import { useUserControllerUpdateUserMutation } from '@app/services/api/user/user'
 import { handleMapOption } from '@app/utils/stringHelper'
-import { Form, Input, Modal, Select } from 'antd'
+import { Checkbox, Form, Input, Modal, Select } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () => void }) => {
+  const { t } = useTranslation('common');
   const [form] = Form.useForm()
   const [updateUser, { isLoading, error }] = useUserControllerUpdateUserMutation()
 
@@ -56,6 +58,11 @@ const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () 
         {/* Role Selection */}
         <Form.Item label='Role' name='role'>
           <Select placeholder='Select role' options={handleMapOption(Role)} />
+        </Form.Item>
+
+        {/* Is Verified Checkbox */}
+        <Form.Item label={t('admin.users.verified')} name="isVerified" valuePropName="checked">
+            <Checkbox />
         </Form.Item>
       </Form>
     </Modal>
