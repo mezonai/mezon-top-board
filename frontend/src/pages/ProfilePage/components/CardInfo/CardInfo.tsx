@@ -14,7 +14,7 @@ import MTBAvatar from '@app/mtb-ui/Avatar/MTBAvatar'
 import MtbTypography from '@app/mtb-ui/Typography/Typography'
 import {
   useUserControllerSelfUpdateUserMutation,
-  useUserControllerSyncMezonMutation,
+  useUserControllerSyncMezonMutation
 } from '@app/services/api/user/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Popconfirm, Space } from 'antd'
@@ -23,11 +23,12 @@ import { toast } from 'react-toastify'
 import { CardInfoProps } from './CardInfo.types'
 import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next'
 import { CropImageShape } from '@app/enums/CropImage.enum'
+import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
-  const { t } = useTranslation(['profile_page']);
+  const { t } = useTranslation(['profile_page'])
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const [selfUpdate] = useUserControllerSelfUpdateUserMutation()
   const [syncMezon] = useUserControllerSyncMezonMutation()
@@ -77,16 +78,16 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   }
 
   const handleMediaSelect = async (selection: string) => {
-    setIsModalVisible(false);
+    setIsModalVisible(false)
     try {
       await selfUpdate({
         selfUpdateUserRequest: {
           profileImage: selection
         }
-      }).unwrap();
-      toast.success(t('profile.card_info.update_success'));
+      }).unwrap()
+      toast.success(t('profile.card_info.update_success'))
     } catch (error) {
-      toast.error(t('profile.card_info.update_failed'));
+      toast.error(t('profile.card_info.update_failed'))
     }
   }
 
@@ -95,7 +96,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
 
     try {
       await syncMezon(undefined).unwrap()
-      window.dispatchEvent(new Event(AppEvent.SYNC_MEZON));
+      window.dispatchEvent(new Event(AppEvent.SYNC_MEZON))
       toast.success(t('profile.card_info.sync_success'))
     } catch (error) {
       toast.error(t('profile.card_info.sync_failed'))
@@ -110,13 +111,13 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             onClick={() => !isPublic && setIsModalVisible(true)}
             style={{ cursor: isPublic ? 'default' : 'pointer' }}
           >
-            <MTBAvatar
-              imgUrl={imgUrl}
-              isAllowUpdate={!isPublic}
-            />
+            <MTBAvatar imgUrl={imgUrl} isAllowUpdate={!isPublic} />
           </div>
         </div>
-        <div className='text-lg font-semibold break-words max-w-full flex-1 min-w-0'>{userInfo?.name}</div>
+        <div className='flex items-center gap-2'>
+          <span className='text-lg font-semibold break-words'>{userInfo?.name}</span>
+          {userInfo?.isVerified && <VerifiedBadge />}
+        </div>
       </div>
       <div>
         <MtbTypography variant='p' customClassName='!pl-0' weight='bold' textStyle={[TypographyStyle.UPPERCASE]}>
@@ -148,12 +149,7 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
           cancelText={t('profile.card_info.no')}
         >
           <Space className='mt-2'>
-            <Button
-              size='large'
-              variant='outlined'
-              icon={<SyncOutlined />}
-              className='w-full'
-            >
+            <Button size='large' variant='outlined' icon={<SyncOutlined />} className='w-full'>
               {t('profile.card_info.sync_mezon')}
             </Button>
           </Space>
