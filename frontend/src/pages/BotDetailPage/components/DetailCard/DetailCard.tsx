@@ -8,9 +8,13 @@ import { IMezonAppStore } from '@app/store/mezonApp'
 import { IUserStore } from '@app/store/user'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
-import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
+import {
+  SocialLinkInMezonAppDetailResponse,
+  TagInMezonAppDetailResponse
+} from '@app/services/api/mezonApp/mezonApp.types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -42,7 +46,7 @@ function DetailCard() {
         </MtbTypography>
         <div>
           {mezonAppDetail?.supportUrl && (
-            <MtbTypography variant='h5' weight='normal' label={<QuestionCircleTwoTone twoToneColor="#FF0000" />}>
+            <MtbTypography variant='h5' weight='normal' label={<QuestionCircleTwoTone twoToneColor='#FF0000' />}>
               <a
                 href={mezonAppDetail?.supportUrl}
                 target='_blank'
@@ -54,14 +58,20 @@ function DetailCard() {
             </MtbTypography>
           )}
           {mezonAppDetail?.socialLinks?.map((link: SocialLinkInMezonAppDetailResponse) => (
-            <MtbTypography key={link.id} variant='h5' weight='normal' label={<ImgIcon src={getUrlMedia(link.type.icon)} width={17} />}>
+            <MtbTypography
+              key={link.id}
+              variant='h5'
+              weight='normal'
+              label={<ImgIcon src={getUrlMedia(link.type.icon)} width={17} />}
+            >
               <a
                 href={`${link.type.prefixUrl}${link.url}`}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-primary transition-colors'
               >
-                {link.type.prefixUrl}{link.url}
+                {link.type.prefixUrl}
+                {link.url}
               </a>
             </MtbTypography>
           ))}
@@ -73,11 +83,7 @@ function DetailCard() {
         </MtbTypography>
         <div className='pt-1 gap-2 flex flex-wrap'>
           {mezonAppDetail?.tags?.map((tag: TagInMezonAppDetailResponse) => (
-            <Tag 
-              key={tag.id} 
-              onClick={() => handleTagClick(tag.id)}
-              className='cursor-pointer'
-            >
+            <Tag key={tag.id} onClick={() => handleTagClick(tag.id)} className='cursor-pointer'>
               {tag?.name}
             </Tag>
           ))}
@@ -98,15 +104,18 @@ function DetailCard() {
                     className='w-full h-full object-cover'
                   />
                 </div>
-                <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
-                  {mezonAppDetail?.owner?.name}
-                </MtbTypography>
+                <div className='flex items-center gap-1'>
+                  <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
+                    {mezonAppDetail?.owner?.name}
+                  </MtbTypography>
+                  {mezonAppDetail?.owner?.isVerified && <VerifiedBadge className='text-sm' />}
+                </div>
               </div>
             </Tag>
           </a>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
 
