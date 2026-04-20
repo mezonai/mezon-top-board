@@ -11,6 +11,7 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -98,15 +99,18 @@ function DetailCard() {
                     className='w-full h-full object-cover'
                   />
                 </div>
-                <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
-                  {mezonAppDetail?.owner?.name}
-                </MtbTypography>
+                <div className='flex items-center gap-1'>
+                  <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
+                    {mezonAppDetail?.owner?.name}
+                  </MtbTypography>
+                  {mezonAppDetail?.owner?.isVerified && <VerifiedBadge className='text-sm' />}
+                </div>
               </div>
             </Tag>
           </a>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
 

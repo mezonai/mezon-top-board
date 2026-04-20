@@ -6,6 +6,7 @@ import { formatAgo } from '@app/utils/date'
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
 
 function Comment({ rating }: { rating: RatingResponse }) {
   const { t } = useTranslation(['bot_detail_page'])
@@ -22,9 +23,12 @@ function Comment({ rating }: { rating: RatingResponse }) {
       <div className='flex flex-col gap-5 mt-2'>
         <div>
           <Link to={`/profile/${rating.user.id}`} className='inline-block'>
-            <MtbTypography variant='h4' customClassName='!mt-1'>
-              {rating.user.name}
-            </MtbTypography>
+            <div className='flex items-center gap-1'>
+              <MtbTypography variant='h4' customClassName='!mt-1'>
+                {rating.user.name}
+              </MtbTypography>
+              {rating.user.isVerified && <VerifiedBadge className='text-sm' />}
+            </div>
           </Link>
 
           <MtbTypography variant='p' weight='italic' customClassName='text-tertiary'>
