@@ -5,12 +5,10 @@ import { handleMapOption } from '@app/utils/stringHelper'
 import { Checkbox, Form, Input, Modal, Select } from 'antd'
 import Button from '@app/mtb-ui/Button'
 import { toast } from 'react-toastify'
-import { useTranslation } from 'react-i18next'
 
 const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () => void }) => {
-  const { t } = useTranslation('common');
   const [form] = Form.useForm()
-  const [updateUser, { isLoading, error }] = useUserControllerUpdateUserMutation()
+  const [updateUser, { isLoading}] = useUserControllerUpdateUserMutation()
 
   // Handle form submission
   const handleSubmit = async (values: UpdateUserRequest) => {
@@ -29,7 +27,7 @@ const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () 
       title='Edit User'
       onCancel={onClose}
       footer={[
-        <Button key='cancel' variant='outlined'onClick={onClose} disabled={isLoading}>
+        <Button key='cancel' variant='outlined' onClick={onClose} disabled={isLoading}>
           Cancel
         </Button>,
         <Button key='submit' type='primary' onClick={() => form.submit()} loading={isLoading}>
@@ -61,7 +59,7 @@ const EditUserForm = ({ user, onClose }: { user: UpdateUserRequest; onClose: () 
         </Form.Item>
 
         {/* Is Verified Checkbox */}
-        <Form.Item label={t('admin.users.verified')} name="isVerified" valuePropName="checked">
+        <Form.Item label='isVerified' name="isVerified" valuePropName="checked">
             <Checkbox />
         </Form.Item>
       </Form>

@@ -1,17 +1,14 @@
 import { CheckCircleFilled } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@app/utils/cn';
 
 interface VerifiedBadgeProps {
   className?: string;
-  tooltipKey?: string; // i18n key
 }
 
-export const VerifiedBadge = ({ className, tooltipKey = 'common.verified' }: VerifiedBadgeProps) => {
-  const { t } = useTranslation();
+export const VerifiedBadge = ({ className}: VerifiedBadgeProps) => {
   return (
-    <Tooltip title={t(tooltipKey)}>
+    <Tooltip title='verified'>
       <CheckCircleFilled className={cn('text-primary', className)} />
     </Tooltip>
   );
