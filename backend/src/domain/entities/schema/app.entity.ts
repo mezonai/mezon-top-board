@@ -1,13 +1,14 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 import { AppStatus } from "@domain/common/enum/appStatus";
-import { Link, AppReviewHistory, Rating, Tag, User, AppVersion, FavoriteApp } from "@domain/entities";
+import { Link, AppReviewHistory, Rating, Tag, User, AppVersion, FavoriteApp, Collection } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { BaseApp } from "@domain/entities/base/baseApp.entity";
 import { AppTranslation } from "./appTranslation.entity";
+import {CollectionApp} from "@domain/entities/schema/collection-app.entity";
 
 @Entity()
 export class App extends BaseApp {
@@ -58,4 +59,7 @@ export class App extends BaseApp {
 
     @OneToMany(() => AppTranslation, (appTranslation) => appTranslation.app)
     public appTranslations: AppTranslation[];
+
+    @OneToMany(() => CollectionApp, (collectionApp) => collectionApp.app)
+    public collectionApps: CollectionApp[];
 }
