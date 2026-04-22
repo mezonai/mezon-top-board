@@ -45,4 +45,4 @@ export class UpdateUserRequest extends RequestWithId {
   isVerified?: boolean;
 }
 
-export class SelfUpdateUserRequest extends OmitType(UpdateUserRequest, ["id", "role"]) { }
+export class SelfUpdateUserRequest extends OmitType(UpdateUserRequest, ["id", "role", "isVerified"]) { }
