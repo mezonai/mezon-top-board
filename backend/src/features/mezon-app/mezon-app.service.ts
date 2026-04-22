@@ -160,6 +160,7 @@ export class MezonAppService {
         id: owner.id,
         name: owner.name,
         profileImage: owner.profileImage,
+        isVerified: owner.isVerified,
       };
     }
 
@@ -651,6 +652,7 @@ export class MezonAppService {
           id: entity.owner.id,
           name: entity.owner.name,
           profileImage: entity.owner.profileImage,
+          isVerified: entity.owner.isVerified,
         }
         mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;
