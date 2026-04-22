@@ -11,6 +11,8 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import { VerifiedBadge } from '@app/components/UsernameWithBadge/VerifiedBadge'
+import {UserNameWithBadge} from "@app/components/UsernameWithBadge/userNameWithBadge.tsx";
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -29,11 +31,14 @@ function DetailCard() {
           {t('bot_detail.details')}
         </MtbTypography>
         {mezonAppDetail.prefix && (
-          <div className='pt-2'>
-            <MtbTypography variant='h5' weight='normal'>
-              {t('bot_detail.prefix', { prefix: mezonAppDetail.prefix })}
+            <MtbTypography variant="p" customClassName="truncate" ellipsis={true}>
+              <UserNameWithBadge
+                  name={mezonAppDetail?.owner?.name}
+                  isVerified={mezonAppDetail?.owner?.isVerified}
+                  nameClassName="truncate"
+                  badgeClassName="text-sm"
+              />
             </MtbTypography>
-          </div>
         )}
       </div>
       <div className='pb-4'>
@@ -98,15 +103,18 @@ function DetailCard() {
                     className='w-full h-full object-cover'
                   />
                 </div>
-                <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
-                  {mezonAppDetail?.owner?.name}
-                </MtbTypography>
+                <div className='flex items-center gap-1'>
+                  <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
+                    {mezonAppDetail?.owner?.name}
+                  </MtbTypography>
+                  {mezonAppDetail?.owner?.isVerified && <VerifiedBadge className='text-sm' />}
+                </div>
               </div>
             </Tag>
           </a>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
 

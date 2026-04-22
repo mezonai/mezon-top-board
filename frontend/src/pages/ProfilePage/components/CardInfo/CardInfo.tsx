@@ -25,6 +25,7 @@ import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { useTranslation } from "react-i18next";
 import { CropImageShape } from '@app/enums/CropImage.enum'
+import {UserNameWithBadge} from "@app/components/UsernameWithBadge/userNameWithBadge.tsx";
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const { t } = useTranslation(['profile_page']);
@@ -116,7 +117,11 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             />
           </div>
         </div>
-        <div className='text-lg font-semibold break-words max-w-full flex-1 min-w-0'>{userInfo?.name}</div>
+        <UserNameWithBadge
+            name={userInfo?.name}
+            isVerified={userInfo?.isVerified}
+            nameClassName="text-lg font-semibold break-words"
+        />
       </div>
       <div>
         <MtbTypography variant='p' customClassName='!pl-0' weight='bold' textStyle={[TypographyStyle.UPPERCASE]}>

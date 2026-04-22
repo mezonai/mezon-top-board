@@ -8,7 +8,7 @@ export type GetUserDetailsResponse = Pick<
   User,
   'id' | 'name' | 'email' | 'bio' | 'role' | 'profileImage' | 'isFirstLogin' | 'deletedAt' | 'isVerified'
 >;
-export type GetPublicProfileResponse = Pick<User, 'id' | 'email' | 'name' | 'bio' | 'profileImage'>;
+export type GetPublicProfileResponse = Pick<User, 'id' | 'email' | 'name' | 'bio' | 'profileImage' | 'isVerified'>;
 
 export type UpdateUserRequest = {
   id: string;

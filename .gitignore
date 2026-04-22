@@ -2,3 +2,7 @@
 certbot/*
 !certbot/options-ssl-nginx.conf
 !certbot/ssl-dhparams.pem
+.idea/
+.yarn/
+install-state.gz
+.yarnrc.yml
