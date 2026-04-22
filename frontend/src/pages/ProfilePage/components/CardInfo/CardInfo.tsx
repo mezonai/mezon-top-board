@@ -25,7 +25,7 @@ import { useState } from 'react'
 import MediaManagerModal from '@app/components/MediaManager/MediaManager'
 import { useTranslation } from "react-i18next";
 import { CropImageShape } from '@app/enums/CropImage.enum'
-import { VerifiedBadge } from '@app/components/VerifiedBadge/VerifiedBadge'
+import {UserNameWithBadge} from "@app/components/UsernameWithBadge/userNameWithBadge.tsx";
 
 function CardInfo({ isPublic, userInfo }: CardInfoProps) {
   const { t } = useTranslation(['profile_page']);
@@ -117,10 +117,11 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
             />
           </div>
         </div>
-        <div className='flex items-center gap-2'>
-          <span className='text-lg font-semibold break-words'>{userInfo?.name}</span>
-          {userInfo?.isVerified && <VerifiedBadge />}
-        </div>
+        <UserNameWithBadge
+            name={userInfo?.name}
+            isVerified={userInfo?.isVerified}
+            nameClassName="text-lg font-semibold break-words"
+        />
       </div>
       <div>
         <MtbTypography variant='p' customClassName='!pl-0' weight='bold' textStyle={[TypographyStyle.UPPERCASE]}>
