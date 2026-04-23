@@ -36,6 +36,10 @@ export class CollectionService {
     async create(userId: string, dto: CreateCollectionDto): Promise<Collection> {
         const { appIds, ...collectionData } = dto;
 
+        if (appIds && appIds.length > 0) {
+            await this.validateAppOwnership(appIds, userId);
+        }
+
         const collection = await this.collectionRepo.create({
             ...collectionData,
             ownerId: userId,
@@ -52,7 +56,7 @@ export class CollectionService {
         userId: string,
         query: GetMyCollectionsQueryDto
     ) {
-        const { pageNumber = 1, pageSize = 10, status } = query;
+        const { pageNumber, pageSize, status } = query;
 
         const qb = this.collectionRepo
             .getRepository()
@@ -146,6 +150,10 @@ export class CollectionService {
 
         const { appIds, ...updateData } = dto;
 
+        if (appIds !== undefined) {
+            await this.validateAppOwnership(appIds, userId);
+        }
+
         await this.collectionRepo.update(id, updateData);
 
         if (appIds !== undefined) {
@@ -214,20 +222,31 @@ export class CollectionService {
         return { data: collections, total };
     }
 
-    private async setCollectionApps(
-        collectionId: string,
-        appIds: string[]
-    ): Promise<void> {
-        // Verify all apps exist and are published
-        const apps = await this.appRepo.find({
-            where: { id: In(appIds) },
-        });
+    private async validateAppOwnership(appIds: string[], userId: string): Promise<void> {
+        const user = await this.manager.getRepository(User).findOne({ where: { id: userId } });
+        if (!user) throw new BadRequestException("User not found");
+
+        const apps = await this.appRepo.find({ where: { id: In(appIds) } });
 
         if (apps.length !== appIds.length) {
-            throw new BadRequestException("One or more apps not found");
+            const foundIds = apps.map((a) => a.id);
+            const missingIds = appIds.filter((id) => !foundIds.includes(id));
+            throw new BadRequestException(`Apps not found: ${missingIds.join(", ")}`);
         }
 
-        // Delete existing relations
+        if (user.role !== Role.ADMIN) {
+            const notOwnedApps = apps.filter((app) => app.ownerId !== userId);
+            if (notOwnedApps.length > 0) {
+                throw new ForbiddenException(
+                    `You can only add your own apps. Apps with IDs: ${notOwnedApps
+                        .map((a) => a.id)
+                        .join(", ")} are not yours.`
+                );
+            }
+        }
+    }
+
+    private async setCollectionApps(collectionId: string, appIds: string[]): Promise<void> {
         await this.collectionAppRepo.getRepository().delete({ collectionId });
 
         // Create new relations with order
