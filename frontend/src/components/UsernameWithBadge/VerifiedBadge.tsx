@@ -1,6 +1,6 @@
 import { CheckCircleFilled } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { cn } from '@app/utils/cn';
+import { cn } from '@app/utils/cn.ts';
 
 interface VerifiedBadgeProps {
   className?: string;

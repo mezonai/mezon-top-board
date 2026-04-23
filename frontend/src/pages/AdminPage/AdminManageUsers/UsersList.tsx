@@ -120,7 +120,7 @@ function UsersList() {
       responsive: ['xs', 'sm', 'md', 'lg'] as Breakpoint[],
       render: (text: string, record: GetUserDetailsResponse) => (
           <UserNameWithBadge
-              name={text || <span style={{ color: 'var(--text-secondary)' }}>No name</span>}
+              name={text}
               isVerified={record.isVerified}
               badgeClassName="text-sm"
           />

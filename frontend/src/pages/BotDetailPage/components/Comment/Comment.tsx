@@ -24,15 +24,13 @@ function Comment({ rating }: { rating: RatingResponse }) {
         <div>
           <Link to={`/profile/${rating.user.id}`} className='inline-block'>
             <div className='flex items-center gap-1'>
-              <MtbTypography variant='h4' customClassName='!mt-1'>
                 <UserNameWithBadge
-                    name={rating.user.name}
-                    isVerified={rating.user.isVerified}
-                    as="h4"
-                    nameClassName="!mt-1"
-                    badgeClassName="text-sm"
+                  name={rating.user.name}
+                  isVerified={rating.user.isVerified}
+                  variant="h4"
+                  customClassName="!mt-1"
+                  badgeClassName="text-sm"
                 />
-              </MtbTypography>
             </div>
           </Link>
 

@@ -120,7 +120,8 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
         <UserNameWithBadge
             name={userInfo?.name}
             isVerified={userInfo?.isVerified}
-            nameClassName="text-lg font-semibold break-words"
+            variant="p"
+            customClassName="text-lg font-semibold break-words"
         />
       </div>
       <div>
