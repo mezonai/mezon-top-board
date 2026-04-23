@@ -22,6 +22,7 @@ import { RatingModule } from "@features/rating/rating.module";
 import { ReviewHistoryModule } from "@features/review-history/review-history.module";
 import { TagModule } from "@features/tag/tag.module";
 import { UserModule } from "@features/user/user.module";
+import { CollectionModule } from "@features/collection/collection.module";
 
 import { GuardModule } from "@libs/guard/guard.module";
 import { LoggerModule } from "@libs/logger";
@@ -82,7 +83,8 @@ import { CacheModule } from "@libs/cache";
     AppVersionModule,
     TempStorageModule,
     BotGeneratorModule,
-    FavoriteAppModule
+    FavoriteAppModule,
+    CollectionModule
   ],
   controllers: [],
   providers: [],
