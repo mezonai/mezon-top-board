@@ -6,9 +6,11 @@ import {
     Param,
     Post,
     Put,
-    Query,
+    Query, Req,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+
+import { Request } from "express";
 
 import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
@@ -61,9 +63,10 @@ export class CollectionController {
     @OptionalAuth()
     async findOne(
         @Param("id") id: string,
-        @GetUserFromHeader() user?: User
+        @Req() req: Request & { user?: User }
     ) {
-        return this.collectionService.findOne(id, user?.id);
+        const userId = req.user?.id;
+        return this.collectionService.findOne(id, userId);
     }
 
     @Put(":id")
