@@ -5,13 +5,13 @@ import { toast } from "react-toastify"
 import { useTranslation } from "react-i18next"
 
 
-const useAuthRedirect = (shoudSkip?: boolean) => {
+const useAuthRedirect = (isPublic?: boolean) => {
   const navigate = useNavigate()
   const { isLogin } = useAuth()
   const { t } = useTranslation(['common'])
 
   useEffect(() => {
-    if (!isLogin && !shoudSkip) {
+    if (!isLogin && !isPublic) {
       navigate("/")
       toast.warning(t('hooks.auth_redirect_warning'))
       return

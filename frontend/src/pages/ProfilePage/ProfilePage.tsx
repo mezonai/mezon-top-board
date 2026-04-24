@@ -78,7 +78,10 @@ const {
 
   const [queryGetPublicProfile] = useLazyUserControllerGetPublicProfileQuery()
 
-  useAuthRedirect(!userId)
+  // We want public if profile/:id, not public if just profile
+  const isPublic = userId ? true : false;
+  useAuthRedirect(isPublic);
+
 
   useEffect(() => {
     if (userId) {
