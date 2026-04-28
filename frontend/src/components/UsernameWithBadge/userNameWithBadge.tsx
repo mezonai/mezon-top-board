@@ -12,16 +12,16 @@ interface UserNameWithBadgeProps extends Omit<MtbTypographyProps, 'children' | '
 }
 
 export const UserNameWithBadge = ({
-                                      name,
-                                      isVerified,
-                                      className,
-                                      nameClassName,
-                                      badgeClassName,
-                                      variant = 'p',
-                                      weight = 'normal',
-                                      customClassName,
-                                      ...typographyProps
-                                  }: UserNameWithBadgeProps) => {
+      name,
+      isVerified,
+      className,
+      nameClassName,
+      badgeClassName,
+      variant = 'p',
+      weight = 'normal',
+      customClassName,
+      ...typographyProps
+  }: UserNameWithBadgeProps) => {
     return (
         <div className={cn('flex items-center gap-1', className)}>
             <MtbTypography
