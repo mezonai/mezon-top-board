@@ -9,7 +9,7 @@ import { LinkTypeResponse } from '../linkType/linkType.types';
 import { SocialLink } from '@app/types/link.types';
 import { AppTranslation } from '@app/types/appTranslation.types';
 
-export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage'>;
+export type OwnerInMezonAppDetailResponse = Pick<User, 'id' | 'name' | 'profileImage' | 'isVerified'>;
 export type TagInMezonAppDetailResponse = Pick<Tag, 'id' | 'name' | 'color'>;
 export type SocialLinkInMezonAppDetailResponse = Pick<Link, 'id' | 'url' | 'linkTypeId'> & {
   type: LinkTypeResponse;
@@ -49,6 +49,7 @@ export type AppVersionDetailsDto = Pick<
 export type GetMezonAppDetailsResponse = Pick<
   App,
   | 'id'
+  | 'name'
   | 'currentVersion'
   | 'currentVersionChangelog'
   | 'currentVersionUpdatedAt'

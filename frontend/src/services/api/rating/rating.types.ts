@@ -5,7 +5,7 @@ export type CreateRatingRequest = Pick<Rating, 'appId' | 'score' | 'comment'>;
 
 export type RatingResponse = Pick<Rating, 'id' | 'score' | 'comment'> & {
   updatedAt: string; 
-  user: Pick<User, 'id' | 'name' | 'profileImage'>;
+  user: Pick<User, 'id' | 'name' | 'profileImage' | 'isVerified'>;
   app: App;
 };
 

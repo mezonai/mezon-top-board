@@ -5,6 +5,7 @@ import { AppTranslation } from "./appTranslation.types"
 
 export type App = BaseApp & {
     ownerId: string
+    name: string
     currentVersion: number
     currentVersionChangelog?: string
     currentVersionUpdatedAt?: Date
