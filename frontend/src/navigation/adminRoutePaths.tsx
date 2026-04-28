@@ -1,4 +1,4 @@
-import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, MailOutlined, TeamOutlined } from '@ant-design/icons'
+import { AppstoreAddOutlined, HistoryOutlined, SettingOutlined, UserOutlined, LinkOutlined, TagOutlined, MailOutlined, TeamOutlined, AppstoreOutlined } from '@ant-design/icons'
 import MezonAppsContainer from '@app/pages/AdminPage/AdminMezonApp/MezonAppsContainer'
 import ReviewHistoryPage from '@app/pages/AdminPage/ReviewHistoryPage/ReviewHistoryPage'
 import UsersList from "@app/pages/AdminPage/AdminManageUsers/UsersList";
@@ -9,6 +9,7 @@ import MailScheduleList from '@app/pages/AdminPage/AdminManageMailSchedule/MailS
 import EmailSubscriberList from '@app/pages/AdminPage/AdminManageSubscribers/SubscriberList';
 import AppReviewPage from '@app/pages/AdminPage/AppReviewPage/AppReviewPage';
 import SettingsPage from '@app/pages/AdminPage/AdminSettings/SettingsPage';
+import CollectionsPage from "@app/pages/AdminPage/AdminManageCollections/CollectionPage.tsx";
 
 export const adminRoutePaths: RoutePath[] = [
   {
@@ -17,6 +18,13 @@ export const adminRoutePaths: RoutePath[] = [
     element: <MezonAppsContainer />, 
     strLabel: 'Apps',
     icon: <AppstoreAddOutlined />,
+    isShowMenu: true
+  },
+  {
+    path: '/manage/collections',
+    element: <CollectionsPage />,
+    strLabel: 'Collections',
+    icon: <AppstoreOutlined />,
     isShowMenu: true
   },
   {
