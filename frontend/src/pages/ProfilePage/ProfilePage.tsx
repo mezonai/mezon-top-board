@@ -78,7 +78,8 @@ const {
 
   const [queryGetPublicProfile] = useLazyUserControllerGetPublicProfileQuery()
 
-  useAuthRedirect(!userId)
+  useAuthRedirect(!!userid);
+
 
   useEffect(() => {
     if (userId) {
