@@ -18,6 +18,7 @@ import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 import FavoritePage from '@app/pages/ProfilePage/FavoritePage'
 import VersionHistoryPage from '@app/pages/VersionHistoryPage/VersionHistoryPage'
+import CollectionsPage from '@app/pages/ProfilePage/CollectionPage.tsx';
 
 export const routePaths: RoutePath[] = [
   {
@@ -208,5 +209,12 @@ export const routePaths: RoutePath[] = [
     strLabel: 'nav.not_found',
     isShowMenu: false,
     requireAuth: false,
+  },
+  {
+    path: '/profile/my-collections',
+    element: <CollectionsPage />,
+    strLabel: 'nav.my_collections',
+    isShowMenu: false,
+    requireAuth: true,
   }
 ]
