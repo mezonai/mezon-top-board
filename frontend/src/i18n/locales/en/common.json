@@ -61,7 +61,8 @@
         "confirm_subscription": "Confirm Subscription",
         "unsubscription": "Unsubscription",
         "not_found": "Not Found",
-        "version_history": "Version History"
+        "version_history": "Version History",
+        "my_collections": "My Collections"
     },
     "header": {
         "login": "Login",
