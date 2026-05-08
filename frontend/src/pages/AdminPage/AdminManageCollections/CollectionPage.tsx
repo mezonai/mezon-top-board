@@ -60,11 +60,6 @@ const CollectionsPage = () => {
         }
     };
 
-    const openCreateModal = () => {
-        setEditingCollection(null);
-        setIsModalOpen(true);
-    };
-
     const openEditModal = (record: Collection) => {
         setEditingCollection(record);
         setIsModalOpen(true);
@@ -140,9 +135,6 @@ const CollectionsPage = () => {
         <div>
             <div className="flex justify-between items-center mb-3">
                 <h2 className="font-bold text-lg">Manage Collections</h2>
-                <TableActionButton actionType="add" onClick={openCreateModal}>
-                    Add
-                </TableActionButton>
             </div>
             <div className="flex gap-4 mb-3">
                 <Input
