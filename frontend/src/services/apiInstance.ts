@@ -69,5 +69,6 @@ export const api = createApi({
       paramsSerializer
     })
   ),
+  tagTypes: ['Collections'],
   endpoints: () => ({})
 })
