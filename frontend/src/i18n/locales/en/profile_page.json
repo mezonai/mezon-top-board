@@ -48,7 +48,16 @@
             "sync_success": "Sync Success",
             "sync_failed": "Sync failed!",
             "update_success": "Update Success",
-            "update_failed": "Update failed!"
+            "update_failed": "Update failed!",
+            "my_collections": "My Collections"
+        },
+        "my_collections": {
+            "title": "My Collections",
+            "subtitle": "Manage your collections",
+            "create": "Create Collection",
+            "empty": "No collections yet.",
+            "no_description": "No description",
+            "app_count": "{{count}} apps"
         }
     }
 }
