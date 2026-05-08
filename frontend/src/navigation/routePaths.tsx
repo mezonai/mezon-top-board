@@ -18,6 +18,8 @@ import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 import FavoritePage from '@app/pages/ProfilePage/FavoritePage'
 import VersionHistoryPage from '@app/pages/VersionHistoryPage/VersionHistoryPage'
+import CollectionsPage from '@app/pages/ProfilePage/CollectionPage.tsx';
+import CollectionDetailPage from '@app/pages/CollectionDetailPage/CollectionDetailPage';
 
 export const routePaths: RoutePath[] = [
   {
@@ -200,6 +202,22 @@ export const routePaths: RoutePath[] = [
     strLabel: 'nav.unsubscription',
     isShowMenu: false,
     requireAuth: false,
+  },
+  {
+    index: false,
+        path: '/profile/my-collections',
+      element: <CollectionsPage />,
+      strLabel: 'nav.my_collections',
+      isShowMenu: false,
+      requireAuth: true,
+  },
+  {
+    index: false,
+        path: '/collection/:collectionId',
+      element: <CollectionDetailPage />,
+      strLabel: '{{collectionTitle}}',
+      isShowMenu: false,
+      requireAuth: false,
   },
   {
     index: false,

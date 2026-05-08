@@ -48,7 +48,16 @@
             "sync_success": "Đồng bộ thành công",
             "sync_failed": "Đồng bộ thất bại!",
             "update_success": "Cập nhật thành công",
-            "update_failed": "Cập nhật thất bại!"
+            "update_failed": "Cập nhật thất bại!",
+            "my_collections": "Bộ sưu tập"
+        },
+        "my_collections": {
+            "title": "Bộ sưu tập",
+            "subtitle": "Quản lý bộ sưu tập của bạn",
+            "create": "Tạo bộ sưu tập",
+            "empty": "Chưa có bộ sưu tập nào.",
+            "no_description": "Chưa có mô tả",
+            "app_count": "{{count}} ứng dụng"
         }
     }
 }

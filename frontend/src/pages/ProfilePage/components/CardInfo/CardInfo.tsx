@@ -5,7 +5,7 @@ import {
   SettingOutlined,
   SyncOutlined,
   UserAddOutlined,
-  HeartOutlined
+  HeartOutlined, FolderOutlined
 } from '@ant-design/icons'
 import avatar from '@app/assets/images/default-user.webp'
 import { AppEvent } from '@app/enums/AppEvent.enum'
@@ -58,6 +58,12 @@ function CardInfo({ isPublic, userInfo }: CardInfoProps) {
       name: t('profile.card_info.invitations'),
       path: '/profile',
       isPublic: false
+    },
+    {
+      icon: <FolderOutlined />,
+      name: t('profile.card_info.my_collections'),
+      path: '/profile/my-collections',
+      isPublic: false,
     },
     {
       icon: <CreditCardOutlined />,
