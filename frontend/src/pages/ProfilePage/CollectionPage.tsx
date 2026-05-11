@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Divider, Empty, Spin, Popconfirm, Button as AntButton } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@app/hook/useAuth';
@@ -98,7 +98,7 @@ const CollectionsPage = () => {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {collections.map((col) => (
-                                <GlassCard key={col.id} hoverEffect={true} className="p-4 flex flex-col">
+                                <GlassCard  key={col.id} hoverEffect={true}  className="p-4 flex flex-col cursor-pointer"  onClick={() => navigate(`/collection/${col.id}`)} >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-12 h-12 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
                                             <TableImage src={col.featuredImage ?? undefined} alt="collection" size={48} />
@@ -111,19 +111,30 @@ const CollectionsPage = () => {
                                         {col.description || t('profile.my_collections.no_description')}
                                     </MtbTypography>
                                     <div className="flex items-center justify-between mt-auto">
-                    <span className="text-xs text-secondary">
-                      {t('profile.my_collections.app_count', { count: col.collectionApps?.length ?? 0 })}
-                    </span>
+                                        <span className="text-xs text-secondary">
+                                          {t('profile.my_collections.app_count', { count: col.collectionApps?.length ?? 0 })}
+                                        </span>
                                         <div className="flex gap-2">
-                                            <AntButton size="small" icon={<EyeOutlined />} onClick={() => navigate(`/collection/${col.id}`)} />
-                                            <AntButton size="small" icon={<EditOutlined />} onClick={() => openEdit(col)} />
+                                            <AntButton
+                                                size="small"
+                                                icon={<EditOutlined />}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openEdit(col);
+                                                }}
+                                            />
                                             <Popconfirm
                                                 title="Delete this collection?"
                                                 onConfirm={() => handleDelete(col.id)}
                                                 okText="Yes"
                                                 cancelText="No"
                                             >
-                                                <AntButton size="small" icon={<DeleteOutlined />} danger />
+                                                <AntButton
+                                                    size="small"
+                                                    icon={<DeleteOutlined />}
+                                                    danger
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
                                             </Popconfirm>
                                         </div>
                                     </div>
