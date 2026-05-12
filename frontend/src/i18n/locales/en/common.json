@@ -62,7 +62,8 @@
         "unsubscription": "Unsubscription",
         "not_found": "Not Found",
         "version_history": "Version History",
-        "my_collections": "My Collections"
+        "my_collections": "My Collections",
+        "explore": "Explore"
     },
     "header": {
         "login": "Login",
