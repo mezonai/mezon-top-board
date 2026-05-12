@@ -123,19 +123,21 @@ const CollectionsPage = () => {
                                                     openEdit(col);
                                                 }}
                                             />
-                                            <Popconfirm
-                                                title="Delete this collection?"
-                                                onConfirm={() => handleDelete(col.id)}
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <AntButton
-                                                    size="small"
-                                                    icon={<DeleteOutlined />}
-                                                    danger
-                                                    onClick={(e) => e.stopPropagation()}
-                                                />
-                                            </Popconfirm>
+                                            <span onClick={(e) => e.stopPropagation()}>
+                                                <Popconfirm
+                                                    title="Delete this collection?"
+                                                    onConfirm={() => handleDelete(col.id)}
+                                                    okText="Yes"
+                                                    cancelText="No"
+                                                >
+                                                    <AntButton
+                                                        size="small"
+                                                        icon={<DeleteOutlined />}
+                                                        danger
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    />
+                                                </Popconfirm>
+                                            </span>
                                         </div>
                                     </div>
                                 </GlassCard>
