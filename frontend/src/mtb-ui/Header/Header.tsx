@@ -6,10 +6,11 @@ import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import { redirectToOAuth } from '@app/utils/auth'
 import { removeAccessTokens } from '@app/utils/storage'
-import { Drawer } from 'antd'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {Drawer, Dropdown} from 'antd'
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useGetMyCollectionsQuery } from '@app/services/api/collection/collection';
 import MtbTypography from '../Typography/Typography'
 import { cn } from '@app/utils/cn'
 import styles from './Header.module.scss'
@@ -31,6 +32,28 @@ function Header() {
   const dropdownRef = useRef<HTMLDivElement | null>(null)
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const { t } = useTranslation(['common'])
+
+  const { data: collectionsData } = useGetMyCollectionsQuery(
+      { pageNumber: 1, pageSize: 50 },
+      { skip: !isLogin }
+  );
+
+  const collectionsDropdownItems = useMemo(() => {
+    if (!collectionsData?.data?.length) return [];
+    return collectionsData.data.flatMap((col: any, index: number) => {
+      const item = {
+        key: col.id,
+        label: col.title,
+        className: 'explore-collection-item',      // ← add this
+        onClick: () => navigate(`/collection/${col.id}`),
+      };
+      // insert a divider after every item except the last
+      if (index < collectionsData.data.length - 1) {
+        return [item, { type: 'divider' as const }];
+      }
+      return [item];
+    });
+  }, [collectionsData, navigate]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -133,7 +156,22 @@ function Header() {
     return (
       <>
         <ul className="flex flex-col lg:flex-row gap-5 flex-none text-body mb-2 lg:mb-0">
-          {renderMenu(true)}
+          {(() => {
+          const items = renderMenu(true);
+          if (isLogin && collectionsDropdownItems.length > 0) {
+            const explore = (
+              <li key="explore">
+                <Dropdown menu={{ items: collectionsDropdownItems }} trigger={['hover', 'click']}>
+                  <a className="py-2 transition-all duration-300 border-b-[3px] block text-primary dark:text-white cursor-pointer border-transparent  hover:border-primary/50">
+                    {t('nav.explore')}
+                  </a>
+                </Dropdown>
+              </li>
+            );
+            return [items[0], explore, ...items.slice(1)];
+          }
+          return items;
+        })()}
         </ul>
         {isUserIcon && renderUserIcon('[20px]')}
       </>
