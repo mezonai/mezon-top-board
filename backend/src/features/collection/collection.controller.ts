@@ -16,7 +16,6 @@ import { Result } from "@domain/common/dtos/result.dto";
 import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
-import { Public } from "@libs/decorator/authorization.decorator";
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { OptionalAuth } from "@libs/decorator/optionalAuth.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
@@ -76,7 +75,6 @@ export class CollectionController {
     }
 
     @Get(":id")
-    @Public()
     @OptionalAuth()
     async findOne(
         @Param("id") id: string,

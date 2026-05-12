@@ -24,6 +24,7 @@ const CollectionDetailPage = () => {
 
     const { data, isLoading, error, refetch } = useGetCollectionQuery(collectionId!, {
         skip: !collectionId,
+        refetchOnMountOrArgChange: true,
     });
 
     const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
