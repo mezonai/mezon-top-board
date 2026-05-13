@@ -22,7 +22,7 @@ import { useTagControllerGetTagsQuery } from '@app/services/api/tag/tag'
 import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
 function ProfilePage() {
-  const { t } = useTranslation(['profile_page']);
+  const { t, i18n } = useTranslation(['profile_page']);
   const navigate = useNavigate()
   const { isLogin } = useAuth()
   const { userInfo: myInfo, publicProfile: publicUserInfo } = useAppSelector<RootState, IUserStore>((s) => s.user)
@@ -53,6 +53,7 @@ function ProfilePage() {
     search: searchText,
     tags: selectedTagIds,
     type: selectedType,
+    hl: i18n.language,
   };
 
   const { data: publicAppsData, isFetching: isPublicFetching } = useMezonAppControllerSearchMezonAppQuery(
