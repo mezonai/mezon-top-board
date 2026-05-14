@@ -637,15 +637,33 @@ export class MezonAppService {
       query.pageSize,
       query.pageNumber,
       (entity) => {
+          // Use pending version data if exists (for the owner's own list)
+          let displayTranslations = entity.appTranslations;
+          let displayTags = entity.tags;
+          let displayFeaturedImage= entity.featuredImage;
+
+          if (entity.hasNewUpdate) {
+            const pendingVersion = entity.versions
+                .filter(v => v.status === AppStatus.PENDING)
+                .sort((a, b) => b.version - a.version)[0];
+            if (pendingVersion) {
+              displayTranslations = pendingVersion.appTranslations || entity.appTranslations;
+              displayTags = pendingVersion.tags || entity.tags;
+              if (pendingVersion['featuredImage']) {
+                displayFeaturedImage = pendingVersion['featuredImage'];
+              }
+            }
+          }
+
         const mappedMezonApp = Mapper(SearchMezonAppResponse, entity);
         mappedMezonApp.rateScore = this.getAverageRating(entity);
-        mappedMezonApp.tags = entity.tags.map((tag) => ({
+        mappedMezonApp.tags = displayTags.map((tag) => ({
           id: tag.id,
           name: tag.name,
           color: tag.color,
         }));
-        mappedMezonApp.versions = entity.versions;
-        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
+        mappedMezonApp.appTranslations = this.mapAppTranslations(displayTranslations);
         mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         // TODO: fix with exposeUnsetFields later in class-transformer
         mappedMezonApp.owner = {
@@ -653,8 +671,18 @@ export class MezonAppService {
           name: entity.owner.name,
           profileImage: entity.owner.profileImage,
           isVerified: entity.owner.isVerified,
+          };
+
+          // Show "Pending" status badge for owner when a pending version exists
+          if (entity.hasNewUpdate) {
+            mappedMezonApp.status = AppStatus.PENDING;
         }
-        mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
+
+          // Ensure the updated image URL is passed to the frontend
+          if (displayFeaturedImage) {
+            (mappedMezonApp as any).featuredImage = displayFeaturedImage;
+          }
+
         return mappedMezonApp;
       },
     );
