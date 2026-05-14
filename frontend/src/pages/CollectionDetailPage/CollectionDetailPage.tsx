@@ -6,6 +6,7 @@ import { useAppSelector } from '@app/store/hook';
 import { RootState } from '@app/store';
 import { IUserStore } from '@app/store/user';
 import { useGetCollectionQuery, useUpdateCollectionMutation } from '@app/services/api/collection/collection';
+import {useTranslation} from "react-i18next";
 import { Collection } from '@app/types/collection.types';
 import MtbTypography from '@app/mtb-ui/Typography/Typography';
 import MtbButton from '@app/mtb-ui/Button';
@@ -17,6 +18,7 @@ import { toast } from 'react-toastify';
 import { Role } from '@app/enums/role.enum';
 
 const CollectionDetailPage = () => {
+    const { t } = useTranslation();
     const { collectionId } = useParams<{ collectionId: string }>();
     const navigate = useNavigate();
     const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user);
@@ -119,7 +121,7 @@ const CollectionDetailPage = () => {
                     {/* Apps list */}
                     <div>
                         <MtbTypography variant="h2" customClassName="mb-4">
-                            Apps in this collection ({collection.collectionApps?.length ?? 0})
+                            {t('collectionDetail.appsInCollection')} ({collection.collectionApps?.length ?? 0})
                         </MtbTypography>
                         <div className="flex flex-col gap-4">
                             {collection.collectionApps?.map((ca) => (

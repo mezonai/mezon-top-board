@@ -107,5 +107,8 @@
     },
     "multilingual": {
         "default": "Default"
+    },
+    "collectionDetail": {
+        "appsInCollection": "Apps in this collection"
     }
 }
