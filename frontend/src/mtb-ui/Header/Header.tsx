@@ -45,7 +45,10 @@ function Header() {
         key: col.id,
         label: col.title,
         className: 'explore-collection-item',      // ← add this
-        onClick: () => navigate(`/collection/${col.id}`),
+        onClick: () => {
+          navigate(`/collection/${col.id}`);
+          setOpen(false);
+        },
       };
       // insert a divider after every item except the last
       if (index < collectionsData.data.length - 1) {
