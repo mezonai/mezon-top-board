@@ -644,14 +644,12 @@ export class MezonAppService {
 
           if (entity.hasNewUpdate) {
             const pendingVersion = entity.versions
-                .filter(v => v.status === AppStatus.PENDING)
+                .filter((v) => v.status === AppStatus.PENDING)
                 .sort((a, b) => b.version - a.version)[0];
             if (pendingVersion) {
               displayTranslations = pendingVersion.appTranslations || entity.appTranslations;
               displayTags = pendingVersion.tags || entity.tags;
-              if (pendingVersion['featuredImage']) {
-                displayFeaturedImage = pendingVersion['featuredImage'];
-              }
+              displayFeaturedImage = pendingVersion.featuredImage || entity.featuredImage;
             }
           }
 
@@ -665,6 +663,7 @@ export class MezonAppService {
         mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         mappedMezonApp.appTranslations = this.mapAppTranslations(displayTranslations);
         mappedMezonApp.defaultLanguage = entity.defaultLanguage;
+        mappedMezonApp.featuredImage = displayFeaturedImage;
         // TODO: fix with exposeUnsetFields later in class-transformer
         mappedMezonApp.owner = {
           id: entity.owner.id,
@@ -677,11 +676,6 @@ export class MezonAppService {
           if (entity.hasNewUpdate) {
             mappedMezonApp.status = AppStatus.PENDING;
         }
-
-          // Ensure the updated image URL is passed to the frontend
-          if (displayFeaturedImage) {
-            (mappedMezonApp as any).featuredImage = displayFeaturedImage;
-          }
 
         return mappedMezonApp;
       },
