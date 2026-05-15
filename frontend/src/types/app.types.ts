@@ -1,10 +1,14 @@
 import { MezonAppType } from "@app/enums/mezonAppType.enum"
 import { Tag, Link, AppReviewHistory, Rating, User, AppVersion } from '@app/types'
 import { BaseApp } from "./baseApp.types"
+import { AppTranslation } from "./appTranslation.types"
 
 export type App = BaseApp & {
     ownerId: string
+    name: string
     currentVersion: number
+    currentVersionChangelog?: string
+    currentVersionUpdatedAt?: Date
     hasNewUpdate: boolean
     mezonAppId: string
     type: MezonAppType
@@ -14,4 +18,5 @@ export type App = BaseApp & {
     ratings: Rating[]
     owner: User
     versions: AppVersion[]
+    appTranslations: AppTranslation[]
 }

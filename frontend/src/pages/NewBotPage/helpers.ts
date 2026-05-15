@@ -2,6 +2,7 @@ import { AppStatus } from '@app/enums/AppStatus.enum'
 import { CreateMezonAppRequest } from '@app/services/api/mezonApp/mezonApp.types'
 import { GetMezonAppDetailsResponse, TagInMezonAppDetailResponse, AppVersionDetailsDto } from '@app/services/api/mezonApp/mezonApp.types'
 import { AppPricing } from '@app/enums/appPricing'
+import { AppLanguage } from '@app/enums/appLanguage.enum'
 
 const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersionDetailsDto | GetMezonAppDetailsResponse => {
   const { versions, hasNewUpdate } = detail
@@ -23,25 +24,35 @@ const getDataSource = (detail: GetMezonAppDetailsResponse): AppVersionDetailsDto
 
 const mapDetailToFormData = (detail: GetMezonAppDetailsResponse): CreateMezonAppRequest => {
   const dataSource = getDataSource(detail)
-  const remark = 'remark' in dataSource ? dataSource.remark : ''
+  const changelog = dataSource.status === AppStatus.PENDING ? dataSource.changelog : '';
+  const existingTranslations = detail.versions[0].appTranslations || [];
+  
+  const formTranslations = [AppLanguage.EN, AppLanguage.VI].map(lang => {
+    const found = existingTranslations.find(t => t.language === lang);
+    return {
+      language: lang,
+      name: found?.name || '',
+      headline: found?.headline || '',
+      description: found?.description || ''
+    };
+  });
 
   return {
-    name: dataSource.name || '',
-    headline: dataSource.headline || '',
-    description: dataSource.description || '',
     prefix: dataSource.prefix || '',
     featuredImage: dataSource.featuredImage || '',
     supportUrl: dataSource.supportUrl || '',
     pricingTag: dataSource.pricingTag || AppPricing.FREE,
     price: dataSource.price || 0,
     socialLinks: dataSource.socialLinks || [],
-    remark: remark,
+    changelog: changelog,
     // TODO: isAutoPublished will be implemented later
     isAutoPublished: true,
     tagIds: dataSource.tags?.map((tag: TagInMezonAppDetailResponse) => tag.id) || [],
     mezonAppId: detail.mezonAppId || '',
-    type: detail.type
-  }
+    type: detail.type,
+    defaultLanguage: detail.defaultLanguage || AppLanguage.EN,
+    appTranslations: formTranslations
+  };
 }
 
 export {

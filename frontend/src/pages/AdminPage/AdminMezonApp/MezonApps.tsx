@@ -3,15 +3,18 @@ import { useLazyMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerD
 import { GetMezonAppDetailsResponse } from "@app/services/api/mezonApp/mezonApp.types";
 import { RootState } from "@app/store";
 import { useAppSelector } from "@app/store/hook";
-import { mapStatusToColor, mapStatusToText } from "@app/utils/mezonApp";
-import { Input, Popconfirm, Space, Spin, Table, Tag } from "antd";
+import { Input, Popconfirm, Space, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import TableActionButton from "@app/components/TableActionButton/TableActionButton";
 import TableImage from "@app/components/TableImage/TableImage";
+import BotStatusBadge from "@app/components/BotStatusBadge/BotStatusBadge";
+import { useTranslation } from "react-i18next";
+import { getAppTranslation } from "@app/hook/useAppTranslation";
 
 const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => void }) => {
+  const { i18n } = useTranslation();
   const navigate = useNavigate()
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
@@ -29,6 +32,7 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
     try {
       await deleteMezonApp({ requestWithId: { id: appId } }).unwrap();
       toast.success("App deleted successfully");
+      fetchApps();
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to delete app");
     }
@@ -59,20 +63,22 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       dataIndex: "featuredImage",
       key: "featuredImage",
       width: 80,
-      render: (featuredImage: string, data: GetMezonAppDetailsResponse) => (
-        <TableImage src={featuredImage} alt={data.name} />
-      ),
+      render: (featuredImage: string, data: GetMezonAppDetailsResponse) => {
+        const { name } = getAppTranslation(data, i18n.language);
+        return <TableImage src={featuredImage} alt={name} />
+      },
     },
     {
       title: "Name",
-      dataIndex: "name",
       key: "name",
-      render: (text: string) => (
-        <div className="break-words max-w-[80px] 2xl:max-w-[120px]">
-          {text}
-        </div>
-      ),
-      sorter: (a : GetMezonAppDetailsResponse, b : GetMezonAppDetailsResponse) => a.name.localeCompare(b.name),
+      render: (_: any, record: GetMezonAppDetailsResponse) => {
+        const { name } = getAppTranslation(record, i18n.language);
+        return (
+          <div className="break-words max-w-[80px] 2xl:max-w-[120px]">
+            {name}
+          </div>
+        );
+      },
     },
     {
       title: "Owner",
@@ -88,17 +94,23 @@ const MezonApps = ({ onEdit }: { onEdit: (app: GetMezonAppDetailsResponse) => vo
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: number) => (<Tag color={mapStatusToColor(status)}>{mapStatusToText(status)}</Tag>)
+      render: (status: number) => (
+        <div className="flex flex-col gap-1 items-start">
+          <BotStatusBadge status={status} variant="tag" />
+        </div>
+      )
     },
     {
       title: "Headline",
-      dataIndex: "headline",
       key: "headline",
-      render: (text: string) => (
-        <div className="line-clamp-5 overflow-hidden text-ellipsis max-w-[300px] 2xl:max-w-[400px]">
-          {text}
-        </div>
-      ),
+      render: (_: any, record: GetMezonAppDetailsResponse) => {
+        const { headline } = getAppTranslation(record, i18n.language);
+        return (
+          <div className="line-clamp-5 overflow-hidden text-ellipsis max-w-[300px] 2xl:max-w-[400px]">
+            {headline}
+          </div>
+        );
+      },
     },
     {
       title: "Actions",

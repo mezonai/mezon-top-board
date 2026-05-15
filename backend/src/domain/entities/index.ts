@@ -11,4 +11,5 @@ export * from "./schema/user.entity"
 export * from "./schema/appVersion.entity"
 export * from "./schema/tempFile.entity"
 export * from "./schema/favorite-app.entity"
+export * from "./schema/appTranslation.entity"
 

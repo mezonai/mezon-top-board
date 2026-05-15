@@ -22,6 +22,11 @@
         "chat_now": "Chat ngay",
         "success": "Thành công",
         "comment_placeholder": "Viết nhận xét của bạn...",
-        "post_rating": "Gửi đánh giá"
+        "post_rating": "Gửi đánh giá",
+        "latest_version": "Phiên bản mới nhất",
+        "changelog": "Ghi chú phát hành",
+        "more_versions": "Xem thêm",
+        "updated": "Cập nhật vào",
+        "no_changelog": "Không có chi tiết ghi chú phát hành."
     }
 }

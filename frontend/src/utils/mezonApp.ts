@@ -1,33 +1,18 @@
 import { AppStatus } from "@app/enums/AppStatus.enum";
 import { MezonAppType } from "@app/enums/mezonAppType.enum";
 
-export function mapStatusToColor(status: number) {
+export function getStatusConfig(status: AppStatus) {
   switch (status) {
-    case AppStatus.PENDING:
-      return 'orange';
-    case AppStatus.APPROVED:
-      return 'green';
-    case AppStatus.REJECTED:
-      return 'red';
     case AppStatus.PUBLISHED:
-      return 'blue';
-    default:
-      return 'gray';
-  }
-}
-
-export function mapStatusToText(status: number) {
-  switch (status) {
-    case AppStatus.PENDING:
-      return 'pending';
+      return { color: 'blue', labelKey: 'status.published', tailwindBg: 'bg-info' };
     case AppStatus.APPROVED:
-      return 'approved';
+      return { color: 'green', labelKey: 'status.approved', tailwindBg: 'bg-success' };
+    case AppStatus.PENDING:
+      return { color: 'orange', labelKey: 'status.pending', tailwindBg: 'bg-warning' };
     case AppStatus.REJECTED:
-      return 'rejected';
-    case AppStatus.PUBLISHED:
-      return 'published';
+      return { color: 'red', labelKey: 'status.rejected', tailwindBg: 'bg-danger' };
     default:
-      return 'unknown';
+      return { color: 'gray', labelKey: 'status.unknown', tailwindBg: 'bg-muted' };
   }
 }
 

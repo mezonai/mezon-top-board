@@ -1,0 +1,33 @@
+{
+	"actions": {
+		"backToBot": "Quay lại Bot",
+		"select_all": "Chọn tất cả",
+		"deselect_all": "Bỏ chọn tất cả",
+		"cancel": "Hủy bỏ",
+		"apply": "Áp dụng"
+	},
+	"header": {
+		"title": "Lịch sử phiên bản",
+		"subtitle": "Theo dõi mọi cập nhật và thay đổi của {{name}}",
+		"selected_count": "Đã chọn {{count}}"
+	},
+	"meta": {
+		"latest": "Mới nhất:",
+		"totalVersions": "Tổng số phiên bản:",
+		"lastUpdated": "Cập nhật gần nhất:"
+	},
+	"status": {
+		"published": "Đã xuất bản",
+		"approved": "Đã phê duyệt",
+		"pending": "Đang chờ duyệt",
+		"rejected": "Bị từ chối"
+	},
+	"items": {
+		"currentVersion": "Phiên bản hiện tại",
+		"releasedOn": "Phát hành vào {{date}}"
+	},
+	"changelog": {
+		"title": "Thay đổi",
+		"noDetails": "Không có chi tiết cho phiên bản này."
+	}
+}

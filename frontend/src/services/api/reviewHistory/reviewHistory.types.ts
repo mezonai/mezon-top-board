@@ -7,7 +7,7 @@ import { BaseListApiArg, SearchableApiArg } from '@app/types/common.types';
 type ReviewerDto = Pick<User, 'id' | 'name' | 'email' | 'role'>;
 type AppInfoDto = Pick<
   App,
-  'id' | 'name' | 'type' | 'mezonAppId' | 'description' | 'headline' | 'featuredImage'
+  'id' | 'type' | 'mezonAppId' | 'featuredImage' | 'appTranslations' | 'defaultLanguage'
 >;
 type AppVersionDto = Pick<AppVersion, 'version' | 'changelog'>;
 

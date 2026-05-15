@@ -1,4 +1,3 @@
-
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as sanitizeHtml from "sanitize-html";
@@ -10,16 +9,13 @@ import { AppStatus } from "@domain/common/enum/appStatus";
 import { Role } from "@domain/common/enum/role";
 import { SortField } from '@domain/common/enum/sortField';
 import { SortOrder } from '@domain/common/enum/sortOder';
-import { App, AppVersion, Link, LinkType, Tag, User } from "@domain/entities";
-
+import { App, AppTranslation, AppVersion, Link, LinkType, Tag, User } from "@domain/entities";
 import { AppVersionService } from "@features/app-version/app-version.service";
-
+import { AppTranslationService } from "@features/app-translation/app-translation.service";
 import { ErrorMessages } from "@libs/constant/messages";
 import { GenericRepository } from "@libs/repository/genericRepository";
 import { Mapper } from "@libs/utils/mapper";
 import { paginate } from "@libs/utils/paginate";
-import { filterBuilder, searchBuilder } from "@libs/utils/queryBuilder";
-
 import {
   CreateMezonAppRequest,
   SearchMezonAppRequest,
@@ -30,9 +26,7 @@ import {
   GetRelatedMezonAppResponse,
   SearchMezonAppResponse,
 } from "./dtos/response";
-import { MezonAppType } from "@domain/common/enum/mezonAppType";
-
-
+import { GetAppVersionDetailsResponse } from "@features/app-version/dtos/response";
 
 @Injectable()
 export class MezonAppService {
@@ -46,6 +40,7 @@ export class MezonAppService {
   constructor(
     private manager: EntityManager,
     private appVersionService: AppVersionService,
+    private appTranslationService: AppTranslationService,
   ) {
     this.appRepository = new GenericRepository(App, manager);
     this.appVersionRepository = new GenericRepository(AppVersion, manager);
@@ -74,39 +69,62 @@ export class MezonAppService {
     if (!userId || appIds.length === 0) return new Map();
 
     const rawResults = await this.appRepository.getRepository()
-        .createQueryBuilder('app')
-        .leftJoin(
-          'favorite_app',
-          'ufa',
-          'ufa."appId" = app.id AND ufa."userId" = :userId',
-          { userId },
-        )
-        .whereInIds(appIds)
-        .select([
-            'app.id AS "appId"',
-            `CASE WHEN ufa."userId" IS NOT NULL THEN true ELSE false END AS "isFavorited"`
-        ])
-        .getRawMany();
+      .createQueryBuilder('app')
+      .leftJoin(
+        'favorite_app',
+        'ufa',
+        'ufa."appId" = app.id AND ufa."userId" = :userId',
+        { userId },
+      )
+      .whereInIds(appIds)
+      .select([
+        'app.id AS "appId"',
+        `CASE WHEN ufa."userId" IS NOT NULL THEN true ELSE false END AS "isFavorited"`
+      ])
+      .getRawMany();
 
     const map = new Map<string, boolean>();
-    
+
     rawResults.forEach(row => {
-        map.set(row.appId, row.isFavorited);
+      map.set(row.appId, row.isFavorited);
     });
     return map;
   }
 
+  private mapAppTranslations(translations: AppTranslation[]) {
+    return translations?.map(t => ({
+      language: t.language,
+      name: t.name,
+      headline: t.headline,
+      description: t.description
+    })) || [];
+  }
+
   async getMezonAppDetail(query: RequestWithId, userId?: string) {
-    const mezonApp = await this.appRepository.findById(query.id, [
-      "tags",
-      "socialLinks",
-      "socialLinks.type",
-      "ratings",
-      "versions",
-      "versions.tags",
-      "versions.socialLinks",
-      "versions.socialLinks.type",
-    ]);
+    const mezonApp = await this.appRepository.getRepository()
+      .createQueryBuilder("app")
+      .leftJoinAndSelect("app.tags", "tags")
+      .leftJoinAndSelect("app.appTranslations", "appTranslations")
+      .leftJoinAndSelect("app.socialLinks", "socialLinks")
+      .leftJoinAndSelect("socialLinks.type", "socialLinkType")
+      .leftJoinAndSelect("app.ratings", "ratings")
+      .leftJoinAndSelect("app.owner", "owner")
+      .leftJoinAndSelect("app.versions", "versions")
+      .leftJoinAndSelect("versions.tags", "versionTags")
+      .leftJoinAndSelect("versions.socialLinks", "versionSocialLinks")
+      .leftJoinAndSelect("versions.appTranslations", "versionTranslations")
+      .leftJoinAndSelect("versionSocialLinks.type", "versionLinkType")
+      .where("app.id = :id", { id: query.id })
+      .andWhere(new Brackets((qb) => {
+        qb.where("versions.status = :approvedStatus", {
+          approvedStatus: AppStatus.APPROVED,
+        });
+
+        if (userId) {
+          qb.orWhere("app.ownerId = :userId", { userId });
+        }
+      }))
+      .getOne();
 
     if (!mezonApp) {
       throw new NotFoundException("App not found");
@@ -114,17 +132,38 @@ export class MezonAppService {
 
     const favoritesMap = await this.getFavoritesMap([mezonApp.id], userId);
     const isFavorited = favoritesMap.get(mezonApp.id) || false;
-    const owner = await this.userRepository.findById(mezonApp.ownerId);
+    const owner = mezonApp.owner;
 
     const detail = Mapper(GetMezonAppDetailsResponse, mezonApp);
     detail.isFavorited = isFavorited;
-    
     detail.rateScore = this.getAverageRating(mezonApp);
-    detail.owner = {
-      id: owner.id,
-      name: owner.name,
-      profileImage: owner.profileImage,
-    };
+    detail.appTranslations = this.mapAppTranslations(mezonApp.appTranslations);
+    detail.versions = mezonApp.versions
+      .sort((a, b) => b.version - a.version)
+      .map((v) => {
+        const vDetail = Mapper(GetAppVersionDetailsResponse, v);
+        vDetail.appTranslations = this.mapAppTranslations(v.appTranslations);
+        return vDetail;
+      });
+
+    if (mezonApp.versions && mezonApp.versions.length > 0) {
+      const currentVerObj = mezonApp.versions.find(v => v.version === mezonApp.currentVersion);
+
+      if (currentVerObj) {
+        detail.currentVersionChangelog = currentVerObj.changelog;
+        detail.currentVersionUpdatedAt = currentVerObj.updatedAt;
+      }
+    }
+
+    if (owner) {
+      detail.owner = {
+        id: owner.id,
+        name: owner.name,
+        profileImage: owner.profileImage,
+        isVerified: owner.isVerified,
+      };
+    }
+
     detail.tags = mezonApp.tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }));
     detail.socialLinks = mezonApp.socialLinks
       .filter((link) => !!link)
@@ -134,11 +173,11 @@ export class MezonAppService {
         linkTypeId: link.type?.id || null,
         type: link.type
           ? {
-              id: link.type.id,
-              name: link.type.name,
-              icon: link.type.icon,
-              prefixUrl: link.type.prefixUrl,
-            }
+            id: link.type.id,
+            name: link.type.name,
+            icon: link.type.icon,
+            prefixUrl: link.type.prefixUrl,
+          }
           : null,
       }));
     detail.versions = mezonApp.versions.sort((a, b) => b.version - a.version)
@@ -165,13 +204,15 @@ export class MezonAppService {
         status: AppStatus.PUBLISHED,
       },
       withDeleted: false,
-      relations: ["tags", "ratings"],
+      relations: ["tags", "ratings", "appTranslations"],
       take: 5,
     });
 
     const res = relatedMezonApps.map((mezonApp) => {
       const mappedMezonApp = Mapper(GetRelatedMezonAppResponse, mezonApp);
       mappedMezonApp.rateScore = this.getAverageRating(mezonApp);
+      mappedMezonApp.appTranslations = this.mapAppTranslations(mezonApp.appTranslations);
+      mappedMezonApp.defaultLanguage = mezonApp.defaultLanguage;
       return mappedMezonApp;
     });
 
@@ -189,6 +230,7 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
+      .innerJoin("app.appTranslations", "trans")
       .select("app.id")
       .skip(skip)
       .take(take);
@@ -201,9 +243,9 @@ export class MezonAppService {
     if (query.search)
       whereCondition.andWhere(
         new Brackets((qb) => {
-          qb.where("app.name ILIKE :keyword", {
+          qb.where("trans.name ILIKE :keyword", {
             keyword: `%${query.search}%`,
-          }).orWhere("app.headline ILIKE :keyword", {
+          }).orWhere("trans.headline ILIKE :keyword", {
             keyword: `%${query.search}%`,
           });
         }),
@@ -228,7 +270,7 @@ export class MezonAppService {
       });
     }
 
-    if(query?.hasNewUpdate !== undefined){
+    if (query?.hasNewUpdate !== undefined) {
       whereCondition.andWhere("app.hasNewUpdate = :hasNewUpdate", {
         hasNewUpdate: query.hasNewUpdate,
       });
@@ -241,9 +283,12 @@ export class MezonAppService {
 
     if (query.sortField === SortField.NAME) {
       whereCondition
-        .addSelect('LOWER(app.name)', 'app_name_lower')
+        .addSelect('LOWER(trans.name)', 'app_name_lower')
         .orderBy('app_name_lower', sortOrder);
-    } else whereCondition.orderBy(`app.${sortField}`, sortOrder);
+    } else {
+      whereCondition.addSelect(`app.${sortField}`);
+      whereCondition.orderBy(`app.${sortField}`, sortOrder);
+    }
 
     const [appIds, total] = await whereCondition.getManyAndCount();
     const ids = appIds.map(a => a.id);
@@ -251,19 +296,21 @@ export class MezonAppService {
     const apps = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
+      .leftJoinAndSelect("app.appTranslations", "translations")
       .leftJoinAndSelect("app.tags", "filterTag")
       .leftJoinAndSelect("app.ratings", "rating")
       .leftJoinAndSelect("app.socialLinks", "socialLink")
       .leftJoinAndSelect("app.owner", "owner")
       .leftJoinAndSelect("app.versions", "version")
       .leftJoinAndSelect("version.tags", "versionTag")
+      .leftJoinAndSelect("version.appTranslations", "versionTranslations")
       .leftJoinAndSelect("version.socialLinks", "versionSocialLink")
       .leftJoinAndSelect("versionSocialLink.type", "versionLinkType")
       .where("app.id IN (:...ids)", { ids: ids.length ? ids : ["00000000-0000-0000-0000-000000000000"] });
 
     if (query.sortField === SortField.NAME) {
       apps
-        .addSelect('LOWER(app.name)', 'app_name_lower')
+        .addSelect('LOWER(translations.name)', 'app_name_lower')
         .orderBy('app_name_lower', sortOrder);
     } else apps.orderBy(`app.${sortField}`, sortOrder);
     apps.addOrderBy("version.version", "DESC");
@@ -274,8 +321,8 @@ export class MezonAppService {
   async searchMezonApp(query: SearchMezonAppRequest, userId?: string) {
     const { apps, total, ids } = await this.buildSearchQuery(query, "app.status = :status", { status: AppStatus.PUBLISHED });
     const [data, favoritesMap] = await Promise.all([
-        apps.getMany(),
-        this.getFavoritesMap(ids, userId)
+      apps.getMany(),
+      this.getFavoritesMap(ids, userId)
     ]);
 
     return paginate<App, SearchMezonAppResponse>(
@@ -291,6 +338,8 @@ export class MezonAppService {
           color: tag.color,
         }));
         mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
+        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         return mappedMezonApp;
       },
     );
@@ -312,7 +361,7 @@ export class MezonAppService {
   }
 
   async createMezonApp(ownerId: string, req: CreateMezonAppRequest) {
-    const { tagIds, socialLinks, ...appData } = req;
+    const { tagIds, socialLinks, changelog, appTranslations, defaultLanguage, ...appData } = req;
 
     // Fetch existing tags
     const existingTags = tagIds?.length
@@ -358,17 +407,25 @@ export class MezonAppService {
 
     const newApp = await this.appRepository.create({
       ...appData,
+      defaultLanguage,
       ownerId: ownerId,
       tags: existingTags,
       socialLinks: links,
       hasNewUpdate: true,
     });
+
+    const savedTranslations = await this.appTranslationService.createOrUpdateAppTranslations(appTranslations, newApp.id, null);
+    newApp.appTranslations = savedTranslations;
+    
     if (newApp) await this.appVersionService.createVersion({
       appId: newApp.id,
       tagIds,
       socialLinks: links,
+      changelog: changelog,
+      defaultLanguage,
+      appTranslations,
       ...appData,
-    })
+    });
     return newApp
   }
 
@@ -386,7 +443,7 @@ export class MezonAppService {
       throw new BadRequestException(ErrorMessages.PERMISSION_DENIED);
     }
 
-    const { tagIds, socialLinks, description, id, ...updateData } = req;
+    const { tagIds, socialLinks, id, changelog, appTranslations, ...updateData } = req;
 
     let tags = app.tags;
     let links = app.socialLinks;
@@ -444,74 +501,92 @@ export class MezonAppService {
       app.socialLinks = links;
     }
 
-    const cleanedDescription = sanitizeHtml(description, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        "span", "img", "video", "source", "h1", "h2", "h3", "h4", "h5", "h6",
-        "li", "ol", "ul", "p", "pre", "a", "em", "strong", "u"
-      ]),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        img: ['src', 'alt', 'width', 'height', 'style'],
-        video: ['src', 'controls', 'width', 'height'],
-        source: ['src', 'type'],
-        embed: ['src', 'width', 'height', 'allowfullscreen'],
-        span: ['style', 'class'],
-        p: ['style', 'class'],
-        em: ['style', 'class'],
-        strong: ['style', 'class'],
-        u: ['style', 'class'],
-      },
-      allowedClasses: {
-        '*': ['ql-size-small', 'ql-size-large', 'ql-size-huge',
-          'ql-align-center', 'ql-align-right', 'ql-align-justify',
-          'ql-font-monospace', 'ql-font-serif', 'fancy', 'simple']
-      },
-      allowedStyles: {
-        '*': {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'text-align': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
-        },
-        img: {
-          'width': [/^\d+(px|%)?$/],
-          'height': [/^\d+(px|%)?$/],
-        },
-        em: {
-          'color': [/^.*$/],
-          'background-color': [/^.*$/],
-          'font-size': [/^\d+(?:px|em|%)$/],
-          'font-family': [/^.*$/],
-        },
-      }
-    });
-
+    if (appTranslations) {
+      appTranslations.forEach(t => {
+        if (t.description) t.description = sanitizeHtml(t.description, {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+            "span", "img", "video", "source", "h1", "h2", "h3", "h4", "h5", "h6",
+            "li", "ol", "ul", "p", "pre", "a", "em", "strong", "u"
+          ]),
+          allowedAttributes: {
+            ...sanitizeHtml.defaults.allowedAttributes,
+            img: ['src', 'alt', 'width', 'height', 'style'],
+            video: ['src', 'controls', 'width', 'height'],
+            source: ['src', 'type'],
+            embed: ['src', 'width', 'height', 'allowfullscreen'],
+            span: ['style', 'class'],
+            p: ['style', 'class'],
+            em: ['style', 'class'],
+            strong: ['style', 'class'],
+            u: ['style', 'class'],
+          },
+          allowedClasses: {
+            '*': ['ql-size-small', 'ql-size-large', 'ql-size-huge',
+              'ql-align-center', 'ql-align-right', 'ql-align-justify',
+              'ql-font-monospace', 'ql-font-serif', 'fancy', 'simple']
+          },
+          allowedStyles: {
+            '*': {
+              'color': [/^.*$/],
+              'background-color': [/^.*$/],
+              'text-align': [/^.*$/],
+              'font-size': [/^\d+(?:px|em|%)$/],
+              'font-family': [/^.*$/],
+            },
+            img: {
+              'width': [/^\d+(px|%)?$/],
+              'height': [/^\d+(px|%)?$/],
+            },
+            em: {
+              'color': [/^.*$/],
+              'background-color': [/^.*$/],
+              'font-size': [/^\d+(?:px|em|%)$/],
+              'font-family': [/^.*$/],
+            },
+          }
+        });
+      })
+    }
 
     const versionData = {
       appId: id,
       ...updateData,
-      description: cleanedDescription,
+      appTranslations,
       tagIds,
       socialLinks: links,
+      changelog: changelog
     };
 
     const existingPendingVersion = await this.appVersionRepository.findOne({
       where: { appId: id, status: AppStatus.PENDING },
+      relations: ['appTranslations']
     });
 
     if (existingPendingVersion) {
       Object.assign(existingPendingVersion, updateData);
       existingPendingVersion.tags = tags;
       existingPendingVersion.socialLinks = links;
-      existingPendingVersion.description = cleanedDescription;
+      existingPendingVersion.changelog = changelog;
 
       await this.appVersionRepository.getRepository().save(existingPendingVersion);
+
+      if (appTranslations) {
+        await this.appTranslationService.createOrUpdateAppTranslations(appTranslations, null, existingPendingVersion.id);
+      }
+
+      if (app.status === AppStatus.PENDING) {
+        Object.assign(app, updateData);
+        app.tags = tags;
+        app.socialLinks = links;
+        await this.appRepository.getRepository().save(app);
+        if (appTranslations) {
+          await this.appTranslationService.createOrUpdateAppTranslations(appTranslations, app.id, null);
+        }
+      }
       return app
     }
 
     const newVersion = await this.appVersionService.createVersion(versionData);
-
     if (newVersion) app.hasNewUpdate = true;
 
     if (app.status === AppStatus.REJECTED) {
@@ -537,7 +612,12 @@ export class MezonAppService {
           color: tag.color,
         }));
         mappedMezonApp.owner = entity.owner;
-        mappedMezonApp.versions = entity.versions;
+        mappedMezonApp.versions = entity.versions?.map(v => ({
+          ...v,
+          appTranslations: this.mapAppTranslations(v.appTranslations)
+        }));
+        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         return mappedMezonApp;
       },
     );
@@ -548,8 +628,8 @@ export class MezonAppService {
       ownerId: userId,
     });
     const [data, favoritesMap] = await Promise.all([
-        apps.getMany(),
-        this.getFavoritesMap(ids, userId)
+      apps.getMany(),
+      this.getFavoritesMap(ids, userId)
     ]);
 
     return paginate<App, SearchMezonAppResponse>(
@@ -565,11 +645,14 @@ export class MezonAppService {
           color: tag.color,
         }));
         mappedMezonApp.versions = entity.versions;
+        mappedMezonApp.appTranslations = this.mapAppTranslations(entity.appTranslations);
+        mappedMezonApp.defaultLanguage = entity.defaultLanguage;
         // TODO: fix with exposeUnsetFields later in class-transformer
         mappedMezonApp.owner = {
           id: entity.owner.id,
           name: entity.owner.name,
           profileImage: entity.owner.profileImage,
+          isVerified: entity.owner.isVerified,
         }
         mappedMezonApp.isFavorited = favoritesMap.get(entity.id) || false;
         return mappedMezonApp;

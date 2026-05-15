@@ -21,12 +21,14 @@ import { GlassCard } from '../GlassCard/GlassCard'
 import { useTranslation } from 'react-i18next'
 import { useBotInteractions } from '@app/hook/useBotInteractions'
 import { ViewMode } from '@app/enums/viewMode.enum'
+import { useAppTranslation } from '@app/hook/useAppTranslation'
 
 function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefresh }: IBotListItemProps) {
   const { t } = useTranslation(['components'])
   const { userInfo } = useSelector<RootState, IUserStore>((s) => s.user)
   const navigate = useNavigate()
   const { handleInvite } = useBotInteractions(data!);
+  const { name, headline } = useAppTranslation(data);
 
   const imgUrl = data?.featuredImage ? getUrlMedia(data.featuredImage) : avatarBotDefault
   const [previewVersion, setPreviewVersion] = useState<AppVersion | undefined>(undefined);
@@ -64,7 +66,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefr
                   customClassName={cn(
                     "!mb-0 text-primary truncate block max-w-full"
                   )}
-                  label={data?.name} 
+                  label={name} 
                 />
               </div>
 
@@ -101,7 +103,7 @@ function BotListItem({ readonly = false, data, canNavigateOnClick = true, onRefr
           </div>
 
           <div className='break-words max-w-full text-secondary line-clamp-3 mt-1'>
-            {data?.headline}
+            {headline}
           </div>
         </div>
       </div>

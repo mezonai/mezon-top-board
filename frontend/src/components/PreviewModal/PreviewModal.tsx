@@ -1,14 +1,16 @@
 import { Modal, Tag, Divider, Spin, Typography, Descriptions } from 'antd'
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { formatDate } from '@app/utils/date'
 import { AppVersionDetailsDto, GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import sampleBotImg from "@app/assets/images/avatar-bot-default.png";
 import { getUrlMedia } from '@app/utils/stringHelper'
 import { getMezonInstallLink } from '@app/utils/mezonApp'
-import { AppStatus } from '@app/enums/AppStatus.enum';
 import TagPill from '@app/components/TagPill/TagPill';
 import { useTranslation } from 'react-i18next';
-import { mapStatusToText } from '@app/utils/mezonApp';
+import BotStatusBadge from '../BotStatusBadge/BotStatusBadge';
+import { AppLanguage } from '@app/enums/appLanguage.enum';
+import LanguageSelector from '../LanguageSelector/LanguageSelector';
+import { useAppTranslation } from '@app/hook/useAppTranslation';
 
 interface Props {
     open: boolean
@@ -21,30 +23,13 @@ const { Title, Text, Paragraph } = Typography
 
 const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }) => {
     const { t } = useTranslation(['components'])
+    const [previewLang, setPreviewLang] = useState<AppLanguage>(latestVersion?.defaultLanguage || AppLanguage.EN);
+    const translationSource = useMemo(() => ({
+        defaultLanguage: latestVersion?.defaultLanguage || appData?.defaultLanguage,
+        appTranslations: latestVersion?.appTranslations
+    }), [latestVersion, appData]);
+    const { name, headline, description } = useAppTranslation(translationSource, previewLang);
 
-    const renderStatusTag = (status?: AppStatus) => {
-        if (status === null || status === undefined) return '-'
-        let color: string | undefined = undefined
-        const label = t(mapStatusToText(status))
-
-        switch (status) {
-            case AppStatus.PUBLISHED:
-                color = 'green'
-                break
-            case AppStatus.APPROVED:
-                color = 'blue'
-                break
-            case AppStatus.PENDING:
-                color = 'orange'
-                break
-            case AppStatus.REJECTED:
-                color = 'red'
-                break
-            default:
-                color = undefined
-        }
-        return <Tag color={color}>{label}</Tag>
-    }
     return (
         <Modal
             open={open}
@@ -67,20 +52,28 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                 </div>
             ) : (
                 <div>
+                    <div className="flex justify-end mb-4">
+                        <LanguageSelector 
+                            value={previewLang} 
+                            onChange={setPreviewLang} 
+                            defaultLanguage={translationSource.defaultLanguage}
+                        />
+                    </div>
+
                     <div className='flex flex-col gap-4'>
                         <div className='flex items-start gap-4'>
                             <img
                                 src={latestVersion?.featuredImage ? getUrlMedia(latestVersion.featuredImage) : sampleBotImg}
-                                alt={latestVersion?.name}
+                                alt={name}
                                 className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md mx-auto md:mx-0'
                             />
 
                             <div className='flex-1'>
                                 <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-2'>
                                     <div>
-                                        <Title level={5} style={{ margin: 0 }}>{latestVersion?.name}</Title>
+                                        <Title level={5} style={{ margin: 0 }}>{name}</Title>
                                         <div className='mt-1'>
-                                            <Text type='secondary' className='block md:inline'>{latestVersion?.headline}</Text>
+                                            <Text type='secondary' className='block md:inline'>{headline}</Text>
                                             <div className='mt-1'>
                                                 <Text type='secondary' style={{ fontSize: 12 }}>
                                                     {t('component.preview_modal.owner_label', { name: appData.owner?.name || '—' })}
@@ -98,8 +91,8 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                             </div>
                         </div>
 
-                        {latestVersion?.description
-                            ? <div dangerouslySetInnerHTML={{ __html: latestVersion.description }} />
+                        {description
+                            ? <div className='description' dangerouslySetInnerHTML={{ __html: description }} />
                             : <Paragraph>{t('component.preview_modal.no_description')}</Paragraph>
                         }
 
@@ -125,7 +118,7 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                     {latestVersion.version ?? '0'}
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.status_label')}>
-                                    {renderStatusTag(latestVersion.status)}
+                                    <BotStatusBadge status={latestVersion.status} />
                                 </Descriptions.Item>
                                 <Descriptions.Item label={t('component.preview_modal.auto_publish_label')}>
                                     {latestVersion.isAutoPublished ? t('component.preview_modal.yes') : t('component.preview_modal.no')}
@@ -167,11 +160,6 @@ const PreviewModal: React.FC<Props> = ({ open, onClose, appData, latestVersion }
                                 <Descriptions.Item label={t('component.preview_modal.changelog_label')}>
                                     <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
                                         {latestVersion.changelog || '-'}
-                                    </Paragraph>
-                                </Descriptions.Item>
-                                <Descriptions.Item label={t('component.preview_modal.note_label')}>
-                                    <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
-                                        {latestVersion.remark || '-'}
                                     </Paragraph>
                                 </Descriptions.Item>
                             </>

@@ -20,6 +20,18 @@ export class FavoriteAppService {
         this.favoriteAppRepository = new GenericRepository(FavoriteApp, manager);
     }
 
+    private mapToFavoriteResponse(app: App): FavoriteAppResponseDto {
+        const dto = Mapper(FavoriteAppResponseDto, app);
+        dto.isFavorited = true;
+        dto.appTranslations = app.appTranslations?.map(t => ({
+            language: t.language,
+            name: t.name,
+            headline: t.headline,
+            description: t.description
+        })) || [];
+        return dto;
+    }
+
     async getMyFavoriteApps(userId: string, query: GetFavoritesAppRequest) {
         const skip = (query.pageNumber - 1) * query.pageSize;
         const take = query.pageSize;
@@ -31,19 +43,16 @@ export class FavoriteAppService {
             .andWhere("app.status = :status", { status: AppStatus.PUBLISHED }) 
             .leftJoinAndSelect("app.owner", "owner")
             .leftJoinAndSelect("app.tags", "tags")
+            .leftJoinAndSelect("app.appTranslations", "translations")
             .skip(skip)
             .take(take)
             .getManyAndCount();
-
-        data.forEach(app => {
-            app.isFavorited = true;
-        })
 
         return paginate(
             [data, total],
             query.pageSize,
             query.pageNumber,
-            (entity) => Mapper(FavoriteAppResponseDto, entity)
+            (entity) => this.mapToFavoriteResponse(entity)
         );
     }
 
@@ -56,13 +65,14 @@ export class FavoriteAppService {
             .leftJoinAndSelect("app.owner", "owner")
             .leftJoinAndSelect("app.tags", "tags")
             .leftJoinAndSelect("app.socialLinks", "socialLinks")
+            .leftJoinAndSelect("app.appTranslations", "translations")
             .getOne();
 
         if (!app) {
             throw new NotFoundException("Favorite bot not found or not in your list");
         }
 
-        return new Result({ data: Mapper(FavoriteAppResponseDto, app) });
+        return new Result({ data: this.mapToFavoriteResponse(app) });
     }
 
     async addFavoriteApp(userId: string, appId: string) {

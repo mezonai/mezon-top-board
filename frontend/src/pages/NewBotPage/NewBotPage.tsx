@@ -17,7 +17,6 @@ import { getUrlMedia } from '@app/utils/stringHelper'
 
 import { getAddBotSchema } from '@app/validations/addBot.validations'
 
-
 import {
   useLazyMezonAppControllerGetMezonAppDetailQuery,
 } from '@app/services/api/mezonApp/mezonApp'
@@ -41,6 +40,7 @@ import { AppPricing } from '@app/enums/appPricing'
 import { mapDetailToFormData } from './helpers'
 import { IUserStore } from '@app/store/user'
 import { CropImageShape } from '@app/enums/CropImage.enum'
+import { AppLanguage } from '@app/enums/appLanguage.enum'
 
 type StepFieldMap = { [key: number]: FieldPath<CreateMezonAppRequest>[] }
 
@@ -53,33 +53,43 @@ function NewBotPage() {
   const { botId } = useParams()
   const { checkOwnership } = useOwnershipCheck()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const isEditMode = Boolean(botId)
 
   const methods = useForm<CreateMezonAppRequest>({
     defaultValues: {
       type: MezonAppType.BOT,
       mezonAppId: '',
-      name: '',
-      headline: '',
-      description: '',
       prefix: '',
       featuredImage: '',
       tagIds: [],
       pricingTag: AppPricing.FREE,
       price: 0,
       supportUrl: '',
-      remark: '',
+      changelog: '',
       //TODO: isAutoPublished will be implemented later
       isAutoPublished: true,
-      socialLinks: []
+      socialLinks: [],
+      defaultLanguage: AppLanguage.EN,
+      appTranslations: [
+        { language: AppLanguage.EN, name: '', headline: '', description: '' },
+        { language: AppLanguage.VI, name: '', headline: '', description: '' }
+      ],
     },
     resolver: yupResolver(getAddBotSchema),
     mode: 'onChange'
   })
 
   const { setValue, reset, watch, trigger, handleSubmit } = methods
-  const nameValue = watch('name')
-  const headlineValue = watch('headline')
-  const featuredImageValue = watch('featuredImage')
+  const appTranslations = watch('appTranslations');
+  const featuredImageValue = watch('featuredImage');
+  const nameValue = useMemo(() => {
+    const enTrans = appTranslations?.find(t => t.language === AppLanguage.EN);
+    return enTrans?.name || appTranslations?.[0]?.name || '';
+  }, [appTranslations]);
+  const headlineValue = useMemo(() => {
+    const enTrans = appTranslations?.find(t => t.language === AppLanguage.EN);
+    return enTrans?.headline || appTranslations?.[0]?.headline || '';
+  }, [appTranslations]);
 
   const imgUrl = useMemo(() => {
     return botId && featuredImageValue
@@ -92,8 +102,6 @@ function NewBotPage() {
   const [getMezonAppDetails] = useLazyMezonAppControllerGetMezonAppDetailQuery()
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [submittedBotId, setSubmittedBotId] = useState<string>('')
-
-  const isEditMode = Boolean(botId)
 
   useAuthRedirect()
 
@@ -144,9 +152,6 @@ function NewBotPage() {
   }
 
   const step3FillDetailsFields: FieldPath<CreateMezonAppRequest>[] = [
-    'name',
-    'headline',
-    'description',
     'prefix',
     'tagIds',
     'pricingTag',
@@ -154,8 +159,10 @@ function NewBotPage() {
     'supportUrl',
     'featuredImage',
     'socialLinks',
-    'remark',
-    'isAutoPublished'
+    'changelog',
+    'isAutoPublished',
+    'defaultLanguage',
+    'appTranslations'
   ]
 
   const stepFieldMap = useMemo((): StepFieldMap => {

@@ -7,6 +7,7 @@ import { BaseSoftDelete } from "../base";
 import { MezonAppType } from "@domain/common/enum/mezonAppType";
 import { AppPricing } from "@domain/common/enum/appPricing";
 import { BaseApp } from "@domain/entities/base/baseApp.entity";
+import { AppTranslation } from "./appTranslation.entity";
 
 @Entity()
 export class App extends BaseApp {
@@ -54,4 +55,7 @@ export class App extends BaseApp {
     public favorites: FavoriteApp[];
 
     public isFavorited?: boolean;
+
+    @OneToMany(() => AppTranslation, (appTranslation) => appTranslation.app)
+    public appTranslations: AppTranslation[];
 }

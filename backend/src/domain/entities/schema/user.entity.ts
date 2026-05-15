@@ -42,6 +42,9 @@ export class User extends BaseSoftDelete {
     @Column({ nullable: false, default: false })
     public isFirstLogin: boolean;
 
+    @Column({ default: false })
+    public isVerified: boolean;
+
     @OneToMany(() => FavoriteApp, (favoriteApp) => favoriteApp.user)
     public favoriteApps: FavoriteApp[];
 

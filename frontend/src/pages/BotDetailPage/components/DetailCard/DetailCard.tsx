@@ -11,6 +11,7 @@ import { ImgIcon } from '@app/mtb-ui/ImgIcon/ImgIcon'
 import { SocialLinkInMezonAppDetailResponse, TagInMezonAppDetailResponse } from '@app/services/api/mezonApp/mezonApp.types'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import {UserNameWithBadge} from "@app/components/UsernameWithBadge/userNameWithBadge.tsx";
 
 function DetailCard() {
   const { mezonAppDetail } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -29,11 +30,15 @@ function DetailCard() {
           {t('bot_detail.details')}
         </MtbTypography>
         {mezonAppDetail.prefix && (
-          <div className='pt-2'>
-            <MtbTypography variant='h5' weight='normal'>
-              {t('bot_detail.prefix', { prefix: mezonAppDetail.prefix })}
-            </MtbTypography>
-          </div>
+            <UserNameWithBadge
+                name={mezonAppDetail?.owner?.name}
+                isVerified={mezonAppDetail?.owner?.isVerified}
+                variant="p"
+                customClassName="truncate"
+                ellipsis={true}
+                badgeClassName="text-sm"
+            />
+
         )}
       </div>
       <div className='pb-4'>
@@ -98,15 +103,20 @@ function DetailCard() {
                     className='w-full h-full object-cover'
                   />
                 </div>
-                <MtbTypography variant='p' customClassName='truncate' ellipsis={true}>
-                  {mezonAppDetail?.owner?.name}
-                </MtbTypography>
+                <UserNameWithBadge
+                    name={mezonAppDetail?.owner?.name}
+                    isVerified={mezonAppDetail?.owner?.isVerified}
+                    variant="p"
+                    customClassName="truncate"
+                    ellipsis={true}
+                    badgeClassName="text-sm"
+                />
               </div>
             </Tag>
           </a>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
 

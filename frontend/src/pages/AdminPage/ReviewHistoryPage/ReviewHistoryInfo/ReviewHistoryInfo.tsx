@@ -1,17 +1,20 @@
 import { ReviewHistoryResponse } from '@app/services/api/reviewHistory/reviewHistory.types'
 import { formatDate } from '@app/utils/date'
 import TableImage from '@app/components/TableImage/TableImage'
+import { useAppTranslation } from '@app/hook/useAppTranslation'
 
 interface IReviewHistoryInfoProps {
   data?: ReviewHistoryResponse
 }
 function ReviewHistoryInfo({ data }: IReviewHistoryInfoProps) {
+  const { name } = useAppTranslation(data?.app);
+
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex justify-between pt-3'>
         <div className='flex-1'>Image :</div>
         <div className='flex-1'>
-          <TableImage src={data?.app?.featuredImage} alt={data?.app?.name} size={100} />
+          <TableImage src={data?.app?.featuredImage} alt={name} size={100} />
         </div>
       </div>
       <div className='flex justify-between pt-3'>
@@ -24,7 +27,7 @@ function ReviewHistoryInfo({ data }: IReviewHistoryInfoProps) {
       </div>
       <div className='flex justify-between pt-3'>
         <div className='flex-1'>App :</div>
-        <div className='flex-1'>{data?.app?.name}</div>
+        <div className='flex-1'>{name}</div>
       </div>
       <div className='flex justify-between pt-3'>
         <div className='flex-1'>Remark :</div>

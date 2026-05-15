@@ -165,9 +165,9 @@ function TagsList() {
       dataIndex: 'name',
       key: 'name',
       width: '25%',
-      render: (text: string) => (
+      render: (_: any, record: TagResponse) => (
         <div className="h-[32px] flex items-center">
-          <Tag>{text}</Tag>
+          <Tag color={record.color}>{record.name}</Tag>
         </div>
       )
     },

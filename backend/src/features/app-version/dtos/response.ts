@@ -22,4 +22,6 @@ export class AppVersionInAppReviewResponse extends PickType(GetAppVersionDetails
   "id",
   "version",
   "changelog",
+  "appTranslations",
+  "defaultLanguage"
 ]) { }

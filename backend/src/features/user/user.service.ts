@@ -90,6 +90,7 @@ export class UserService {
       name: req.name,
       bio: req.bio,
       role: req.role,
+      isVerified: req.isVerified,
     });
     return new Result();
   }

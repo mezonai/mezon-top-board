@@ -21,6 +21,7 @@ import {
   ValidateIf,
   IsEnum,
   IsNumber,
+  IsNotEmpty,
 } from "class-validator";
 
 import {

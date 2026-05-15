@@ -1,0 +1,33 @@
+{
+	"actions": {
+		"backToBot": "Back to Bot",
+		"select_all": "Select All",
+		"deselect_all": "Deselect All",
+		"cancel": "Cancel",
+		"apply": "Apply"
+	},
+	"header": {
+		"title": "Version History",
+		"subtitle": "Track all updates and changes to {{name}}",
+		"selected_count": "{{count}} selected"
+	},
+	"meta": {
+		"latest": "Latest:",
+		"totalVersions": "Total Versions:",
+		"lastUpdated": "Last Updated:"
+	},
+	"status": {
+		"published": "Published",
+		"approved": "Approved",
+		"pending": "Pending",
+		"rejected": "Rejected"
+	},
+	"items": {
+		"currentVersion": "Current Version",
+		"releasedOn": "Released on {{date}}"
+	},
+	"changelog": {
+		"title": "Changelog",
+		"noDetails": "No details provided for this version."
+	}
+}
