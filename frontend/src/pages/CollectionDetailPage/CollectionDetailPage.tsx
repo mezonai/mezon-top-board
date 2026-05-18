@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+﻿import {useEffect, useState} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
@@ -121,11 +121,11 @@ const CollectionDetailPage = () => {
                     {/* Apps list */}
                     <div>
                         <MtbTypography variant="h2" customClassName="mb-4">
-                            {t('collectionDetail.appsInCollection')} ({collection.collectionApps?.length ?? 0})
+                            {t('collectionDetail.appsInCollection')} ({collection.apps?.length ?? 0})
                         </MtbTypography>
                         <div className="flex flex-col gap-4">
-                            {collection.collectionApps?.map((ca) => (
-                                <BotListItem key={ca.appId} data={ca.app} readonly />
+                            {collection.apps?.map((app) => (
+                                <BotListItem key={app.id} data={app} readonly />
                             ))}
                         </div>
                     </div>

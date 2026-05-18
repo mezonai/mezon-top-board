@@ -1,16 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+﻿import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from "typeorm";
 
-import { CollectionApp } from "@domain/entities";
+import { CollectionStatus } from "@domain/common/enum/collectionStatus";
 
+import { App } from "./app.entity";
 import { BaseSoftDelete } from "../base";
-
-
 import { User } from "./user.entity";
-
-export enum CollectionStatus {
-    PRIVATE = "PRIVATE",
-    PUBLISHED = "PUBLISHED",
-}
 
 @Entity({ name: "collection" })
 export class Collection extends BaseSoftDelete {
@@ -37,6 +31,7 @@ export class Collection extends BaseSoftDelete {
     @JoinColumn({ name: "ownerId" })
     public owner: User;
 
-    @OneToMany(() => CollectionApp, (collectionApp) => collectionApp.collection)
-    public collectionApps: CollectionApp[];
+    @ManyToMany(() => App, (app) => app.collections)
+    @JoinTable()
+    public apps: App[];
 }

@@ -1,4 +1,4 @@
-import {
+﻿import {
     BadRequestException,
     ForbiddenException,
     Injectable,
@@ -8,10 +8,10 @@ import {
 import { EntityManager, In } from "typeorm";
 
 import { Role } from "@domain/common/enum/role";
-import { Collection, CollectionApp } from "@domain/entities";
+import { Collection } from "@domain/entities";
 import { App } from "@domain/entities";
 import { User } from "@domain/entities";
-import { CollectionStatus } from "@domain/entities/schema/collection.entity";
+import { CollectionStatus } from "@domain/common/enum/collectionStatus";
 
 import { GenericRepository } from "@libs/repository/genericRepository";
 
@@ -24,12 +24,10 @@ import {
 @Injectable()
 export class CollectionService {
     private readonly collectionRepo: GenericRepository<Collection>;
-    private readonly collectionAppRepo: GenericRepository<CollectionApp>;
     private readonly appRepo: GenericRepository<App>;
 
     constructor(private readonly manager: EntityManager) {
         this.collectionRepo = new GenericRepository(Collection, manager);
-        this.collectionAppRepo = new GenericRepository(CollectionApp, manager);
         this.appRepo = new GenericRepository(App, manager);
     }
 
@@ -61,8 +59,7 @@ export class CollectionService {
         const qb = this.collectionRepo
             .getRepository()
             .createQueryBuilder("collection")
-            .leftJoinAndSelect("collection.collectionApps", "collectionApps")
-            .leftJoinAndSelect("collectionApps.app", "app")
+            .leftJoinAndSelect("collection.apps", "app")
             .leftJoinAndSelect("app.appTranslations", "translations")
             .where("collection.ownerId = :userId", { userId });
 
@@ -84,14 +81,13 @@ export class CollectionService {
             where: { id },
             relations: [
                 "owner",
-                "collectionApps",
-                "collectionApps.app",
-                "collectionApps.app.appTranslations",
-                "collectionApps.app.tags",
+                "apps",
+                "apps.appTranslations",
+                "apps.tags",
             ],
             order: {
-                collectionApps: {
-                    order: "ASC",
+                apps: {
+                    createdAt: "ASC",
                 },
             },
         });
@@ -195,10 +191,10 @@ export class CollectionService {
             .getRepository()
             .createQueryBuilder("collection")
             .leftJoinAndSelect("collection.owner", "owner")
-            .leftJoinAndSelect("collection.collectionApps", "collectionApps")
+            .leftJoinAndSelect("collection.apps", "apps")
             .loadRelationCountAndMap(
                 "collection.appCount",
-                "collection.collectionApps"
+                "collection.apps"
             );
 
         if (search) {
@@ -247,15 +243,17 @@ export class CollectionService {
     }
 
     private async setCollectionApps(collectionId: string, appIds: string[]): Promise<void> {
-        await this.collectionAppRepo.getRepository().delete({ collectionId });
+        const collection = await this.collectionRepo.findOne({
+            where: { id: collectionId },
+            relations: ["apps"],
+        });
+        if (!collection) return;
 
-        // Create new relations with order
-        const collectionApps = appIds.map((appId, index) => ({
-            collectionId,
-            appId,
-            order: index,
-        }));
+        const apps = await this.appRepo.find({
+            where: appIds.map(id => ({ id })),
+        });
 
-        await this.collectionAppRepo.getRepository().save(collectionApps);
+        collection.apps = apps;
+        await this.collectionRepo.getRepository().save(collection);
     }
 }

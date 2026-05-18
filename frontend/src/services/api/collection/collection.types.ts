@@ -1,5 +1,6 @@
-import { HttpResponse } from '@app/types/API.types';
-import { Collection, CollectionStatus } from '@app/types/collection.types';
+﻿import { HttpResponse } from '@app/types/API.types';
+import { Collection } from '@app/types/collection.types';
+import { CollectionStatus } from '@app/enums/collectionStatus.enum';
 
 // DTOs for requests
 export type CreateCollectionRequest = {

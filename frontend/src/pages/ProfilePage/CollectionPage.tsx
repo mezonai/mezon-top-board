@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Divider, Empty, Spin, Popconfirm, Button as AntButton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -112,7 +112,7 @@ const CollectionsPage = () => {
                                     </MtbTypography>
                                     <div className="flex items-center justify-between mt-auto">
                                         <span className="text-xs text-secondary">
-                                          {t('profile.my_collections.app_count', { count: col.collectionApps?.length ?? 0 })}
+                                          {t('profile.my_collections.app_count', { count: col.apps?.length ?? 0 })}
                                         </span>
                                         <div className="flex gap-2">
                                             <AntButton

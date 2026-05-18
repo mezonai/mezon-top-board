@@ -1,4 +1,4 @@
-export * from "./base"
+﻿export * from "./base"
 
 export * from "./schema/media.entity"
 export * from "./schema/app.entity"
@@ -13,4 +13,3 @@ export * from "./schema/tempFile.entity"
 export * from "./schema/favorite-app.entity"
 export * from "./schema/appTranslation.entity"
 export * from "./schema/collection.entity";
-export * from "./schema/collection-app.entity";
