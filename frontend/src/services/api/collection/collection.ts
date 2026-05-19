@@ -18,7 +18,7 @@ const collectionService = api.injectEndpoints({
 
         // Get user's own collections
         getMyCollections: build.query<CollectionListResponse, GetMyCollectionsArgs>({
-            query: (params) => ({ url: '/api/collection/my', params }),
+            query: (params) => ({ url: '/api/collection/my-collections', params }),
             providesTags: ['Collections'],
         }),
 

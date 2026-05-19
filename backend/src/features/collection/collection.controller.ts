@@ -43,7 +43,7 @@ export class CollectionController {
         return new Result({ data: collection });
     }
 
-    @Get("my")
+    @Get("my-collections")
     @ApiBearerAuth()
     async getMyCollections(
         @GetUserFromHeader() user: User,
