@@ -44,7 +44,7 @@ function Header() {
       const item = {
         key: col.id,
         label: col.title,
-        className: 'explore-collection-item',      // ← add this
+        className: 'explore-collection-item',
         onClick: () => {
           navigate(`/collection/${col.id}`);
           setOpen(false);
