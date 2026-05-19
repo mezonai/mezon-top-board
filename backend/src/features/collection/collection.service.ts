@@ -105,7 +105,7 @@ export class CollectionService {
 
     async update(
         id: string,
-        userId: string,
+        user: User,
         dto: UpdateCollectionDto
     ): Promise<Collection> {
         const collection = await this.collectionRepository.findOne({
@@ -117,22 +117,14 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        const user = await this.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-
-        if (!user) {
-            throw new ForbiddenException("User not found");
-        }
-
-        if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
+        if (collection.ownerId !== user.id && user.role !== Role.ADMIN) {
             throw new ForbiddenException("You do not have permission to update this collection");
         }
 
         const { appIds, ...updateData } = dto;
 
         if (appIds !== undefined) {
-            await this.validateAppOwnership(appIds, userId);
+            await this.validateAppOwnership(appIds, user.id);
         }
 
         await this.collectionRepository.update(id, updateData);
@@ -141,10 +133,10 @@ export class CollectionService {
             await this.setCollectionApps(id, appIds);
         }
 
-        return this.findOne(id, userId);
+        return this.findOne(id, user.id);
     }
 
-    async delete(id: string, userId: string): Promise<void> {
+    async delete(id: string, user: User): Promise<void> {
         const collection = await this.collectionRepository.findOne({
             where: { id },
             relations: ["owner"],
@@ -154,15 +146,7 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        const user = await this.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-
-        if (!user) {
-            throw new ForbiddenException("User not found");
-        }
-
-        if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
+        if (collection.ownerId !== user.id && user.role !== Role.ADMIN) {
             throw new ForbiddenException("You do not have permission to delete this collection");
         }
 

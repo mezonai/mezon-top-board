@@ -92,7 +92,7 @@ export class CollectionController {
         @GetUserFromHeader() user: User,
         @Body() dto: UpdateCollectionDto
     ) {
-        const collection = await this.collectionService.update(id, user.id, dto);
+        const collection = await this.collectionService.update(id, user, dto);
         return new Result({ data: collection });
     }
 
@@ -102,7 +102,7 @@ export class CollectionController {
         @Param("id") id: string,
         @GetUserFromHeader() user: User
     ) {
-        await this.collectionService.delete(id, user.id);
+        await this.collectionService.delete(id, user);
         return new Result();
     }
 }
