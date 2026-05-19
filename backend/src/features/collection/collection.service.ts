@@ -96,23 +96,8 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        // If collection is private, only owner or admin can view
-        if (collection.status === CollectionStatus.PRIVATE) {
-            if (!userId) {
-                throw new NotFoundException("Collection not found");
-            }
-
-            const user = await this.manager
-                .getRepository(User)
-                .findOne({ where: { id: userId } });
-
-            if (!user) {
-                throw new NotFoundException("Collection not found");
-            }
-
-            if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
-                throw new NotFoundException("Collection not found");
-            }
+        if (collection.status === CollectionStatus.PRIVATE && collection.ownerId !== userId) {
+            throw new NotFoundException("Collection not found");
         }
 
         return collection;
