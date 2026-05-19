@@ -1,8 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Input, Table, Space, Popconfirm, Tag, Button } from 'antd';
 import { SearchOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
-    useAdminSearchCollectionsQuery,
+    useSearchCollectionsQuery,
     useCreateCollectionMutation,
     useUpdateCollectionMutation,
     useDeleteCollectionMutation,
@@ -21,7 +21,7 @@ const CollectionsPage = () => {
     const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
-    const { data, isLoading, refetch } = useAdminSearchCollectionsQuery(
+    const { data, isLoading, refetch } = useSearchCollectionsQuery(
         { search, pageNumber: page, pageSize },
         { refetchOnMountOrArgChange: true }
     ) as { data?: { data: Collection[]; totalCount: number }; isLoading: boolean; refetch: () => void };

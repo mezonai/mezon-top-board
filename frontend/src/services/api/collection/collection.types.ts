@@ -21,7 +21,7 @@ export type GetMyCollectionsArgs = {
     status?: CollectionStatus;
 };
 
-export type AdminSearchCollectionsArgs = {
+export type SearchCollectionsArgs = {
     search?: string;
     status?: CollectionStatus;
     ownerId?: string;

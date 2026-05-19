@@ -1,9 +1,9 @@
-import { api } from '../../apiInstance';
+﻿import { api } from '../../apiInstance';
 import type {
     CreateCollectionRequest,
     UpdateCollectionRequest,
     GetMyCollectionsArgs,
-    AdminSearchCollectionsArgs,
+    SearchCollectionsArgs,
     CollectionResponse,
     CollectionListResponse,
 } from './collection.types';
@@ -46,9 +46,9 @@ const collectionService = api.injectEndpoints({
             ],
         }),
 
-        // Admin search
-        adminSearchCollections: build.query<CollectionListResponse, AdminSearchCollectionsArgs>({
-            query: (params) => ({ url: '/api/collection/admin/search', params }),
+        // Search collections (public + admin)
+        searchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/search', params }),
             providesTags: ['Collections'],
         }),
     }),
@@ -63,6 +63,6 @@ export const {
     useLazyGetCollectionQuery,
     useUpdateCollectionMutation,
     useDeleteCollectionMutation,
-    useAdminSearchCollectionsQuery,
-    useLazyAdminSearchCollectionsQuery,
+    useSearchCollectionsQuery,
+    useLazySearchCollectionsQuery,
 } = collectionService;

@@ -184,7 +184,7 @@ export class CollectionService {
         await this.collectionRepo.softDelete(id);
     }
 
-    async adminSearch(query: SearchCollectionsDto) {
+    async searchCollections(query: SearchCollectionsDto, userId?: string) {
         const { search, status, ownerId, pageNumber, pageSize } = query;
 
         const qb = this.collectionRepo
@@ -196,6 +196,16 @@ export class CollectionService {
                 "collection.appCount",
                 "collection.apps"
             );
+
+        if (userId) {
+            const user = await this.manager.getRepository(User).findOne({ where: { id: userId } });
+            if (!user || user.role !== Role.ADMIN) {
+                qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
+            }
+            // admin sees everything, no extra filter
+        } else {
+            qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
+        }
 
         if (search) {
             qb.andWhere("collection.title ILIKE :search", { search: `%${search}%` });

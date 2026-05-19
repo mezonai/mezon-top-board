@@ -1,4 +1,4 @@
-import {
+﻿import {
     Body,
     Controller,
     Delete,
@@ -13,12 +13,10 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { Result } from "@domain/common/dtos/result.dto";
-import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { OptionalAuth } from "@libs/decorator/optionalAuth.decorator";
-import { RoleRequired } from "@libs/decorator/roles.decorator";
 
 import { CollectionService } from "./collection.service";
 import {
@@ -61,11 +59,13 @@ export class CollectionController {
         });
     }
 
-    @Get("admin/search")
-    @ApiBearerAuth()
-    @RoleRequired([Role.ADMIN])
-    async adminSearch(@Query() query: SearchCollectionsDto) {
-        const { data, total } = await this.collectionService.adminSearch(query);
+    @Get("search")
+    @OptionalAuth()
+    async searchCollections(
+        @Query() query: SearchCollectionsDto,
+        @Req() req: Request & { user?: User }
+    ) {
+        const { data, total } = await this.collectionService.searchCollections(query, req.user?.id);
         return new Result({
             data,
             pageSize: query.pageSize,
