@@ -23,12 +23,12 @@ import {
 
 @Injectable()
 export class CollectionService {
-    private readonly collectionRepo: GenericRepository<Collection>;
-    private readonly appRepo: GenericRepository<App>;
+    private readonly collectionRepository: GenericRepository<Collection>;
+    private readonly appRepository: GenericRepository<App>;
 
     constructor(private readonly manager: EntityManager) {
-        this.collectionRepo = new GenericRepository(Collection, manager);
-        this.appRepo = new GenericRepository(App, manager);
+        this.collectionRepository = new GenericRepository(Collection, manager);
+        this.appRepository = new GenericRepository(App, manager);
     }
 
     async create(userId: string, dto: CreateCollectionDto): Promise<Collection> {
@@ -38,7 +38,7 @@ export class CollectionService {
             await this.validateAppOwnership(appIds, userId);
         }
 
-        const collection = await this.collectionRepo.create({
+        const collection = await this.collectionRepository.create({
             ...collectionData,
             ownerId: userId,
         });
@@ -56,7 +56,7 @@ export class CollectionService {
     ) {
         const { pageNumber, pageSize, status } = query;
 
-        const qb = this.collectionRepo
+        const qb = this.collectionRepository
             .getRepository()
             .createQueryBuilder("collection")
             .leftJoinAndSelect("collection.apps", "app")
@@ -77,7 +77,7 @@ export class CollectionService {
     }
 
     async findOne(id: string, userId?: string): Promise<Collection> {
-        const collection = await this.collectionRepo.getRepository().findOne({
+        const collection = await this.collectionRepository.getRepository().findOne({
             where: { id },
             relations: [
                 "owner",
@@ -123,7 +123,7 @@ export class CollectionService {
         userId: string,
         dto: UpdateCollectionDto
     ): Promise<Collection> {
-        const collection = await this.collectionRepo.findOne({
+        const collection = await this.collectionRepository.findOne({
             where: { id },
             relations: ["owner"],
         });
@@ -150,7 +150,7 @@ export class CollectionService {
             await this.validateAppOwnership(appIds, userId);
         }
 
-        await this.collectionRepo.update(id, updateData);
+        await this.collectionRepository.update(id, updateData);
 
         if (appIds !== undefined) {
             await this.setCollectionApps(id, appIds);
@@ -160,7 +160,7 @@ export class CollectionService {
     }
 
     async delete(id: string, userId: string): Promise<void> {
-        const collection = await this.collectionRepo.findOne({
+        const collection = await this.collectionRepository.findOne({
             where: { id },
             relations: ["owner"],
         });
@@ -181,13 +181,13 @@ export class CollectionService {
             throw new ForbiddenException("You do not have permission to delete this collection");
         }
 
-        await this.collectionRepo.softDelete(id);
+        await this.collectionRepository.softDelete(id);
     }
 
     async searchCollections(query: SearchCollectionsDto, userId?: string) {
         const { search, status, ownerId, pageNumber, pageSize } = query;
 
-        const qb = this.collectionRepo
+        const qb = this.collectionRepository
             .getRepository()
             .createQueryBuilder("collection")
             .leftJoinAndSelect("collection.owner", "owner")
@@ -232,7 +232,7 @@ export class CollectionService {
         const user = await this.manager.getRepository(User).findOne({ where: { id: userId } });
         if (!user) throw new BadRequestException("User not found");
 
-        const apps = await this.appRepo.find({ where: { id: In(appIds) } });
+        const apps = await this.appRepository.find({ where: { id: In(appIds) } });
 
         if (apps.length !== appIds.length) {
             const foundIds = apps.map((a) => a.id);
@@ -253,17 +253,17 @@ export class CollectionService {
     }
 
     private async setCollectionApps(collectionId: string, appIds: string[]): Promise<void> {
-        const collection = await this.collectionRepo.findOne({
+        const collection = await this.collectionRepository.findOne({
             where: { id: collectionId },
             relations: ["apps"],
         });
         if (!collection) return;
 
-        const apps = await this.appRepo.find({
+        const apps = await this.appRepository.find({
             where: appIds.map(id => ({ id })),
         });
 
         collection.apps = apps;
-        await this.collectionRepo.getRepository().save(collection);
+        await this.collectionRepository.getRepository().save(collection);
     }
 }
