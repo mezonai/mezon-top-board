@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { RootState } from '@app/store'
 import { IUserStore } from '@app/store/user'
 import { useSelector } from 'react-redux'
@@ -18,6 +19,10 @@ const useAdminCheck = () => {
 
     return true
   }
+
+  useEffect(() => {
+    checkAdmin();
+  }, [checkAdmin])
 
   return {
     checkAdmin
