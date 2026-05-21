@@ -206,11 +206,11 @@ export const routePaths: RoutePath[] = [
   },
   {
     index: false,
-        path: '/profile/my-collections',
-      element: <ProfileCollectionsPage />,
-      strLabel: 'nav.my_collections',
-      isShowMenu: false,
-      requireAuth: true,
+    path: '/profile/my-collections',
+    element: <ProfileCollectionsPage />,
+    strLabel: 'nav.my_collections',
+    isShowMenu: false,
+    requireAuth: true,
   },
   {
     index: false,
