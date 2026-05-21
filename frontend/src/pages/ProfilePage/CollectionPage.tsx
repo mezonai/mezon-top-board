@@ -27,7 +27,7 @@ const CollectionsPage = () => {
 
     const { data, isLoading, refetch } = useGetMyCollectionsQuery(
         { pageNumber: 1, pageSize: 100 },
-        { skip: !isLogin }
+        { skip: !isLogin } //skip the request to get the user's collection if they aren't logged in, since non logged in people have no collection
     );
 
     const [createCollection, { isLoading: isCreating }] = useCreateCollectionMutation();

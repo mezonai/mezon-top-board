@@ -18,7 +18,8 @@ import OnboardingPage from '@app/pages/OnboardingPage/OnboardingPage'
 import BotWizardPage from '@app/pages/BotWizardPage/BotWizardPage'
 import FavoritePage from '@app/pages/ProfilePage/FavoritePage'
 import VersionHistoryPage from '@app/pages/VersionHistoryPage/VersionHistoryPage'
-import CollectionsPage from '@app/pages/ProfilePage/CollectionPage.tsx';
+import ProfileCollectionsPage from '@app/pages/ProfilePage/CollectionPage.tsx';
+import CollectionsPage from '@app/pages/CollectionsPage';
 import CollectionDetailPage from '@app/pages/CollectionDetailPage/CollectionDetailPage';
 
 export const routePaths: RoutePath[] = [
@@ -115,14 +116,14 @@ export const routePaths: RoutePath[] = [
     path: '/terms',
     element: <TermsPage></TermsPage>,
     strLabel: 'nav.terms',
-    isShowMenu: true,
+    isShowMenu: false,
     requireAuth: false,
   },
   {
     index: false,
     path: '',
     strLabel: 'nav.help',
-    isShowMenu: true,
+    isShowMenu: false,
     requireAuth: false,
     children: [
       {
@@ -206,10 +207,18 @@ export const routePaths: RoutePath[] = [
   {
     index: false,
         path: '/profile/my-collections',
-      element: <CollectionsPage />,
+      element: <ProfileCollectionsPage />,
       strLabel: 'nav.my_collections',
       isShowMenu: false,
       requireAuth: true,
+  },
+  {
+    index: false,
+    path: '/collections',
+    element: <CollectionsPage />,
+    strLabel: 'nav.collections',
+    isShowMenu: false,
+    requireAuth: false,
   },
   {
     index: false,

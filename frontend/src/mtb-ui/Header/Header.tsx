@@ -1,4 +1,4 @@
-import { MenuOutlined, UserOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, FileTextOutlined, QuestionCircleOutlined, MailOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons'
 import logo from '@app/assets/images/topLogo.png'
 import Button from '@app/mtb-ui/Button'
 import { renderMenu } from '@app/navigation/router'
@@ -10,7 +10,7 @@ import {Drawer, Dropdown} from 'antd'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useGetMyCollectionsQuery } from '@app/services/api/collection/collection';
+
 import MtbTypography from '../Typography/Typography'
 import { cn } from '@app/utils/cn'
 import styles from './Header.module.scss'
@@ -33,30 +33,40 @@ function Header() {
   const imgUrl = userInfo?.profileImage ? getUrlMedia(userInfo.profileImage) : avatar
   const { t } = useTranslation(['common'])
 
-  const { data: collectionsData } = useGetMyCollectionsQuery(
-      { pageNumber: 1, pageSize: 50 },
-      { skip: !isLogin }
-  );
-
-  const collectionsDropdownItems = useMemo(() => {
-    if (!collectionsData?.data?.length) return [];
-    return collectionsData.data.flatMap((col: any, index: number) => {
-      const item = {
-        key: col.id,
-        label: col.title,
-        className: 'explore-collection-item',
-        onClick: () => {
-          navigate(`/collection/${col.id}`);
-          setOpen(false);
-        },
-      };
-      // insert a divider after every item except the last
-      if (index < collectionsData.data.length - 1) {
-        return [item, { type: 'divider' as const }];
-      }
-      return [item];
-    });
-  }, [collectionsData, navigate]);
+  const exploreDropdownItems = useMemo(() => [
+    {
+      key: 'collections',
+      label: t('nav.collections'),
+      icon: <AppstoreOutlined />,
+      onClick: () => {
+        navigate('/collections');
+      },
+    },
+    {
+      key: 'terms',
+      label: t('nav.terms'),
+      icon: <FileTextOutlined />,
+      onClick: () => {
+        navigate('/terms');
+      },
+    },
+    {
+      key: 'how-to-use',
+      label: t('nav.how_to_use'),
+      icon: <QuestionCircleOutlined />,
+      onClick: () => {
+        window.open('/how-to-use', '_blank');
+      },
+    },
+    {
+      key: 'contact-us',
+      label: t('nav.contact_us'),
+      icon: <MailOutlined />,
+      onClick: () => {
+        navigate('/contact-us');
+      },
+    },
+  ], [t, navigate]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -161,19 +171,16 @@ function Header() {
         <ul className="flex flex-col lg:flex-row gap-5 flex-none text-body mb-2 lg:mb-0">
           {(() => {
           const items = renderMenu(true);
-          if (isLogin && collectionsDropdownItems.length > 0) {
-            const explore = (
-              <li key="explore">
-                <Dropdown menu={{ items: collectionsDropdownItems }} trigger={['hover', 'click']}>
-                  <a className="py-2 transition-all duration-300 border-b-[3px] block text-primary dark:text-white cursor-pointer border-transparent  hover:border-primary/50">
-                    {t('nav.explore')}
-                  </a>
-                </Dropdown>
-              </li>
-            );
-            return [items[0], explore, ...items.slice(1)];
-          }
-          return items;
+          const explore = (
+            <li key="explore">
+              <Dropdown menu={{ items: exploreDropdownItems }} trigger={['hover', 'click']}>
+                <a className="py-2 transition-all duration-300 border-b-[3px] block text-primary dark:text-white cursor-pointer border-transparent  hover:border-primary/50">
+                  {t('nav.explore')}
+                </a>
+              </Dropdown>
+            </li>
+          );
+          return [items[0], explore, ...items.slice(1)];
         })()}
         </ul>
         {isUserIcon && renderUserIcon('[20px]')}
