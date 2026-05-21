@@ -44,17 +44,13 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
     useEffect(() => {
         if (!open) return;
 
-        if (initialValues) {
-            reset({
-                title: initialValues.title,
-                description: initialValues.description || '',
-                featuredImage: initialValues.featuredImage || '',
-                status: initialValues.status,
-                appIds: initialValues.collectionApps?.map(ca => ca.appId) || [],
-            });
-        } else {
-            reset({ title: '', description: '', featuredImage: '', status: 'PRIVATE', appIds: [] });
-        }
+        reset({
+            title: initialValues?.title || '',
+            description: initialValues?.description || '',
+            featuredImage: initialValues?.featuredImage || '',
+            status: initialValues?.status || 'PRIVATE',
+            appIds: initialValues?.apps?.map(app => app.id) || [],
+        });
 
         const loadApps = async () => {
             let apps: GetMezonAppDetailsResponse[] = [];
