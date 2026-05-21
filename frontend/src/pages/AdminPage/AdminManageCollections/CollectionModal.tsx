@@ -1,9 +1,8 @@
 import { Modal, Form, Input, Select } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect, useState } from 'react';
-import { useLazyMezonAppControllerListAdminMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp';
-import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
+import { useEffect, useMemo, useState } from 'react';
+import { useMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp';
 import { getAppTranslation } from '@app/hook/useAppTranslation';
 import { Collection } from '@app/types/collection.types';
 import { collectionSchema } from '@app/validations/collection.validation';
@@ -23,10 +22,27 @@ interface Props {
 }
 
 const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ownerId }: Props) => {
-    const [fetchAllApps] = useLazyMezonAppControllerListAdminMezonAppQuery();
-    const [fetchMyApps] = useLazyMezonAppControllerGetMyAppQuery();
-    const [appOptions, setAppOptions] = useState<{ label: string; value: string }[]>([]);
     const [isMediaManagerOpen, setIsMediaManagerOpen] = useState(false);
+
+    const baseParams = {
+        pageNumber: 1,
+        pageSize: 1000,
+        sortField: 'name' as const,
+        sortOrder: 'ASC' as const,
+    };
+
+    const { data: allAppsData } = useMezonAppControllerListAdminMezonAppQuery(baseParams, { skip: !!ownerId || !open });
+    const { data: myAppsData } = useMezonAppControllerGetMyAppQuery(baseParams, { skip: !ownerId || !open });
+
+    const appsData = ownerId ? myAppsData : allAppsData;
+
+    const appOptions = useMemo(() => {
+        const apps = appsData?.data ?? [];
+        return apps.map((app) => ({
+            label: getAppTranslation(app, 'en').name,
+            value: app.id,
+        }));
+    }, [appsData]);
 
     const { control, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
         resolver: yupResolver(collectionSchema),
@@ -41,26 +57,6 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
 
     const featuredImageValue = watch('featuredImage');
 
-    const loadApps = useCallback(async () => {
-        const baseParams = {
-            pageNumber: 1,
-            pageSize: 1000,
-            sortField: 'name' as const,
-            sortOrder: 'ASC' as const,
-        };
-
-        const res = ownerId
-            ? await fetchMyApps(baseParams).unwrap()
-            : await (fetchAllApps(baseParams).unwrap() as unknown as { data: GetMezonAppDetailsResponse[] });
-
-        const apps = res?.data ?? [];
-        const options = apps.map((app) => ({
-            label: getAppTranslation(app, 'en').name,
-            value: app.id,
-        }));
-        setAppOptions(options);
-    }, [fetchAllApps, fetchMyApps, ownerId]);
-
     useEffect(() => {
         if (!open) return;
 
@@ -71,9 +67,7 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
             status: initialValues?.status || 'PRIVATE',
             appIds: initialValues?.apps?.map(app => app.id) || [],
         });
-
-        loadApps().catch(() => {});
-    }, [open, initialValues, reset, loadApps]);
+    }, [open, initialValues, reset]);
 
     const onFormSubmit = (data: any) => {
         onSubmit(data);

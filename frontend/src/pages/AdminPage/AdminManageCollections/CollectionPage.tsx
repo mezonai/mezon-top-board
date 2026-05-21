@@ -1,24 +1,19 @@
 ﻿import { useState } from 'react';
-import { Input, Table, Space, Popconfirm, Tag, Button } from 'antd';
+import { Input, Table, Popconfirm, Tag, Button } from 'antd';
 import { SearchOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
     useSearchCollectionsQuery,
-    useCreateCollectionMutation,
-    useUpdateCollectionMutation,
     useDeleteCollectionMutation,
 } from '@app/services/api/collection/collection';
 import { Collection } from '@app/types/collection.types';
 import TableActionButton from '@app/components/TableActionButton/TableActionButton';
 import TableImage from '@app/components/TableImage/TableImage';
 import { toast } from 'react-toastify';
-import CollectionModal from './CollectionModal';
 
 const CollectionsPage = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [search, setSearch] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
     const { data, isLoading, refetch } = useSearchCollectionsQuery(
@@ -27,8 +22,6 @@ const CollectionsPage = () => {
     ) as { data?: { data: Collection[]; totalCount: number }; isLoading: boolean; refetch: () => void };
 
     const [deleteCollection] = useDeleteCollectionMutation();
-    const [createCollection, { isLoading: isCreating }] = useCreateCollectionMutation();
-    const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
 
     const handleDelete = async (id: string) => {
         setDeletingId(id);
@@ -41,28 +34,6 @@ const CollectionsPage = () => {
         } finally {
             setDeletingId(null);
         }
-    };
-
-    const handleCreateOrUpdate = async (values: any) => {
-        try {
-            if (editingCollection) {
-                await updateCollection({ id: editingCollection.id, ...values }).unwrap();
-                toast.success('Collection updated');
-            } else {
-                await createCollection(values).unwrap();
-                toast.success('Collection created');
-            }
-            setIsModalOpen(false);
-            setEditingCollection(null);
-            refetch();
-        } catch {
-            toast.error('Operation failed');
-        }
-    };
-
-    const openEditModal = (record: Collection) => {
-        setEditingCollection(record);
-        setIsModalOpen(true);
     };
 
     const columns = [
@@ -101,31 +72,25 @@ const CollectionsPage = () => {
         {
             title: 'Actions',
             key: 'actions',
-            width: 120,
+            width: 80,
             render: (_: any, record: Collection) => {
                 const isDeleting = deletingId === record.id;
                 return (
-                    <Space>
-                        <TableActionButton
-                            actionType="edit"
-                            onClick={() => openEditModal(record)}
-                        />
-                        <Popconfirm
-                            title="Delete this collection?"
-                            onConfirm={() => handleDelete(record.id)}
-                            okText="Yes"
-                            cancelText="No"
-                            okButtonProps={{ loading: isDeleting }}
+                    <Popconfirm
+                        title="Delete this collection?"
+                        onConfirm={() => handleDelete(record.id)}
+                        okText="Yes"
+                        cancelText="No"
+                        okButtonProps={{ loading: isDeleting }}
+                    >
+                        <Button
+                            type="text"
+                            danger
+                            icon={isDeleting ? <LoadingOutlined /> : undefined}
                         >
-                            <Button
-                                type="text"
-                                danger
-                                icon={isDeleting ? <LoadingOutlined /> : undefined}
-                            >
-                                Delete
-                            </Button>
-                        </Popconfirm>
-                    </Space>
+                            Delete
+                        </Button>
+                    </Popconfirm>
                 );
             },
         },
@@ -167,13 +132,7 @@ const CollectionsPage = () => {
                 }}
                 scroll={{ x: 'max-content' }}
             />
-            <CollectionModal
-                open={isModalOpen}
-                onClose={() => { setIsModalOpen(false); setEditingCollection(null); }}
-                onSubmit={handleCreateOrUpdate}
-                initialValues={editingCollection}
-                isLoading={isCreating || isUpdating}
-            />
+
         </div>
     );
 };
