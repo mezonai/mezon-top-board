@@ -1,7 +1,7 @@
 import { Modal, Form, Input, Select } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyMezonAppControllerListAdminMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp';
 import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
 import { getAppTranslation } from '@app/hook/useAppTranslation';
@@ -19,7 +19,7 @@ interface Props {
     onSubmit: (values: any) => void;
     initialValues?: Collection | null;
     isLoading?: boolean;
-    ownerId?: string; // if provided, restricts app selection to this user's own apps (non‑admin)
+    ownerId?: string;
 }
 
 const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ownerId }: Props) => {
@@ -41,6 +41,26 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
 
     const featuredImageValue = watch('featuredImage');
 
+    const loadApps = useCallback(async () => {
+        const baseParams = {
+            pageNumber: 1,
+            pageSize: 1000,
+            sortField: 'name' as const,
+            sortOrder: 'ASC' as const,
+        };
+
+        const res = ownerId
+            ? await fetchMyApps(baseParams).unwrap()
+            : await (fetchAllApps(baseParams).unwrap() as unknown as { data: GetMezonAppDetailsResponse[] });
+
+        const apps = res?.data ?? [];
+        const options = apps.map((app) => ({
+            label: getAppTranslation(app, 'en').name,
+            value: app.id,
+        }));
+        setAppOptions(options);
+    }, [fetchAllApps, fetchMyApps, ownerId]);
+
     useEffect(() => {
         if (!open) return;
 
@@ -52,38 +72,8 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
             appIds: initialValues?.apps?.map(app => app.id) || [],
         });
 
-        const loadApps = async () => {
-            let apps: GetMezonAppDetailsResponse[] = [];
-            if (ownerId) {
-                // User mode: fetch only own apps (published)
-                const res = await fetchMyApps({
-                    ownerId,
-                    pageNumber: 1,
-                    pageSize: 1000,
-                    sortField: 'name',
-                    sortOrder: 'ASC',
-                }).unwrap();
-                // res is expected to have { data: GetMezonAppDetailsResponse[] }
-                apps = res?.data ?? [];
-            } else {
-                // Admin mode: fetch all apps
-                const res = await fetchAllApps({
-                    pageNumber: 1,
-                    pageSize: 1000,
-                    sortField: 'name',
-                    sortOrder: 'ASC',
-                }).unwrap() as unknown as { data: GetMezonAppDetailsResponse[] };
-                apps = res?.data ?? [];
-            }
-            const options = apps.map((app) => ({
-                label: getAppTranslation(app, 'en').name,
-                value: app.id,
-            }));
-            setAppOptions(options);
-        };
-
         loadApps().catch(() => {});
-    }, [open, initialValues, reset, fetchAllApps, fetchMyApps, ownerId]);
+    }, [open, initialValues, reset, loadApps]);
 
     const onFormSubmit = (data: any) => {
         onSubmit(data);
