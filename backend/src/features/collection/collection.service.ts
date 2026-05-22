@@ -153,8 +153,24 @@ export class CollectionService {
         await this.collectionRepository.softDelete(id);
     }
 
-    async searchCollections(query: SearchCollectionsDto, userId?: string) {
-        const { search, status, ownerId, pageNumber, pageSize } = query;
+    async searchCollections(query: SearchCollectionsDto) {
+        const qb = this.buildCollectionSearchQuery(query);
+        qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
+        const [collections, total] = await qb.getManyAndCount();
+        return { data: collections, total };
+    }
+
+    async adminSearchCollections(query: SearchCollectionsDto) {
+        const qb = this.buildCollectionSearchQuery(query);
+        if (query.status) {
+            qb.andWhere("collection.status = :status", { status: query.status });
+        }
+        const [collections, total] = await qb.getManyAndCount();
+        return { data: collections, total };
+    }
+
+    private buildCollectionSearchQuery(query: SearchCollectionsDto) {
+        const { search, ownerId, pageNumber, pageSize } = query;
 
         const qb = this.collectionRepository
             .getRepository()
@@ -166,22 +182,8 @@ export class CollectionService {
                 "collection.apps"
             );
 
-        if (userId) {
-            const user = await this.manager.getRepository(User).findOne({ where: { id: userId } });
-            if (!user || user.role !== Role.ADMIN) {
-                qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
-            }
-            // admin sees everything, no extra filter
-        } else {
-            qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
-        }
-
         if (search) {
             qb.andWhere("collection.title ILIKE :search", { search: `%${search}%` });
-        }
-
-        if (status) {
-            qb.andWhere("collection.status = :status", { status });
         }
 
         if (ownerId) {
@@ -192,9 +194,7 @@ export class CollectionService {
             .skip((pageNumber - 1) * pageSize)
             .take(pageSize);
 
-        const [collections, total] = await qb.getManyAndCount();
-
-        return { data: collections, total };
+        return qb;
     }
 
     private async validateAppOwnership(appIds: string[], userId: string): Promise<void> {

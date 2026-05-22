@@ -2,9 +2,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { useAppSelector } from '@app/store/hook';
-import { RootState } from '@app/store';
-import { IUserStore } from '@app/store/user';
+
 import { useGetCollectionQuery, useUpdateCollectionMutation } from '@app/services/api/collection/collection';
 import {useTranslation} from "react-i18next";
 import { Collection } from '@app/types/collection.types';
@@ -15,13 +13,12 @@ import BotListItem from '@app/components/BotListItem/BotListItem';
 import CollectionModal from '@app/pages/AdminPage/AdminManageCollections/CollectionModal';
 import { GlassCard } from '@app/components/GlassCard/GlassCard';
 import { toast } from 'react-toastify';
-import { Role } from '@app/enums/role.enum';
+import useOwnershipCheck from '@app/hook/useOwnershipCheck';
 
 const CollectionDetailPage = () => {
     const { t } = useTranslation();
     const { collectionId } = useParams<{ collectionId: string }>();
     const navigate = useNavigate();
-    const { userInfo } = useAppSelector<RootState, IUserStore>((s) => s.user);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const { data, isLoading, error, refetch } = useGetCollectionQuery(collectionId!, {
@@ -42,9 +39,7 @@ const CollectionDetailPage = () => {
         };
     }, [collection?.title]);
 
-    const isOwner = collection?.ownerId === userInfo?.id;
-    const isAdmin = userInfo?.role === Role.ADMIN;
-    const canEdit = isOwner || isAdmin;
+    const { isOwner } = useOwnershipCheck();
 
     // Redirect to 404 if not found or private and user not allowed
     if (!isLoading && (error || !collection)) {
@@ -52,7 +47,7 @@ const CollectionDetailPage = () => {
         return null;
     }
 
-    if (!isLoading && collection && collection.status === 'PRIVATE' && !canEdit) {
+    if (!isLoading && collection && collection.status === 'PRIVATE' && !isOwner(collection?.ownerId)) {
         navigate('/404', { replace: true });
         return null;
     }
@@ -103,7 +98,7 @@ const CollectionDetailPage = () => {
                     }`}>
                       {collection.status}
                     </span>
-                                        {canEdit && (
+                                        {isOwner(collection?.ownerId) && (
                                             <MtbButton
                                                 icon={<EditOutlined />}
                                                 variant="outlined"
@@ -137,7 +132,7 @@ const CollectionDetailPage = () => {
                         onSubmit={handleEditSubmit}
                         initialValues={collection}
                         isLoading={isUpdating}
-                        ownerId={isAdmin ? undefined : collection.ownerId} // admin can add any app, owner only their own
+                        ownerId={collection.ownerId}
                     />
                 </>
             ) : null}

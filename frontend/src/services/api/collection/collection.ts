@@ -46,9 +46,15 @@ const collectionService = api.injectEndpoints({
             ],
         }),
 
-        // Search collections (public + admin)
+        // Search collections (public only, PUBLISHED status)
         searchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
             query: (params) => ({ url: '/api/collection/search', params }),
+            providesTags: ['Collections'],
+        }),
+
+        // Admin search collections (all statuses)
+        adminSearchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/admin-search', params }),
             providesTags: ['Collections'],
         }),
     }),
@@ -65,4 +71,6 @@ export const {
     useDeleteCollectionMutation,
     useSearchCollectionsQuery,
     useLazySearchCollectionsQuery,
+    useAdminSearchCollectionsQuery,
+    useLazyAdminSearchCollectionsQuery,
 } = collectionService;

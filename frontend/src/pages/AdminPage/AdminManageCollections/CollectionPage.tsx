@@ -2,7 +2,7 @@
 import { Input, Table, Popconfirm, Tag, Button } from 'antd';
 import { SearchOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
-    useSearchCollectionsQuery,
+    useAdminSearchCollectionsQuery,
     useDeleteCollectionMutation,
 } from '@app/services/api/collection/collection';
 import { Collection } from '@app/types/collection.types';
@@ -16,7 +16,7 @@ const CollectionsPage = () => {
     const [search, setSearch] = useState('');
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
-    const { data, isLoading, refetch } = useSearchCollectionsQuery(
+    const { data, isLoading, refetch } = useAdminSearchCollectionsQuery(
         { search, pageNumber: page, pageSize },
         { refetchOnMountOrArgChange: true }
     );
