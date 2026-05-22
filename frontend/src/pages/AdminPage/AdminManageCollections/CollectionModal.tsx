@@ -12,10 +12,18 @@ import { EditOutlined } from '@ant-design/icons';
 import TableImage from '@app/components/TableImage/TableImage';
 import { CropImageShape } from '@app/enums/CropImage.enum';
 
+interface CollectionFormValues {
+    title: string;
+    description: string;
+    featuredImage: string;
+    status: string;
+    appIds: string[];
+}
+
 interface Props {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (values: CollectionFormValues) => void;
     initialValues?: Collection | null;
     isLoading?: boolean;
     ownerId?: string;
@@ -69,7 +77,7 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
         });
     }, [open, initialValues, reset]);
 
-    const onFormSubmit = (data: any) => {
+    const onFormSubmit = (data: CollectionFormValues) => {
         onSubmit(data);
     };
 

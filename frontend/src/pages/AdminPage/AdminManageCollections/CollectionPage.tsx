@@ -19,7 +19,7 @@ const CollectionsPage = () => {
     const { data, isLoading, refetch } = useSearchCollectionsQuery(
         { search, pageNumber: page, pageSize },
         { refetchOnMountOrArgChange: true }
-    ) as { data?: { data: Collection[]; totalCount: number }; isLoading: boolean; refetch: () => void };
+    );
 
     const [deleteCollection] = useDeleteCollectionMutation();
 
@@ -73,7 +73,7 @@ const CollectionsPage = () => {
             title: 'Actions',
             key: 'actions',
             width: 80,
-            render: (_: any, record: Collection) => {
+            render: (_: unknown, record: Collection) => {
                 const isDeleting = deletingId === record.id;
                 return (
                     <Popconfirm
