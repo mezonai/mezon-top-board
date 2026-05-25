@@ -14,6 +14,7 @@ import CollectionModal from '@app/pages/AdminPage/AdminManageCollections/Collect
 import { GlassCard } from '@app/components/GlassCard/GlassCard';
 import { toast } from 'react-toastify';
 import useOwnershipCheck from '@app/hook/useOwnershipCheck';
+import { cn } from '@app/utils/cn';
 
 const CollectionDetailPage = () => {
     const { t } = useTranslation();
@@ -93,9 +94,10 @@ const CollectionDetailPage = () => {
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0 ml-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    <span className={cn(
+                        'px-3 py-1 rounded-full text-xs font-medium',
                         collection.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                    }`}>
+                    )}>
                       {collection.status}
                     </span>
                                         {isOwner(collection?.ownerId) && (
