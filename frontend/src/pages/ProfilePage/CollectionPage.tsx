@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Divider, Empty, Spin, Popconfirm, Button as AntButton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ const CollectionsPage = () => {
     const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
     const [deleteCollection] = useDeleteCollectionMutation();
 
-    const collections = data?.data ?? [];
+    const collections = useMemo(() => data?.data ?? [], [data]);
 
     const handleCreateOrUpdate = async (values: any) => {
         try {
