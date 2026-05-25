@@ -64,80 +64,86 @@ const CollectionDetailPage = () => {
         }
     };
 
-    return (
-        <div className="max-w-6xl mx-auto pt-10 pb-10 px-6">
-            {isLoading ? (
+    if (isLoading) {
+        return (
+            <div className="max-w-6xl mx-auto pt-10 pb-10 px-6">
                 <div className="flex justify-center py-20">
                     <Spin size="large" />
                 </div>
-            ) : collection ? (
-                <>
-                    {/* Header */}
-                    <GlassCard className="mb-8 p-6">
-                        <div className="flex flex-col md:flex-row gap-6">
-                            <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
-                                <TableImage src={collection.featuredImage ?? undefined} alt="collection" size={160} />
-                            </div>
-                            <div className="flex-1">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <MtbTypography variant="h1" customClassName="!mb-1">
-                                            {collection.title}
-                                        </MtbTypography>
-                                        <MtbTypography variant="p" weight="normal" customClassName="text-secondary mb-4">
-                                            by {collection.owner?.name || 'Unknown'}
-                                        </MtbTypography>
-                                        {collection.description && (
-                                            <MtbTypography variant="p" weight="normal" customClassName="text-secondary whitespace-pre-wrap">
-                                                {collection.description}
-                                            </MtbTypography>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2 flex-shrink-0 ml-4">
-                    <span className={cn(
-                        'px-3 py-1 rounded-full text-xs font-medium',
-                        collection.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                    )}>
-                      {collection.status}
-                    </span>
-                                        {isOwner(collection?.ownerId) && (
-                                            <MtbButton
-                                                icon={<EditOutlined />}
-                                                variant="outlined"
-                                                onClick={() => setIsEditModalOpen(true)}
-                                            >
-                                                Edit
-                                            </MtbButton>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </GlassCard>
+            </div>
+        );
+    }
 
-                    {/* Apps list */}
-                    <div>
-                        <MtbTypography variant="h2" customClassName="mb-4">
-                            {t('collectionDetail.appsInCollection')} ({collection.apps?.length ?? 0})
-                        </MtbTypography>
-                        <div className="flex flex-col gap-4">
-                            {collection.apps?.map((app) => (
-                                <BotListItem key={app.id} data={app} readonly />
-                            ))}
+    if (!collection) {
+        return null;
+    }
+
+    return (
+        <div className="max-w-6xl mx-auto pt-10 pb-10 px-6">
+            {/* Header */}
+            <GlassCard className="mb-8 p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+                        <TableImage src={collection.featuredImage ?? undefined} alt="collection" size={160} />
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <MtbTypography variant="h1" customClassName="!mb-1">
+                                    {collection.title}
+                                </MtbTypography>
+                                <MtbTypography variant="p" weight="normal" customClassName="text-secondary mb-4">
+                                    by {collection.owner?.name || 'Unknown'}
+                                </MtbTypography>
+                                {collection.description && (
+                                    <MtbTypography variant="p" weight="normal" customClassName="text-secondary whitespace-pre-wrap">
+                                        {collection.description}
+                                    </MtbTypography>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+                                <span className={cn(
+                                    'px-3 py-1 rounded-full text-xs font-medium',
+                                    collection.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                                )}>
+                                    {collection.status}
+                                </span>
+                                {isOwner(collection?.ownerId) && (
+                                    <MtbButton
+                                        icon={<EditOutlined />}
+                                        variant="outlined"
+                                        onClick={() => setIsEditModalOpen(true)}
+                                    >
+                                        Edit
+                                    </MtbButton>
+                                )}
+                            </div>
                         </div>
                     </div>
+                </div>
+            </GlassCard>
 
-                    {/* Edit modal */}
-                    <CollectionModal
-                        open={isEditModalOpen}
-                        onClose={() => setIsEditModalOpen(false)}
-                        onSubmit={handleEditSubmit}
-                        initialValues={collection}
-                        isLoading={isUpdating}
-                        ownerId={collection.ownerId}
-                    />
-                </>
-            ) : null}
+            {/* Apps list */}
+            <div>
+                <MtbTypography variant="h2" customClassName="mb-4">
+                    {t('collectionDetail.appsInCollection')} ({collection.apps?.length ?? 0})
+                </MtbTypography>
+                <div className="flex flex-col gap-4">
+                    {collection.apps?.map((app) => (
+                        <BotListItem key={app.id} data={app} readonly />
+                    ))}
+                </div>
+            </div>
+
+            {/* Edit modal */}
+            <CollectionModal
+                open={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSubmit={handleEditSubmit}
+                initialValues={collection}
+                isLoading={isUpdating}
+                ownerId={collection.ownerId}
+            />
         </div>
     );
 };
