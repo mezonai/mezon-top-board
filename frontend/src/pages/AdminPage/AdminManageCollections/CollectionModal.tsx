@@ -14,10 +14,10 @@ import { CropImageShape } from '@app/enums/CropImage.enum';
 
 interface CollectionFormValues {
     title: string;
-    description: string;
-    featuredImage: string;
+    description?: string;
+    featuredImage?: string;
     status: string;
-    appIds: string[];
+    appIds?: string[];
 }
 
 interface Props {
@@ -42,7 +42,8 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
     const { data: allAppsData } = useMezonAppControllerListAdminMezonAppQuery(baseParams, { skip: !!ownerId || !open });
     const { data: myAppsData } = useMezonAppControllerGetMyAppQuery(baseParams, { skip: !ownerId || !open });
 
-    const appsData = ownerId ? myAppsData : allAppsData;
+    // Cast allAppsData because MezonAppControllerListAdminMezonAppApiResponse is typed as unknown
+    const appsData = ownerId ? myAppsData : (allAppsData as typeof myAppsData);
 
     const appOptions = useMemo(() => {
         const apps = appsData?.data ?? [];
