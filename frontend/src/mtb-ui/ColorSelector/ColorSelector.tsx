@@ -11,6 +11,7 @@ export const ColorSelector = ({ value, onChange, disabled }: ColorSelectorProps)
       placement="rightBottom"
       onChange={(e) => onChange?.(e.toHexString())}
       disabled={disabled}
+      getPopupContainer={(triggerNode) => triggerNode.parentElement || document.body}
     />
   )
 }
