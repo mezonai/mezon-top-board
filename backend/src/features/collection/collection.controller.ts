@@ -1,4 +1,4 @@
-import {
+﻿import {
     Body,
     Controller,
     Delete,
@@ -13,12 +13,12 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
 import { Result } from "@domain/common/dtos/result.dto";
-import { Role } from "@domain/common/enum/role";
 import { User } from "@domain/entities";
 
 import { GetUserFromHeader } from "@libs/decorator/getUserFromHeader.decorator";
 import { OptionalAuth } from "@libs/decorator/optionalAuth.decorator";
 import { RoleRequired } from "@libs/decorator/roles.decorator";
+import { Role } from "@domain/common/enum/role";
 
 import { CollectionService } from "./collection.service";
 import {
@@ -43,7 +43,7 @@ export class CollectionController {
         return new Result({ data: collection });
     }
 
-    @Get("my")
+    @Get("my-collections")
     @ApiBearerAuth()
     async getMyCollections(
         @GetUserFromHeader() user: User,
@@ -61,11 +61,27 @@ export class CollectionController {
         });
     }
 
-    @Get("admin/search")
+    @Get("search")
+    @OptionalAuth()
+    async searchCollections(
+        @Query() query: SearchCollectionsDto
+    ) {
+        const { data, total } = await this.collectionService.searchCollections(query);
+        return new Result({
+            data,
+            pageSize: query.pageSize,
+            pageNumber: query.pageNumber,
+            totalCount: total,
+        });
+    }
+
+    @Get("admin-search")
     @ApiBearerAuth()
     @RoleRequired([Role.ADMIN])
-    async adminSearch(@Query() query: SearchCollectionsDto) {
-        const { data, total } = await this.collectionService.adminSearch(query);
+    async adminSearchCollections(
+        @Query() query: SearchCollectionsDto
+    ) {
+        const { data, total } = await this.collectionService.adminSearchCollections(query);
         return new Result({
             data,
             pageSize: query.pageSize,
@@ -92,7 +108,7 @@ export class CollectionController {
         @GetUserFromHeader() user: User,
         @Body() dto: UpdateCollectionDto
     ) {
-        const collection = await this.collectionService.update(id, user.id, dto);
+        const collection = await this.collectionService.update(id, user, dto);
         return new Result({ data: collection });
     }
 
@@ -102,7 +118,7 @@ export class CollectionController {
         @Param("id") id: string,
         @GetUserFromHeader() user: User
     ) {
-        await this.collectionService.delete(id, user.id);
+        await this.collectionService.delete(id, user);
         return new Result();
     }
 }

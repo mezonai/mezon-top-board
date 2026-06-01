@@ -63,7 +63,11 @@
         "not_found": "Not Found",
         "version_history": "Version History",
         "my_collections": "My Collections",
-        "explore": "Explore"
+        "explore": "Explore",
+        "collections": "Collections",
+        "collections_empty": "No collections yet.",
+        "collections_no_description": "No description",
+        "collections_app_count": "{{count}} apps"
     },
     "header": {
         "login": "Login",

@@ -1,9 +1,8 @@
 import { Modal, Form, Input, Select } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
-import { useLazyMezonAppControllerListAdminMezonAppQuery, useLazyMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp';
-import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
+import { useEffect, useMemo, useState } from 'react';
+import { useMezonAppControllerListAdminMezonAppQuery, useMezonAppControllerGetMyAppQuery } from '@app/services/api/mezonApp/mezonApp';
 import { getAppTranslation } from '@app/hook/useAppTranslation';
 import { Collection } from '@app/types/collection.types';
 import { collectionSchema } from '@app/validations/collection.validation';
@@ -13,20 +12,46 @@ import { EditOutlined } from '@ant-design/icons';
 import TableImage from '@app/components/TableImage/TableImage';
 import { CropImageShape } from '@app/enums/CropImage.enum';
 
+interface CollectionFormValues {
+    title: string;
+    description?: string;
+    featuredImage?: string;
+    status: string;
+    appIds?: string[];
+}
+
 interface Props {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (values: CollectionFormValues) => void;
     initialValues?: Collection | null;
     isLoading?: boolean;
-    ownerId?: string; // if provided, restricts app selection to this user's own apps (non‑admin)
+    ownerId?: string;
 }
 
 const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ownerId }: Props) => {
-    const [fetchAllApps] = useLazyMezonAppControllerListAdminMezonAppQuery();
-    const [fetchMyApps] = useLazyMezonAppControllerGetMyAppQuery();
-    const [appOptions, setAppOptions] = useState<{ label: string; value: string }[]>([]);
     const [isMediaManagerOpen, setIsMediaManagerOpen] = useState(false);
+
+    const baseParams = {
+        pageNumber: 1,
+        pageSize: 1000,
+        sortField: 'name' as const,
+        sortOrder: 'ASC' as const,
+    };
+
+    const { data: allAppsData } = useMezonAppControllerListAdminMezonAppQuery(baseParams, { skip: !!ownerId || !open });
+    const { data: myAppsData } = useMezonAppControllerGetMyAppQuery(baseParams, { skip: !ownerId || !open });
+
+    // Cast allAppsData because MezonAppControllerListAdminMezonAppApiResponse is typed as unknown
+    const appsData = ownerId ? myAppsData : (allAppsData as typeof myAppsData);
+
+    const appOptions = useMemo(() => {
+        const apps = appsData?.data ?? [];
+        return apps.map((app) => ({
+            label: getAppTranslation(app, 'en').name,
+            value: app.id,
+        }));
+    }, [appsData]);
 
     const { control, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
         resolver: yupResolver(collectionSchema),
@@ -44,52 +69,16 @@ const CollectionModal = ({ open, onClose, onSubmit, initialValues, isLoading, ow
     useEffect(() => {
         if (!open) return;
 
-        if (initialValues) {
-            reset({
-                title: initialValues.title,
-                description: initialValues.description || '',
-                featuredImage: initialValues.featuredImage || '',
-                status: initialValues.status,
-                appIds: initialValues.collectionApps?.map(ca => ca.appId) || [],
-            });
-        } else {
-            reset({ title: '', description: '', featuredImage: '', status: 'PRIVATE', appIds: [] });
-        }
+        reset({
+            title: initialValues?.title || '',
+            description: initialValues?.description || '',
+            featuredImage: initialValues?.featuredImage || '',
+            status: initialValues?.status || 'PRIVATE',
+            appIds: initialValues?.apps?.map(app => app.id) || [],
+        });
+    }, [open, initialValues, reset]);
 
-        const loadApps = async () => {
-            let apps: GetMezonAppDetailsResponse[] = [];
-            if (ownerId) {
-                // User mode: fetch only own apps (published)
-                const res = await fetchMyApps({
-                    ownerId,
-                    pageNumber: 1,
-                    pageSize: 1000,
-                    sortField: 'name',
-                    sortOrder: 'ASC',
-                }).unwrap();
-                // res is expected to have { data: GetMezonAppDetailsResponse[] }
-                apps = res?.data ?? [];
-            } else {
-                // Admin mode: fetch all apps
-                const res = await fetchAllApps({
-                    pageNumber: 1,
-                    pageSize: 1000,
-                    sortField: 'name',
-                    sortOrder: 'ASC',
-                }).unwrap() as unknown as { data: GetMezonAppDetailsResponse[] };
-                apps = res?.data ?? [];
-            }
-            const options = apps.map((app) => ({
-                label: getAppTranslation(app, 'en').name,
-                value: app.id,
-            }));
-            setAppOptions(options);
-        };
-
-        loadApps().catch(() => {});
-    }, [open, initialValues, reset, fetchAllApps, fetchMyApps, ownerId]);
-
-    const onFormSubmit = (data: any) => {
+    const onFormSubmit = (data: CollectionFormValues) => {
         onSubmit(data);
     };
 

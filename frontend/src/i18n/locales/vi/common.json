@@ -63,7 +63,11 @@
         "not_found": "Không tìm thấy",
         "version_history": "Lịch sử phiên bản",
         "my_collections": "Bộ sưu tập của tôi",
-        "explore": "Khám phá"
+        "explore": "Khám phá",
+        "collections": "Bộ sưu tập",
+        "collections_empty": "Chưa có bộ sưu tập nào.",
+        "collections_no_description": "Chưa có mô tả",
+        "collections_app_count": "{{count}} ứng dụng"
     },
     "header": {
         "login": "Đăng nhập",

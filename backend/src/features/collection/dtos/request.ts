@@ -1,22 +1,21 @@
-import {
+﻿import {
     ApiProperty,
     ApiPropertyOptional
 } from "@nestjs/swagger";
 
-import { Transform, Type } from "class-transformer";
+import { Transform } from "class-transformer";
 import {
     IsArray,
     IsEnum,
-    IsInt,
     IsNotEmpty,
     IsOptional,
     IsString,
     IsUUID,
     MaxLength,
-    Min,
 } from "class-validator";
 
-import { CollectionStatus } from "@domain/entities/schema/collection.entity";
+import { CollectionStatus } from "@domain/common/enum/collectionStatus";
+import { PaginationQuery } from "@domain/common/dtos/request.dto";
 
 export class CreateCollectionDto {
     @ApiProperty()
@@ -80,54 +79,23 @@ export class UpdateCollectionDto {
     appIds?: string[];
 }
 
-export class GetMyCollectionsQueryDto {
-    @ApiPropertyOptional({ default: 1 })
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @IsOptional()
-    pageNumber?: number = 1;
-
-    @ApiPropertyOptional({ default: 10 })
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @IsOptional()
-    pageSize?: number = 10;
-
+export class CollectionPaginationDto extends PaginationQuery {
     @ApiPropertyOptional({ enum: CollectionStatus })
     @IsEnum(CollectionStatus)
     @IsOptional()
     status?: CollectionStatus;
 }
 
-export class SearchCollectionsDto {
+export class GetMyCollectionsQueryDto extends CollectionPaginationDto {}
+
+export class SearchCollectionsDto extends CollectionPaginationDto {
     @ApiPropertyOptional()
     @IsString()
     @IsOptional()
     search?: string;
 
-    @ApiPropertyOptional({ enum: CollectionStatus })
-    @IsEnum(CollectionStatus)
-    @IsOptional()
-    status?: CollectionStatus;
-
     @ApiPropertyOptional()
     @IsUUID()
     @IsOptional()
     ownerId?: string;
-
-    @ApiPropertyOptional({ default: 1 })
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @IsOptional()
-    pageNumber?: number = 1;
-
-    @ApiPropertyOptional({ default: 10 })
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    @IsOptional()
-    pageSize?: number = 10;
 }

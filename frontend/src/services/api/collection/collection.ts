@@ -1,9 +1,9 @@
-import { api } from '../../apiInstance';
+﻿import { api } from '../../apiInstance';
 import type {
     CreateCollectionRequest,
     UpdateCollectionRequest,
     GetMyCollectionsArgs,
-    AdminSearchCollectionsArgs,
+    SearchCollectionsArgs,
     CollectionResponse,
     CollectionListResponse,
 } from './collection.types';
@@ -18,7 +18,7 @@ const collectionService = api.injectEndpoints({
 
         // Get user's own collections
         getMyCollections: build.query<CollectionListResponse, GetMyCollectionsArgs>({
-            query: (params) => ({ url: '/api/collection/my', params }),
+            query: (params) => ({ url: '/api/collection/my-collections', params }),
             providesTags: ['Collections'],
         }),
 
@@ -46,9 +46,15 @@ const collectionService = api.injectEndpoints({
             ],
         }),
 
-        // Admin search
-        adminSearchCollections: build.query<CollectionListResponse, AdminSearchCollectionsArgs>({
-            query: (params) => ({ url: '/api/collection/admin/search', params }),
+        // Search collections (public only, PUBLISHED status)
+        searchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/search', params }),
+            providesTags: ['Collections'],
+        }),
+
+        // Admin search collections (all statuses)
+        adminSearchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/admin-search', params }),
             providesTags: ['Collections'],
         }),
     }),
@@ -63,6 +69,8 @@ export const {
     useLazyGetCollectionQuery,
     useUpdateCollectionMutation,
     useDeleteCollectionMutation,
+    useSearchCollectionsQuery,
+    useLazySearchCollectionsQuery,
     useAdminSearchCollectionsQuery,
     useLazyAdminSearchCollectionsQuery,
 } = collectionService;

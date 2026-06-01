@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Divider, Empty, Spin, Popconfirm, Button as AntButton } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -27,14 +27,14 @@ const CollectionsPage = () => {
 
     const { data, isLoading, refetch } = useGetMyCollectionsQuery(
         { pageNumber: 1, pageSize: 100 },
-        { skip: !isLogin }
+        { skip: !isLogin } //skip the request to get the user's collection if they aren't logged in, since non logged in people have no collection
     );
 
     const [createCollection, { isLoading: isCreating }] = useCreateCollectionMutation();
     const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
     const [deleteCollection] = useDeleteCollectionMutation();
 
-    const collections = data?.data ?? [];
+    const collections = useMemo(() => data?.data ?? [], [data]);
 
     const handleCreateOrUpdate = async (values: any) => {
         try {
@@ -73,6 +73,70 @@ const CollectionsPage = () => {
         setIsModalOpen(true);
     };
 
+    const renderCollectionContent = () => {
+        if (isLoading) {
+            return (
+                <div className="flex justify-center py-20">
+                    <Spin size="large" />
+                </div>
+            );
+        }
+
+        if (collections.length === 0) {
+            return <Empty description={t('profile.my_collections.empty')} />;
+        }
+
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {collections.map((col) => (
+                    <GlassCard  key={col.id} hoverEffect={true}  className="p-4 flex flex-col cursor-pointer"  onClick={() => navigate(`/collection/${col.id}`)} >
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-12 h-12 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+                                <TableImage src={col.featuredImage ?? undefined} alt="collection" size={48} />
+                            </div>
+                            <MtbTypography variant="h4" customClassName="truncate flex-1 !mb-0">
+                                {col.title}
+                            </MtbTypography>
+                        </div>
+                        <MtbTypography variant="p" weight="normal" customClassName="text-secondary text-xs mb-2">
+                            {col.description || t('profile.my_collections.no_description')}
+                        </MtbTypography>
+                        <div className="flex items-center justify-between mt-auto">
+                            <span className="text-xs text-secondary">
+                              {t('profile.my_collections.app_count', { count: col.apps?.length ?? 0 })}
+                            </span>
+                            <div className="flex gap-2">
+                                <AntButton
+                                    size="small"
+                                    icon={<EditOutlined />}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openEdit(col);
+                                    }}
+                                />
+                                <span onClick={(e) => e.stopPropagation()}>
+                                    <Popconfirm
+                                        title="Delete this collection?"
+                                        onConfirm={() => handleDelete(col.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <AntButton
+                                            size="small"
+                                            icon={<DeleteOutlined />}
+                                            danger
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </Popconfirm>
+                                </span>
+                            </div>
+                        </div>
+                    </GlassCard>
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div className="pt-8 pb-12 w-[85%] mx-auto">
             <MtbTypography variant="h1">{t('profile.my_collections.title')}</MtbTypography>
@@ -89,61 +153,7 @@ const CollectionsPage = () => {
                         </MtbButton>
                     </div>
 
-                    {isLoading ? (
-                        <div className="flex justify-center py-20">
-                            <Spin size="large" />
-                        </div>
-                    ) : collections.length === 0 ? (
-                        <Empty description={t('profile.my_collections.empty')} />
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {collections.map((col) => (
-                                <GlassCard  key={col.id} hoverEffect={true}  className="p-4 flex flex-col cursor-pointer"  onClick={() => navigate(`/collection/${col.id}`)} >
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="w-12 h-12 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
-                                            <TableImage src={col.featuredImage ?? undefined} alt="collection" size={48} />
-                                        </div>
-                                        <MtbTypography variant="h4" customClassName="truncate flex-1 !mb-0">
-                                            {col.title}
-                                        </MtbTypography>
-                                    </div>
-                                    <MtbTypography variant="p" weight="normal" customClassName="text-secondary text-xs mb-2">
-                                        {col.description || t('profile.my_collections.no_description')}
-                                    </MtbTypography>
-                                    <div className="flex items-center justify-between mt-auto">
-                                        <span className="text-xs text-secondary">
-                                          {t('profile.my_collections.app_count', { count: col.collectionApps?.length ?? 0 })}
-                                        </span>
-                                        <div className="flex gap-2">
-                                            <AntButton
-                                                size="small"
-                                                icon={<EditOutlined />}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    openEdit(col);
-                                                }}
-                                            />
-                                            <span onClick={(e) => e.stopPropagation()}>
-                                                <Popconfirm
-                                                    title="Delete this collection?"
-                                                    onConfirm={() => handleDelete(col.id)}
-                                                    okText="Yes"
-                                                    cancelText="No"
-                                                >
-                                                    <AntButton
-                                                        size="small"
-                                                        icon={<DeleteOutlined />}
-                                                        danger
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    />
-                                                </Popconfirm>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </GlassCard>
-                            ))}
-                        </div>
-                    )}
+                    {renderCollectionContent()}
                 </div>
             </div>
 

@@ -1,26 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+﻿import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 import { Expose, Type } from "class-transformer";
 
-import { CollectionStatus } from "@domain/entities/schema/collection.entity";
+import { CollectionStatus } from "@domain/common/enum/collectionStatus";
 
 import { GetMezonAppDetailsResponse } from "@features/mezon-app/dtos/response";
 import { OwnerInMezonAppDetailResponse } from "@features/user/dtos/response";
-
-export class CollectionAppResponse {
-    @Expose()
-    @ApiProperty()
-    appId: string;
-
-    @Expose()
-    @ApiProperty()
-    order: number;
-
-    @Expose()
-    @ApiProperty({ type: () => GetMezonAppDetailsResponse })
-    @Type(() => GetMezonAppDetailsResponse)
-    app: GetMezonAppDetailsResponse;
-}
 
 export class CollectionResponse {
     @Expose()
@@ -53,9 +38,9 @@ export class CollectionResponse {
     owner: OwnerInMezonAppDetailResponse;
 
     @Expose()
-    @ApiProperty({ type: () => [CollectionAppResponse] })
-    @Type(() => CollectionAppResponse)
-    collectionApps: CollectionAppResponse[];
+    @ApiProperty({ type: () => [GetMezonAppDetailsResponse] })
+    @Type(() => GetMezonAppDetailsResponse)
+    apps: GetMezonAppDetailsResponse[];
 
     @Expose()
     @ApiProperty()

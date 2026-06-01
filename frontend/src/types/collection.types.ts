@@ -1,9 +1,5 @@
-import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
-
-export enum CollectionStatus {
-    PRIVATE = 'PRIVATE',
-    PUBLISHED = 'PUBLISHED',
-}
+﻿import { GetMezonAppDetailsResponse } from '@app/services/api/mezonApp/mezonApp.types';
+import { CollectionStatus } from '@app/enums/collectionStatus.enum';
 
 export interface Collection {
     id: string;
@@ -17,14 +13,8 @@ export interface Collection {
         name: string;
         profileImage: string;
     };
-    collectionApps: CollectionApp[];
+    apps: GetMezonAppDetailsResponse[];
     appCount?: number;
     createdAt: string;
     updatedAt: string;
-}
-
-export interface CollectionApp {
-    appId: string;
-    order: number;
-    app: GetMezonAppDetailsResponse;
 }

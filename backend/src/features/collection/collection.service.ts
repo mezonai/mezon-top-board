@@ -1,4 +1,4 @@
-import {
+﻿import {
     BadRequestException,
     ForbiddenException,
     Injectable,
@@ -8,10 +8,10 @@ import {
 import { EntityManager, In } from "typeorm";
 
 import { Role } from "@domain/common/enum/role";
-import { Collection, CollectionApp } from "@domain/entities";
+import { Collection } from "@domain/entities";
 import { App } from "@domain/entities";
 import { User } from "@domain/entities";
-import { CollectionStatus } from "@domain/entities/schema/collection.entity";
+import { CollectionStatus } from "@domain/common/enum/collectionStatus";
 
 import { GenericRepository } from "@libs/repository/genericRepository";
 
@@ -23,14 +23,12 @@ import {
 
 @Injectable()
 export class CollectionService {
-    private readonly collectionRepo: GenericRepository<Collection>;
-    private readonly collectionAppRepo: GenericRepository<CollectionApp>;
-    private readonly appRepo: GenericRepository<App>;
+    private readonly collectionRepository: GenericRepository<Collection>;
+    private readonly appRepository: GenericRepository<App>;
 
     constructor(private readonly manager: EntityManager) {
-        this.collectionRepo = new GenericRepository(Collection, manager);
-        this.collectionAppRepo = new GenericRepository(CollectionApp, manager);
-        this.appRepo = new GenericRepository(App, manager);
+        this.collectionRepository = new GenericRepository(Collection, manager);
+        this.appRepository = new GenericRepository(App, manager);
     }
 
     async create(userId: string, dto: CreateCollectionDto): Promise<Collection> {
@@ -40,7 +38,7 @@ export class CollectionService {
             await this.validateAppOwnership(appIds, userId);
         }
 
-        const collection = await this.collectionRepo.create({
+        const collection = await this.collectionRepository.create({
             ...collectionData,
             ownerId: userId,
         });
@@ -58,11 +56,10 @@ export class CollectionService {
     ) {
         const { pageNumber, pageSize, status } = query;
 
-        const qb = this.collectionRepo
+        const qb = this.collectionRepository
             .getRepository()
             .createQueryBuilder("collection")
-            .leftJoinAndSelect("collection.collectionApps", "collectionApps")
-            .leftJoinAndSelect("collectionApps.app", "app")
+            .leftJoinAndSelect("collection.apps", "app")
             .leftJoinAndSelect("app.appTranslations", "translations")
             .where("collection.ownerId = :userId", { userId });
 
@@ -80,18 +77,17 @@ export class CollectionService {
     }
 
     async findOne(id: string, userId?: string): Promise<Collection> {
-        const collection = await this.collectionRepo.getRepository().findOne({
+        const collection = await this.collectionRepository.getRepository().findOne({
             where: { id },
             relations: [
                 "owner",
-                "collectionApps",
-                "collectionApps.app",
-                "collectionApps.app.appTranslations",
-                "collectionApps.app.tags",
+                "apps",
+                "apps.appTranslations",
+                "apps.tags",
             ],
             order: {
-                collectionApps: {
-                    order: "ASC",
+                apps: {
+                    createdAt: "ASC",
                 },
             },
         });
@@ -100,23 +96,8 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        // If collection is private, only owner or admin can view
-        if (collection.status === CollectionStatus.PRIVATE) {
-            if (!userId) {
-                throw new NotFoundException("Collection not found");
-            }
-
-            const user = await this.manager
-                .getRepository(User)
-                .findOne({ where: { id: userId } });
-
-            if (!user) {
-                throw new NotFoundException("Collection not found");
-            }
-
-            if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
-                throw new NotFoundException("Collection not found");
-            }
+        if (collection.status === CollectionStatus.PRIVATE && collection.ownerId !== userId) {
+            throw new NotFoundException("Collection not found");
         }
 
         return collection;
@@ -124,10 +105,10 @@ export class CollectionService {
 
     async update(
         id: string,
-        userId: string,
+        user: User,
         dto: UpdateCollectionDto
     ): Promise<Collection> {
-        const collection = await this.collectionRepo.findOne({
+        const collection = await this.collectionRepository.findOne({
             where: { id },
             relations: ["owner"],
         });
@@ -136,35 +117,27 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        const user = await this.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-
-        if (!user) {
-            throw new ForbiddenException("User not found");
-        }
-
-        if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
+        if (collection.ownerId !== user.id && user.role !== Role.ADMIN) {
             throw new ForbiddenException("You do not have permission to update this collection");
         }
 
         const { appIds, ...updateData } = dto;
 
         if (appIds !== undefined) {
-            await this.validateAppOwnership(appIds, userId);
+            await this.validateAppOwnership(appIds, user.id);
         }
 
-        await this.collectionRepo.update(id, updateData);
+        await this.collectionRepository.update(id, updateData);
 
         if (appIds !== undefined) {
             await this.setCollectionApps(id, appIds);
         }
 
-        return this.findOne(id, userId);
+        return this.findOne(id, user.id);
     }
 
-    async delete(id: string, userId: string): Promise<void> {
-        const collection = await this.collectionRepo.findOne({
+    async delete(id: string, user: User): Promise<void> {
+        const collection = await this.collectionRepository.findOne({
             where: { id },
             relations: ["owner"],
         });
@@ -173,40 +146,44 @@ export class CollectionService {
             throw new NotFoundException("Collection not found");
         }
 
-        const user = await this.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-
-        if (!user) {
-            throw new ForbiddenException("User not found");
-        }
-
-        if (collection.ownerId !== userId && user.role !== Role.ADMIN) {
+        if (collection.ownerId !== user.id && user.role !== Role.ADMIN) {
             throw new ForbiddenException("You do not have permission to delete this collection");
         }
 
-        await this.collectionRepo.softDelete(id);
+        await this.collectionRepository.softDelete(id);
     }
 
-    async adminSearch(query: SearchCollectionsDto) {
-        const { search, status, ownerId, pageNumber, pageSize } = query;
+    async searchCollections(query: SearchCollectionsDto) {
+        const qb = this.buildCollectionSearchQuery(query);
+        qb.andWhere("collection.status = :status", { status: CollectionStatus.PUBLISHED });
+        const [collections, total] = await qb.getManyAndCount();
+        return { data: collections, total };
+    }
 
-        const qb = this.collectionRepo
+    async adminSearchCollections(query: SearchCollectionsDto) {
+        const qb = this.buildCollectionSearchQuery(query);
+        if (query.status) {
+            qb.andWhere("collection.status = :status", { status: query.status });
+        }
+        const [collections, total] = await qb.getManyAndCount();
+        return { data: collections, total };
+    }
+
+    private buildCollectionSearchQuery(query: SearchCollectionsDto) {
+        const { search, ownerId, pageNumber, pageSize } = query;
+
+        const qb = this.collectionRepository
             .getRepository()
             .createQueryBuilder("collection")
             .leftJoinAndSelect("collection.owner", "owner")
-            .leftJoinAndSelect("collection.collectionApps", "collectionApps")
+            .leftJoinAndSelect("collection.apps", "apps")
             .loadRelationCountAndMap(
                 "collection.appCount",
-                "collection.collectionApps"
+                "collection.apps"
             );
 
         if (search) {
             qb.andWhere("collection.title ILIKE :search", { search: `%${search}%` });
-        }
-
-        if (status) {
-            qb.andWhere("collection.status = :status", { status });
         }
 
         if (ownerId) {
@@ -217,16 +194,14 @@ export class CollectionService {
             .skip((pageNumber - 1) * pageSize)
             .take(pageSize);
 
-        const [collections, total] = await qb.getManyAndCount();
-
-        return { data: collections, total };
+        return qb;
     }
 
     private async validateAppOwnership(appIds: string[], userId: string): Promise<void> {
         const user = await this.manager.getRepository(User).findOne({ where: { id: userId } });
         if (!user) throw new BadRequestException("User not found");
 
-        const apps = await this.appRepo.find({ where: { id: In(appIds) } });
+        const apps = await this.appRepository.find({ where: { id: In(appIds) } });
 
         if (apps.length !== appIds.length) {
             const foundIds = apps.map((a) => a.id);
@@ -247,15 +222,17 @@ export class CollectionService {
     }
 
     private async setCollectionApps(collectionId: string, appIds: string[]): Promise<void> {
-        await this.collectionAppRepo.getRepository().delete({ collectionId });
+        const collection = await this.collectionRepository.findOne({
+            where: { id: collectionId },
+            relations: ["apps"],
+        });
+        if (!collection) return;
 
-        // Create new relations with order
-        const collectionApps = appIds.map((appId, index) => ({
-            collectionId,
-            appId,
-            order: index,
-        }));
+        const apps = await this.appRepository.find({
+            where: appIds.map(id => ({ id })),
+        });
 
-        await this.collectionAppRepo.getRepository().save(collectionApps);
+        collection.apps = apps;
+        await this.collectionRepository.getRepository().save(collection);
     }
 }

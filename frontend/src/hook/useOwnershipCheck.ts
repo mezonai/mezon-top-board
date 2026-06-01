@@ -30,8 +30,17 @@ const useOwnershipCheck = () => {
     return true
   }
 
+  const isAdmin = userInfo.role === Role.ADMIN;
+
+  const isOwner = (ownerId?: string) => {
+    if (!ownerId || !userInfo.id) return false;
+    return ownerId === userInfo.id;
+  };
+
   return {
-    checkOwnership
+    checkOwnership,
+    isAdmin,
+    isOwner,
   }
 }
 
