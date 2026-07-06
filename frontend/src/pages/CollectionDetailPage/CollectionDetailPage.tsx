@@ -1,0 +1,151 @@
+﻿import {useEffect, useState} from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Spin } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+
+import { useGetCollectionQuery, useUpdateCollectionMutation } from '@app/services/api/collection/collection';
+import {useTranslation} from "react-i18next";
+import { Collection } from '@app/types/collection.types';
+import MtbTypography from '@app/mtb-ui/Typography/Typography';
+import MtbButton from '@app/mtb-ui/Button';
+import TableImage from '@app/components/TableImage/TableImage';
+import BotListItem from '@app/components/BotListItem/BotListItem';
+import CollectionModal from '@app/pages/AdminPage/AdminManageCollections/CollectionModal';
+import { GlassCard } from '@app/components/GlassCard/GlassCard';
+import { toast } from 'react-toastify';
+import useOwnershipCheck from '@app/hook/useOwnershipCheck';
+import { cn } from '@app/utils/cn';
+
+const CollectionDetailPage = () => {
+    const { t } = useTranslation();
+    const { collectionId } = useParams<{ collectionId: string }>();
+    const navigate = useNavigate();
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const { data, isLoading, error, refetch } = useGetCollectionQuery(collectionId!, {
+        skip: !collectionId,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
+
+    const collection: Collection | undefined = data?.data;
+
+    useEffect(() => {
+        if (collection?.title) {
+            document.title = `${collection.title} - Collection - Mezon Top Board`;
+        }
+        return () => {
+            document.title = 'Mezon Top Board';
+        };
+    }, [collection?.title]);
+
+    const { isOwner } = useOwnershipCheck();
+
+    // Redirect to 404 if not found or private and user not allowed
+    if (!isLoading && (error || !collection)) {
+        navigate('/404', { replace: true });
+        return null;
+    }
+
+    if (!isLoading && collection && collection.status === 'PRIVATE' && !isOwner(collection?.ownerId)) {
+        navigate('/404', { replace: true });
+        return null;
+    }
+
+    const handleEditSubmit = async (values: any) => {
+        try {
+            await updateCollection({ id: collection!.id, ...values }).unwrap();
+            toast.success('Collection updated');
+            setIsEditModalOpen(false);
+            refetch();
+        } catch {
+            toast.error('Failed to update collection');
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="max-w-6xl mx-auto pt-10 pb-10 px-6">
+                <div className="flex justify-center py-20">
+                    <Spin size="large" />
+                </div>
+            </div>
+        );
+    }
+
+    if (!collection) {
+        return null;
+    }
+
+    return (
+        <div className="max-w-6xl mx-auto pt-10 pb-10 px-6">
+            {/* Header */}
+            <GlassCard className="mb-8 p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+                        <TableImage src={collection.featuredImage ?? undefined} alt="collection" size={160} />
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <MtbTypography variant="h1" customClassName="!mb-1">
+                                    {collection.title}
+                                </MtbTypography>
+                                <MtbTypography variant="p" weight="normal" customClassName="text-secondary mb-4">
+                                    by {collection.owner?.name || 'Unknown'}
+                                </MtbTypography>
+                                {collection.description && (
+                                    <MtbTypography variant="p" weight="normal" customClassName="text-secondary whitespace-pre-wrap">
+                                        {collection.description}
+                                    </MtbTypography>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+                                <span className={cn(
+                                    'px-3 py-1 rounded-full text-xs font-medium',
+                                    collection.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                                )}>
+                                    {collection.status}
+                                </span>
+                                {isOwner(collection?.ownerId) && (
+                                    <MtbButton
+                                        icon={<EditOutlined />}
+                                        variant="outlined"
+                                        onClick={() => setIsEditModalOpen(true)}
+                                    >
+                                        Edit
+                                    </MtbButton>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </GlassCard>
+
+            {/* Apps list */}
+            <div>
+                <MtbTypography variant="h2" customClassName="mb-4">
+                    {t('collectionDetail.appsInCollection')} ({collection.apps?.length ?? 0})
+                </MtbTypography>
+                <div className="flex flex-col gap-4">
+                    {collection.apps?.map((app) => (
+                        <BotListItem key={app.id} data={app} readonly />
+                    ))}
+                </div>
+            </div>
+
+            {/* Edit modal */}
+            <CollectionModal
+                open={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSubmit={handleEditSubmit}
+                initialValues={collection}
+                isLoading={isUpdating}
+                ownerId={collection.ownerId}
+            />
+        </div>
+    );
+};
+
+export default CollectionDetailPage;

@@ -1,0 +1,76 @@
+﻿import { api } from '../../apiInstance';
+import type {
+    CreateCollectionRequest,
+    UpdateCollectionRequest,
+    GetMyCollectionsArgs,
+    SearchCollectionsArgs,
+    CollectionResponse,
+    CollectionListResponse,
+} from './collection.types';
+
+const collectionService = api.injectEndpoints({
+    endpoints: (build) => ({
+        // Create collection
+        createCollection: build.mutation<CollectionResponse, CreateCollectionRequest>({
+            query: (body) => ({ url: '/api/collection', method: 'POST', body }),
+            invalidatesTags: ['Collections'],
+        }),
+
+        // Get user's own collections
+        getMyCollections: build.query<CollectionListResponse, GetMyCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/my-collections', params }),
+            providesTags: ['Collections'],
+        }),
+
+        // Get single collection (public or own)
+        getCollection: build.query<CollectionResponse, string>({
+            query: (id) => ({ url: `/api/collection/${id}` }),
+            providesTags: (_result, _error, id) => [{ type: 'Collections', id }],
+        }),
+
+        // Update collection
+        updateCollection: build.mutation<CollectionResponse, UpdateCollectionRequest>({
+            query: ({ id, ...body }) => ({ url: `/api/collection/${id}`, method: 'PUT', body }),
+            invalidatesTags: (_result, _error, { id }) => [
+                { type: 'Collections', id },
+                { type: 'Collections' },
+            ],
+        }),
+
+        // Delete collection
+        deleteCollection: build.mutation<void, string>({
+            query: (id) => ({ url: `/api/collection/${id}`, method: 'DELETE' }),
+            invalidatesTags: (_result, _error, id) => [
+                { type: 'Collections', id },
+                { type: 'Collections' },
+            ],
+        }),
+
+        // Search collections (public only, PUBLISHED status)
+        searchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/search', params }),
+            providesTags: ['Collections'],
+        }),
+
+        // Admin search collections (all statuses)
+        adminSearchCollections: build.query<CollectionListResponse, SearchCollectionsArgs>({
+            query: (params) => ({ url: '/api/collection/admin-search', params }),
+            providesTags: ['Collections'],
+        }),
+    }),
+    overrideExisting: false,
+});
+
+export const {
+    useCreateCollectionMutation,
+    useGetMyCollectionsQuery,
+    useLazyGetMyCollectionsQuery,
+    useGetCollectionQuery,
+    useLazyGetCollectionQuery,
+    useUpdateCollectionMutation,
+    useDeleteCollectionMutation,
+    useSearchCollectionsQuery,
+    useLazySearchCollectionsQuery,
+    useAdminSearchCollectionsQuery,
+    useLazyAdminSearchCollectionsQuery,
+} = collectionService;

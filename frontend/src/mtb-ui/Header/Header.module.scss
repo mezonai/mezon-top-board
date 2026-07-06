@@ -64,3 +64,10 @@
         color: #d1006b !important;
     }
 }
+
+:global(.explore-collection-item) {
+    &:hover {
+        background-color: var(--accent-primary) !important;
+        color: #fff !important;
+    }
+}

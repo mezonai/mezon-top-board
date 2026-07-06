@@ -61,7 +61,13 @@
         "confirm_subscription": "Xác nhận đăng ký",
         "unsubscription": "Hủy đăng ký",
         "not_found": "Không tìm thấy",
-        "version_history": "Lịch sử phiên bản"
+        "version_history": "Lịch sử phiên bản",
+        "my_collections": "Bộ sưu tập của tôi",
+        "explore": "Khám phá",
+        "collections": "Bộ sưu tập",
+        "collections_empty": "Chưa có bộ sưu tập nào.",
+        "collections_no_description": "Chưa có mô tả",
+        "collections_app_count": "{{count}} ứng dụng"
     },
     "header": {
         "login": "Đăng nhập",
@@ -105,5 +111,8 @@
     },
     "multilingual": {
         "default": "Mặc định"
+    },
+    "collectionDetail": {
+        "appsInCollection": "Ứng dụng trong bộ sưu tập"
     }
 }

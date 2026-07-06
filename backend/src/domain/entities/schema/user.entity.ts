@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 import { Role } from "@domain/common/enum/role";
-import { App, Link, Media, Rating, TempFile, FavoriteApp } from "@domain/entities"; 
+import { App, Link, Media, Rating, TempFile, FavoriteApp, Collection } from "@domain/entities";
 
 import { BaseSoftDelete } from "../base";
 import { BotWizard } from "@domain/entities/schema/botWizard.entity";
@@ -66,4 +66,7 @@ export class User extends BaseSoftDelete {
 
     @OneToMany(() => BotWizard, (bot) => bot.owner)
     public botWizards: BotWizard[];
+
+    @OneToMany(() => Collection, (collection) => collection.owner)
+    public collections: Collection[];
 }
