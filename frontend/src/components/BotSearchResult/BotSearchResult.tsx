@@ -20,7 +20,7 @@ import { ViewMode } from '@app/enums/viewMode.enum'
 import { ItemVariant } from '@app/enums/ItemVariant.enum'
 
 function BotSearchResult({ isSearchPage = false }: IBotSearchResultProps) {
-  const { t } = useTranslation(['home_page'])
+  const { t, i18n } = useTranslation(['home_page'])
   const navigate = useNavigate()
   const mainRef = useRef<HTMLDivElement>(null)
   const { mezonApp } = useSelector<RootState, IMezonAppStore>((s) => s.mezonApp)
@@ -102,7 +102,8 @@ function BotSearchResult({ isSearchPage = false }: IBotSearchResultProps) {
       pageNumber: page,
       pageSize: pageSize,
       sortField: sortField,
-      sortOrder: sortOrder
+      sortOrder: sortOrder,
+      hl: i18n.language
     })
   }
 

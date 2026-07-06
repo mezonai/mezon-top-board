@@ -65,6 +65,10 @@ export class SearchMezonAppRequest extends PaginationQuery {
   @ApiPropertyOptional({ description: "Filter by has new update" })
   @IsOptional()
   hasNewUpdate?: boolean;
+
+  @ApiPropertyOptional({ description: "Language code to filter translations (e.g., en, vi)" })
+  @IsOptional()
+  hl?: string;
 }
 
 export class CreateMezonAppRequest extends CreateAppInfoRequest {

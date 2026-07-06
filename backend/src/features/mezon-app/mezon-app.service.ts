@@ -230,10 +230,20 @@ export class MezonAppService {
     const whereCondition = this.appRepository
       .getRepository()
       .createQueryBuilder("app")
-      .innerJoin("app.appTranslations", "trans")
       .select("app.id")
       .skip(skip)
       .take(take);
+
+    if (query.hl) {
+      whereCondition.innerJoin(
+          "app.appTranslations",
+          "trans",
+          "trans.language = :hl",
+          { hl: query.hl }
+      );
+    } else {
+      whereCondition.innerJoin("app.appTranslations", "trans");
+    }
 
     if (initialWhereCondition) {
       whereCondition.where(initialWhereCondition, ititialWhereParams);
